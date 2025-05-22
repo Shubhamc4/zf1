@@ -1,0 +1,27 @@
+{
+  "name": "shubhamc4/zf1",
+  "description": "Zend Framework 1 updated for PHP 8.2 compatibility",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Shubham Chaudhary",
+      "homepage": "https://github.com/Shubhamc4"
+    }
+  ],
+  "keywords": [
+    "framework",
+    "zf1",
+    "php8.2",
+    "compatibility"
+  ],
+  "license": "BSD-3-Clause",
+  "require": {
+    "php": "^8.2"
+  },
+  "autoload": {
+    "psr-0": {
+      "Zend_": "library/"
+    }
+  },
+  "minimum-stability": "stable"
+}

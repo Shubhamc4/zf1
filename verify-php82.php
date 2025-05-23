@@ -104,14 +104,14 @@ try {
     require_once 'Zend/Controller/Action/HelperBroker/PriorityStack.php';
     $stack = new Zend_Controller_Action_HelperBroker_PriorityStack();
 
-    $testPassed = ($stack->count() === 0);
+    $testPassed = $stack->count() === 0;
     $allPassed &= test_result('PriorityStack', 'Countable::count()', $testPassed);
 
     $iterator = $stack->getIterator();
-    $testPassed = ($iterator instanceof ArrayObject);
+    $testPassed = $iterator instanceof ArrayObject;
     $allPassed &= test_result('PriorityStack', 'IteratorAggregate::getIterator()', $testPassed);
 
-    $testPassed = ($stack->offsetExists('test') === false);
+    $testPassed = $stack->offsetExists('test') === false;
     $allPassed &= test_result('PriorityStack', 'ArrayAccess::offsetExists()', $testPassed);
 
 } catch (Throwable $e) {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,13 +14,12 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Index
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * A Term represents a word from text.  This is the unit of search.  It is
@@ -30,8 +30,7 @@
  * things like dates, email addresses, urls, etc.
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Index
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -51,46 +50,43 @@ class Zend_Search_Lucene_Index_Term
      */
     public $text;
 
-
     /**
      * Object constructor
      */
     public function __construct($text, $field = null)
     {
-        $this->field = ($field === null)?  Zend_Search_Lucene::getDefaultSearchField() : $field;
-        $this->text  = $text;
+        $this->field = ($field === null) ? Zend_Search_Lucene::getDefaultSearchField() : $field;
+        $this->text = $text;
     }
-
 
     /**
      * Returns term key
      *
      * @return string
      */
-    #[\ReturnTypeWillChange]
     public function key()
     {
-        return $this->field . chr(0) . $this->text;
+        return $this->field.chr(0).$this->text;
     }
 
     /**
      * Get term prefix
      *
-     * @param string $str
-     * @param integer $length
+     * @param  string  $str
+     * @param  int  $length
      * @return string
      */
     public static function getPrefix($str, $length)
     {
         $prefixBytes = 0;
         $prefixChars = 0;
-        while ($prefixBytes < strlen($str)  &&  $prefixChars < $length) {
+        while ($prefixBytes < strlen($str) && $prefixChars < $length) {
             $charBytes = 1;
             if ((ord($str[$prefixBytes]) & 0xC0) == 0xC0) {
                 $charBytes++;
-                if (ord($str[$prefixBytes]) & 0x20 ) {
+                if (ord($str[$prefixBytes]) & 0x20) {
                     $charBytes++;
-                    if (ord($str[$prefixBytes]) & 0x10 ) {
+                    if (ord($str[$prefixBytes]) & 0x10) {
                         $charBytes++;
                     }
                 }
@@ -111,7 +107,7 @@ class Zend_Search_Lucene_Index_Term
     /**
      * Get UTF-8 string length
      *
-     * @param string $str
+     * @param  string  $str
      * @return string
      */
     public static function getLength($str)
@@ -122,9 +118,9 @@ class Zend_Search_Lucene_Index_Term
             $charBytes = 1;
             if ((ord($str[$bytes]) & 0xC0) == 0xC0) {
                 $charBytes++;
-                if (ord($str[$bytes]) & 0x20 ) {
+                if (ord($str[$bytes]) & 0x20) {
                     $charBytes++;
-                    if (ord($str[$bytes]) & 0x10 ) {
+                    if (ord($str[$bytes]) & 0x10) {
                         $charBytes++;
                     }
                 }
@@ -142,4 +138,3 @@ class Zend_Search_Lucene_Index_Term
         return $chars;
     }
 }
-

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Memory
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -33,7 +35,7 @@ require_once 'Zend/Cache.php';
 
 /**
  * @category   Zend
- * @package    Zend_Memory
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -42,15 +44,16 @@ class Zend_Memory
     /**
      * Factory
      *
-     * @param string $backend backend name
-     * @param array $backendOptions associative array of options for the corresponding backend constructor
+     * @param  string  $backend  backend name
+     * @param  array  $backendOptions  associative array of options for the corresponding backend constructor
      * @return Zend_Memory_Manager
+     *
      * @throws Zend_Memory_Exception
      */
-    public static function factory($backend, $backendOptions = array())
+    public static function factory($backend, $backendOptions = [])
     {
         if (strcasecmp($backend, 'none') == 0) {
-            return new Zend_Memory_Manager();
+            return new Zend_Memory_Manager;
         }
 
         // Look through available backendsand
@@ -64,16 +67,16 @@ class Zend_Memory
             }
         }
 
-        if (!$backendIsFound) {
+        if (! $backendIsFound) {
             require_once 'Zend/Memory/Exception.php';
-            throw new Zend_Memory_Exception("Incorrect backend ($backend)");
+            throw new Zend_Memory_Exception("Incorrect backend ({$backend})");
         }
 
-        $backendClass = 'Zend_Cache_Backend_' . $backend;
+        $backendClass = 'Zend_Cache_Backend_'.$backend;
 
         // For perfs reasons, we do not use the Zend_Loader::loadClass() method
         // (security controls are explicit)
-        require_once str_replace('_', DIRECTORY_SEPARATOR, $backendClass) . '.php';
+        require_once str_replace('_', DIRECTORY_SEPARATOR, $backendClass).'.php';
 
         $backendObject = new $backendClass($backendOptions);
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,8 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Form
- * @subpackage Decorator
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -42,16 +42,17 @@ require_once 'Zend/Form/Decorator/Abstract.php';
  * defaults to append content.
  *
  * @category   Zend
- * @package    Zend_Form
- * @subpackage Decorator
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 class Zend_Form_Decorator_Callback extends Zend_Form_Decorator_Abstract
 {
     /**
      * Callback
+     *
      * @var string|array
      */
     protected $_callback;
@@ -59,17 +60,19 @@ class Zend_Form_Decorator_Callback extends Zend_Form_Decorator_Abstract
     /**
      * Set callback
      *
-     * @param  callback $callback
+     * @param  callable  $callback
      * @return Zend_Form_Decorator_Callback
+     *
      * @throws Zend_Form_Exception
      */
     public function setCallback($callback)
     {
-        if (!is_callable($callback)) {
+        if (! is_callable($callback)) {
             require_once 'Zend/Form/Exception.php';
             throw new Zend_Form_Exception('Invalid callback provided to callback decorator');
         }
         $this->_callback = $callback;
+
         return $this;
     }
 
@@ -100,7 +103,7 @@ class Zend_Form_Decorator_Callback extends Zend_Form_Decorator_Abstract
      * value of callback and either appends, prepends, or replaces passed in
      * content.
      *
-     * @param  string $content
+     * @param  string  $content
      * @return string
      */
     public function render($content)
@@ -117,9 +120,9 @@ class Zend_Form_Decorator_Callback extends Zend_Form_Decorator_Abstract
 
         switch ($placement) {
             case self::APPEND:
-                return $content . $separator . $response;
+                return $content.$separator.$response;
             case self::PREPEND:
-                return $response . $separator . $content;
+                return $response.$separator.$content;
             default:
                 // replace content
                 return $response;

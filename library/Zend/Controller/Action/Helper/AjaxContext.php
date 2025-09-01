@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Controller
- * @subpackage Zend_Controller_Action_Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,9 +30,9 @@ require_once 'Zend/Controller/Action/Helper/ContextSwitch.php';
  * Simplify AJAX context switching based on requested format
  *
  * @uses       Zend_Controller_Action_Helper_Abstract
+ *
  * @category   Zend
- * @package    Zend_Controller
- * @subpackage Zend_Controller_Action_Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,6 +40,7 @@ class Zend_Controller_Action_Helper_AjaxContext extends Zend_Controller_Action_H
 {
     /**
      * Controller property to utilize for context switching
+     *
      * @var string
      */
     protected $_contextKey = 'ajaxable';
@@ -53,7 +55,7 @@ class Zend_Controller_Action_Helper_AjaxContext extends Zend_Controller_Action_H
     public function __construct()
     {
         parent::__construct();
-        $this->addContext('html', array('suffix' => 'ajax'));
+        $this->addContext('html', ['suffix' => 'ajax']);
     }
 
     /**
@@ -61,7 +63,7 @@ class Zend_Controller_Action_Helper_AjaxContext extends Zend_Controller_Action_H
      *
      * Checks for XHR requests; if detected, attempts to perform context switch.
      *
-     * @param  string $format
+     * @param  string  $format
      * @return void
      */
     public function initContext($format = null)
@@ -69,9 +71,8 @@ class Zend_Controller_Action_Helper_AjaxContext extends Zend_Controller_Action_H
         $this->_currentContext = null;
 
         $request = $this->getRequest();
-        if (!method_exists($request, 'isXmlHttpRequest') ||
-            !$this->getRequest()->isXmlHttpRequest())
-        {
+        if (! method_exists($request, 'isXmlHttpRequest') ||
+            ! $this->getRequest()->isXmlHttpRequest()) {
             return;
         }
 

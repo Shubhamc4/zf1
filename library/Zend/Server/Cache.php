@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Server
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -23,7 +25,7 @@
  * Zend_Server_Cache: cache server definitions
  *
  * @category   Zend
- * @package    Zend_Server
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -32,7 +34,7 @@ class Zend_Server_Cache
     /**
      * @var array Methods to skip when caching server
      */
-    protected static $_skipMethods = array();
+    protected static $_skipMethods = [];
 
     /**
      * Cache a file containing the dispatch list.
@@ -43,22 +45,20 @@ class Zend_Server_Cache
      * Returns false on any error (typically, inability to write to file), true
      * on success.
      *
-     * @param  string $filename
-     * @param  Zend_Server_Interface $server
+     * @param  string  $filename
      * @return bool
      */
     public static function save($filename, Zend_Server_Interface $server)
     {
-        if (!is_string($filename)
-            || (!file_exists($filename) && !is_writable(dirname($filename))))
-        {
+        if (! is_string($filename)
+            || (! file_exists($filename) && ! is_writable(dirname($filename)))) {
             return false;
         }
 
         $methods = $server->getFunctions();
 
         if ($methods instanceof Zend_Server_Definition) {
-            $definition = new Zend_Server_Definition();
+            $definition = new Zend_Server_Definition;
             foreach ($methods as $method) {
                 if (in_array($method->getName(), self::$_skipMethods)) {
                     continue;
@@ -102,19 +102,16 @@ class Zend_Server_Cache
      * echo $response;
      * </code>
      *
-     * @param  string $filename
-     * @param  Zend_Server_Interface $server
+     * @param  string  $filename
      * @return bool
      */
     public static function get($filename, Zend_Server_Interface $server)
     {
-        if (!is_string($filename)
-            || !file_exists($filename)
-            || !is_readable($filename))
-        {
+        if (! is_string($filename)
+            || ! file_exists($filename)
+            || ! is_readable($filename)) {
             return false;
         }
-
 
         if (false === ($dispatch = @file_get_contents($filename))) {
             return false;
@@ -132,13 +129,14 @@ class Zend_Server_Cache
     /**
      * Remove a cache file
      *
-     * @param  string $filename
-     * @return boolean
+     * @param  string  $filename
+     * @return bool
      */
     public static function delete($filename)
     {
         if (is_string($filename) && file_exists($filename)) {
             unlink($filename);
+
             return true;
         }
 

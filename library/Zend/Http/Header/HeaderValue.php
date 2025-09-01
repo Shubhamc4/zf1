@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,18 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage Header
+ *
  * @version    $Id$
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
-
 /**
  * @category   Zend
- * @package    Zend_Http
- * @subpackage Header
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -33,9 +32,7 @@ final class Zend_Http_Header_HeaderValue
     /**
      * Private constructor; non-instantiable.
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Filter a header value
@@ -47,12 +44,13 @@ final class Zend_Http_Header_HeaderValue
      * between visible characters.
      *
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     * @param string $value
+     *
+     * @param  string  $value
      * @return string
      */
     public static function filter($value)
     {
-        $value  = (string) $value;
+        $value = (string) $value;
         $length = strlen($value);
         $string = '';
         for ($i = 0; $i < $length; $i += 1) {
@@ -84,12 +82,13 @@ final class Zend_Http_Header_HeaderValue
      * between visible characters.
      *
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
-     * @param string $value
+     *
+     * @param  string  $value
      * @return bool
      */
     public static function isValid($value)
     {
-        $value  = (string) $value;
+        $value = (string) $value;
         $length = strlen($value);
         for ($i = 0; $i < $length; $i += 1) {
             $ascii = ord($value[$i]);
@@ -113,9 +112,10 @@ final class Zend_Http_Header_HeaderValue
     /**
      * Assert a header value is valid.
      *
-     * @param string $value
-     * @throws Exception\RuntimeException for invalid values
+     * @param  string  $value
      * @return void
+     *
+     * @throws Exception\RuntimeException for invalid values
      */
     public static function assertValid($value)
     {

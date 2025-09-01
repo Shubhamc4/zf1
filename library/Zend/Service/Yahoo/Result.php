@@ -14,18 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Yahoo
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
-
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Yahoo
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -73,17 +71,15 @@ class Zend_Service_Yahoo_Result
      */
     protected $_xpath;
 
-
     /**
      * Initializes the result
      *
-     * @param  DOMElement $result
      * @return void
      */
     public function __construct(DOMElement $result)
     {
         // default fields for all search results:
-        $fields = array('Title', 'Url', 'ClickUrl');
+        $fields = ['Title', 'Url', 'ClickUrl'];
 
         // merge w/ child's fields
         $this->_fields = array_merge($this->_fields, $fields);
@@ -94,7 +90,7 @@ class Zend_Service_Yahoo_Result
         // add search results to appropriate fields
 
         foreach ($this->_fields as $f) {
-            $query = "./yh:$f/text()";
+            $query = "./yh:{$f}/text()";
             $node = $this->_xpath->query($query, $result);
             if ($node->length == 1) {
                 $this->{$f} = $node->item(0)->data;
@@ -103,7 +99,6 @@ class Zend_Service_Yahoo_Result
 
         $this->_result = $result;
     }
-
 
     /**
      * Sets the Thumbnail property

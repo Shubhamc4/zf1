@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,27 +14,25 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Pubsubhubbub
- * @subpackage Entity
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Pubsubhubbub
- * @subpackage Entity
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 interface Zend_Feed_Pubsubhubbub_Model_SubscriptionInterface
 {
-
     /**
      * Save subscription to RDMBS
      *
-     * @param array $data The key must be stored here as a $data['id'] entry
+     * @param  array  $data  The key must be stored here as a $data['id'] entry
      * @return bool
      */
     public function setSubscription(array $data);
@@ -41,7 +40,7 @@ interface Zend_Feed_Pubsubhubbub_Model_SubscriptionInterface
     /**
      * Get subscription by ID/key
      *
-     * @param  string $key
+     * @param  string  $key
      * @return array
      */
     public function getSubscription($key);
@@ -49,7 +48,7 @@ interface Zend_Feed_Pubsubhubbub_Model_SubscriptionInterface
     /**
      * Determine if a subscription matching the key exists
      *
-     * @param  string $key
+     * @param  string  $key
      * @return bool
      */
     public function hasSubscription($key);
@@ -57,9 +56,8 @@ interface Zend_Feed_Pubsubhubbub_Model_SubscriptionInterface
     /**
      * Delete a subscription
      *
-     * @param string $key
+     * @param  string  $key
      * @return bool
      */
     public function deleteSubscription($key);
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Application
- * @subpackage Bootstrap
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -24,8 +25,7 @@
  * Interface for bootstrap classes
  *
  * @category   Zend
- * @package    Zend_Application
- * @subpackage Bootstrap
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -34,14 +34,13 @@ interface Zend_Application_Bootstrap_Bootstrapper
     /**
      * Constructor
      *
-     * @param  Zend_Application $application
+     * @param  Zend_Application  $application
      */
     public function __construct($application);
 
     /**
      * Set bootstrap options
      *
-     * @param  array $options
      * @return Zend_Application_Bootstrap_Bootstrapper
      */
     public function setOptions(array $options);
@@ -79,7 +78,7 @@ interface Zend_Application_Bootstrap_Bootstrapper
     /**
      * Bootstrap application or individual resource
      *
-     * @param  null|string $resource
+     * @param  null|string  $resource
      * @return mixed
      */
     public function bootstrap($resource = null);

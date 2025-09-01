@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,19 +14,19 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Feed_Reader_EntryAbstract
 {
     /**
@@ -33,7 +34,7 @@ abstract class Zend_Feed_Reader_EntryAbstract
      *
      * @var array
      */
-    protected $_data = array();
+    protected $_data = [];
 
     /**
      * DOM document object
@@ -68,20 +69,19 @@ abstract class Zend_Feed_Reader_EntryAbstract
      *
      * @var array
      */
-    protected $_extensions = array();
+    protected $_extensions = [];
 
     /**
      * Constructor
      *
-     * @param  DOMElement  $entry
-     * @param  int         $entryKey
-     * @param  string|null $type
+     * @param  int  $entryKey
+     * @param  string|null  $type
      * @return void
      */
     public function __construct(DOMElement $entry, $entryKey, $type = null)
     {
-        $this->_entry       = $entry;
-        $this->_entryKey    = $entryKey;
+        $this->_entry = $entry;
+        $this->_entryKey = $entryKey;
         $this->_domDocument = $entry->ownerDocument;
         if ($type !== null) {
             $this->_data['type'] = $type;
@@ -124,6 +124,7 @@ abstract class Zend_Feed_Reader_EntryAbstract
         if (empty($assumed)) {
             $assumed = 'UTF-8';
         }
+
         return $assumed;
     }
 
@@ -137,6 +138,7 @@ abstract class Zend_Feed_Reader_EntryAbstract
         $dom = new DOMDocument('1.0', $this->getEncoding());
         $entry = $dom->importNode($this->getElement(), true);
         $dom->appendChild($entry);
+
         return $dom->saveXml();
     }
 
@@ -157,21 +159,22 @@ abstract class Zend_Feed_Reader_EntryAbstract
      */
     public function getXpath()
     {
-        if (!$this->_xpath) {
+        if (! $this->_xpath) {
             $this->setXpath(new DOMXPath($this->getDomDocument()));
         }
+
         return $this->_xpath;
     }
 
     /**
      * Set the XPath query
      *
-     * @param  DOMXPath $xpath
      * @return Zend_Feed_Reader_Entry_EntryAbstract
      */
     public function setXpath(DOMXPath $xpath)
     {
         $this->_xpath = $xpath;
+
         return $this;
     }
 
@@ -188,36 +191,37 @@ abstract class Zend_Feed_Reader_EntryAbstract
     /**
      * Return an Extension object with the matching name (postfixed with _Entry)
      *
-     * @param string $name
+     * @param  string  $name
      * @return Zend_Feed_Reader_Extension_EntryAbstract
      */
     public function getExtension($name)
     {
-        if (array_key_exists($name . '_Entry', $this->_extensions)) {
-            return $this->_extensions[$name . '_Entry'];
+        if (array_key_exists($name.'_Entry', $this->_extensions)) {
+            return $this->_extensions[$name.'_Entry'];
         }
-        return null;
+
     }
 
     /**
      * Method overloading: call given method on first extension implementing it
      *
-     * @param  string $method
-     * @param  array $args
+     * @param  string  $method
+     * @param  array  $args
      * @return mixed
+     *
      * @throws Zend_Feed_Exception if no extensions implements the method
      */
     public function __call($method, $args)
     {
         foreach ($this->_extensions as $extension) {
             if (method_exists($extension, $method)) {
-                return call_user_func_array(array($extension, $method), $args);
+                return call_user_func_array([$extension, $method], $args);
             }
         }
         require_once 'Zend/Feed/Exception.php';
         throw new Zend_Feed_Exception(
-            'Method: ' . $method
-            . 'does not exist and could not be located on a registered Extension'
+            'Method: '.$method
+            .'does not exist and could not be located on a registered Extension'
         );
     }
 

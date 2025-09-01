@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Application
- * @subpackage Resource
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -25,19 +26,17 @@
  */
 require_once 'Zend/Application/Resource/ResourceAbstract.php';
 
-
 /**
  * Resource for initializing the locale
  *
  * @uses       Zend_Application_Resource_Base
+ *
  * @category   Zend
- * @package    Zend_Application
- * @subpackage Resource
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Application_Resource_Router
-    extends Zend_Application_Resource_ResourceAbstract
+class Zend_Application_Resource_Router extends Zend_Application_Resource_ResourceAbstract
 {
     /**
      * @var Zend_Controller_Router_Rewrite
@@ -67,8 +66,8 @@ class Zend_Application_Resource_Router
             $this->_router = $bootstrap->getContainer()->frontcontroller->getRouter();
 
             $options = $this->getOptions();
-            if (!isset($options['routes'])) {
-                $options['routes'] = array();
+            if (! isset($options['routes'])) {
+                $options['routes'] = [];
             }
 
             if (isset($options['chainNameSeparator'])) {

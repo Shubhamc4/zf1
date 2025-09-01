@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Crypt
- * @subpackage Rsa
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,13 +28,12 @@ require_once 'Zend/Crypt/Rsa/Key.php';
 
 /**
  * @category   Zend
- * @package    Zend_Crypt
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Crypt_Rsa_Key_Private extends Zend_Crypt_Rsa_Key
 {
-
     protected $_publicKey = null;
 
     public function __construct($pemString, $passPhrase = null)
@@ -43,13 +43,14 @@ class Zend_Crypt_Rsa_Key_Private extends Zend_Crypt_Rsa_Key
     }
 
     /**
-     * @param string $passPhrase
+     * @param  string  $passPhrase
+     *
      * @throws Zend_Crypt_Exception
      */
     protected function _parse($passPhrase)
     {
         $result = openssl_get_privatekey($this->_pemString, $passPhrase);
-        if (!$result) {
+        if (! $result) {
             /**
              * @see Zend_Crypt_Exception
              */
@@ -69,7 +70,7 @@ class Zend_Crypt_Rsa_Key_Private extends Zend_Crypt_Rsa_Key
             require_once 'Zend/Crypt/Rsa/Key/Public.php';
             $this->_publicKey = new Zend_Crypt_Rsa_Key_Public($this->_details['key']);
         }
+
         return $this->_publicKey;
     }
-
 }

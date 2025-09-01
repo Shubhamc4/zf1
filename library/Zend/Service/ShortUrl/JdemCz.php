@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service_ShortUrl
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: $
  */
 
@@ -28,7 +30,7 @@ require_once 'Zend/Service/ShortUrl/AbstractShortener.php';
  * Jdem.cz API implementation
  *
  * @category   Zend
- * @package    Zend_Service_ShortUrl
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -44,9 +46,10 @@ class Zend_Service_ShortUrl_JdemCz extends Zend_Service_ShortUrl_AbstractShorten
     /**
      * This function shortens long url
      *
-     * @param string $url URL to Shorten
-     * @throws Zend_Service_ShortUrl_Exception When URL is not valid
+     * @param  string  $url  URL to Shorten
      * @return string New URL
+     *
+     * @throws Zend_Service_ShortUrl_Exception When URL is not valid
      */
     public function shorten($url)
     {
@@ -62,12 +65,13 @@ class Zend_Service_ShortUrl_JdemCz extends Zend_Service_ShortUrl_AbstractShorten
         return $response->getBody();
     }
 
-   /**
+    /**
      * Reveals target for short URL
      *
-     * @param string $shortenedUrl URL to reveal target of
-     * @throws Zend_Service_ShortUrl_Exception When URL is not valid or is not shortened by this service
+     * @param  string  $shortenedUrl  URL to reveal target of
      * @return string
+     *
+     * @throws Zend_Service_ShortUrl_Exception When URL is not valid or is not shortened by this service
      */
     public function unshorten($shortenedUrl)
     {

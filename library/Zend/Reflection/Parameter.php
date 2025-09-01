@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,15 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Reflection
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * @category   Zend
- * @package    Zend_Reflection
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -35,47 +37,49 @@ class Zend_Reflection_Parameter extends ReflectionParameter
     /**
      * Get declaring class reflection object
      *
-     * @param  string $reflectionClass Reflection class to use
+     * @param  string  $reflectionClass  Reflection class to use
      * @return Zend_Reflection_Class
      */
     public function getDeclaringClass($reflectionClass = 'Zend_Reflection_Class')
     {
-        $phpReflection  = parent::getDeclaringClass();
+        $phpReflection = parent::getDeclaringClass();
         $zendReflection = new $reflectionClass($phpReflection->getName());
-        if (!$zendReflection instanceof Zend_Reflection_Class) {
+        if (! $zendReflection instanceof Zend_Reflection_Class) {
             require_once 'Zend/Reflection/Exception.php';
             throw new Zend_Reflection_Exception('Invalid reflection class provided; must extend Zend_Reflection_Class');
         }
         unset($phpReflection);
+
         return $zendReflection;
     }
 
     /**
      * Get class reflection object
      *
-     * @param  string $reflectionClass Reflection class to use
+     * @param  string  $reflectionClass  Reflection class to use
      * @return Zend_Reflection_Class
      */
     public function getClass($reflectionClass = 'Zend_Reflection_Class')
     {
-        $phpReflection  = parent::getClass();
-        if($phpReflection == null) {
-            return null;
+        $phpReflection = parent::getClass();
+        if ($phpReflection == null) {
+            return;
         }
 
         $zendReflection = new $reflectionClass($phpReflection->getName());
-        if (!$zendReflection instanceof Zend_Reflection_Class) {
+        if (! $zendReflection instanceof Zend_Reflection_Class) {
             require_once 'Zend/Reflection/Exception.php';
             throw new Zend_Reflection_Exception('Invalid reflection class provided; must extend Zend_Reflection_Class');
         }
         unset($phpReflection);
+
         return $zendReflection;
     }
 
     /**
      * Get declaring function reflection object
      *
-     * @param  string $reflectionClass Reflection class to use
+     * @param  string  $reflectionClass  Reflection class to use
      * @return Zend_Reflection_Function|Zend_Reflection_Method
      */
     public function getDeclaringFunction($reflectionClass = null)
@@ -94,11 +98,12 @@ class Zend_Reflection_Parameter extends ReflectionParameter
             }
             $zendReflection = new $reflectionClass($phpReflection->getName());
         }
-        if (!$zendReflection instanceof $baseClass) {
+        if (! $zendReflection instanceof $baseClass) {
             require_once 'Zend/Reflection/Exception.php';
-            throw new Zend_Reflection_Exception('Invalid reflection class provided; must extend ' . $baseClass);
+            throw new Zend_Reflection_Exception('Invalid reflection class provided; must extend '.$baseClass);
         }
         unset($phpReflection);
+
         return $zendReflection;
     }
 
@@ -118,6 +123,5 @@ class Zend_Reflection_Parameter extends ReflectionParameter
 
         }
 
-        return null;
     }
 }

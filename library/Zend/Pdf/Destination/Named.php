@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,17 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Pdf
- * @subpackage Destination
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /** Internally used classes */
 require_once 'Zend/Pdf/Element.php';
 require_once 'Zend/Pdf/Element/String.php';
-
 
 /** Zend_Pdf_Destination */
 require_once 'Zend/Pdf/Destination.php';
@@ -37,8 +37,6 @@ require_once 'Zend/Pdf/Destination.php';
  * the smaller of the two, centering the page within the window in the other
  * dimension.
  *
- * @package    Zend_Pdf
- * @subpackage Destination
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -54,12 +52,11 @@ class Zend_Pdf_Destination_Named extends Zend_Pdf_Destination
     /**
      * Named destination object constructor
      *
-     * @param Zend_Pdf_Element $resource
      * @throws Zend_Pdf_Exception
      */
     public function __construct(Zend_Pdf_Element $resource)
     {
-        if ($resource->getType() != Zend_Pdf_Element::TYPE_NAME  &&  $resource->getType() != Zend_Pdf_Element::TYPE_STRING) {
+        if ($resource->getType() != Zend_Pdf_Element::TYPE_NAME && $resource->getType() != Zend_Pdf_Element::TYPE_STRING) {
             require_once 'Zend/Pdf/Exception.php';
             throw new Zend_Pdf_Exception('Named destination resource must be a PDF name or a PDF string.');
         }
@@ -70,7 +67,7 @@ class Zend_Pdf_Destination_Named extends Zend_Pdf_Destination
     /**
      * Create named destination object
      *
-     * @param string $name
+     * @param  string  $name
      * @return Zend_Pdf_Destination_Named
      */
     public static function create($name)
@@ -92,6 +89,7 @@ class Zend_Pdf_Destination_Named extends Zend_Pdf_Destination
      * Get resource
      *
      * @internal
+     *
      * @return Zend_Pdf_Element
      */
     public function getResource()

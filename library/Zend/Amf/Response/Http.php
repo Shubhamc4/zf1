@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Amf
- * @subpackage Response
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,8 +27,6 @@ require_once 'Zend/Amf/Response.php';
 /**
  * Creates the proper http headers and send the serialized AMF stream to standard out.
  *
- * @package    Zend_Amf
- * @subpackage Response
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -40,7 +39,7 @@ class Zend_Amf_Response_Http extends Zend_Amf_Response
      */
     public function getResponse()
     {
-        if (!headers_sent()) {
+        if (! headers_sent()) {
             if ($this->isIeOverSsl()) {
                 header('Cache-Control: cache, must-revalidate');
                 header('Pragma: public');
@@ -51,19 +50,20 @@ class Zend_Amf_Response_Http extends Zend_Amf_Response
             header('Expires: Thu, 19 Nov 1981 08:52:00 GMT');
             header('Content-Type: application/x-amf');
         }
+
         return parent::getResponse();
     }
 
     protected function isIeOverSsl()
     {
-        $ssl = isset($_SERVER['HTTPS']) ? $_SERVER['HTTPS'] : false;
-        if (!$ssl || ($ssl == 'off')) {
+        $ssl = $_SERVER['HTTPS'] ?? false;
+        if (! $ssl || ($ssl == 'off')) {
             // IIS reports "off", whereas other browsers simply don't populate
             return false;
         }
 
-        $ua  = $_SERVER['HTTP_USER_AGENT'];
-        if (!preg_match('/; MSIE \d+\.\d+;/', $ua)) {
+        $ua = $_SERVER['HTTP_USER_AGENT'];
+        if (! preg_match('/; MSIE \d+\.\d+;/', $ua)) {
             // Not MicroSoft Internet Explorer
             return false;
         }

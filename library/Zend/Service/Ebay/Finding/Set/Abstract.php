@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,22 +14,20 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Abstract.php 20166 2010-01-09 19:00:17Z bkarwin $
  */
 
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
-abstract class Zend_Service_Ebay_Finding_Set_Abstract implements SeekableIterator, Countable
+abstract class Zend_Service_Ebay_Finding_Set_Abstract implements Countable, SeekableIterator
 {
     /**
      * @var DOMNodeList
@@ -36,12 +35,11 @@ abstract class Zend_Service_Ebay_Finding_Set_Abstract implements SeekableIterato
     protected $_nodes;
 
     /**
-     * @var integer
+     * @var int
      */
     protected $_key = 0;
 
     /**
-     * @param  DOMNodeList $nodes
      * @return void
      */
     public function __construct(DOMNodeList $nodes)
@@ -57,16 +55,15 @@ abstract class Zend_Service_Ebay_Finding_Set_Abstract implements SeekableIterato
      *
      * @return void
      */
-    protected function _init()
-    {
-    }
+    protected function _init() {}
 
     /**
      * Implement SeekableIterator::seek()
      *
-     * @param  integer $key
-     * @throws OutOfBoundsException When $key is not seekable
+     * @param  int  $key
      * @return void
+     *
+     * @throws OutOfBoundsException When $key is not seekable
      */
     public function seek($key)
     {
@@ -80,9 +77,8 @@ abstract class Zend_Service_Ebay_Finding_Set_Abstract implements SeekableIterato
     /**
      * Implement Iterator::key()
      *
-     * @return integer
+     * @return int
      */
-    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->_key;
@@ -93,7 +89,6 @@ abstract class Zend_Service_Ebay_Finding_Set_Abstract implements SeekableIterato
      *
      * @return void
      */
-    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->_key++;
@@ -104,7 +99,6 @@ abstract class Zend_Service_Ebay_Finding_Set_Abstract implements SeekableIterato
      *
      * @return void
      */
-    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->_key = 0;
@@ -113,9 +107,8 @@ abstract class Zend_Service_Ebay_Finding_Set_Abstract implements SeekableIterato
     /**
      * Implement Iterator::valid()
      *
-     * @return boolean
+     * @return bool
      */
-    #[\ReturnTypeWillChange]
     public function valid()
     {
         return $this->_key >= 0 && $this->_key < $this->count();
@@ -124,9 +117,8 @@ abstract class Zend_Service_Ebay_Finding_Set_Abstract implements SeekableIterato
     /**
      * Implement Countable::current()
      *
-     * @return integer
+     * @return int
      */
-    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->_nodes ? $this->_nodes->length : 0;

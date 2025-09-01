@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Photos
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -36,21 +36,20 @@ require_once 'Zend/Gdata/Photos.php';
  * The height of a photo in pixels.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Photos
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Photos_Extension_Height extends Zend_Gdata_Extension
 {
-
     protected $_rootNamespace = 'gphoto';
+
     protected $_rootElement = 'height';
 
     /**
      * Constructs a new Zend_Gdata_Photos_Extension_Height object.
      *
-     * @param string $text (optional) The value to represent.
+     * @param  string  $text  (optional) The value to represent.
      */
     public function __construct($text = null)
     {
@@ -58,5 +57,4 @@ class Zend_Gdata_Photos_Extension_Height extends Zend_Gdata_Extension
         parent::__construct();
         $this->setText($text);
     }
-
 }

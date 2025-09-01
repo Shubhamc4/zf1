@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Paginator
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,7 +28,7 @@ require_once 'Zend/Paginator/Adapter/DbSelect.php';
 
 /**
  * @category   Zend
- * @package    Zend_Paginator
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -35,8 +37,8 @@ class Zend_Paginator_Adapter_DbTableSelect extends Zend_Paginator_Adapter_DbSele
     /**
      * Returns a Zend_Db_Table_Rowset_Abstract of items for a page.
      *
-     * @param  integer $offset Page offset
-     * @param  integer $itemCountPerPage Number of items per page
+     * @param  int  $offset  Page offset
+     * @param  int  $itemCountPerPage  Number of items per page
      * @return Zend_Db_Table_Rowset_Abstract
      */
     public function getItems($offset, $itemCountPerPage)

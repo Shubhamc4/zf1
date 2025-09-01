@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,29 +14,25 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_XmlRpc
- * @subpackage Client
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * Zend_XmlRpc_Exception
  */
 require_once 'Zend/XmlRpc/Client/Exception.php';
 
-
 /**
  * Thrown by Zend_XmlRpc_Client when an HTTP error occurs during an
  * XML-RPC method call.
  *
  * @category   Zend
- * @package    Zend_XmlRpc
- * @subpackage Client
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_XmlRpc_Client_HttpException extends Zend_XmlRpc_Client_Exception
-{}
+class Zend_XmlRpc_Client_HttpException extends Zend_XmlRpc_Client_Exception {}

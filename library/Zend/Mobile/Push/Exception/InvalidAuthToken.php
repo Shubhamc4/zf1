@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Mobile
- * @subpackage Zend_Mobile_Push
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -25,11 +26,10 @@ require_once 'Zend/Mobile/Push/Exception.php';
 
 /**
  * @category   Zend
- * @package    Zend_Mobile
- * @subpackage Zend_Mobile_Push
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-class Zend_Mobile_Push_Exception_InvalidAuthToken extends Zend_Mobile_Push_Exception
-{}
+class Zend_Mobile_Push_Exception_InvalidAuthToken extends Zend_Mobile_Push_Exception {}

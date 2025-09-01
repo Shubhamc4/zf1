@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,7 +28,7 @@ require_once 'Zend/Validate/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -35,7 +37,7 @@ class Zend_Validate_Ccnum extends Zend_Validate_Abstract
     /**
      * Validation failure message key for when the value is not of valid length
      */
-    const LENGTH   = 'ccnumLength';
+    const LENGTH = 'ccnumLength';
 
     /**
      * Validation failure message key for when the value fails the mod-10 checksum
@@ -54,10 +56,10 @@ class Zend_Validate_Ccnum extends Zend_Validate_Abstract
      *
      * @var array
      */
-    protected $_messageTemplates = array(
-        self::LENGTH   => "'%value%' must contain between 13 and 19 digits",
-        self::CHECKSUM => "Luhn algorithm (mod-10 checksum) failed on '%value%'"
-    );
+    protected $_messageTemplates = [
+        self::LENGTH => "'%value%' must contain between 13 and 19 digits",
+        self::CHECKSUM => "Luhn algorithm (mod-10 checksum) failed on '%value%'",
+    ];
 
     public function __construct()
     {
@@ -69,8 +71,8 @@ class Zend_Validate_Ccnum extends Zend_Validate_Abstract
      *
      * Returns true if and only if $value follows the Luhn algorithm (mod-10 checksum)
      *
-     * @param  string $value
-     * @return boolean
+     * @param  string  $value
+     * @return bool
      */
     public function isValid($value)
     {
@@ -81,7 +83,7 @@ class Zend_Validate_Ccnum extends Zend_Validate_Abstract
              * @see Zend_Filter_Digits
              */
             require_once 'Zend/Filter/Digits.php';
-            self::$_filter = new Zend_Filter_Digits();
+            self::$_filter = new Zend_Filter_Digits;
         }
 
         $valueFiltered = self::$_filter->filter($value);
@@ -90,10 +92,11 @@ class Zend_Validate_Ccnum extends Zend_Validate_Abstract
 
         if ($length < 13 || $length > 19) {
             $this->_error(self::LENGTH);
+
             return false;
         }
 
-        $sum    = 0;
+        $sum = 0;
         $weight = 2;
 
         for ($i = $length - 2; $i >= 0; $i--) {
@@ -104,6 +107,7 @@ class Zend_Validate_Ccnum extends Zend_Validate_Abstract
 
         if ((10 - $sum % 10) % 10 != $valueFiltered[$length - 1]) {
             $this->_error(self::CHECKSUM, $valueFiltered);
+
             return false;
         }
 

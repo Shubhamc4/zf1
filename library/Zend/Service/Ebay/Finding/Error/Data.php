@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Data.php 22791 2010-08-04 16:11:47Z renanbr $
  */
 
@@ -27,10 +28,10 @@ require_once 'Zend/Service/Ebay/Finding/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @uses       Zend_Service_Ebay_Finding_Abstract
  */
 class Zend_Service_Ebay_Finding_Error_Data extends Zend_Service_Ebay_Finding_Abstract
@@ -62,7 +63,7 @@ class Zend_Service_Ebay_Finding_Error_Data extends Zend_Service_Ebay_Finding_Abs
      * occurred. Your application can use error codes as identifiers in your
      * customized error-handling algorithms.
      *
-     * @var integer
+     * @var int
      */
     public $errorId;
 
@@ -142,17 +143,17 @@ class Zend_Service_Ebay_Finding_Error_Data extends Zend_Service_Ebay_Finding_Abs
         parent::_init();
         $ns = Zend_Service_Ebay_Finding::XMLNS_FINDING;
 
-        $this->category    = $this->_query(".//$ns:category[1]", 'string');
-        $this->domain      = $this->_query(".//$ns:domain[1]", 'string');
-        $this->errorId     = $this->_query(".//$ns:errorId[1]", 'integer');
-        $this->exceptionId = $this->_query(".//$ns:exceptionId[1]", 'string');
-        $this->message     = $this->_query(".//$ns:message[1]", 'string');
-        $this->parameter   = $this->_query(".//$ns:parameter", 'string', true);
-        $this->severity    = $this->_query(".//$ns:severity[1]", 'string');
-        $this->subdomain   = $this->_query(".//$ns:subdomain[1]", 'string');
+        $this->category = $this->_query(".//{$ns}:category[1]", 'string');
+        $this->domain = $this->_query(".//{$ns}:domain[1]", 'string');
+        $this->errorId = $this->_query(".//{$ns}:errorId[1]", 'integer');
+        $this->exceptionId = $this->_query(".//{$ns}:exceptionId[1]", 'string');
+        $this->message = $this->_query(".//{$ns}:message[1]", 'string');
+        $this->parameter = $this->_query(".//{$ns}:parameter", 'string', true);
+        $this->severity = $this->_query(".//{$ns}:severity[1]", 'string');
+        $this->subdomain = $this->_query(".//{$ns}:subdomain[1]", 'string');
 
-        $this->_attributes['parameter'] = array(
-            'name' => $this->_query(".//$ns:parameter/@name", 'string', true)
-        );
+        $this->_attributes['parameter'] = [
+            'name' => $this->_query(".//{$ns}:parameter/@name", 'string', true),
+        ];
     }
 }

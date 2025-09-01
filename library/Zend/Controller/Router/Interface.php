@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,16 +14,14 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Controller
- * @subpackage Router
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
- * @package    Zend_Controller
- * @subpackage Router
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -33,8 +32,9 @@ interface Zend_Controller_Router_Interface
      * no route was possible, an exception is thrown.
      *
      * @param  Zend_Controller_Request_Abstract
+     * @return Zend_Controller_Request_Abstract|bool
+     *
      * @throws Zend_Controller_Router_Exception
-     * @return Zend_Controller_Request_Abstract|boolean
      */
     public function route(Zend_Controller_Request_Abstract $dispatcher);
 
@@ -53,12 +53,13 @@ interface Zend_Controller_Router_Interface
      *
      * Encode tells to url encode resulting path parts.
      *
-     * @param  array $userParams Options passed by a user used to override parameters
-     * @param  mixed $name       The name of a Route to use
-     * @param  bool  $reset      Whether to reset to the route defaults ignoring URL params
-     * @param  bool  $encode     Tells to encode URL parts on output
-     * @throws Zend_Controller_Router_Exception
+     * @param  array  $userParams  Options passed by a user used to override parameters
+     * @param  mixed  $name  The name of a Route to use
+     * @param  bool  $reset  Whether to reset to the route defaults ignoring URL params
+     * @param  bool  $encode  Tells to encode URL parts on output
      * @return string Resulting URL path
+     *
+     * @throws Zend_Controller_Router_Exception
      */
     public function assemble($userParams, $name = null, $reset = false, $encode = true);
 
@@ -72,7 +73,6 @@ interface Zend_Controller_Router_Interface
     /**
      * Set Front Controller
      *
-     * @param Zend_Controller_Front $controller
      * @return Zend_Controller_Router_Interface
      */
     public function setFrontController(Zend_Controller_Front $controller);
@@ -80,8 +80,8 @@ interface Zend_Controller_Router_Interface
     /**
      * Add or modify a parameter with which to instantiate any helper objects
      *
-     * @param string $name
-     * @param mixed  $value
+     * @param  string  $name
+     * @param  mixed  $value
      * @return Zend_Controller_Router_Interface
      */
     public function setParam($name, $value);
@@ -89,7 +89,6 @@ interface Zend_Controller_Router_Interface
     /**
      * Set an array of a parameters to pass to helper object constructors
      *
-     * @param array $params
      * @return Zend_Controller_Router_Interface
      */
     public function setParams(array $params);
@@ -97,7 +96,7 @@ interface Zend_Controller_Router_Interface
     /**
      * Retrieve a single parameter from the controller parameter stack
      *
-     * @param string $name
+     * @param  string  $name
      * @return mixed
      */
     public function getParam($name);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,28 +28,27 @@ require_once 'Zend/Validate/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Validate_GreaterThan extends Zend_Validate_Abstract
 {
-
     const NOT_GREATER = 'notGreaterThan';
 
     /**
      * @var array
      */
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::NOT_GREATER => "'%value%' is not greater than '%min%'",
-    );
+    ];
 
     /**
      * @var array
      */
-    protected $_messageVariables = array(
-        'min' => '_min'
-    );
+    protected $_messageVariables = [
+        'min' => '_min',
+    ];
 
     /**
      * Minimum value
@@ -59,7 +60,8 @@ class Zend_Validate_GreaterThan extends Zend_Validate_Abstract
     /**
      * Sets validator options
      *
-     * @param  mixed|Zend_Config $min
+     * @param  mixed|Zend_Config  $min
+     *
      * @throws Zend_Validate_Exception
      */
     public function __construct($min)
@@ -93,12 +95,13 @@ class Zend_Validate_GreaterThan extends Zend_Validate_Abstract
     /**
      * Sets the min option
      *
-     * @param  mixed $min
+     * @param  mixed  $min
      * @return Zend_Validate_GreaterThan Provides a fluent interface
      */
     public function setMin($min)
     {
         $this->_min = $min;
+
         return $this;
     }
 
@@ -107,8 +110,8 @@ class Zend_Validate_GreaterThan extends Zend_Validate_Abstract
      *
      * Returns true if and only if $value is greater than min option
      *
-     * @param  mixed $value
-     * @return boolean
+     * @param  mixed  $value
+     * @return bool
      */
     public function isValid($value)
     {
@@ -116,9 +119,10 @@ class Zend_Validate_GreaterThan extends Zend_Validate_Abstract
 
         if ($this->_min >= $value) {
             $this->_error(self::NOT_GREATER);
+
             return false;
         }
+
         return true;
     }
-
 }

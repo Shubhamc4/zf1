@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -31,7 +33,7 @@ require_once 'Zend/Feed/Reader/Extension/EntryAbstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -48,9 +50,9 @@ class Zend_Feed_Reader_Extension_Podcast_Entry extends Zend_Feed_Reader_Extensio
             return $this->_data['author'];
         }
 
-        $author = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/itunes:author)');
+        $author = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/itunes:author)');
 
-        if (!$author) {
+        if (! $author) {
             $author = null;
         }
 
@@ -70,9 +72,9 @@ class Zend_Feed_Reader_Extension_Podcast_Entry extends Zend_Feed_Reader_Extensio
             return $this->_data['block'];
         }
 
-        $block = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/itunes:block)');
+        $block = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/itunes:block)');
 
-        if (!$block) {
+        if (! $block) {
             $block = null;
         }
 
@@ -92,9 +94,9 @@ class Zend_Feed_Reader_Extension_Podcast_Entry extends Zend_Feed_Reader_Extensio
             return $this->_data['duration'];
         }
 
-        $duration = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/itunes:duration)');
+        $duration = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/itunes:duration)');
 
-        if (!$duration) {
+        if (! $duration) {
             $duration = null;
         }
 
@@ -114,9 +116,9 @@ class Zend_Feed_Reader_Extension_Podcast_Entry extends Zend_Feed_Reader_Extensio
             return $this->_data['explicit'];
         }
 
-        $explicit = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/itunes:explicit)');
+        $explicit = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/itunes:explicit)');
 
-        if (!$explicit) {
+        if (! $explicit) {
             $explicit = null;
         }
 
@@ -136,9 +138,9 @@ class Zend_Feed_Reader_Extension_Podcast_Entry extends Zend_Feed_Reader_Extensio
             return $this->_data['keywords'];
         }
 
-        $keywords = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/itunes:keywords)');
+        $keywords = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/itunes:keywords)');
 
-        if (!$keywords) {
+        if (! $keywords) {
             $keywords = null;
         }
 
@@ -158,9 +160,9 @@ class Zend_Feed_Reader_Extension_Podcast_Entry extends Zend_Feed_Reader_Extensio
             return $this->_data['subtitle'];
         }
 
-        $subtitle = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/itunes:subtitle)');
+        $subtitle = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/itunes:subtitle)');
 
-        if (!$subtitle) {
+        if (! $subtitle) {
             $subtitle = null;
         }
 
@@ -180,9 +182,9 @@ class Zend_Feed_Reader_Extension_Podcast_Entry extends Zend_Feed_Reader_Extensio
             return $this->_data['summary'];
         }
 
-        $summary = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/itunes:summary)');
+        $summary = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/itunes:summary)');
 
-        if (!$summary) {
+        if (! $summary) {
             $summary = null;
         }
 
@@ -193,7 +195,6 @@ class Zend_Feed_Reader_Extension_Podcast_Entry extends Zend_Feed_Reader_Extensio
 
     /**
      * Register iTunes namespace
-     *
      */
     protected function _registerNamespaces()
     {

@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gdata
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -32,20 +32,18 @@ require_once 'Zend/Gdata/App/Util.php';
  * as an extension.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gdata
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Query
 {
-
     /**
      * Query parameters.
      *
      * @var array
      */
-    protected $_params = array();
+    protected $_params = [];
 
     /**
      * Default URL
@@ -82,26 +80,24 @@ class Zend_Gdata_Query
      */
     public function getQueryString()
     {
-        $queryArray = array();
+        $queryArray = [];
         foreach ($this->_params as $name => $value) {
             if (substr($name, 0, 1) == '_') {
                 continue;
             }
-            $queryArray[] = urlencode($name) . '=' . urlencode($value);
+            $queryArray[] = urlencode($name).'='.urlencode($value);
         }
         if (count($queryArray) > 0) {
-            return '?' . implode('&', $queryArray);
-        } else {
-            return '';
+            return '?'.implode('&', $queryArray);
         }
+
+        return '';
+
     }
 
-    /**
-     *
-     */
     public function resetParameters()
     {
-        $this->_params = array();
+        $this->_params = [];
     }
 
     /**
@@ -115,25 +111,27 @@ class Zend_Gdata_Query
             $url = $this->_url;
         }
         if ($this->getCategory() !== null) {
-            $url .= '/-/' . $this->getCategory();
+            $url .= '/-/'.$this->getCategory();
         }
         $url .= $this->getQueryString();
+
         return $url;
     }
 
     /**
-     * @param string $name
-     * @param string $value
+     * @param  string  $name
+     * @param  string  $value
      * @return Zend_Gdata_Query Provides a fluent interface
      */
     public function setParam($name, $value)
     {
         $this->_params[$name] = $value;
+
         return $this;
     }
 
     /**
-     * @param string $name
+     * @param  string  $name
      */
     public function getParam($name)
     {
@@ -141,7 +139,7 @@ class Zend_Gdata_Query
     }
 
     /**
-     * @param string $value
+     * @param  string  $value
      * @return Zend_Gdata_Query Provides a fluent interface
      */
     public function setAlt($value)
@@ -151,11 +149,12 @@ class Zend_Gdata_Query
         } else {
             unset($this->_params['alt']);
         }
+
         return $this;
     }
 
     /**
-     * @param int $value
+     * @param  int  $value
      * @return Zend_Gdata_Query Provides a fluent interface
      */
     public function setMaxResults($value)
@@ -165,11 +164,12 @@ class Zend_Gdata_Query
         } else {
             unset($this->_params['max-results']);
         }
+
         return $this;
     }
 
     /**
-     * @param string $value
+     * @param  string  $value
      * @return Zend_Gdata_Query Provides a fluent interface
      */
     public function setQuery($value)
@@ -179,11 +179,12 @@ class Zend_Gdata_Query
         } else {
             unset($this->_params['q']);
         }
+
         return $this;
     }
 
     /**
-     * @param int $value
+     * @param  int  $value
      * @return Zend_Gdata_Query Provides a fluent interface
      */
     public function setStartIndex($value)
@@ -193,11 +194,12 @@ class Zend_Gdata_Query
         } else {
             unset($this->_params['start-index']);
         }
+
         return $this;
     }
 
     /**
-     * @param string $value
+     * @param  string  $value
      * @return Zend_Gdata_Query Provides a fluent interface
      */
     public function setUpdatedMax($value)
@@ -207,11 +209,12 @@ class Zend_Gdata_Query
         } else {
             unset($this->_params['updated-max']);
         }
+
         return $this;
     }
 
     /**
-     * @param string $value
+     * @param  string  $value
      * @return Zend_Gdata_Query Provides a fluent interface
      */
     public function setUpdatedMin($value)
@@ -221,11 +224,12 @@ class Zend_Gdata_Query
         } else {
             unset($this->_params['updated-min']);
         }
+
         return $this;
     }
 
     /**
-     * @param string $value
+     * @param  string  $value
      * @return Zend_Gdata_Query Provides a fluent interface
      */
     public function setPublishedMax($value)
@@ -235,11 +239,12 @@ class Zend_Gdata_Query
         } else {
             unset($this->_params['published-max']);
         }
+
         return $this;
     }
 
     /**
-     * @param string $value
+     * @param  string  $value
      * @return Zend_Gdata_Query Provides a fluent interface
      */
     public function setPublishedMin($value)
@@ -249,11 +254,12 @@ class Zend_Gdata_Query
         } else {
             unset($this->_params['published-min']);
         }
+
         return $this;
     }
 
     /**
-     * @param string $value
+     * @param  string  $value
      * @return Zend_Gdata_Query Provides a fluent interface
      */
     public function setAuthor($value)
@@ -263,6 +269,7 @@ class Zend_Gdata_Query
         } else {
             unset($this->_params['author']);
         }
+
         return $this;
     }
 
@@ -273,9 +280,8 @@ class Zend_Gdata_Query
     {
         if (array_key_exists('alt', $this->_params)) {
             return $this->_params['alt'];
-        } else {
-            return null;
         }
+
     }
 
     /**
@@ -285,9 +291,8 @@ class Zend_Gdata_Query
     {
         if (array_key_exists('max-results', $this->_params)) {
             return intval($this->_params['max-results']);
-        } else {
-            return null;
         }
+
     }
 
     /**
@@ -297,9 +302,8 @@ class Zend_Gdata_Query
     {
         if (array_key_exists('q', $this->_params)) {
             return $this->_params['q'];
-        } else {
-            return null;
         }
+
     }
 
     /**
@@ -309,9 +313,8 @@ class Zend_Gdata_Query
     {
         if (array_key_exists('start-index', $this->_params)) {
             return intval($this->_params['start-index']);
-        } else {
-            return null;
         }
+
     }
 
     /**
@@ -321,9 +324,8 @@ class Zend_Gdata_Query
     {
         if (array_key_exists('updated-max', $this->_params)) {
             return $this->_params['updated-max'];
-        } else {
-            return null;
         }
+
     }
 
     /**
@@ -333,9 +335,8 @@ class Zend_Gdata_Query
     {
         if (array_key_exists('updated-min', $this->_params)) {
             return $this->_params['updated-min'];
-        } else {
-            return null;
         }
+
     }
 
     /**
@@ -345,9 +346,8 @@ class Zend_Gdata_Query
     {
         if (array_key_exists('published-max', $this->_params)) {
             return $this->_params['published-max'];
-        } else {
-            return null;
         }
+
     }
 
     /**
@@ -357,9 +357,8 @@ class Zend_Gdata_Query
     {
         if (array_key_exists('published-min', $this->_params)) {
             return $this->_params['published-min'];
-        } else {
-            return null;
         }
+
     }
 
     /**
@@ -369,18 +368,18 @@ class Zend_Gdata_Query
     {
         if (array_key_exists('author', $this->_params)) {
             return $this->_params['author'];
-        } else {
-            return null;
         }
+
     }
 
     /**
-     * @param string $value
+     * @param  string  $value
      * @return Zend_Gdata_Query Provides a fluent interface
      */
     public function setCategory($value)
     {
         $this->_category = $value;
+
         return $this;
     }
 
@@ -392,27 +391,23 @@ class Zend_Gdata_Query
         return $this->_category;
     }
 
-
     public function __get($name)
     {
         $method = 'get'.ucfirst($name);
         if (method_exists($this, $method)) {
-            return call_user_func(array(&$this, $method));
-        } else {
-            require_once 'Zend/Gdata/App/Exception.php';
-            throw new Zend_Gdata_App_Exception('Property ' . $name . '  does not exist');
+            return call_user_func([&$this, $method]);
         }
+        require_once 'Zend/Gdata/App/Exception.php';
+        throw new Zend_Gdata_App_Exception('Property '.$name.'  does not exist');
     }
 
     public function __set($name, $val)
     {
         $method = 'set'.ucfirst($name);
         if (method_exists($this, $method)) {
-            return call_user_func(array(&$this, $method), $val);
-        } else {
-            require_once 'Zend/Gdata/App/Exception.php';
-            throw new Zend_Gdata_App_Exception('Property ' . $name . '  does not exist');
+            return call_user_func([&$this, $method], $val);
         }
+        require_once 'Zend/Gdata/App/Exception.php';
+        throw new Zend_Gdata_App_Exception('Property '.$name.'  does not exist');
     }
-
 }

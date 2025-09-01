@@ -14,16 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
-
 /**
  * @category   Zend
- * @package    Zend_Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -32,9 +32,10 @@ interface Zend_Filter_Interface
     /**
      * Returns the result of filtering $value
      *
-     * @param  mixed $value
-     * @throws Zend_Filter_Exception If filtering $value is impossible
+     * @param  mixed  $value
      * @return mixed
+     *
+     * @throws Zend_Filter_Exception If filtering $value is impossible
      */
     public function filter($value);
 }

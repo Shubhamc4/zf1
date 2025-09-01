@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -40,7 +41,6 @@ require_once 'Zend/Filter/Word/CamelCaseToDash.php';
  */
 require_once 'Zend/Filter/StringToLower.php';
 
-
 /**
  * This class is the front most class for utilizing Zend_Tool_Project
  *
@@ -48,13 +48,12 @@ require_once 'Zend/Filter/StringToLower.php';
  * items within a specific project.
  *
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Tool_Project_Context_Zf_ViewControllerScriptsDirectory extends Zend_Tool_Project_Context_Filesystem_Directory
 {
-
     /**
      * @var string
      */
@@ -75,6 +74,7 @@ class Zend_Tool_Project_Context_Zf_ViewControllerScriptsDirectory extends Zend_T
         $this->_forControllerName = $this->_resource->getAttribute('forControllerName');
         $this->_filesystemName = $this->_convertControllerNameToFilesystemName($this->_forControllerName);
         parent::init();
+
         return $this;
     }
 
@@ -85,9 +85,9 @@ class Zend_Tool_Project_Context_Zf_ViewControllerScriptsDirectory extends Zend_T
      */
     public function getPersistentAttributes()
     {
-        return array(
-            'forControllerName' => $this->_forControllerName
-            );
+        return [
+            'forControllerName' => $this->_forControllerName,
+        ];
     }
 
     /**
@@ -102,10 +102,10 @@ class Zend_Tool_Project_Context_Zf_ViewControllerScriptsDirectory extends Zend_T
 
     protected function _convertControllerNameToFilesystemName($controllerName)
     {
-        $filter = new Zend_Filter();
-        $filter->addFilter(new Zend_Filter_Word_CamelCaseToDash())
-            ->addFilter(new Zend_Filter_StringToLower());
+        $filter = new Zend_Filter;
+        $filter->addFilter(new Zend_Filter_Word_CamelCaseToDash)
+            ->addFilter(new Zend_Filter_StringToLower);
+
         return $filter->filter($controllerName);
     }
-
 }

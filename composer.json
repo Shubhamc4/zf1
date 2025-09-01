@@ -1,6 +1,6 @@
 {
   "name": "shubhamc4/zf1",
-  "description": "Zend Framework 1 updated for PHP 8.2 compatibility",
+  "description": "Zend Framework 1 updated for PHP 7.4 compatibility",
   "type": "library",
   "authors": [
     {
@@ -11,12 +11,12 @@
   "keywords": [
     "framework",
     "zf1",
-    "php8.2",
+    "php7.4",
     "compatibility"
   ],
   "license": "BSD-3-Clause",
   "require": {
-    "php": "^8.2"
+    "php": "^7.4"
   },
   "autoload": {
     "psr-0": {

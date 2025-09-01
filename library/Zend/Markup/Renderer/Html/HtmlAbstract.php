@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Markup
- * @subpackage Renderer_Html
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,15 +30,12 @@ require_once 'Zend/Markup/Renderer/TokenConverterInterface.php';
  * Tag interface
  *
  * @category   Zend
- * @package    Zend_Markup
- * @subpackage Renderer_Html
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Markup_Renderer_Html_HtmlAbstract implements Zend_Markup_Renderer_TokenConverterInterface
 {
-
     /**
      * The HTML renderer
      *
@@ -45,11 +43,9 @@ abstract class Zend_Markup_Renderer_Html_HtmlAbstract implements Zend_Markup_Ren
      */
     protected $_renderer;
 
-
     /**
      * Set the HTML renderer instance
      *
-     * @param Zend_Markup_Renderer_Html $renderer
      *
      * @return Zend_Markup_Renderer_Html_HtmlAbstract
      */

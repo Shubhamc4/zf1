@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Amf
- * @subpackage Parse
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,12 +29,10 @@
  * source tree.
  *
  * @see        http://opensource.adobe.com/svn/opensource/blazeds/trunk/modules/core/src/java/flex/messaging/io/amf/
- * @package    Zend_Amf
- * @subpackage Parse
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Amf_Parse_Deserializer
 {
     /**
@@ -47,7 +45,6 @@ abstract class Zend_Amf_Parse_Deserializer
     /**
      * Constructor
      *
-     * @param  Zend_Amf_Parse_InputStream $stream
      * @return void
      */
     public function __construct(Zend_Amf_Parse_InputStream $stream)
@@ -60,8 +57,8 @@ abstract class Zend_Amf_Parse_Deserializer
      * for deserializing those marker types. Markers are the data type of
      * the following value.
      *
-     * @param  int $typeMarker
+     * @param  int  $typeMarker
      * @return mixed Whatever the data type is of the marker in php
      */
-    public abstract function readTypeMarker($markerType = null);
+    abstract public function readTypeMarker($markerType = null);
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,16 +14,14 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Application
- * @subpackage Resource
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
 /**
  * @category   Zend
- * @package    Zend_Application
- * @subpackage Resource
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -32,7 +31,7 @@ class Zend_Application_Resource_UserAgent extends Zend_Application_Resource_Reso
      * @var Zend_Http_UserAgent
      */
     protected $_userAgent;
-    
+
     /**
      * Intialize resource
      *
@@ -54,7 +53,7 @@ class Zend_Application_Resource_UserAgent extends Zend_Application_Resource_Reso
 
         return $userAgent;
     }
-    
+
     /**
      * Get UserAgent instance
      *
@@ -66,7 +65,7 @@ class Zend_Application_Resource_UserAgent extends Zend_Application_Resource_Reso
             $options = $this->getOptions();
             $this->_userAgent = new Zend_Http_UserAgent($options);
         }
-        
+
         return $this->_userAgent;
     }
 }

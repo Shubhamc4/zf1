@@ -14,25 +14,22 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Mail
- * @subpackage Protocol
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * @see Zend_Mime
  */
 require_once 'Zend/Mime.php';
 
-
 /**
  * @see Zend_Mail_Protocol_Abstract
  */
 require_once 'Zend/Mail/Protocol/Abstract.php';
-
 
 /**
  * Smtp implementation of Zend_Mail_Protocol_Abstract
@@ -40,8 +37,7 @@ require_once 'Zend/Mail/Protocol/Abstract.php';
  * Minimum implementation according to RFC2821: EHLO, MAIL FROM, RCPT TO, DATA, RSET, NOOP, QUIT
  *
  * @category   Zend
- * @package    Zend_Mail
- * @subpackage Protocol
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -54,7 +50,6 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
      */
     protected $_transport = 'tcp';
 
-
     /**
      * Indicates that a session is requested to be secure
      *
@@ -62,14 +57,12 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
      */
     protected $_secure;
 
-
     /**
      * Indicates an smtp session has been started by the HELO command
      *
-     * @var boolean
+     * @var bool
      */
     protected $_sess = false;
-
 
     /**
      * Indicates the HELO command has been issues
@@ -78,14 +71,12 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
      */
     protected $_helo = false;
 
-
     /**
      * Indicates an smtp AUTH has been issued and authenticated
      *
      * @var unknown_type
      */
     protected $_auth = false;
-
 
     /**
      * Indicates a MAIL command has been issued
@@ -94,14 +85,12 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
      */
     protected $_mail = false;
 
-
     /**
      * Indicates one or more RCTP commands have been issued
      *
      * @var unknown_type
      */
     protected $_rcpt = false;
-
 
     /**
      * Indicates that DATA has been issued and sent
@@ -110,17 +99,16 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
      */
     protected $_data = null;
 
-
     /**
      * Constructor.
      *
      * @param  string  $host
-     * @param  integer $port
-     * @param  array   $config
+     * @param  int  $port
      * @return void
+     *
      * @throws Zend_Mail_Protocol_Exception
      */
-    public function __construct($host = '127.0.0.1', $port = null, array $config = array())
+    public function __construct($host = '127.0.0.1', $port = null, array $config = [])
     {
         if (isset($config['ssl'])) {
             switch (strtolower($config['ssl'])) {
@@ -141,7 +129,7 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
                      * @see Zend_Mail_Protocol_Exception
                      */
                     require_once 'Zend/Mail/Protocol/Exception.php';
-                    throw new Zend_Mail_Protocol_Exception($config['ssl'] . ' is unsupported SSL type');
+                    throw new Zend_Mail_Protocol_Exception($config['ssl'].' is unsupported SSL type');
                     break;
             }
         }
@@ -156,24 +144,23 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
         parent::__construct($host, $port);
     }
 
-
     /**
      * Connect to the server with the parameters given in the constructor.
      *
-     * @return boolean
+     * @return bool
      */
     public function connect()
     {
-        return $this->_connect($this->_transport . '://' . $this->_host . ':'. $this->_port);
+        return $this->_connect($this->_transport.'://'.$this->_host.':'.$this->_port);
     }
-
 
     /**
      * Initiate HELO/EHLO sequence and set flag to indicate valid smtp session
      *
-     * @param  string $host The client hostname or IP address (default: 127.0.0.1)
-     * @throws Zend_Mail_Protocol_Exception
+     * @param  string  $host  The client hostname or IP address (default: 127.0.0.1)
      * @return void
+     *
+     * @throws Zend_Mail_Protocol_Exception
      */
     public function helo($host = '127.0.0.1')
     {
@@ -187,12 +174,12 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
         }
 
         // Validate client hostname
-        if (!$this->_validHost->isValid($host)) {
+        if (! $this->_validHost->isValid($host)) {
             /**
              * @see Zend_Mail_Protocol_Exception
              */
             require_once 'Zend/Mail/Protocol/Exception.php';
-            throw new Zend_Mail_Protocol_Exception(join(', ', $this->_validHost->getMessages()));
+            throw new Zend_Mail_Protocol_Exception(implode(', ', $this->_validHost->getMessages()));
         }
 
         // Initiate helo sequence
@@ -203,7 +190,7 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
         if ($this->_secure == 'tls') {
             $this->_send('STARTTLS');
             $this->_expect(220, 180);
-            if (!stream_socket_enable_crypto($this->_socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+            if (! stream_socket_enable_crypto($this->_socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
                 /**
                  * @see Zend_Mail_Protocol_Exception
                  */
@@ -217,35 +204,35 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
         $this->auth();
     }
 
-
     /**
      * Send EHLO or HELO depending on capabilities of smtp host
      *
-     * @param  string $host The client hostname or IP address (default: 127.0.0.1)
-     * @throws Zend_Mail_Protocol_Exception
+     * @param  string  $host  The client hostname or IP address (default: 127.0.0.1)
      * @return void
+     *
+     * @throws Zend_Mail_Protocol_Exception
      */
     protected function _ehlo($host)
     {
         // Support for older, less-compliant remote servers. Tries multiple attempts of EHLO or HELO.
         try {
-            $this->_send('EHLO ' . $host);
+            $this->_send('EHLO '.$host);
             $this->_expect(250, 300); // Timeout set for 5 minutes as per RFC 2821 4.5.3.2
         } catch (Zend_Mail_Protocol_Exception $e) {
-            $this->_send('HELO ' . $host);
+            $this->_send('HELO '.$host);
             $this->_expect(250, 300); // Timeout set for 5 minutes as per RFC 2821 4.5.3.2
         } catch (Zend_Mail_Protocol_Exception $e) {
             throw $e;
         }
     }
 
-
     /**
      * Issues MAIL command
      *
-     * @param  string $from Sender mailbox
-     * @throws Zend_Mail_Protocol_Exception
+     * @param  string  $from  Sender mailbox
      * @return void
+     *
+     * @throws Zend_Mail_Protocol_Exception
      */
     public function mail($from)
     {
@@ -257,7 +244,7 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
             throw new Zend_Mail_Protocol_Exception('A valid session has not been started');
         }
 
-        $this->_send('MAIL FROM:<' . $from . '>');
+        $this->_send('MAIL FROM:<'.$from.'>');
         $this->_expect(250, 300); // Timeout set for 5 minutes as per RFC 2821 4.5.3.2
 
         // Set mail to true, clear recipients and any existing data flags as per 4.1.1.2 of RFC 2821
@@ -266,13 +253,13 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
         $this->_data = false;
     }
 
-
     /**
      * Issues RCPT command
      *
-     * @param  string $to Receiver(s) mailbox
-     * @throws Zend_Mail_Protocol_Exception
+     * @param  string  $to  Receiver(s) mailbox
      * @return void
+     *
+     * @throws Zend_Mail_Protocol_Exception
      */
     public function rcpt($to)
     {
@@ -285,18 +272,18 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
         }
 
         // Set rcpt to true, as per 4.1.1.3 of RFC 2821
-        $this->_send('RCPT TO:<' . $to . '>');
-        $this->_expect(array(250, 251), 300); // Timeout set for 5 minutes as per RFC 2821 4.5.3.2
+        $this->_send('RCPT TO:<'.$to.'>');
+        $this->_expect([250, 251], 300); // Timeout set for 5 minutes as per RFC 2821 4.5.3.2
         $this->_rcpt = true;
     }
-
 
     /**
      * Issues DATA command
      *
-     * @param  string $data
-     * @throws Zend_Mail_Protocol_Exception
+     * @param  string  $data
      * @return void
+     *
+     * @throws Zend_Mail_Protocol_Exception
      */
     public function data($data)
     {
@@ -315,7 +302,7 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
         foreach (explode(Zend_Mime::LINEEND, $data) as $line) {
             if (strpos($line, '.') === 0) {
                 // Escape lines prefixed with a '.'
-                $line = '.' . $line;
+                $line = '.'.$line;
             }
             $this->_send($line);
         }
@@ -324,7 +311,6 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
         $this->_expect(250, 600); // Timeout set for 10 minutes as per RFC 2821 4.5.3.2
         $this->_data = true;
     }
-
 
     /**
      * Issues the RSET command and validates answer
@@ -337,13 +323,12 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
     {
         $this->_send('RSET');
         // MS ESMTP doesn't follow RFC, see [ZF-1377]
-        $this->_expect(array(250, 220));
+        $this->_expect([250, 220]);
 
         $this->_mail = false;
         $this->_rcpt = false;
         $this->_data = false;
     }
-
 
     /**
      * Issues the NOOP command and validates answer
@@ -358,21 +343,19 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
         $this->_expect(250, 300); // Timeout set for 5 minutes as per RFC 2821 4.5.3.2
     }
 
-
     /**
      * Issues the VRFY command and validates answer
      *
      * Not used by Zend_Mail.
      *
-     * @param  string $user User Name or eMail to verify
+     * @param  string  $user  User Name or eMail to verify
      * @return void
      */
     public function vrfy($user)
     {
-        $this->_send('VRFY ' . $user);
-        $this->_expect(array(250, 251, 252), 300); // Timeout set for 5 minutes as per RFC 2821 4.5.3.2
+        $this->_send('VRFY '.$user);
+        $this->_expect([250, 251, 252], 300); // Timeout set for 5 minutes as per RFC 2821 4.5.3.2
     }
-
 
     /**
      * Issues the QUIT command and clears the current session
@@ -388,14 +371,14 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
         }
     }
 
-
     /**
      * Default authentication method
      *
      * This default method is implemented by AUTH adapters to properly authenticate to a remote host.
      *
-     * @throws Zend_Mail_Protocol_Exception
      * @return void
+     *
+     * @throws Zend_Mail_Protocol_Exception
      */
     public function auth()
     {
@@ -408,7 +391,6 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
         }
     }
 
-
     /**
      * Closes connection
      *
@@ -419,7 +401,6 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
         $this->_disconnect();
     }
 
-
     /**
      * Start mail session
      *
@@ -429,7 +410,6 @@ class Zend_Mail_Protocol_Smtp extends Zend_Mail_Protocol_Abstract
     {
         $this->_sess = true;
     }
-
 
     /**
      * Stop mail session

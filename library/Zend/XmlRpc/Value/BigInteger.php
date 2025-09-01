@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_XmlRpc
- * @subpackage Value
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -28,15 +28,14 @@ require_once 'Zend/XmlRpc/Value/Integer.php';
 
 /**
  * @category   Zend
- * @package    Zend_XmlRpc
- * @subpackage Value
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_XmlRpc_Value_BigInteger extends Zend_XmlRpc_Value_Integer
 {
     /**
-     * @param mixed $value
+     * @param  mixed  $value
      */
     public function __construct($value)
     {

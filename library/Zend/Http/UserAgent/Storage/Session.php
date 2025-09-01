@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,8 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage UserAgent
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -30,8 +30,6 @@ require_once 'Zend/Http/UserAgent/Storage.php';
 require_once 'Zend/Session/Namespace.php';
 
 /**
- * @package    Zend_Http
- * @subpackage UserAgent
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -75,8 +73,9 @@ class Zend_Http_UserAgent_Storage_Session implements Zend_Http_UserAgent_Storage
      * - browser_type -- maps to "namespace" internally
      * - member
      *
-     * @param  null|array|object $options
+     * @param  null|array|object  $options
      * @return void
+     *
      * @throws Zend_Http_UserAgent_Storage_Exception on invalid $options argument
      */
     public function __construct($options = null)
@@ -86,7 +85,7 @@ class Zend_Http_UserAgent_Storage_Session implements Zend_Http_UserAgent_Storage
         } elseif (is_object($options)) {
             $options = (array) $options;
         }
-        if (null !== $options && !is_array($options)) {
+        if (null !== $options && ! is_array($options)) {
             require_once 'Zend/Http/UserAgent/Storage/Exception.php';
             throw new Zend_Http_UserAgent_Storage_Exception(sprintf(
                 'Expected array or object options; "%s" provided',
@@ -96,11 +95,10 @@ class Zend_Http_UserAgent_Storage_Session implements Zend_Http_UserAgent_Storage
 
         // add '.' to prevent the message ''Session namespace must not start with a number'
         $this->_namespace = '.'
-                          . (isset($options['browser_type'])
-                             ? $options['browser_type']
-                             : self::NAMESPACE_DEFAULT);
-        $this->_member    = isset($options['member']) ? $options['member'] : self::MEMBER_DEFAULT;
-        $this->_session   = new Zend_Session_Namespace($this->_namespace);
+                          .($options['browser_type']
+                             ?? self::NAMESPACE_DEFAULT);
+        $this->_member = $options['member'] ?? self::MEMBER_DEFAULT;
+        $this->_session = new Zend_Session_Namespace($this->_namespace);
     }
 
     /**
@@ -126,7 +124,7 @@ class Zend_Http_UserAgent_Storage_Session implements Zend_Http_UserAgent_Storage
     /**
      * Defined by Zend_Http_UserAgent_Storage
      *
-     * @return boolean
+     * @return bool
      */
     public function isEmpty()
     {
@@ -146,7 +144,7 @@ class Zend_Http_UserAgent_Storage_Session implements Zend_Http_UserAgent_Storage
     /**
      * Defined by Zend_Http_UserAgent_Storage
      *
-     * @param  mixed $contents
+     * @param  mixed  $contents
      * @return void
      */
     public function write($content)

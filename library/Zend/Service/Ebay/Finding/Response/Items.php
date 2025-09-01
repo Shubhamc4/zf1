@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Items.php 22804 2010-08-08 05:08:05Z renanbr $
  */
 
@@ -27,10 +28,10 @@ require_once 'Zend/Service/Ebay/Finding/Response/Histograms.php';
 
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @uses       Zend_Service_Ebay_Finding_Response_Histograms
  */
 class Zend_Service_Ebay_Finding_Response_Items extends Zend_Service_Ebay_Finding_Response_Histograms
@@ -38,7 +39,8 @@ class Zend_Service_Ebay_Finding_Response_Items extends Zend_Service_Ebay_Finding
     /**
      * @link http://developer.ebay.com/DevZone/finding/CallRef/types/PaginationInput.html
      */
-    const PAGE_MAX_DEFAULT  = 100;
+    const PAGE_MAX_DEFAULT = 100;
+
     const PAGE_MAX_INFINITY = 0;
 
     /**
@@ -66,7 +68,7 @@ class Zend_Service_Ebay_Finding_Response_Items extends Zend_Service_Ebay_Finding
     /**
      * @var Zend_Service_Ebay_Finding_Response_Items[]
      */
-    protected static $_pageCache = array();
+    protected static $_pageCache = [];
 
     /**
      * @return void
@@ -76,11 +78,11 @@ class Zend_Service_Ebay_Finding_Response_Items extends Zend_Service_Ebay_Finding
         parent::_init();
         $ns = Zend_Service_Ebay_Finding::XMLNS_FINDING;
 
-        $this->_attributes['searchResult'] = array(
-            'count' => $this->_query(".//$ns:searchResult[1]/@count[1]", 'string')
-        );
+        $this->_attributes['searchResult'] = [
+            'count' => $this->_query(".//{$ns}:searchResult[1]/@count[1]", 'string'),
+        ];
 
-        $node = $this->_xPath->query(".//$ns:searchResult[1]", $this->_dom)->item(0);
+        $node = $this->_xPath->query(".//{$ns}:searchResult[1]", $this->_dom)->item(0);
         if ($node) {
             /**
              * @see Zend_Service_Ebay_Finding_Search_Result
@@ -89,7 +91,7 @@ class Zend_Service_Ebay_Finding_Response_Items extends Zend_Service_Ebay_Finding
             $this->searchResult = new Zend_Service_Ebay_Finding_Search_Result($node);
         }
 
-        $node = $this->_xPath->query(".//$ns:paginationOutput[1]", $this->_dom)->item(0);
+        $node = $this->_xPath->query(".//{$ns}:paginationOutput[1]", $this->_dom)->item(0);
         if ($node) {
             /**
              * @see Zend_Service_Ebay_Finding_PaginationOutput
@@ -100,10 +102,10 @@ class Zend_Service_Ebay_Finding_Response_Items extends Zend_Service_Ebay_Finding
     }
 
     /**
-     * @param  Zend_Service_Ebay_Finding $proxy
-     * @param  integer                   $number
-     * @throws Zend_Service_Ebay_Finding_Exception When $number is invalid
+     * @param  int  $number
      * @return Zend_Service_Ebay_Finding_Response_Items
+     *
+     * @throws Zend_Service_Ebay_Finding_Exception When $number is invalid
      */
     public function page(Zend_Service_Ebay_Finding $proxy, $number)
     {
@@ -118,7 +120,7 @@ class Zend_Service_Ebay_Finding_Response_Items extends Zend_Service_Ebay_Finding
         }
 
         // prepare arguments
-        $arguments = array();
+        $arguments = [];
         switch ($this->_operation) {
             case 'findItemsAdvanced':
                 $arguments[] = $this->getOption('keywords');
@@ -136,8 +138,8 @@ class Zend_Service_Ebay_Finding_Response_Items extends Zend_Service_Ebay_Finding
 
             case 'findItemsByProduct':
                 $productId = $this->getOption('productId');
-                if (!is_array($productId)) {
-                    $productId = array('' => $productId);
+                if (! is_array($productId)) {
+                    $productId = ['' => $productId];
                 }
                 $arguments[] = array_key_exists('', $productId)
                              ? $productId['']
@@ -171,9 +173,9 @@ class Zend_Service_Ebay_Finding_Response_Items extends Zend_Service_Ebay_Finding
 
         // set new pagination values
         // see more at http://developer.ebay.com/DevZone/finding/CallRef/types/PaginationInput.html
-        $entriesPerPage             = $this->paginationOutput->entriesPerPage;
-        $options['paginationInput'] = array('entriesPerPage' => $entriesPerPage,
-                                            'pageNumber'     => $number);
+        $entriesPerPage = $this->paginationOutput->entriesPerPage;
+        $options['paginationInput'] = ['entriesPerPage' => $entriesPerPage,
+            'pageNumber' => $number];
 
         // add current options as last argument
         ksort($options);
@@ -181,14 +183,14 @@ class Zend_Service_Ebay_Finding_Response_Items extends Zend_Service_Ebay_Finding
 
         // verify cache
         $id = serialize($arguments);
-        if (!array_key_exists($id, self::$_pageCache)) {
+        if (! array_key_exists($id, self::$_pageCache)) {
             if ($number == $this->paginationOutput->pageNumber) {
                 // add itself to cache
                 $new = $this;
             } else {
                 // request new page
-                $callback = array($proxy, $this->_operation);
-                $new      = call_user_func_array($callback, $arguments);
+                $callback = [$proxy, $this->_operation];
+                $new = call_user_func_array($callback, $arguments);
             }
             self::$_pageCache[$id] = $new;
         }
@@ -197,7 +199,6 @@ class Zend_Service_Ebay_Finding_Response_Items extends Zend_Service_Ebay_Finding
     }
 
     /**
-     * @param  Zend_Service_Ebay_Finding $proxy
      * @return Zend_Service_Ebay_Finding_Response_Items
      */
     public function pageFirst(Zend_Service_Ebay_Finding $proxy)
@@ -206,8 +207,7 @@ class Zend_Service_Ebay_Finding_Response_Items extends Zend_Service_Ebay_Finding
     }
 
     /**
-     * @param  Zend_Service_Ebay_Finding $proxy
-     * @param  integer                   $max
+     * @param  int  $max
      * @return Zend_Service_Ebay_Finding_Response_Items
      */
     public function pageLast(Zend_Service_Ebay_Finding $proxy, $max = self::PAGE_MAX_DEFAULT)
@@ -216,12 +216,12 @@ class Zend_Service_Ebay_Finding_Response_Items extends Zend_Service_Ebay_Finding
         if ($max > 0 && $last > $max) {
             $last = $max;
         }
+
         return $this->page($proxy, $last);
     }
 
     /**
-     * @param  Zend_Service_Ebay_Finding $proxy
-     * @param  integer                   $max
+     * @param  int  $max
      * @return Zend_Service_Ebay_Finding_Response_Items
      */
     public function pageNext(Zend_Service_Ebay_Finding $proxy, $max = self::PAGE_MAX_DEFAULT)
@@ -229,21 +229,22 @@ class Zend_Service_Ebay_Finding_Response_Items extends Zend_Service_Ebay_Finding
         $next = $this->paginationOutput->pageNumber + 1;
         $last = $this->paginationOutput->totalPages;
         if (($max > 0 && $next > $max) || $next > $last) {
-            return null;
+            return;
         }
+
         return $this->page($proxy, $next);
     }
 
     /**
-     * @param  Zend_Service_Ebay_Finding $proxy
      * @return Zend_Service_Ebay_Finding_Response_Items
      */
     public function pagePrevious(Zend_Service_Ebay_Finding $proxy)
     {
         $previous = $this->paginationOutput->pageNumber - 1;
         if ($previous < 1) {
-            return null;
+            return;
         }
+
         return $this->page($proxy, $previous);
     }
 }

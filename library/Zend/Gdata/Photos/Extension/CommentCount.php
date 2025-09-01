@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Photos
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -37,21 +37,20 @@ require_once 'Zend/Gdata/Photos.php';
  * within an instance of Zend_Gdata_Photos_PhotoEntry or AlbumEntry.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Photos
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Photos_Extension_CommentCount extends Zend_Gdata_Extension
 {
-
     protected $_rootNamespace = 'gphoto';
+
     protected $_rootElement = 'commentCount';
 
     /**
      * Constructs a new Zend_Gdata_Photos_Extension_CommentCount object.
      *
-     * @param string $text (optional) The value to use for the count.
+     * @param  string  $text  (optional) The value to use for the count.
      */
     public function __construct($text = null)
     {
@@ -59,5 +58,4 @@ class Zend_Gdata_Photos_Extension_CommentCount extends Zend_Gdata_Extension
         parent::__construct();
         $this->setText($text);
     }
-
 }

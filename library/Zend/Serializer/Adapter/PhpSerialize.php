@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Serializer
- * @subpackage Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -25,25 +26,24 @@ require_once 'Zend/Serializer/Adapter/AdapterAbstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Serializer
- * @subpackage Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Serializer_Adapter_PhpSerialize extends Zend_Serializer_Adapter_AdapterAbstract
 {
     /**
-     *  @var null|string Serialized boolean false value
+     * @var null|string Serialized boolean false value
      */
     private static $_serializedFalse = null;
 
     /**
      * Constructor
      *
-     * @param  array|Zend_Config $opts
+     * @param  array|Zend_Config  $opts
      * @return void
      */
-    public function __construct($opts = array())
+    public function __construct($opts = [])
     {
         parent::__construct($opts);
 
@@ -55,12 +55,12 @@ class Zend_Serializer_Adapter_PhpSerialize extends Zend_Serializer_Adapter_Adapt
     /**
      * Serialize using serialize()
      *
-     * @param  mixed $value
-     * @param  array $opts
+     * @param  mixed  $value
      * @return string
+     *
      * @throws Zend_Serializer_Exception On serialize error
      */
-    public function serialize($value, array $opts = array())
+    public function serialize($value, array $opts = [])
     {
         $ret = serialize($value);
         if ($ret === false) {
@@ -68,6 +68,7 @@ class Zend_Serializer_Adapter_PhpSerialize extends Zend_Serializer_Adapter_Adapt
             require_once 'Zend/Serializer/Exception.php';
             throw new Zend_Serializer_Exception($lastErr['message']);
         }
+
         return $ret;
     }
 
@@ -75,12 +76,13 @@ class Zend_Serializer_Adapter_PhpSerialize extends Zend_Serializer_Adapter_Adapt
      * Unserialize
      *
      * @todo   Allow integration with unserialize_callback_func
-     * @param  string $serialized
-     * @param  array $opts
+     *
+     * @param  string  $serialized
      * @return mixed
+     *
      * @throws Zend_Serializer_Exception on unserialize error
      */
-    public function unserialize($serialized, array $opts = array())
+    public function unserialize($serialized, array $opts = [])
     {
         // TODO: @see php.ini directive "unserialize_callback_func"
         $ret = @unserialize($serialized);
@@ -89,6 +91,7 @@ class Zend_Serializer_Adapter_PhpSerialize extends Zend_Serializer_Adapter_Adapt
             require_once 'Zend/Serializer/Exception.php';
             throw new Zend_Serializer_Exception($lastErr['message']);
         }
+
         return $ret;
     }
 }

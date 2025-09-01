@@ -14,18 +14,17 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * @see Zend_Feed_Exception
  */
 require_once 'Zend/Feed/Exception.php';
-
 
 /**
  * Feed exceptions
@@ -33,9 +32,8 @@ require_once 'Zend/Feed/Exception.php';
  * Class to represent exceptions that occur during Feed operations.
  *
  * @category   Zend
- * @package    Zend_Feed
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Feed_Writer_Exception_InvalidMethodException extends Zend_Exception
-{}
+class Zend_Feed_Writer_Exception_InvalidMethodException extends Zend_Exception {}

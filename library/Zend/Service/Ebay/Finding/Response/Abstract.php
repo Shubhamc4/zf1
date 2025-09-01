@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Abstract.php 22824 2010-08-09 18:59:54Z renanbr $
  */
 
@@ -27,13 +28,12 @@ require_once 'Zend/Service/Ebay/Finding/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @uses       Zend_Service_Ebay_Finding_Abstract
  */
-#[AllowDynamicProperties]
 abstract class Zend_Service_Ebay_Finding_Response_Abstract extends Zend_Service_Ebay_Finding_Abstract
 {
     /**
@@ -109,7 +109,7 @@ abstract class Zend_Service_Ebay_Finding_Response_Abstract extends Zend_Service_
     /**
      * @var array
      */
-    protected $_options = array();
+    protected $_options = [];
 
     /**
      * @return void
@@ -119,11 +119,11 @@ abstract class Zend_Service_Ebay_Finding_Response_Abstract extends Zend_Service_
         parent::_init();
         $ns = Zend_Service_Ebay_Finding::XMLNS_FINDING;
 
-        $this->ack       = $this->_query(".//$ns:ack[1]", 'string');
-        $this->timestamp = $this->_query(".//$ns:timestamp[1]", 'string');
-        $this->version   = $this->_query(".//$ns:version[1]", 'string');
+        $this->ack = $this->_query(".//{$ns}:ack[1]", 'string');
+        $this->timestamp = $this->_query(".//{$ns}:timestamp[1]", 'string');
+        $this->version = $this->_query(".//{$ns}:version[1]", 'string');
 
-        $node = $this->_xPath->query(".//$ns:errorMessage[1]", $this->_dom)->item(0);
+        $node = $this->_xPath->query(".//{$ns}:errorMessage[1]", $this->_dom)->item(0);
         if ($node) {
             /**
              * @see Zend_Service_Ebay_Finding_Error_Message
@@ -134,12 +134,13 @@ abstract class Zend_Service_Ebay_Finding_Response_Abstract extends Zend_Service_
     }
 
     /**
-     * @param  string $operation
+     * @param  string  $operation
      * @return Zend_Service_Ebay_Finding_Response_Abstract Provides a fluent interface
      */
     public function setOperation($operation)
     {
         $this->_operation = (string) $operation;
+
         return $this;
     }
 
@@ -152,8 +153,8 @@ abstract class Zend_Service_Ebay_Finding_Response_Abstract extends Zend_Service_
     }
 
     /**
-     * @param  string|Zend_Config|array $name
-     * @param  mixed                    $value
+     * @param  string|Zend_Config|array  $name
+     * @param  mixed  $value
      * @return Zend_Service_Ebay_Finding_Response_Abstract Provides a fluent interface
      */
     public function setOption($name, $value = null)
@@ -166,11 +167,12 @@ abstract class Zend_Service_Ebay_Finding_Response_Abstract extends Zend_Service_
         } else {
             $this->_options[$name] = $value;
         }
+
         return $this;
     }
 
     /**
-     * @param  string $name
+     * @param  string  $name
      * @return mixed
      */
     public function getOption($name = null)
@@ -181,6 +183,6 @@ abstract class Zend_Service_Ebay_Finding_Response_Abstract extends Zend_Service_
         if (array_key_exists($name, $this->_options)) {
             return $this->_options[$name];
         }
-        return null;
+
     }
 }

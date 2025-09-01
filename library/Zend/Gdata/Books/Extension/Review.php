@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Books
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,27 +30,28 @@ require_once 'Zend/Gdata/Extension.php';
  * User-provided review
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Books
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Books_Extension_Review extends Zend_Gdata_Extension
 {
-
     protected $_rootNamespace = 'gbs';
+
     protected $_rootElement = 'review';
+
     protected $_lang = null;
+
     protected $_type = null;
 
     /**
      * Constructor for Zend_Gdata_Books_Extension_Review which
      * User-provided review
      *
-     * @param string|null $lang Review language.
-     * @param string|null $type Type of text construct (typically text, html,
-     *        or xhtml).
-     * @param string|null $value Text content of the review.
+     * @param  string|null  $lang  Review language.
+     * @param  string|null  $type  Type of text construct (typically text, html,
+     *                             or xhtml).
+     * @param  string|null  $value  Text content of the review.
      */
     public function __construct($lang = null, $type = null, $value = null)
     {
@@ -67,9 +68,9 @@ class Zend_Gdata_Books_Extension_Review extends Zend_Gdata_Extension
      * and eventually XML text for sending to the server upon updates, or
      * for application storage/persistance.
      *
-     * @param DOMDocument $doc The DOMDocument used to construct DOMElements
+     * @param  DOMDocument  $doc  The DOMDocument used to construct DOMElements
      * @return DOMElement The DOMElement representing this element and all
-     * child properties.
+     *                    child properties.
      */
     public function getDOM($doc = null, $majorVersion = 1, $minorVersion = null)
     {
@@ -80,6 +81,7 @@ class Zend_Gdata_Books_Extension_Review extends Zend_Gdata_Extension
         if ($this->_type !== null) {
             $element->setAttribute('type', $this->_type);
         }
+
         return $element;
     }
 
@@ -87,19 +89,19 @@ class Zend_Gdata_Books_Extension_Review extends Zend_Gdata_Extension
      * Extracts XML attributes from the DOM and converts them to the
      * appropriate object members.
      *
-     * @param DOMNode $attribute The DOMNode attribute to be handled.
+     * @param  DOMNode  $attribute  The DOMNode attribute to be handled.
      */
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'lang':
-            $this->_lang = $attribute->nodeValue;
-            break;
-        case 'type':
-            $this->_type = $attribute->nodeValue;
-            break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            case 'lang':
+                $this->_lang = $attribute->nodeValue;
+                break;
+            case 'type':
+                $this->_type = $attribute->nodeValue;
+                break;
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 
@@ -126,27 +128,26 @@ class Zend_Gdata_Books_Extension_Review extends Zend_Gdata_Extension
     /**
      * Sets the language of link title
      *
-     * @param string $lang language of link title
+     * @param  string  $lang  language of link title
      * @return Zend_Gdata_Books_Extension_Review Provides a fluent interface
      */
     public function setLang($lang)
     {
         $this->_lang = $lang;
+
         return $this;
     }
 
     /**
      * Sets the type of text construct (typically 'text', 'html' or 'xhtml')
      *
-     * @param string $type type of text construct (typically 'text', 'html' or 'xhtml')
+     * @param  string  $type  type of text construct (typically 'text', 'html' or 'xhtml')
      * @return Zend_Gdata_Books_Extension_Review Provides a fluent interface
      */
     public function setType($type)
     {
         $this->_type = $type;
+
         return $this;
     }
-
-
 }
-

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_InfoCard
- * @subpackage Zend_InfoCard_Cipher
+ *
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Interface.php 24593 2012-01-05 20:35:02Z matthew $
  */
 
@@ -29,8 +30,7 @@ require_once 'Zend/InfoCard/Cipher/Pki/Adapter/Abstract.php';
  * The interface which defines the RSA Public-key encryption object
  *
  * @category   Zend
- * @package    Zend_InfoCard
- * @subpackage Zend_InfoCard_Cipher
+ *
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,12 +39,13 @@ interface Zend_InfoCard_Cipher_Pki_Rsa_Interface
     /**
      * Decrypts RSA encrypted data using the given private key
      *
-     * @throws Zend_InfoCard_Cipher_Exception
-     * @param string $encryptedData The encrypted data in binary format
-     * @param string $privateKey The private key in binary format
-     * @param string $password The private key passphrase
-     * @param integer $padding The padding to use during decryption (of not provided object value will be used)
+     * @param  string  $encryptedData  The encrypted data in binary format
+     * @param  string  $privateKey  The private key in binary format
+     * @param  string  $password  The private key passphrase
+     * @param  int  $padding  The padding to use during decryption (of not provided object value will be used)
      * @return string The decrypted data
+     *
+     * @throws Zend_InfoCard_Cipher_Exception
      */
     public function decrypt($encryptedData, $privateKey, $password = null, $padding = Zend_InfoCard_Cipher_Pki_Adapter_Abstract::NO_PADDING);
 }

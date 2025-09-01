@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Controller
- * @subpackage Zend_Controller_Action_Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,35 +28,33 @@ require_once 'Zend/Controller/Action.php';
 
 /**
  * @category   Zend
- * @package    Zend_Controller
- * @subpackage Zend_Controller_Action_Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Controller_Action_Helper_Abstract
 {
     /**
      * $_actionController
      *
-     * @var Zend_Controller_Action $_actionController
+     * @var Zend_Controller_Action
      */
     protected $_actionController = null;
 
     /**
-     * @var mixed $_frontController
+     * @var mixed
      */
     protected $_frontController = null;
 
     /**
      * setActionController()
      *
-     * @param  Zend_Controller_Action $actionController
      * @return Zend_Controller_ActionHelper_Abstract Provides a fluent interface
      */
-    public function setActionController(Zend_Controller_Action $actionController = null)
+    public function setActionController(?Zend_Controller_Action $actionController = null)
     {
         $this->_actionController = $actionController;
+
         return $this;
     }
 
@@ -84,27 +83,21 @@ abstract class Zend_Controller_Action_Helper_Abstract
      *
      * @return void
      */
-    public function init()
-    {
-    }
+    public function init() {}
 
     /**
      * Hook into action controller preDispatch() workflow
      *
      * @return void
      */
-    public function preDispatch()
-    {
-    }
+    public function preDispatch() {}
 
     /**
      * Hook into action controller postDispatch() workflow
      *
      * @return void
      */
-    public function postDispatch()
-    {
-    }
+    public function postDispatch() {}
 
     /**
      * getRequest() -
@@ -146,12 +139,16 @@ abstract class Zend_Controller_Action_Helper_Abstract
         $fullClassName = get_class($this);
         if (strpos($fullClassName, '_') !== false) {
             $helperName = strrchr($fullClassName, '_');
+
             return ltrim($helperName, '_');
-        } elseif (strpos($fullClassName, '\\') !== false) {
-            $helperName = strrchr($fullClassName, '\\');
-            return ltrim($helperName, '\\');
-        } else {
-            return $fullClassName;
         }
+        if (strpos($fullClassName, '\\') !== false) {
+            $helperName = strrchr($fullClassName, '\\');
+
+            return ltrim($helperName, '\\');
+        }
+
+        return $fullClassName;
+
     }
 }

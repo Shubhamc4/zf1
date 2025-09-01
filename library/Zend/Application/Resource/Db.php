@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Application
- * @subpackage Resource
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,9 +30,9 @@ require_once 'Zend/Application/Resource/ResourceAbstract.php';
  * Resource for creating database adapter
  *
  * @uses       Zend_Application_Resource_ResourceAbstract
+ *
  * @category   Zend
- * @package    Zend_Application
- * @subpackage Resource
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -54,24 +55,25 @@ class Zend_Application_Resource_Db extends Zend_Application_Resource_ResourceAbs
      *
      * @var array
      */
-    protected $_params = array();
+    protected $_params = [];
 
     /**
      * Wether to register the created adapter as default table adapter
      *
-     * @var boolean
+     * @var bool
      */
     protected $_isDefaultTableAdapter = true;
 
     /**
      * Set the adapter
      *
-     * @param  string $adapter
+     * @param  string  $adapter
      * @return Zend_Application_Resource_Db
      */
     public function setAdapter($adapter)
     {
         $this->_adapter = $adapter;
+
         return $this;
     }
 
@@ -88,12 +90,12 @@ class Zend_Application_Resource_Db extends Zend_Application_Resource_ResourceAbs
     /**
      * Set the adapter params
      *
-     * @param array $params
      * @return Zend_Application_Resource_Db
      */
     public function setParams(array $params)
     {
         $this->_params = $params;
+
         return $this;
     }
 
@@ -110,12 +112,13 @@ class Zend_Application_Resource_Db extends Zend_Application_Resource_ResourceAbs
     /**
      * Set whether to use this as default table adapter
      *
-     * @param bool $isDefaultTableAdapter
+     * @param  bool  $isDefaultTableAdapter
      * @return Zend_Application_Resource_Db
      */
     public function setIsDefaultTableAdapter($isDefaultTableAdapter)
     {
         $this->_isDefaultTableAdapter = $isDefaultTableAdapter;
+
         return $this;
     }
 
@@ -141,12 +144,13 @@ class Zend_Application_Resource_Db extends Zend_Application_Resource_ResourceAbs
         ) {
             $this->_db = Zend_Db::factory($adapter, $this->getParams());
 
-            if ($this->_db instanceof Zend_Db_Adapter_Abstract 
+            if ($this->_db instanceof Zend_Db_Adapter_Abstract
                 && $this->isDefaultTableAdapter()
             ) {
                 Zend_Db_Table::setDefaultAdapter($this->_db);
             }
         }
+
         return $this->_db;
     }
 
@@ -161,13 +165,12 @@ class Zend_Application_Resource_Db extends Zend_Application_Resource_ResourceAbs
             return $db;
         }
 
-        return null;
     }
 
     /**
      * Set the default metadata cache
      *
-     * @param string|Zend_Cache_Core $cache
+     * @param  string|Zend_Cache_Core  $cache
      * @return Zend_Application_Resource_Db
      */
     public function setDefaultMetadataCache($cache)
@@ -185,7 +188,7 @@ class Zend_Application_Resource_Db extends Zend_Application_Resource_ResourceAbs
                     $metadataCache = $cacheManager->getCache($cache);
                 }
             }
-        } else if ($cache instanceof Zend_Cache_Core) {
+        } elseif ($cache instanceof Zend_Cache_Core) {
             $metadataCache = $cache;
         }
 

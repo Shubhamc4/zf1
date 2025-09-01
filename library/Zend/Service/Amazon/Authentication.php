@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,32 +14,31 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service_Amazon
- * @subpackage Authentication
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
 /**
  * @category   Zend
- * @package    Zend_Service_Amazon
- * @subpackage Authentication
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Service_Amazon_Authentication
 {
     protected $_accessKey;
+
     protected $_secretKey;
+
     protected $_apiVersion;
 
     /**
      * Constructor
      *
-     * @param  string $accessKey
-     * @param  string $secretKey
-     * @param  string $apiVersion
+     * @param  string  $accessKey
+     * @param  string  $secretKey
+     * @param  string  $apiVersion
      * @return void
      */
     public function __construct($accessKey, $secretKey, $apiVersion)
@@ -51,7 +51,7 @@ abstract class Zend_Service_Amazon_Authentication
     /**
      * Set access key
      *
-     * @param  string $accessKey
+     * @param  string  $accessKey
      * @return void
      */
     public function setAccessKey($accessKey)
@@ -62,7 +62,7 @@ abstract class Zend_Service_Amazon_Authentication
     /**
      * Set secret key
      *
-     * @param  string $secretKey
+     * @param  string  $secretKey
      * @return void
      */
     public function setSecretKey($secretKey)
@@ -73,7 +73,7 @@ abstract class Zend_Service_Amazon_Authentication
     /**
      * Set API version
      *
-     * @param  string $apiVersion
+     * @param  string  $apiVersion
      * @return void
      */
     public function setApiVersion($apiVersion)

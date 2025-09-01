@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Spreadsheets
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,16 +27,13 @@
 require_once 'Zend/Gdata/Feed.php';
 
 /**
- *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Spreadsheets
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Spreadsheets_ListFeed extends Zend_Gdata_Feed
 {
-
     /**
      * The classname for individual feed elements.
      *
@@ -53,12 +50,12 @@ class Zend_Gdata_Spreadsheets_ListFeed extends Zend_Gdata_Feed
 
     /**
      * Constructs a new Zend_Gdata_Spreadsheets_ListFeed object.
-     * @param DOMElement $element An existing XML element on which to base this new object.
+     *
+     * @param  DOMElement  $element  An existing XML element on which to base this new object.
      */
     public function __construct($element = null)
     {
         $this->registerAllNamespaces(Zend_Gdata_Spreadsheets::$namespaces);
         parent::__construct($element);
     }
-
 }

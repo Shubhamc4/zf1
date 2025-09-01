@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Locale
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -23,7 +25,7 @@
  * Utility class for returning the plural rules according to the given locale
  *
  * @category   Zend
- * @package    Zend_Locale
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -34,20 +36,20 @@ class Zend_Translate_Plural
      *
      * @var string
      */
-    protected static $_plural = array();
+    protected static $_plural = [];
 
     /**
      * Returns the plural definition to use
      *
-     * @param  integer $number Number for plural selection
-     * @param  string  $locale Locale to use
-     * @return integer Plural number to use
+     * @param  int  $number  Number for plural selection
+     * @param  string  $locale  Locale to use
+     * @return int Plural number to use
      */
     public static function getPlural($number, $locale)
     {
-        if ($locale == "pt_BR") {
+        if ($locale == 'pt_BR') {
             // temporary set a locale for brasilian
-            $locale = "xbr";
+            $locale = 'xbr';
         }
 
         if (strlen($locale) > 3) {
@@ -57,14 +59,14 @@ class Zend_Translate_Plural
         if (isset(self::$_plural[$locale])) {
             $return = call_user_func(self::$_plural[$locale], $number);
 
-            if (!is_int($return) || ($return < 0)) {
+            if (! is_int($return) || ($return < 0)) {
                 $return = 0;
             }
 
             return $return;
         }
 
-        switch($locale) {
+        switch ($locale) {
             case 'az':
             case 'bo':
             case 'dz':
@@ -199,22 +201,22 @@ class Zend_Translate_Plural
     /**
      * Set's a new plural rule
      *
-     * @param string $rule   Callback which acts as rule
-     * @param string $locale Locale which is used for this callback
+     * @param  string  $rule  Callback which acts as rule
+     * @param  string  $locale  Locale which is used for this callback
      * @return null
      */
     public static function setPlural($rule, $locale)
     {
-        if ($locale == "pt_BR") {
+        if ($locale == 'pt_BR') {
             // temporary set a locale for brasilian
-            $locale = "xbr";
+            $locale = 'xbr';
         }
 
         if (strlen($locale) > 3) {
             $locale = substr($locale, 0, -strlen(strrchr($locale, '_')));
         }
 
-        if (!is_callable($rule)) {
+        if (! is_callable($rule)) {
             require_once 'Zend/Translate/Exception.php';
             throw new Zend_Translate_Exception('The given rule can not be called');
         }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,13 +28,12 @@ require_once 'Zend/Tool/Project/Profile/Resource.php';
 
 /**
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Tool_Project_Profile_FileParser_Xml implements Zend_Tool_Project_Profile_FileParser_Interface
 {
-
     /**
      * @var Zend_Tool_Project_Profile
      */
@@ -46,7 +46,6 @@ class Zend_Tool_Project_Profile_FileParser_Xml implements Zend_Tool_Project_Prof
 
     /**
      * __construct()
-     *
      */
     public function __construct()
     {
@@ -58,7 +57,6 @@ class Zend_Tool_Project_Profile_FileParser_Xml implements Zend_Tool_Project_Prof
      *
      * create an xml string from the provided profile
      *
-     * @param Zend_Tool_Project_Profile $profile
      * @return string
      */
     public function serialize(Zend_Tool_Project_Profile $profile)
@@ -136,15 +134,14 @@ class Zend_Tool_Project_Profile_FileParser_Xml implements Zend_Tool_Project_Prof
      * This method will be used to traverse the depths of the structure
      * when *serializing* an xml structure into a string
      *
-     * @param array $resources
-     * @param SimpleXmlElement $xmlNode
+     * @param  array  $resources
      */
     protected function _serializeRecurser($resources, SimpleXmlElement $xmlNode)
     {
         // @todo find a better way to handle concurrency.. if no clone, _position in node gets messed up
-        //if ($resources instanceof Zend_Tool_Project_Profile_Resource) {
+        // if ($resources instanceof Zend_Tool_Project_Profile_Resource) {
         //    $resources = clone $resources;
-        //}
+        // }
 
         foreach ($resources as $resource) {
 
@@ -157,7 +154,7 @@ class Zend_Tool_Project_Profile_FileParser_Xml implements Zend_Tool_Project_Prof
 
             $newNode = $xmlNode->addChild($resourceName);
 
-            //$reflectionClass = new ReflectionClass($resource->getContext());
+            // $reflectionClass = new ReflectionClass($resource->getContext());
 
             if ($resource->isEnabled() == false) {
                 $newNode->addAttribute('enabled', 'false');
@@ -175,17 +172,13 @@ class Zend_Tool_Project_Profile_FileParser_Xml implements Zend_Tool_Project_Prof
 
     }
 
-
     /**
      * _unserializeRecurser()
      *
      * This method will be used to traverse the depths of the structure
      * as needed to *unserialize* the profile from an xmlIterator
-     *
-     * @param SimpleXMLIterator $xmlIterator
-     * @param Zend_Tool_Project_Profile_Resource $resource
      */
-    protected function _unserializeRecurser(SimpleXMLIterator $xmlIterator, Zend_Tool_Project_Profile_Resource $resource = null)
+    protected function _unserializeRecurser(SimpleXMLIterator $xmlIterator, ?Zend_Tool_Project_Profile_Resource $resource = null)
     {
 
         foreach ($xmlIterator as $resourceName => $resourceData) {
@@ -195,7 +188,7 @@ class Zend_Tool_Project_Profile_FileParser_Xml implements Zend_Tool_Project_Prof
             $subResource->setProfile($this->_profile);
 
             if ($resourceAttributes = $resourceData->attributes()) {
-                $attributes = array();
+                $attributes = [];
                 foreach ($resourceAttributes as $attrName => $attrValue) {
                     $attributes[$attrName] = (string) $attrValue;
                 }
@@ -222,8 +215,8 @@ class Zend_Tool_Project_Profile_FileParser_Xml implements Zend_Tool_Project_Prof
      * _lazyLoadContexts()
      *
      * This method will call initializeContext on the resources in a profile
-     * @todo determine if this method belongs inside the profile
      *
+     * @todo determine if this method belongs inside the profile
      */
     protected function _lazyLoadContexts()
     {
@@ -236,5 +229,4 @@ class Zend_Tool_Project_Profile_FileParser_Xml implements Zend_Tool_Project_Prof
         }
 
     }
-
 }

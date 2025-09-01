@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Log
- * @subpackage Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -25,10 +26,10 @@ require_once 'Zend/Log/Writer/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Log
- * @subpackage Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 class Zend_Log_Writer_Mock extends Zend_Log_Writer_Abstract
@@ -38,12 +39,12 @@ class Zend_Log_Writer_Mock extends Zend_Log_Writer_Abstract
      *
      * @var array
      */
-    public $events = array();
+    public $events = [];
 
     /**
      * shutdown called?
      *
-     * @var boolean
+     * @var bool
      */
     public $shutdown = false;
 
@@ -71,11 +72,11 @@ class Zend_Log_Writer_Mock extends Zend_Log_Writer_Abstract
     /**
      * Create a new instance of Zend_Log_Writer_Mock
      *
-     * @param  array|Zend_Config $config
+     * @param  array|Zend_Config  $config
      * @return Zend_Log_Writer_Mock
      */
-    static public function factory($config)
+    public static function factory($config)
     {
-        return new self();
+        return new self;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Schema
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -24,8 +25,7 @@
  * Zend_Ldap_Node_Schema_ObjectClass_Interface provides a contract for schema objectClasses.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Schema
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -69,7 +69,7 @@ interface Zend_Ldap_Node_Schema_ObjectClass_Interface
     /**
      * Gets the objectClass type
      *
-     * @return integer
+     * @return int
      */
     public function getType();
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,8 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Dojo
- * @subpackage Form_Element
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -26,22 +26,24 @@ require_once 'Zend/Dojo/Form/Element/ComboBox.php';
  * FilteringSelect dijit
  *
  * @uses       Zend_Dojo_Form_Element_ComboBox
- * @package    Zend_Dojo
- * @subpackage Form_Element
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 class Zend_Dojo_Form_Element_FilteringSelect extends Zend_Dojo_Form_Element_ComboBox
 {
     /**
      * Use FilteringSelect dijit view helper
+     *
      * @var string
      */
     public $helper = 'FilteringSelect';
 
     /**
      * Flag: autoregister inArray validator?
+     *
      * @var bool
      */
     protected $_registerInArrayValidator = true;

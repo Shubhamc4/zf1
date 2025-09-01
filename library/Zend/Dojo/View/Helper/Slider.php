@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Dojo
- * @subpackage View
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,28 +28,29 @@ require_once 'Zend/Dojo/View/Helper/Dijit.php';
  * Abstract class for Dojo Slider dijits
  *
  * @uses       Zend_Dojo_View_Helper_Dijit
- * @package    Zend_Dojo
- * @subpackage View
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
-  */
-#[AllowDynamicProperties]
+ */
 abstract class Zend_Dojo_View_Helper_Slider extends Zend_Dojo_View_Helper_Dijit
 {
     /**
      * Dojo module to use
+     *
      * @var string
      */
     protected $_module = 'dijit.form.Slider';
 
     /**
      * Required slider parameters
+     *
      * @var array
      */
-    protected $_requiredParams = array('minimum', 'maximum', 'discreteValues');
+    protected $_requiredParams = ['minimum', 'maximum', 'discreteValues'];
 
     /**
      * Slider type -- vertical or horizontal
+     *
      * @var string
      */
     protected $_sliderType;
@@ -56,13 +58,13 @@ abstract class Zend_Dojo_View_Helper_Slider extends Zend_Dojo_View_Helper_Dijit
     /**
      * dijit.form.Slider
      *
-     * @param  int $id
-     * @param  mixed $value
-     * @param  array $params  Parameters to use for dijit creation
-     * @param  array $attribs HTML attributes
+     * @param  int  $id
+     * @param  mixed  $value
+     * @param  array  $params  Parameters to use for dijit creation
+     * @param  array  $attribs  HTML attributes
      * @return string
      */
-    public function prepareSlider($id, $value = null, array $params = array(), array $attribs = array())
+    public function prepareSlider($id, $value = null, array $params = [], array $attribs = [])
     {
         $this->_sliderType = strtolower($this->_sliderType);
 
@@ -71,7 +73,7 @@ abstract class Zend_Dojo_View_Helper_Slider extends Zend_Dojo_View_Helper_Dijit
         $hidden = preg_replace('/(name=")([^"]*)"/', 'id="$2" $1$2"', $hidden);
 
         foreach ($this->_requiredParams as $param) {
-            if (!array_key_exists($param, $params)) {
+            if (! array_key_exists($param, $params)) {
                 require_once 'Zend/Dojo/View/Exception.php';
                 throw new Zend_Dojo_View_Exception('prepareSlider() requires minimally the "minimum", "maximum", and "discreteValues" parameters');
             }
@@ -80,13 +82,13 @@ abstract class Zend_Dojo_View_Helper_Slider extends Zend_Dojo_View_Helper_Dijit
         $content = '';
         $attribs['value'] = $value;
 
-        if (!array_key_exists('onChange', $attribs)) {
-            $attribs['onChange'] = "dojo.byId('" . $id . "').value = arguments[0];";
+        if (! array_key_exists('onChange', $attribs)) {
+            $attribs['onChange'] = "dojo.byId('".$id."').value = arguments[0];";
         }
 
-        $id  = str_replace('][', '-', $id);
-        $id  = str_replace(array('[', ']'), '-', $id);
-        $id  = rtrim($id, '-');
+        $id = str_replace('][', '-', $id);
+        $id = str_replace(['[', ']'], '-', $id);
+        $id = rtrim($id, '-');
         $id .= '-slider';
 
         switch ($this->_sliderType) {
@@ -133,44 +135,44 @@ abstract class Zend_Dojo_View_Helper_Slider extends Zend_Dojo_View_Helper_Dijit
                 throw new Zend_Dojo_View_Exception('Invalid slider type; slider must be horizontal or vertical');
         }
 
-        return $hidden . $this->_createLayoutContainer($id, $content, $params, $attribs);
+        return $hidden.$this->_createLayoutContainer($id, $content, $params, $attribs);
     }
 
     /**
      * Prepare slider decoration
      *
-     * @param  string $position
-     * @param  string $id
-     * @param  array $decInfo
+     * @param  string  $position
+     * @param  string  $id
+     * @param  array  $decInfo
      * @return string
      */
     protected function _prepareDecoration($position, $id, $decInfo)
     {
-        if (!in_array($position, array('topDecoration', 'bottomDecoration', 'leftDecoration', 'rightDecoration'))) {
+        if (! in_array($position, ['topDecoration', 'bottomDecoration', 'leftDecoration', 'rightDecoration'])) {
             return '';
         }
 
-        if (!is_array($decInfo)
-            || !array_key_exists('labels', $decInfo)
-            || !is_array($decInfo['labels'])
+        if (! is_array($decInfo)
+            || ! array_key_exists('labels', $decInfo)
+            || ! is_array($decInfo['labels'])
         ) {
             return '';
         }
 
-        $id .= '-' . $position;
+        $id .= '-'.$position;
 
-        if (!array_key_exists('dijit', $decInfo)) {
-            $dijit = 'dijit.form.' . ucfirst($this->_sliderType) . 'Rule';
+        if (! array_key_exists('dijit', $decInfo)) {
+            $dijit = 'dijit.form.'.ucfirst($this->_sliderType).'Rule';
         } else {
             $dijit = $decInfo['dijit'];
             if ('dijit.form.' != substr($dijit, 0, 10)) {
-                $dijit = 'dijit.form.' . $dijit;
+                $dijit = 'dijit.form.'.$dijit;
             }
         }
 
-        $params  = array();
-        $attribs = array();
-        $labels  = $decInfo['labels'];
+        $params = [];
+        $attribs = [];
+        $labels = $decInfo['labels'];
         if (array_key_exists('params', $decInfo)) {
             $params = $decInfo['params'];
         }
@@ -213,38 +215,35 @@ abstract class Zend_Dojo_View_Helper_Slider extends Zend_Dojo_View_Helper_Dijit
         }
 
         $containerParams['container'] = $position;
-        $labelsParams['container']    = $position;
+        $labelsParams['container'] = $position;
 
         $labelList = $this->_prepareLabelsList($id, $labelsParams, $labelsAttribs, $labels);
 
-        $dijit = 'dijit.form.' . ucfirst($this->_sliderType) . 'Rule';
+        $dijit = 'dijit.form.'.ucfirst($this->_sliderType).'Rule';
         $containerAttribs['id'] = $id;
         $containerAttribs = $this->_prepareDijit($containerAttribs, $containerParams, 'layout', $dijit);
-        $containerHtml = '<div' . $this->_htmlAttribs($containerAttribs) . "></div>\n";
+        $containerHtml = '<div'.$this->_htmlAttribs($containerAttribs)."></div>\n";
 
         switch ($position) {
             case 'topDecoration':
             case 'leftDecoration':
-                return $labelList . $containerHtml;
+                return $labelList.$containerHtml;
             case 'bottomDecoration':
             case 'rightDecoration':
-                return $containerHtml . $labelList;
+                return $containerHtml.$labelList;
         }
     }
 
     /**
      * Prepare slider label list
      *
-     * @param  string $id
-     * @param  array $params
-     * @param  array $attribs
-     * @param  array $labels
+     * @param  string  $id
      * @return string
      */
     protected function _prepareLabelsList($id, array $params, array $attribs, array $labels)
     {
-        $attribs['id'] = $id . '-labels';
-        $dijit = 'dijit.form.' . ucfirst($this->_sliderType) . 'RuleLabels';
+        $attribs['id'] = $id.'-labels';
+        $dijit = 'dijit.form.'.ucfirst($this->_sliderType).'RuleLabels';
         $attribs = $this->_prepareDijit($attribs, $params, 'layout', $dijit);
 
         return $this->view->htmlList($labels, true, $attribs);

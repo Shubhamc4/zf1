@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,28 +14,24 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_XmlRpc
- * @subpackage Value
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * Zend_XmlRpc_Value
  */
 require_once 'Zend/XmlRpc/Value.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_XmlRpc
- * @subpackage Value
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_XmlRpc_Value_Scalar extends Zend_XmlRpc_Value
 {
     /**
@@ -47,8 +44,8 @@ abstract class Zend_XmlRpc_Value_Scalar extends Zend_XmlRpc_Value
         $generator = $this->getGenerator();
 
         $generator->openElement('value')
-                  ->openElement($this->_type, $this->_value)
-                  ->closeElement($this->_type)
-                  ->closeElement('value');
+            ->openElement($this->_type, $this->_value)
+            ->closeElement($this->_type)
+            ->closeElement('value');
     }
 }

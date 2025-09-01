@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,25 +14,21 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Storage
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
-
 /**
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Storage
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Search_Lucene_Storage_Directory
 {
-
     /**
      * Closes the store.
      *
@@ -49,16 +46,15 @@ abstract class Zend_Search_Lucene_Storage_Directory
     /**
      * Creates a new, empty file in the directory with the given $filename.
      *
-     * @param string $filename
+     * @param  string  $filename
      * @return Zend_Search_Lucene_Storage_File
      */
     abstract public function createFile($filename);
 
-
     /**
      * Removes an existing $filename in the directory.
      *
-     * @param string $filename
+     * @param  string  $filename
      * @return void
      */
     abstract public function deleteFile($filename);
@@ -68,7 +64,7 @@ abstract class Zend_Search_Lucene_Storage_Directory
      *
      * Method is used to prevent 'too many open files' error
      *
-     * @param string $filename
+     * @param  string  $filename
      * @return void
      */
     abstract public function purgeFile($filename);
@@ -76,48 +72,43 @@ abstract class Zend_Search_Lucene_Storage_Directory
     /**
      * Returns true if a file with the given $filename exists.
      *
-     * @param string $filename
-     * @return boolean
+     * @param  string  $filename
+     * @return bool
      */
     abstract public function fileExists($filename);
-
 
     /**
      * Returns the length of a $filename in the directory.
      *
-     * @param string $filename
-     * @return integer
+     * @param  string  $filename
+     * @return int
      */
     abstract public function fileLength($filename);
-
 
     /**
      * Returns the UNIX timestamp $filename was last modified.
      *
-     * @param string $filename
-     * @return integer
+     * @param  string  $filename
+     * @return int
      */
     abstract public function fileModified($filename);
-
 
     /**
      * Renames an existing file in the directory.
      *
-     * @param string $from
-     * @param string $to
+     * @param  string  $from
+     * @param  string  $to
      * @return void
      */
     abstract public function renameFile($from, $to);
 
-
     /**
      * Sets the modified time of $filename to now.
      *
-     * @param string $filename
+     * @param  string  $filename
      * @return void
      */
     abstract public function touchFile($filename);
-
 
     /**
      * Returns a Zend_Search_Lucene_Storage_File object for a given $filename in the directory.
@@ -127,11 +118,9 @@ abstract class Zend_Search_Lucene_Storage_Directory
      * Shared handler are good for short atomic requests.
      * Non-shared handlers are useful for stream file reading (especial for compound files).
      *
-     * @param string $filename
-     * @param boolean $shareHandler
+     * @param  string  $filename
+     * @param  bool  $shareHandler
      * @return Zend_Search_Lucene_Storage_File
      */
     abstract public function getFileObject($filename, $shareHandler = true);
-
 }
-

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Controller
- * @subpackage Zend_Controller_Action_Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,9 +30,9 @@ require_once 'Zend/Controller/Action/Helper/Abstract.php';
  * Helper for creating URLs for redirects and other tasks
  *
  * @uses       Zend_Controller_Action_Helper_Abstract
+ *
  * @category   Zend
- * @package    Zend_Controller
- * @subpackage Zend_Controller_Action_Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -40,13 +41,12 @@ class Zend_Controller_Action_Helper_Url extends Zend_Controller_Action_Helper_Ab
     /**
      * Create URL based on default route
      *
-     * @param  string $action
-     * @param  string $controller
-     * @param  string $module
-     * @param  array  $params
+     * @param  string  $action
+     * @param  string  $controller
+     * @param  string  $module
      * @return string
      */
-    public function simple($action, $controller = null, $module = null, array $params = null)
+    public function simple($action, $controller = null, $module = null, ?array $params = null)
     {
         $request = $this->getRequest();
 
@@ -58,25 +58,25 @@ class Zend_Controller_Action_Helper_Url extends Zend_Controller_Action_Helper_Ab
             $module = $request->getModuleName();
         }
 
-        $url = $controller . '/' . $action;
+        $url = $controller.'/'.$action;
         if ($module != $this->getFrontController()->getDispatcher()->getDefaultModule()) {
-            $url = $module . '/' . $url;
+            $url = $module.'/'.$url;
         }
 
         if ('' !== ($baseUrl = $this->getFrontController()->getBaseUrl())) {
-            $url = $baseUrl . '/' . $url;
+            $url = $baseUrl.'/'.$url;
         }
 
         if (null !== $params) {
-            $paramPairs = array();
+            $paramPairs = [];
             foreach ($params as $key => $value) {
-                $paramPairs[] = urlencode($key) . '/' . urlencode($value);
+                $paramPairs[] = urlencode($key).'/'.urlencode($value);
             }
             $paramString = implode('/', $paramPairs);
-            $url .= '/' . $paramString;
+            $url .= '/'.$paramString;
         }
 
-        $url = '/' . ltrim($url, '/');
+        $url = '/'.ltrim($url, '/');
 
         return $url;
     }
@@ -87,15 +87,16 @@ class Zend_Controller_Action_Helper_Url extends Zend_Controller_Action_Helper_Ab
      * This method will typically be used for more complex operations, as it
      * ties into the route objects registered with the router.
      *
-     * @param  array   $urlOptions Options passed to the assemble method of the Route object.
-     * @param  mixed   $name       The name of a Route to use. If null it will use the current Route
-     * @param  boolean $reset
-     * @param  boolean $encode
+     * @param  array  $urlOptions  Options passed to the assemble method of the Route object.
+     * @param  mixed  $name  The name of a Route to use. If null it will use the current Route
+     * @param  bool  $reset
+     * @param  bool  $encode
      * @return string Url for the link href attribute.
      */
-    public function url($urlOptions = array(), $name = null, $reset = false, $encode = true)
+    public function url($urlOptions = [], $name = null, $reset = false, $encode = true)
     {
         $router = $this->getFrontController()->getRouter();
+
         return $router->assemble($urlOptions, $name, $reset, $encode);
     }
 
@@ -104,13 +105,12 @@ class Zend_Controller_Action_Helper_Url extends Zend_Controller_Action_Helper_Ab
      *
      * Proxies to {@link simple()}
      *
-     * @param  string $action
-     * @param  string $controller
-     * @param  string $module
-     * @param  array  $params
+     * @param  string  $action
+     * @param  string  $controller
+     * @param  string  $module
      * @return string
      */
-    public function direct($action, $controller = null, $module = null, array $params = null)
+    public function direct($action, $controller = null, $module = null, ?array $params = null)
     {
         return $this->simple($action, $controller, $module, $params);
     }

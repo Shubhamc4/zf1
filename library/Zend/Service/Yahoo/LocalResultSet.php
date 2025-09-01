@@ -14,30 +14,26 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Yahoo
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * @see Zend_Service_Yahoo_ResultSet
  */
 require_once 'Zend/Service/Yahoo/ResultSet.php';
 
-
 /**
  * @see Zend_Service_Yahoo_LocalResult
  */
 require_once 'Zend/Service/Yahoo/LocalResult.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Yahoo
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -57,11 +53,9 @@ class Zend_Service_Yahoo_LocalResultSet extends Zend_Service_Yahoo_ResultSet
      */
     protected $_namespace = 'urn:yahoo:lcl';
 
-
     /**
      * Initializes the local result set
      *
-     * @param  DOMDocument $dom
      * @return void
      */
     public function __construct(DOMDocument $dom)
@@ -71,13 +65,11 @@ class Zend_Service_Yahoo_LocalResultSet extends Zend_Service_Yahoo_ResultSet
         $this->resultSetMapURL = $this->_xpath->query('//yh:ResultSetMapUrl/text()')->item(0)->data;
     }
 
-
     /**
      * Overrides Zend_Service_Yahoo_ResultSet::current()
      *
      * @return Zend_Service_Yahoo_LocalResult
      */
-    #[\ReturnTypeWillChange]
     public function current()
     {
         return new Zend_Service_Yahoo_LocalResult($this->_results->item($this->_currentIndex));

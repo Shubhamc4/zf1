@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,13 +14,12 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Cache
- * @subpackage Zend_Cache_Backend
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /** @see Zend_Cache_Backend_Interface */
 require_once 'Zend/Cache/Backend/Interface.php';
@@ -27,10 +27,7 @@ require_once 'Zend/Cache/Backend/Interface.php';
 /** @see Zend_Cache_Backend_ZendServer */
 require_once 'Zend/Cache/Backend/ZendServer.php';
 
-
 /**
- * @package    Zend_Cache
- * @subpackage Zend_Cache_Backend
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,12 +36,13 @@ class Zend_Cache_Backend_ZendServer_Disk extends Zend_Cache_Backend_ZendServer i
     /**
      * Constructor
      *
-     * @param  array $options associative array of options
+     * @param  array  $options  associative array of options
+     *
      * @throws Zend_Cache_Exception
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = [])
     {
-        if (!function_exists('zend_disk_cache_store')) {
+        if (! function_exists('zend_disk_cache_store')) {
             Zend_Cache::throwException('Zend_Cache_ZendServer_Disk backend has to be used within Zend Server environment.');
         }
         parent::__construct($options);
@@ -53,42 +51,44 @@ class Zend_Cache_Backend_ZendServer_Disk extends Zend_Cache_Backend_ZendServer i
     /**
      * Store data
      *
-     * @param mixed  $data        Object to store
-     * @param string $id          Cache id
-     * @param int    $timeToLive  Time to live in seconds
-     * @return boolean true if no problem
+     * @param  mixed  $data  Object to store
+     * @param  string  $id  Cache id
+     * @param  int  $timeToLive  Time to live in seconds
+     * @return bool true if no problem
      */
     protected function _store($data, $id, $timeToLive)
     {
-        if (zend_disk_cache_store($this->_options['namespace'] . '::' . $id,
-                                  $data,
-                                  $timeToLive) === false) {
+        if (zend_disk_cache_store($this->_options['namespace'].'::'.$id,
+            $data,
+            $timeToLive) === false) {
             $this->_log('Store operation failed.');
+
             return false;
         }
+
         return true;
     }
 
     /**
      * Fetch data
      *
-     * @param string $id Cache id
+     * @param  string  $id  Cache id
      * @return mixed|null
      */
     protected function _fetch($id)
     {
-        return zend_disk_cache_fetch($this->_options['namespace'] . '::' . $id);
+        return zend_disk_cache_fetch($this->_options['namespace'].'::'.$id);
     }
 
     /**
      * Unset data
      *
-     * @param string $id          Cache id
-     * @return boolean true if no problem
+     * @param  string  $id  Cache id
+     * @return bool true if no problem
      */
     protected function _unset($id)
     {
-        return zend_disk_cache_delete($this->_options['namespace'] . '::' . $id);
+        return zend_disk_cache_delete($this->_options['namespace'].'::'.$id);
     }
 
     /**

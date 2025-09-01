@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Analytics
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,19 +28,19 @@ require_once 'Zend/Gdata/Extension.php';
 
 /**
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Analytics
  */
 class Zend_Gdata_Analytics_Extension_TableId extends Zend_Gdata_Extension
 {
-
     protected $_rootNamespace = 'ga';
+
     protected $_rootElement = 'tableId';
+
     protected $_value = null;
 
     /**
      * Constructs a new Zend_Gdata_Calendar_Extension_Timezone object.
-     * @param string $value (optional) The text content of the element.
+     *
+     * @param  string  $value  (optional) The text content of the element.
      */
     public function __construct($value = null)
     {
@@ -54,9 +55,9 @@ class Zend_Gdata_Analytics_Extension_TableId extends Zend_Gdata_Extension
      * and eventually XML text for sending to the server upon updates, or
      * for application storage/persistence.
      *
-     * @param DOMDocument $doc The DOMDocument used to construct DOMElements
+     * @param  DOMDocument  $doc  The DOMDocument used to construct DOMElements
      * @return DOMElement The DOMElement representing this element and all
-     * child properties.
+     *                    child properties.
      */
     public function getDOM($doc = null, $majorVersion = 1, $minorVersion = null)
     {
@@ -64,6 +65,7 @@ class Zend_Gdata_Analytics_Extension_TableId extends Zend_Gdata_Extension
         if ($this->_value != null) {
             $element->setAttribute('value', $this->_value);
         }
+
         return $element;
     }
 
@@ -72,11 +74,11 @@ class Zend_Gdata_Analytics_Extension_TableId extends Zend_Gdata_Extension
      * instance members.  If no mapping is defined, the name and value are
      * stored in an array.
      *
-     * @param DOMNode $attribute The DOMNode attribute needed to be handled
+     * @param  DOMNode  $attribute  The DOMNode attribute needed to be handled
      */
     protected function takeChildFromDOM($child)
     {
-       $this->_value = $child->nodeValue;
+        $this->_value = $child->nodeValue;
     }
 
     /**
@@ -92,12 +94,13 @@ class Zend_Gdata_Analytics_Extension_TableId extends Zend_Gdata_Extension
     /**
      * Set the value for this element's value attribute.
      *
-     * @param string $value The desired value for this attribute.
+     * @param  string  $value  The desired value for this attribute.
      * @return Zend_Gdata_Calendar_Extension_Timezone The element being modified.
      */
     public function setValue($value)
     {
         $this->_value = $value;
+
         return $this;
     }
 

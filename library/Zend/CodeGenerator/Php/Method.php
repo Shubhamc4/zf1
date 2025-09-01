@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_CodeGenerator
- * @subpackage PHP
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -37,7 +38,7 @@ require_once 'Zend/CodeGenerator/Php/Parameter.php';
 
 /**
  * @category   Zend
- * @package    Zend_CodeGenerator
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -56,7 +57,7 @@ class Zend_CodeGenerator_Php_Method extends Zend_CodeGenerator_Php_Member_Abstra
     /**
      * @var array
      */
-    protected $_parameters = array();
+    protected $_parameters = [];
 
     /**
      * @var string
@@ -66,12 +67,11 @@ class Zend_CodeGenerator_Php_Method extends Zend_CodeGenerator_Php_Member_Abstra
     /**
      * fromReflection()
      *
-     * @param Zend_Reflection_Method $reflectionMethod
      * @return Zend_CodeGenerator_Php_Method
      */
     public static function fromReflection(Zend_Reflection_Method $reflectionMethod)
     {
-        $method = new self();
+        $method = new self;
 
         $method->setSourceContent($reflectionMethod->getContents(false));
         $method->setSourceDirty(false);
@@ -106,7 +106,7 @@ class Zend_CodeGenerator_Php_Method extends Zend_CodeGenerator_Php_Member_Abstra
     /**
      * setFinal()
      *
-     * @param bool $isFinal
+     * @param  bool  $isFinal
      */
     public function setFinal($isFinal)
     {
@@ -116,21 +116,21 @@ class Zend_CodeGenerator_Php_Method extends Zend_CodeGenerator_Php_Member_Abstra
     /**
      * setParameters()
      *
-     * @param array $parameters
      * @return Zend_CodeGenerator_Php_Method
      */
-    public function setParameters(Array $parameters)
+    public function setParameters(array $parameters)
     {
         foreach ($parameters as $parameter) {
             $this->setParameter($parameter);
         }
+
         return $this;
     }
 
     /**
      * setParameter()
      *
-     * @param Zend_CodeGenerator_Php_Parameter|array $parameter
+     * @param  Zend_CodeGenerator_Php_Parameter|array  $parameter
      * @return Zend_CodeGenerator_Php_Method
      */
     public function setParameter($parameter)
@@ -146,6 +146,7 @@ class Zend_CodeGenerator_Php_Method extends Zend_CodeGenerator_Php_Member_Abstra
         }
 
         $this->_parameters[$parameterName] = $parameter;
+
         return $this;
     }
 
@@ -162,12 +163,13 @@ class Zend_CodeGenerator_Php_Method extends Zend_CodeGenerator_Php_Member_Abstra
     /**
      * setBody()
      *
-     * @param string $body
+     * @param  string  $body
      * @return Zend_CodeGenerator_Php_Method
      */
     public function setBody($body)
     {
         $this->_body = $body;
+
         return $this;
     }
 
@@ -206,11 +208,11 @@ class Zend_CodeGenerator_Php_Method extends Zend_CodeGenerator_Php_Member_Abstra
         }
 
         $output .= $this->getVisibility()
-            . (($this->isStatic()) ? ' static' : '')
-            . ' function ' . $this->getName() . '(';
+            .(($this->isStatic()) ? ' static' : '')
+            .' function '.$this->getName().'(';
 
         $parameters = $this->getParameters();
-        if (!empty($parameters)) {
+        if (! empty($parameters)) {
             foreach ($parameters as $parameter) {
                 $parameterOuput[] = $parameter->generate();
             }
@@ -218,19 +220,18 @@ class Zend_CodeGenerator_Php_Method extends Zend_CodeGenerator_Php_Member_Abstra
             $output .= implode(', ', $parameterOuput);
         }
 
-        $output .= ')' . self::LINE_FEED . $indent . '{' . self::LINE_FEED;
+        $output .= ')'.self::LINE_FEED.$indent.'{'.self::LINE_FEED;
 
         if ($this->_body && $this->isSourceDirty()) {
             $output .= '        '
-                    .  str_replace(self::LINE_FEED, self::LINE_FEED . $indent . $indent, trim($this->_body))
-                    .  self::LINE_FEED;
+                    .str_replace(self::LINE_FEED, self::LINE_FEED.$indent.$indent, trim($this->_body))
+                    .self::LINE_FEED;
         } elseif ($this->_body) {
-            $output .= $this->_body . self::LINE_FEED;
+            $output .= $this->_body.self::LINE_FEED;
         }
 
-        $output .= $indent . '}' . self::LINE_FEED;
+        $output .= $indent.'}'.self::LINE_FEED;
 
         return $output;
     }
-
 }

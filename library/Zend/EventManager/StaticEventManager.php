@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,7 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_EventManager
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -26,7 +27,7 @@ require_once 'Zend/Stdlib/CallbackHandler.php';
  * Static version of EventManager
  *
  * @category   Zend
- * @package    Zend_EventManager
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -42,18 +43,14 @@ class Zend_EventManager_StaticEventManager extends Zend_EventManager_SharedEvent
      * 
      * @return void
      */
-    protected function __construct()
-    {
-    }
+    protected function __construct() {}
 
     /**
      * Singleton
      *
      * @return void
      */
-    private function __clone()
-    {
-    }
+    private function __clone() {}
 
     /**
      * Retrieve instance
@@ -63,8 +60,9 @@ class Zend_EventManager_StaticEventManager extends Zend_EventManager_SharedEvent
     public static function getInstance()
     {
         if (null === self::$instance) {
-            self::$instance = new self();
+            self::$instance = new self;
         }
+
         return self::$instance;
     }
 

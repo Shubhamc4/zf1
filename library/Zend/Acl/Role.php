@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,22 +14,21 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Acl
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * @see Zend_Acl_Role_Interface
  */
 require_once 'Zend/Acl/Role/Interface.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Acl
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -44,7 +44,7 @@ class Zend_Acl_Role implements Zend_Acl_Role_Interface
     /**
      * Sets the Role identifier
      *
-     * @param  string $roleId
+     * @param  string  $roleId
      */
     public function __construct($roleId)
     {

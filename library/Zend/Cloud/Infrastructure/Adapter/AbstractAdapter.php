@@ -12,8 +12,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Cloud
- * @subpackage DocumentService
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -25,12 +24,10 @@ require_once 'Zend/Cloud/Infrastructure/Instance.php';
  * Abstract infrastructure service adapter
  *
  * @category   Zend
- * @package    Zend_Cloud_Infrastructure
- * @subpackage Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Cloud_Infrastructure_Adapter_AbstractAdapter implements Zend_Cloud_Infrastructure_Adapter
 {
     /**
@@ -45,7 +42,7 @@ abstract class Zend_Cloud_Infrastructure_Adapter_AbstractAdapter implements Zend
      * 
      * @var array
      */
-    protected $validMetrics = array(
+    protected $validMetrics = [
         Zend_Cloud_Infrastructure_Instance::MONITOR_CPU,
         Zend_Cloud_Infrastructure_Instance::MONITOR_RAM,
         Zend_Cloud_Infrastructure_Instance::MONITOR_DISK,
@@ -53,7 +50,7 @@ abstract class Zend_Cloud_Infrastructure_Adapter_AbstractAdapter implements Zend
         Zend_Cloud_Infrastructure_Instance::MONITOR_DISK_WRITE,
         Zend_Cloud_Infrastructure_Instance::MONITOR_NETWORK_IN,
         Zend_Cloud_Infrastructure_Instance::MONITOR_NETWORK_OUT,
-    );
+    ];
 
     /**
      * Get the last result of the adapter
@@ -68,10 +65,10 @@ abstract class Zend_Cloud_Infrastructure_Adapter_AbstractAdapter implements Zend
     /**
      * Wait for status $status with a timeout of $timeout seconds
      * 
-     * @param  string $id
-     * @param  string $status
-     * @param  integer $timeout 
-     * @return boolean
+     * @param  string  $id
+     * @param  string  $status
+     * @param  int  $timeout
+     * @return bool
      */
     public function waitStatusInstance($id, $status, $timeout = self::TIMEOUT_STATUS_CHANGE)
     {
@@ -84,20 +81,21 @@ abstract class Zend_Cloud_Infrastructure_Adapter_AbstractAdapter implements Zend
             sleep(self::TIME_STEP_STATUS_CHANGE);
             $num += self::TIME_STEP_STATUS_CHANGE;
         }
-        return ($num < $timeout);
+
+        return $num < $timeout;
     }
 
     /**
      * Run arbitrary shell script on an instance
      *
-     * @param  string $id
-     * @param  array $param
-     * @param  string|array $cmd
+     * @param  string  $id
+     * @param  array  $param
+     * @param  string|array  $cmd
      * @return string|array
      */
     public function deployInstance($id, $params, $cmd)
     {
-        if (!function_exists("ssh2_connect")) {
+        if (! function_exists('ssh2_connect')) {
             require_once 'Zend/Cloud/Infrastructure/Exception.php';
             throw new Zend_Cloud_Infrastructure_Exception('Deployment requires the PHP "SSH" extension (ext/ssh2)');
         }
@@ -112,8 +110,7 @@ abstract class Zend_Cloud_Infrastructure_Adapter_AbstractAdapter implements Zend
             throw new Zend_Cloud_Infrastructure_Exception('You must specify the shell commands to run on the instance');
         }
 
-        if (
-            empty($params)
+        if (empty($params)
             || empty($params[Zend_Cloud_Infrastructure_Instance::SSH_USERNAME])
             || (empty($params[Zend_Cloud_Infrastructure_Instance::SSH_PASSWORD])
                 && empty($params[Zend_Cloud_Infrastructure_Instance::SSH_KEY]))
@@ -132,26 +129,23 @@ abstract class Zend_Cloud_Infrastructure_Adapter_AbstractAdapter implements Zend
         }
 
         $conn = ssh2_connect($host);
-        if (!ssh2_auth_password(
-            $conn,
-            $params[Zend_Cloud_Infrastructure_Instance::SSH_USERNAME],
-            $params[Zend_Cloud_Infrastructure_Instance::SSH_PASSWORD]
-        )) {
+        if (! ssh2_auth_password($conn, $params[Zend_Cloud_Infrastructure_Instance::SSH_USERNAME],
+            $params[Zend_Cloud_Infrastructure_Instance::SSH_PASSWORD])) {
             require_once 'Zend/Cloud/Infrastructure/Exception.php';
             throw new Zend_Cloud_Infrastructure_Exception('SSH authentication failed');
         }
 
         if (is_array($cmd)) {
-            $result = array();
+            $result = [];
             foreach ($cmd as $command) {
-                $stream      = ssh2_exec($conn, $command);
+                $stream = ssh2_exec($conn, $command);
                 $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
 
                 stream_set_blocking($errorStream, true);
                 stream_set_blocking($stream, true);
 
                 $output = stream_get_contents($stream);
-                $error  = stream_get_contents($errorStream);
+                $error = stream_get_contents($errorStream);
 
                 if (empty($error)) {
                     $result[$command] = $output;
@@ -160,15 +154,15 @@ abstract class Zend_Cloud_Infrastructure_Adapter_AbstractAdapter implements Zend
                 }
             }
         } else {
-            $stream      = ssh2_exec($conn, $cmd);
-            $result      = stream_set_blocking($stream, true);
+            $stream = ssh2_exec($conn, $cmd);
+            $result = stream_set_blocking($stream, true);
             $errorStream = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
 
             stream_set_blocking($errorStream, true);
             stream_set_blocking($stream, true);
 
             $output = stream_get_contents($stream);
-            $error  = stream_get_contents($errorStream);
+            $error = stream_get_contents($errorStream);
 
             if (empty($error)) {
                 $result = $output;
@@ -176,6 +170,7 @@ abstract class Zend_Cloud_Infrastructure_Adapter_AbstractAdapter implements Zend
                 $result = $error;
             }
         }
+
         return $result;
     }
 }

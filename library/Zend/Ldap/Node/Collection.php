@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Node
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -25,13 +26,11 @@
  */
 require_once 'Zend/Ldap/Collection.php';
 
-
 /**
  * Zend_Ldap_Node_Collection provides a collecion of nodes.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Node
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -40,7 +39,6 @@ class Zend_Ldap_Node_Collection extends Zend_Ldap_Collection
     /**
      * Creates the data structure for the given entry data
      *
-     * @param  array $data
      * @return Zend_Ldap_Node
      */
     protected function _createEntry(array $data)
@@ -51,6 +49,7 @@ class Zend_Ldap_Node_Collection extends Zend_Ldap_Collection
         require_once 'Zend/Ldap/Node.php';
         $node = Zend_Ldap_Node::fromArray($data, true);
         $node->attachLdap($this->_iterator->getLdap());
+
         return $node;
     }
 
@@ -60,7 +59,6 @@ class Zend_Ldap_Node_Collection extends Zend_Ldap_Collection
      *
      * @return string
      */
-    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->_iterator->key();

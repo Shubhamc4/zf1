@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: ListingInfo.php 22791 2010-08-04 16:11:47Z renanbr $
  */
 
@@ -27,10 +28,10 @@ require_once 'Zend/Service/Ebay/Finding/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @uses       Zend_Service_Ebay_Finding_Abstract
  */
 class Zend_Service_Ebay_Finding_ListingInfo extends Zend_Service_Ebay_Finding_Abstract
@@ -44,7 +45,7 @@ class Zend_Service_Ebay_Finding_ListingInfo extends Zend_Service_Ebay_Finding_Ab
      * seller can see this information). To make a best offer on a listing, use
      * the eBay Web site.
      *
-     * @var boolean
+     * @var bool
      */
     public $bestOfferEnabled;
 
@@ -57,7 +58,7 @@ class Zend_Service_Ebay_Finding_ListingInfo extends Zend_Service_Ebay_Finding_Ab
      * this value returns false) once a valid bid is made on the associated item
      * (a valid bid could be a bid above the reserve price).
      *
-     * @var boolean
+     * @var bool
      */
     public $buyItNowAvailable;
 
@@ -104,7 +105,7 @@ class Zend_Service_Ebay_Finding_ListingInfo extends Zend_Service_Ebay_Finding_Ab
      * the time format, and for details on converting to and from the GMT time
      * zone.
      *
-     * @var integer
+     * @var int
      */
     public $endTime;
 
@@ -112,7 +113,7 @@ class Zend_Service_Ebay_Finding_ListingInfo extends Zend_Service_Ebay_Finding_Ab
      * If true, a generic gift icon displays next the listing's title in search
      * and browse pages.
      *
-     * @var boolean
+     * @var bool
      */
     public $gift;
 
@@ -179,7 +180,7 @@ class Zend_Service_Ebay_Finding_ListingInfo extends Zend_Service_Ebay_Finding_Ab
      * zone. Note that it is possible for startTime to be different from the
      * value returned by GetSingleItem.
      *
-     * @var integer
+     * @var int
      */
     public $startTime;
 
@@ -191,21 +192,21 @@ class Zend_Service_Ebay_Finding_ListingInfo extends Zend_Service_Ebay_Finding_Ab
         parent::_init();
         $ns = Zend_Service_Ebay_Finding::XMLNS_FINDING;
 
-        $this->bestOfferEnabled       = $this->_query(".//$ns:bestOfferEnabled[1]", 'boolean');
-        $this->buyItNowAvailable      = $this->_query(".//$ns:buyItNowAvailable[1]", 'boolean');
-        $this->buyItNowPrice          = $this->_query(".//$ns:buyItNowPrice[1]", 'float');
-        $this->convertedBuyItNowPrice = $this->_query(".//$ns:convertedBuyItNowPrice[1]", 'float');
-        $this->endTime                = $this->_query(".//$ns:endTime[1]", 'string');
-        $this->gift                   = $this->_query(".//$ns:gift[1]", 'boolean');
-        $this->listingType            = $this->_query(".//$ns:listingType[1]", 'string');
-        $this->startTime              = $this->_query(".//$ns:startTime[1]", 'string');
+        $this->bestOfferEnabled = $this->_query(".//{$ns}:bestOfferEnabled[1]", 'boolean');
+        $this->buyItNowAvailable = $this->_query(".//{$ns}:buyItNowAvailable[1]", 'boolean');
+        $this->buyItNowPrice = $this->_query(".//{$ns}:buyItNowPrice[1]", 'float');
+        $this->convertedBuyItNowPrice = $this->_query(".//{$ns}:convertedBuyItNowPrice[1]", 'float');
+        $this->endTime = $this->_query(".//{$ns}:endTime[1]", 'string');
+        $this->gift = $this->_query(".//{$ns}:gift[1]", 'boolean');
+        $this->listingType = $this->_query(".//{$ns}:listingType[1]", 'string');
+        $this->startTime = $this->_query(".//{$ns}:startTime[1]", 'string');
 
-        $this->_attributes['buyItNowPrice'] = array(
-            'currencyId' => $this->_query(".//$ns:buyItNowPrice[1]/@currencyId[1]", 'string')
-        );
+        $this->_attributes['buyItNowPrice'] = [
+            'currencyId' => $this->_query(".//{$ns}:buyItNowPrice[1]/@currencyId[1]", 'string'),
+        ];
 
-        $this->_attributes['convertedBuyItNowPrice'] = array(
-            'currencyId' => $this->_query(".//$ns:convertedBuyItNowPrice[1]/@currencyId[1]", 'string')
-        );
+        $this->_attributes['convertedBuyItNowPrice'] = [
+            'currencyId' => $this->_query(".//{$ns}:convertedBuyItNowPrice[1]/@currencyId[1]", 'string'),
+        ];
     }
 }

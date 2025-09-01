@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Queue
- * @subpackage Stomp
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -24,24 +25,23 @@
  * The Stomp client interacts with a Stomp server.
  *
  * @category   Zend
- * @package    Zend_Queue
- * @subpackage Stomp
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 interface Zend_Queue_Stomp_Client_ConnectionInterface
 {
     /**
-     * @param  string  $scheme ['tcp', 'udp']
+     * @param  string  $scheme  ['tcp', 'udp']
      * @param  string  host
-     * @param  integer port
+     * @param  int port
      * @param  string  class - create a connection with this class; class must support Zend_Queue_Stomp_Client_Connection_Interface
-     * @return boolean
+     * @return bool
      */
     public function open($scheme, $host, $port);
 
     /**
-     * @param  boolean $destructor
+     * @param  bool  $destructor
      * @return void
      */
     public function close($destructor = false);
@@ -50,6 +50,7 @@ interface Zend_Queue_Stomp_Client_ConnectionInterface
      * Check whether we are connected to the server
      *
      * @return true
+     *
      * @throws Zend_Queue_Exception
      */
     public function ping();
@@ -59,7 +60,6 @@ interface Zend_Queue_Stomp_Client_ConnectionInterface
      *
      * example: $response = $client->write($frame)->read();
      *
-     * @param  Zend_Queue_Stomp_FrameInterface $frame
      * @return $this
      */
     public function write(Zend_Queue_Stomp_FrameInterface $frame);
@@ -73,6 +73,7 @@ interface Zend_Queue_Stomp_Client_ConnectionInterface
      * reads in a frame from the socket or returns false.
      *
      * @return Zend_Queue_Stomp_Frame|false
+     *
      * @throws Zend_Queue_Exception
      */
     public function read();
@@ -82,7 +83,7 @@ interface Zend_Queue_Stomp_Client_ConnectionInterface
      *
      * This must be a Zend_Queue_Stomp_FrameInterface.
      *
-     * @param  string $class
+     * @param  string  $class
      * @return Zend_Queue_Stomp_Client_ConnectionInterface;
      */
     public function setFrameClass($class);

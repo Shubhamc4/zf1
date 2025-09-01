@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,9 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage Header_Exception
+ *
  * @version    $Id$
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -27,10 +28,8 @@ require_once 'Zend/Http/Exception.php';
 
 /**
  * @category   Zend
- * @package    Zend_Http
- * @subpackage Header_Exception
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Http_Header_Exception_InvalidArgumentException extends Zend_Http_Exception
-{}
+class Zend_Http_Header_Exception_InvalidArgumentException extends Zend_Http_Exception {}

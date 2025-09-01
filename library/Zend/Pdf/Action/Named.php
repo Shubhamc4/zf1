@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,27 +14,21 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Pdf
- * @subpackage Actions
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /** Zend_Pdf_Action */
 require_once 'Zend/Pdf/Action.php';
 
-
 /**
  * PDF 'Execute an action predefined by the viewer application' action
  * PDF 1.2+ feature
  *
- * @package    Zend_Pdf
- * @subpackage Actions
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Pdf_Action_Named extends Zend_Pdf_Action
-{
-}
-
+class Zend_Pdf_Action_Named extends Zend_Pdf_Action {}

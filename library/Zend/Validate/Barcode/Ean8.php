@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,7 +28,7 @@ require_once 'Zend/Validate/Barcode/AdapterAbstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -34,18 +36,21 @@ class Zend_Validate_Barcode_Ean8 extends Zend_Validate_Barcode_AdapterAbstract
 {
     /**
      * Allowed barcode lengths
-     * @var integer
+     *
+     * @var int
      */
-    protected $_length = array(7, 8);
+    protected $_length = [7, 8];
 
     /**
      * Allowed barcode characters
+     *
      * @var string
      */
     protected $_characters = '0123456789';
 
     /**
      * Checksum function
+     *
      * @var string
      */
     protected $_checksum = '_gtin';
@@ -53,8 +58,8 @@ class Zend_Validate_Barcode_Ean8 extends Zend_Validate_Barcode_AdapterAbstract
     /**
      * Overrides parent checkLength
      *
-     * @param string $value Value
-     * @return boolean
+     * @param  string  $value  Value
+     * @return bool
      */
     public function checkLength($value)
     {

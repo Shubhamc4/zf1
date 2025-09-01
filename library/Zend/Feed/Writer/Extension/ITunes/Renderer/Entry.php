@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,12 +28,11 @@ require_once 'Zend/Feed/Writer/Extension/RendererAbstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Feed_Writer_Extension_ITunes_Renderer_Entry
-    extends Zend_Feed_Writer_Extension_RendererAbstract
+class Zend_Feed_Writer_Extension_ITunes_Renderer_Entry extends Zend_Feed_Writer_Extension_RendererAbstract
 {
     /**
      * Set to TRUE if a rendering method actually renders something. This
@@ -75,14 +76,12 @@ class Zend_Feed_Writer_Extension_ITunes_Renderer_Entry
     /**
      * Set entry authors
      *
-     * @param  DOMDocument $dom
-     * @param  DOMElement $root
      * @return void
      */
     protected function _setAuthors(DOMDocument $dom, DOMElement $root)
     {
         $authors = $this->getDataContainer()->getItunesAuthors();
-        if (!$authors || empty($authors)) {
+        if (! $authors || empty($authors)) {
             return;
         }
         foreach ($authors as $author) {
@@ -97,8 +96,6 @@ class Zend_Feed_Writer_Extension_ITunes_Renderer_Entry
     /**
      * Set itunes block
      *
-     * @param  DOMDocument $dom
-     * @param  DOMElement $root
      * @return void
      */
     protected function _setBlock(DOMDocument $dom, DOMElement $root)
@@ -117,14 +114,12 @@ class Zend_Feed_Writer_Extension_ITunes_Renderer_Entry
     /**
      * Set entry duration
      *
-     * @param  DOMDocument $dom
-     * @param  DOMElement $root
      * @return void
      */
     protected function _setDuration(DOMDocument $dom, DOMElement $root)
     {
         $duration = $this->getDataContainer()->getItunesDuration();
-        if (!$duration) {
+        if (! $duration) {
             return;
         }
         $el = $dom->createElement('itunes:duration');
@@ -137,8 +132,6 @@ class Zend_Feed_Writer_Extension_ITunes_Renderer_Entry
     /**
      * Set explicit flag
      *
-     * @param  DOMDocument $dom
-     * @param  DOMElement $root
      * @return void
      */
     protected function _setExplicit(DOMDocument $dom, DOMElement $root)
@@ -157,14 +150,12 @@ class Zend_Feed_Writer_Extension_ITunes_Renderer_Entry
     /**
      * Set entry keywords
      *
-     * @param  DOMDocument $dom
-     * @param  DOMElement $root
      * @return void
      */
     protected function _setKeywords(DOMDocument $dom, DOMElement $root)
     {
         $keywords = $this->getDataContainer()->getItunesKeywords();
-        if (!$keywords || empty($keywords)) {
+        if (! $keywords || empty($keywords)) {
             return;
         }
         $el = $dom->createElement('itunes:keywords');
@@ -177,14 +168,12 @@ class Zend_Feed_Writer_Extension_ITunes_Renderer_Entry
     /**
      * Set entry subtitle
      *
-     * @param  DOMDocument $dom
-     * @param  DOMElement $root
      * @return void
      */
     protected function _setSubtitle(DOMDocument $dom, DOMElement $root)
     {
         $subtitle = $this->getDataContainer()->getItunesSubtitle();
-        if (!$subtitle) {
+        if (! $subtitle) {
             return;
         }
         $el = $dom->createElement('itunes:subtitle');
@@ -197,14 +186,12 @@ class Zend_Feed_Writer_Extension_ITunes_Renderer_Entry
     /**
      * Set entry summary
      *
-     * @param  DOMDocument $dom
-     * @param  DOMElement $root
      * @return void
      */
     protected function _setSummary(DOMDocument $dom, DOMElement $root)
     {
         $summary = $this->getDataContainer()->getItunesSummary();
-        if (!$summary) {
+        if (! $summary) {
             return;
         }
         $el = $dom->createElement('itunes:summary');

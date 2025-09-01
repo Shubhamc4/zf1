@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Pubsubhubbub
- * @subpackage Callback
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -32,14 +33,11 @@ require_once 'Zend/Feed/Pubsubhubbub/HttpResponse.php';
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Pubsubhubbub
- * @subpackage Callback
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
-abstract class Zend_Feed_Pubsubhubbub_CallbackAbstract
-    implements Zend_Feed_Pubsubhubbub_CallbackInterface
+abstract class Zend_Feed_Pubsubhubbub_CallbackAbstract implements Zend_Feed_Pubsubhubbub_CallbackInterface
 {
     /**
      * An instance of Zend_Feed_Pubsubhubbub_Model_SubscriptionInterface used
@@ -71,7 +69,7 @@ abstract class Zend_Feed_Pubsubhubbub_CallbackAbstract
      * options for the Subscriber without calling all supported setter
      * methods in turn.
      *
-     * @param array|Zend_Config|null $config Options array or Zend_Config instance
+     * @param  array|Zend_Config|null  $config  Options array or Zend_Config instance
      */
     public function __construct($config = null)
     {
@@ -83,22 +81,24 @@ abstract class Zend_Feed_Pubsubhubbub_CallbackAbstract
     /**
      * Process any injected configuration options
      *
-     * @param  array|Zend_Config $config Options array or Zend_Config instance
-     * @throws Zend_Feed_Pubsubhubbub_Exception
+     * @param  array|Zend_Config  $config  Options array or Zend_Config instance
      * @return Zend_Feed_Pubsubhubbub_CallbackAbstract
+     *
+     * @throws Zend_Feed_Pubsubhubbub_Exception
      */
     public function setConfig($config)
     {
         if ($config instanceof Zend_Config) {
             $config = $config->toArray();
-        } elseif (!is_array($config)) {
+        } elseif (! is_array($config)) {
             require_once 'Zend/Feed/Pubsubhubbub/Exception.php';
             throw new Zend_Feed_Pubsubhubbub_Exception('Array or Zend_Config object'
-            . 'expected, got ' . gettype($config));
+            .'expected, got '.gettype($config));
         }
         if (array_key_exists('storage', $config)) {
             $this->setStorage($config['storage']);
         }
+
         return $this;
     }
 
@@ -120,12 +120,12 @@ abstract class Zend_Feed_Pubsubhubbub_CallbackAbstract
      * to background save any verification tokens associated with a subscription
      * or other.
      *
-     * @param  Zend_Feed_Pubsubhubbub_Model_SubscriptionInterface $storage
      * @return Zend_Feed_Pubsubhubbub_CallbackAbstract
      */
     public function setStorage(Zend_Feed_Pubsubhubbub_Model_SubscriptionInterface $storage)
     {
         $this->_storage = $storage;
+
         return $this;
     }
 
@@ -134,16 +134,18 @@ abstract class Zend_Feed_Pubsubhubbub_CallbackAbstract
      * to background save any verification tokens associated with a subscription
      * or other.
      *
-     * @throws Zend_Feed_Pubsubhubbub_Exception
      * @return Zend_Feed_Pubsubhubbub_Model_SubscriptionInterface
+     *
+     * @throws Zend_Feed_Pubsubhubbub_Exception
      */
     public function getStorage()
     {
         if ($this->_storage === null) {
             require_once 'Zend/Feed/Pubsubhubbub/Exception.php';
             throw new Zend_Feed_Pubsubhubbub_Exception('No storage object has been'
-                . ' set that subclasses Zend_Feed_Pubsubhubbub_Model_SubscriptionInterface');
+                .' set that subclasses Zend_Feed_Pubsubhubbub_Model_SubscriptionInterface');
         }
+
         return $this->_storage;
     }
 
@@ -152,22 +154,24 @@ abstract class Zend_Feed_Pubsubhubbub_CallbackAbstract
      * Zend_Feed_Pubsubhubbub_HttpResponse which shares an unenforced interface with
      * (i.e. not inherited from) Zend_Controller_Response_Http.
      *
-     * @param  Zend_Feed_Pubsubhubbub_HttpResponse|Zend_Controller_Response_Http $httpResponse
-     * @throws Zend_Feed_Pubsubhubbub_Exception
+     * @param  Zend_Feed_Pubsubhubbub_HttpResponse|Zend_Controller_Response_Http  $httpResponse
      * @return Zend_Feed_Pubsubhubbub_CallbackAbstract
+     *
+     * @throws Zend_Feed_Pubsubhubbub_Exception
      */
     public function setHttpResponse($httpResponse)
     {
-        if (!is_object($httpResponse)
-            || (!$httpResponse instanceof Zend_Feed_Pubsubhubbub_HttpResponse
-                && !$httpResponse instanceof Zend_Controller_Response_Http)
+        if (! is_object($httpResponse)
+            || (! $httpResponse instanceof Zend_Feed_Pubsubhubbub_HttpResponse
+                && ! $httpResponse instanceof Zend_Controller_Response_Http)
         ) {
             require_once 'Zend/Feed/Pubsubhubbub/Exception.php';
             throw new Zend_Feed_Pubsubhubbub_Exception('HTTP Response object must'
-                . ' implement one of Zend_Feed_Pubsubhubbub_HttpResponse or'
-                . ' Zend_Controller_Response_Http');
+                .' implement one of Zend_Feed_Pubsubhubbub_HttpResponse or'
+                .' Zend_Controller_Response_Http');
         }
         $this->_httpResponse = $httpResponse;
+
         return $this;
     }
 
@@ -183,6 +187,7 @@ abstract class Zend_Feed_Pubsubhubbub_CallbackAbstract
         if ($this->_httpResponse === null) {
             $this->_httpResponse = new Zend_Feed_Pubsubhubbub_HttpResponse;
         }
+
         return $this->_httpResponse;
     }
 
@@ -191,9 +196,10 @@ abstract class Zend_Feed_Pubsubhubbub_CallbackAbstract
      * In other words, is this class serving one or more subscribers? How many?
      * Defaults to 1 if left unchanged.
      *
-     * @param  string|int $count
-     * @throws Zend_Feed_Pubsubhubbub_Exception
+     * @param  string|int  $count
      * @return Zend_Feed_Pubsubhubbub_CallbackAbstract
+     *
+     * @throws Zend_Feed_Pubsubhubbub_Exception
      */
     public function setSubscriberCount($count)
     {
@@ -201,9 +207,10 @@ abstract class Zend_Feed_Pubsubhubbub_CallbackAbstract
         if ($count <= 0) {
             require_once 'Zend/Feed/Pubsubhubbub/Exception.php';
             throw new Zend_Feed_Pubsubhubbub_Exception('Subscriber count must be'
-                . ' greater than zero');
+                .' greater than zero');
         }
         $this->_subscriberCount = $count;
+
         return $this;
     }
 
@@ -234,16 +241,17 @@ abstract class Zend_Feed_Pubsubhubbub_CallbackAbstract
             if ($_SERVER['HTTPS'] == 'on') {
                 $scheme = 'https';
             }
-            $schemeAndHttpHost = $scheme . '://' . $this->_getHttpHost();
+            $schemeAndHttpHost = $scheme.'://'.$this->_getHttpHost();
             if (strpos($callbackUrl, $schemeAndHttpHost) === 0) {
                 $callbackUrl = substr($callbackUrl, strlen($schemeAndHttpHost));
             }
         } elseif (isset($_SERVER['ORIG_PATH_INFO'])) {
-            $callbackUrl= $_SERVER['ORIG_PATH_INFO'];
-            if (!empty($_SERVER['QUERY_STRING'])) {
-                $callbackUrl .= '?' . $_SERVER['QUERY_STRING'];
+            $callbackUrl = $_SERVER['ORIG_PATH_INFO'];
+            if (! empty($_SERVER['QUERY_STRING'])) {
+                $callbackUrl .= '?'.$_SERVER['QUERY_STRING'];
             }
         }
+
         return $callbackUrl;
     }
 
@@ -254,7 +262,7 @@ abstract class Zend_Feed_Pubsubhubbub_CallbackAbstract
      */
     protected function _getHttpHost()
     {
-        if (!empty($_SERVER['HTTP_HOST'])) {
+        if (! empty($_SERVER['HTTP_HOST'])) {
             return $_SERVER['HTTP_HOST'];
         }
         $scheme = 'http';
@@ -267,33 +275,35 @@ abstract class Zend_Feed_Pubsubhubbub_CallbackAbstract
             || ($scheme == 'https' && $port == 443)
         ) {
             return $name;
-        } else {
-            return $name . ':' . $port;
         }
+
+        return $name.':'.$port;
+
     }
 
     /**
      * Retrieve a Header value from either $_SERVER or Apache
      *
-     * @param  string $header
+     * @param  string  $header
      * @return bool
      */
     protected function _getHeader($header)
     {
         $temp = strtoupper(str_replace('-', '_', $header));
-        if (!empty($_SERVER[$temp])) {
+        if (! empty($_SERVER[$temp])) {
             return $_SERVER[$temp];
         }
-        $temp = 'HTTP_' . strtoupper(str_replace('-', '_', $header));
-        if (!empty($_SERVER[$temp])) {
+        $temp = 'HTTP_'.strtoupper(str_replace('-', '_', $header));
+        if (! empty($_SERVER[$temp])) {
             return $_SERVER[$temp];
         }
         if (function_exists('apache_request_headers')) {
             $headers = apache_request_headers();
-            if (!empty($headers[$header])) {
+            if (! empty($headers[$header])) {
                 return $headers[$header];
             }
         }
+
         return false;
     }
 
@@ -311,6 +321,7 @@ abstract class Zend_Feed_Pubsubhubbub_CallbackAbstract
         if (strlen(trim($body)) > 0) {
             return $body;
         }
+
         return false;
     }
 }

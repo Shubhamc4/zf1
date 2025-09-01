@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to padraic dot brady at yahoo dot com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -24,15 +26,13 @@
  */
 require_once 'Zend/Feed/Writer/Extension/RendererInterface.php';
 
- /**
+/**
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
-abstract class Zend_Feed_Writer_Extension_RendererAbstract
-    implements Zend_Feed_Writer_Extension_RendererInterface
+abstract class Zend_Feed_Writer_Extension_RendererAbstract implements Zend_Feed_Writer_Extension_RendererInterface
 {
     /**
      * @var DOMDocument
@@ -74,7 +74,7 @@ abstract class Zend_Feed_Writer_Extension_RendererAbstract
     /**
      * Constructor
      *
-     * @param  mixed $container
+     * @param  mixed  $container
      * @return void
      */
     public function __construct($container)
@@ -85,12 +85,13 @@ abstract class Zend_Feed_Writer_Extension_RendererAbstract
     /**
      * Set feed encoding
      *
-     * @param  string $enc
+     * @param  string  $enc
      * @return Zend_Feed_Writer_Extension_RendererAbstract
      */
     public function setEncoding($enc)
     {
         $this->_encoding = $enc;
+
         return $this;
     }
 
@@ -107,14 +108,13 @@ abstract class Zend_Feed_Writer_Extension_RendererAbstract
     /**
      * Set DOMDocument and DOMElement on which to operate
      *
-     * @param  DOMDocument $dom
-     * @param  DOMElement $base
      * @return Zend_Feed_Writer_Extension_RendererAbstract
      */
     public function setDomDocument(DOMDocument $dom, DOMElement $base)
     {
-        $this->_dom  = $dom;
+        $this->_dom = $dom;
         $this->_base = $base;
+
         return $this;
     }
 
@@ -131,12 +131,13 @@ abstract class Zend_Feed_Writer_Extension_RendererAbstract
     /**
      * Set feed type
      *
-     * @param  string $type
+     * @param  string  $type
      * @return Zend_Feed_Writer_Extension_RendererAbstract
      */
     public function setType($type)
     {
         $this->_type = $type;
+
         return $this;
     }
 
@@ -153,12 +154,12 @@ abstract class Zend_Feed_Writer_Extension_RendererAbstract
     /**
      * Set root element of document
      *
-     * @param  DOMElement $root
      * @return Zend_Feed_Writer_Extension_RendererAbstract
      */
     public function setRootElement(DOMElement $root)
     {
         $this->_rootElement = $root;
+
         return $this;
     }
 

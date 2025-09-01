@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Node
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,12 +30,11 @@ require_once 'Zend/Ldap/Node.php';
  * Zend_Ldap_Node_ChildrenIterator provides an iterator to a collection of children nodes.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Node
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Ldap_Node_ChildrenIterator implements Iterator, Countable, RecursiveIterator, ArrayAccess
+class Zend_Ldap_Node_ChildrenIterator implements ArrayAccess, Countable, Iterator, RecursiveIterator
 {
     /**
      * An array of Zend_Ldap_Node objects
@@ -46,7 +46,6 @@ class Zend_Ldap_Node_ChildrenIterator implements Iterator, Countable, RecursiveI
     /**
      * Constructor.
      *
-     * @param  array $data
      * @return void
      */
     public function __construct(array $data)
@@ -60,7 +59,6 @@ class Zend_Ldap_Node_ChildrenIterator implements Iterator, Countable, RecursiveI
      *
      * @return int
      */
-    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->_data);
@@ -72,7 +70,6 @@ class Zend_Ldap_Node_ChildrenIterator implements Iterator, Countable, RecursiveI
      *
      * @return Zend_Ldap_Node
      */
-    #[\ReturnTypeWillChange]
     public function current()
     {
         return current($this->_data);
@@ -84,7 +81,6 @@ class Zend_Ldap_Node_ChildrenIterator implements Iterator, Countable, RecursiveI
      *
      * @return string
      */
-    #[\ReturnTypeWillChange]
     public function key()
     {
         return key($this->_data);
@@ -94,7 +90,6 @@ class Zend_Ldap_Node_ChildrenIterator implements Iterator, Countable, RecursiveI
      * Move forward to next child.
      * Implements Iterator
      */
-    #[\ReturnTypeWillChange]
     public function next()
     {
         next($this->_data);
@@ -104,7 +99,6 @@ class Zend_Ldap_Node_ChildrenIterator implements Iterator, Countable, RecursiveI
      * Rewind the Iterator to the first child.
      * Implements Iterator
      */
-    #[\ReturnTypeWillChange]
     public function rewind()
     {
         reset($this->_data);
@@ -115,27 +109,27 @@ class Zend_Ldap_Node_ChildrenIterator implements Iterator, Countable, RecursiveI
      * after calls to rewind() or next().
      * Implements Iterator
      *
-     * @return boolean
+     * @return bool
      */
-    #[\ReturnTypeWillChange]
     public function valid()
     {
-        return (current($this->_data)!==false);
+        return current($this->_data) !== false;
     }
 
     /**
      * Checks if current node has children.
      * Returns whether the current element has children.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasChildren()
     {
         if ($this->current() instanceof Zend_Ldap_Node) {
             return $this->current()->hasChildren();
-        } else {
-            return false;
         }
+
+        return false;
+
     }
 
     /**
@@ -147,61 +141,55 @@ class Zend_Ldap_Node_ChildrenIterator implements Iterator, Countable, RecursiveI
     {
         if ($this->current() instanceof Zend_Ldap_Node) {
             return $this->current()->getChildren();
-        } else {
-            return null;
         }
+
     }
 
     /**
      * Returns a child with a given RDN.
      * Implements ArrayAccess.
      *
-     * @param  string $rdn
+     * @param  string  $rdn
      * @return Zend_Ldap_node
      */
-    #[\ReturnTypeWillChange]
     public function offsetGet($rdn)
     {
         if ($this->offsetExists($rdn)) {
             return $this->_data[$rdn];
-        } else {
-            return null;
         }
+
     }
 
     /**
      * Checks whether a given rdn exists.
      * Implements ArrayAccess.
      *
-     * @param  string $rdn
-     * @return boolean
+     * @param  string  $rdn
+     * @return bool
      */
-    #[\ReturnTypeWillChange]
     public function offsetExists($rdn)
     {
-        return (array_key_exists($rdn, $this->_data));
+        return array_key_exists($rdn, $this->_data);
     }
 
     /**
      * Does nothing.
      * Implements ArrayAccess.
      *
-     * @param  string $name
+     * @param  string  $name
      * @return null
      */
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($name) { }
+    public function offsetUnset($name) {}
 
     /**
      * Does nothing.
      * Implements ArrayAccess.
      *
-     * @param  string $name
-     * @param  mixed $value
+     * @param  string  $name
+     * @param  mixed  $value
      * @return null
      */
-    #[\ReturnTypeWillChange]
-    public function offsetSet($name, $value) { }
+    public function offsetSet($name, $value) {}
 
     /**
      * Get all children as an array
@@ -210,10 +198,11 @@ class Zend_Ldap_Node_ChildrenIterator implements Iterator, Countable, RecursiveI
      */
     public function toArray()
     {
-        $data = array();
+        $data = [];
         foreach ($this as $rdn => $node) {
             $data[$rdn] = $node;
         }
+
         return $data;
     }
 }

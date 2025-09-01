@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Amf
- * @subpackage Request
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,8 +31,6 @@ require_once 'Zend/Amf/Request.php';
  * built at construction time using a raw POST; if no data is available, the
  * request is declared a fault.
  *
- * @package    Zend_Amf
- * @subpackage Request
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,6 +38,7 @@ class Zend_Amf_Request_Http extends Zend_Amf_Request
 {
     /**
      * Raw AMF request
+     *
      * @var string
      */
     protected $_rawRequest;
@@ -64,7 +64,7 @@ class Zend_Amf_Request_Http extends Zend_Amf_Request
             $this->_rawRequest = $amfRequest;
             $this->initialize($amfRequest);
         } else {
-            echo '<p>Zend Amf Endpoint</p>' ;
+            echo '<p>Zend Amf Endpoint</p>';
         }
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,7 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Dojo
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -21,9 +22,9 @@
 /**
  * Enable Dojo components
  *
- * @package    Zend_Dojo
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 class Zend_Dojo
@@ -51,16 +52,15 @@ class Zend_Dojo
     /**
      * Dojo-enable a form instance
      *
-     * @param  Zend_Form $form
      * @return void
      */
     public static function enableForm(Zend_Form $form)
     {
         $form->addPrefixPath('Zend_Dojo_Form_Decorator', 'Zend/Dojo/Form/Decorator', 'decorator')
-             ->addPrefixPath('Zend_Dojo_Form_Element', 'Zend/Dojo/Form/Element', 'element')
-             ->addElementPrefixPath('Zend_Dojo_Form_Decorator', 'Zend/Dojo/Form/Decorator', 'decorator')
-             ->addDisplayGroupPrefixPath('Zend_Dojo_Form_Decorator', 'Zend/Dojo/Form/Decorator')
-             ->setDefaultDisplayGroupClass('Zend_Dojo_Form_DisplayGroup');
+            ->addPrefixPath('Zend_Dojo_Form_Element', 'Zend/Dojo/Form/Element', 'element')
+            ->addElementPrefixPath('Zend_Dojo_Form_Decorator', 'Zend/Dojo/Form/Decorator', 'decorator')
+            ->addDisplayGroupPrefixPath('Zend_Dojo_Form_Decorator', 'Zend/Dojo/Form/Decorator')
+            ->setDefaultDisplayGroupClass('Zend_Dojo_Form_DisplayGroup');
 
         foreach ($form->getSubForms() as $subForm) {
             self::enableForm($subForm);
@@ -74,7 +74,6 @@ class Zend_Dojo
     /**
      * Dojo-enable a view instance
      *
-     * @param  Zend_View_Interface $view
      * @return void
      */
     public static function enableView(Zend_View_Interface $view)
@@ -84,4 +83,3 @@ class Zend_Dojo
         }
     }
 }
-

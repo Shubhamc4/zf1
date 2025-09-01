@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,24 +14,21 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_XmlRpc
- * @subpackage Value
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * Zend_XmlRpc_Value_Collection
  */
 require_once 'Zend/XmlRpc/Value/Collection.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_XmlRpc
- * @subpackage Value
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,14 +37,13 @@ class Zend_XmlRpc_Value_Struct extends Zend_XmlRpc_Value_Collection
     /**
      * Set the value of an struct native type
      *
-     * @param array $value
+     * @param  array  $value
      */
     public function __construct($value)
     {
         $this->_type = self::XMLRPC_TYPE_STRUCT;
         parent::__construct($value);
     }
-
 
     /**
      * Generate the XML code that represent struct native MXL-RPC value
@@ -57,19 +54,19 @@ class Zend_XmlRpc_Value_Struct extends Zend_XmlRpc_Value_Collection
     {
         $generator = $this->getGenerator();
         $generator->openElement('value')
-                  ->openElement('struct');
+            ->openElement('struct');
 
         if (is_array($this->_value)) {
             foreach ($this->_value as $name => $val) {
                 /* @var $val Zend_XmlRpc_Value */
                 $generator->openElement('member')
-                          ->openElement('name', $name)
-                          ->closeElement('name');
+                    ->openElement('name', $name)
+                    ->closeElement('name');
                 $val->generateXml();
                 $generator->closeElement('member');
             }
         }
         $generator->closeElement('struct')
-                  ->closeElement('value');
+            ->closeElement('value');
     }
 }

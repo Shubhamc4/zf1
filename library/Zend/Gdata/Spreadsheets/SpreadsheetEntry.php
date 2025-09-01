@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Spreadsheets
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,19 +30,18 @@ require_once 'Zend/Gdata/Entry.php';
  * Concrete class for working with Atom entries.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Spreadsheets
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Spreadsheets_SpreadsheetEntry extends Zend_Gdata_Entry
 {
-
     protected $_entryClassName = 'Zend_Gdata_Spreadsheets_SpreadsheetEntry';
 
     /**
      * Constructs a new Zend_Gdata_Spreadsheets_SpreadsheetEntry object.
-     * @param DOMElement $element (optional) The DOMElement on which to base this object.
+     *
+     * @param  DOMElement  $element  (optional) The DOMElement on which to base this object.
      */
     public function __construct($element = null)
     {
@@ -58,7 +57,7 @@ class Zend_Gdata_Spreadsheets_SpreadsheetEntry extends Zend_Gdata_Entry
     public function getWorksheets()
     {
         $service = new Zend_Gdata_Spreadsheets($this->getHttpClient());
+
         return $service->getWorksheetFeed($this);
     }
-
 }

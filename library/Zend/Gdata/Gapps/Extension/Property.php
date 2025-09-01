@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gapps
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: EmailList.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
@@ -35,15 +35,14 @@ require_once 'Zend/Gdata/Gapps.php';
  * Represents the apps:Property element used by the Apps data API.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gapps
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Gapps_Extension_Property extends Zend_Gdata_Extension
 {
-
     protected $_rootNamespace = 'apps';
+
     protected $_rootElement = 'property';
 
     /**
@@ -55,6 +54,7 @@ class Zend_Gdata_Gapps_Extension_Property extends Zend_Gdata_Extension
 
     /**
      * The value of the property
+     *
      * @var string
      */
     protected $_value = null;
@@ -62,8 +62,8 @@ class Zend_Gdata_Gapps_Extension_Property extends Zend_Gdata_Extension
     /**
      * Constructs a new Zend_Gdata_Gapps_Extension_Property object.
      *
-     * @param string $name The name of the property
-     * @param string $value The value of the property
+     * @param  string  $name  The name of the property
+     * @param  string  $value  The value of the property
      */
     public function __construct($name = null, $value = null)
     {
@@ -74,16 +74,15 @@ class Zend_Gdata_Gapps_Extension_Property extends Zend_Gdata_Extension
 
     }
 
-
     /**
      * Retrieves a DOMElement which corresponds to this element and all
      * child properties.  This is used to build an entry back into a DOM
      * and eventually XML text for sending to the server upon updates, or
      * for application storage/persistence.
      *
-     * @param DOMDocument $doc The DOMDocument used to construct DOMElements
+     * @param  DOMDocument  $doc  The DOMDocument used to construct DOMElements
      * @return DOMElement The DOMElement representing this element and all
-     * child properties.
+     *                    child properties.
      */
     public function getDOM($doc = null, $majorVersion = 1, $minorVersion = null)
     {
@@ -104,19 +103,19 @@ class Zend_Gdata_Gapps_Extension_Property extends Zend_Gdata_Extension
      * instance members.  If no mapping is defined, the name and value are
      * stored in an array.
      *
-     * @param DOMNode $attribute The DOMNode attribute needed to be handled
+     * @param  DOMNode  $attribute  The DOMNode attribute needed to be handled
      */
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'name':
-            $this->_name = $attribute->nodeValue;
-            break;
-        case 'value':
-            $this->_value = $attribute->nodeValue;
-            break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            case 'name':
+                $this->_name = $attribute->nodeValue;
+                break;
+            case 'value':
+                $this->_value = $attribute->nodeValue;
+                break;
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 
@@ -124,6 +123,7 @@ class Zend_Gdata_Gapps_Extension_Property extends Zend_Gdata_Extension
      * Get the value for this element's name attribute.
      *
      * @see setName
+     *
      * @return string The requested attribute.
      */
     public function getName()
@@ -133,12 +133,14 @@ class Zend_Gdata_Gapps_Extension_Property extends Zend_Gdata_Extension
 
     /**
      * Set the value for this element's name attribute.
-     * @param string $value The desired value for this attribute.
+     *
+     * @param  string  $value  The desired value for this attribute.
      * @return Zend_Gdata_Gapps_Extension_Property The element being modified.
      */
     public function setName($value)
     {
         $this->_name = $value;
+
         return $this;
     }
 
@@ -146,6 +148,7 @@ class Zend_Gdata_Gapps_Extension_Property extends Zend_Gdata_Extension
      * Get the value for this element's value attribute.
      *
      * @see setName
+     *
      * @return string The requested attribute.
      */
     public function getValue()
@@ -156,12 +159,13 @@ class Zend_Gdata_Gapps_Extension_Property extends Zend_Gdata_Extension
     /**
      * Set the value for this element's value attribute.
      *
-     * @param string $value The desired value for this attribute.
+     * @param  string  $value  The desired value for this attribute.
      * @return Zend_Gdata_Gapps_Extension_Property The element being modified.
      */
     public function setValue($value)
     {
         $this->_value = $value;
+
         return $this;
     }
 
@@ -173,7 +177,7 @@ class Zend_Gdata_Gapps_Extension_Property extends Zend_Gdata_Extension
      */
     public function __toString()
     {
-        return "Property Name: " . $this->getName() .
-               "\nProperty Value: " . $this->getValue();
+        return 'Property Name: '.$this->getName().
+               "\nProperty Value: ".$this->getValue();
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Server
- * @subpackage Method
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -24,8 +25,7 @@
  * Method parameter metadata
  *
  * @category   Zend
- * @package    Zend_Server
- * @subpackage Method
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -59,7 +59,7 @@ class Zend_Server_Method_Parameter
     /**
      * Constructor
      *
-     * @param  null|array $options
+     * @param  null|array  $options
      * @return void
      */
     public function __construct($options = null)
@@ -72,29 +72,30 @@ class Zend_Server_Method_Parameter
     /**
      * Set object state from array of options
      *
-     * @param  array $options
      * @return Zend_Server_Method_Parameter
      */
     public function setOptions(array $options)
     {
         foreach ($options as $key => $value) {
-            $method = 'set' . ucfirst($key);
+            $method = 'set'.ucfirst($key);
             if (method_exists($this, $method)) {
                 $this->$method($value);
             }
         }
+
         return $this;
     }
 
     /**
      * Set default value
      *
-     * @param  mixed $defaultValue
+     * @param  mixed  $defaultValue
      * @return Zend_Server_Method_Parameter
      */
     public function setDefaultValue($defaultValue)
     {
         $this->_defaultValue = $defaultValue;
+
         return $this;
     }
 
@@ -111,12 +112,13 @@ class Zend_Server_Method_Parameter
     /**
      * Set description
      *
-     * @param  string $description
+     * @param  string  $description
      * @return Zend_Server_Method_Parameter
      */
     public function setDescription($description)
     {
         $this->_description = (string) $description;
+
         return $this;
     }
 
@@ -133,12 +135,13 @@ class Zend_Server_Method_Parameter
     /**
      * Set name
      *
-     * @param  string $name
+     * @param  string  $name
      * @return Zend_Server_Method_Parameter
      */
     public function setName($name)
     {
         $this->_name = (string) $name;
+
         return $this;
     }
 
@@ -155,12 +158,13 @@ class Zend_Server_Method_Parameter
     /**
      * Set optional flag
      *
-     * @param  bool $flag
+     * @param  bool  $flag
      * @return Zend_Server_Method_Parameter
      */
     public function setOptional($flag)
     {
         $this->_optional = (bool) $flag;
+
         return $this;
     }
 
@@ -177,12 +181,13 @@ class Zend_Server_Method_Parameter
     /**
      * Set parameter type
      *
-     * @param  string $type
+     * @param  string  $type
      * @return Zend_Server_Method_Parameter
      */
     public function setType($type)
     {
         $this->_type = (string) $type;
+
         return $this;
     }
 
@@ -203,12 +208,12 @@ class Zend_Server_Method_Parameter
      */
     public function toArray()
     {
-        return array(
-            'type'         => $this->getType(),
-            'name'         => $this->getName(),
-            'optional'     => $this->isOptional(),
+        return [
+            'type' => $this->getType(),
+            'name' => $this->getName(),
+            'optional' => $this->isOptional(),
             'defaultValue' => $this->getDefaultValue(),
-            'description'  => $this->getDescription(),
-        );
+            'description' => $this->getDescription(),
+        ];
     }
 }

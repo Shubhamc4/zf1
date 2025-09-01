@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,17 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Analysis
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
-
 /** User land classes and interfaces turned on by Zend/Search/Analyzer.php file inclusion. */
 /** @todo Section should be removed with ZF 2.0 release as obsolete                      */
-if (!defined('ZEND_SEARCH_LUCENE_COMMON_ANALYZER_PROCESSED')) {
+if (! defined('ZEND_SEARCH_LUCENE_COMMON_ANALYZER_PROCESSED')) {
     /** Zend_Search_Lucene_Analysis_Analyzer_Common_Utf8 */
     require_once 'Zend/Search/Lucene/Analysis/Analyzer/Common/Utf8.php';
 
@@ -49,7 +49,6 @@ if (!defined('ZEND_SEARCH_LUCENE_COMMON_ANALYZER_PROCESSED')) {
     require_once 'Zend/Search/Lucene/Analysis/Analyzer/Common/TextNum/CaseInsensitive.php';
 }
 
-
 /**
  * An Analyzer is used to analyze text.
  * It thus represents a policy for extracting index terms from text.
@@ -61,13 +60,10 @@ if (!defined('ZEND_SEARCH_LUCENE_COMMON_ANALYZER_PROCESSED')) {
  * Thus Zend_Search_Lucene analysis API works with data strings and sets (arrays).
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Analysis
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-
-#[AllowDynamicProperties]
 abstract class Zend_Search_Lucene_Analysis_Analyzer
 {
     /**
@@ -97,14 +93,14 @@ abstract class Zend_Search_Lucene_Analysis_Analyzer
      *
      * Tokens are returned in UTF-8 (internal Zend_Search_Lucene encoding)
      *
-     * @param string $data
+     * @param  string  $data
      * @return array
      */
     public function tokenize($data, $encoding = '')
     {
         $this->setInput($data, $encoding);
 
-        $tokenList = array();
+        $tokenList = [];
         while (($nextToken = $this->nextToken()) !== null) {
             $tokenList[] = $nextToken;
         }
@@ -112,16 +108,15 @@ abstract class Zend_Search_Lucene_Analysis_Analyzer
         return $tokenList;
     }
 
-
     /**
      * Tokenization stream API
      * Set input
      *
-     * @param string $data
+     * @param  string  $data
      */
     public function setInput($data, $encoding = '')
     {
-        $this->_input    = $data;
+        $this->_input = $data;
         $this->_encoding = $encoding;
         $this->reset();
     }
@@ -142,19 +137,15 @@ abstract class Zend_Search_Lucene_Analysis_Analyzer
      */
     abstract public function nextToken();
 
-
-
-
     /**
      * Set the default Analyzer implementation used by indexing code.
      *
-     * @param Zend_Search_Lucene_Analysis_Analyzer $similarity
+     * @param  Zend_Search_Lucene_Analysis_Analyzer  $similarity
      */
     public static function setDefault(Zend_Search_Lucene_Analysis_Analyzer $analyzer)
     {
         self::$_defaultImpl = $analyzer;
     }
-
 
     /**
      * Return the default Analyzer implementation used by indexing code.
@@ -166,11 +157,10 @@ abstract class Zend_Search_Lucene_Analysis_Analyzer
         /** Zend_Search_Lucene_Analysis_Analyzer_Common_Text_CaseInsensitive */
         require_once 'Zend/Search/Lucene/Analysis/Analyzer/Common/Text/CaseInsensitive.php';
 
-        if (!self::$_defaultImpl instanceof Zend_Search_Lucene_Analysis_Analyzer) {
-            self::$_defaultImpl = new Zend_Search_Lucene_Analysis_Analyzer_Common_Text_CaseInsensitive();
+        if (! self::$_defaultImpl instanceof Zend_Search_Lucene_Analysis_Analyzer) {
+            self::$_defaultImpl = new Zend_Search_Lucene_Analysis_Analyzer_Common_Text_CaseInsensitive;
         }
 
         return self::$_defaultImpl;
     }
 }
-

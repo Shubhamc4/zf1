@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Barcode
- * @subpackage Renderer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Image.php 20366 2010-01-18 03:56:52Z ralph $
  */
 
@@ -27,53 +28,58 @@ require_once 'Zend/Barcode/Renderer/RendererAbstract.php';
  * Class for rendering the barcode as svg
  *
  * @category   Zend
- * @package    Zend_Barcode
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Barcode_Renderer_Svg extends Zend_Barcode_Renderer_RendererAbstract
 {
-
     /**
      * Resource for the image
+     *
      * @var DOMDocument
      */
     protected $_resource = null;
 
     /**
      * Root element of the XML structure
+     *
      * @var DOMElement
      */
     protected $_rootElement = null;
 
     /**
      * Height of the rendered image wanted by user
-     * @var integer
+     *
+     * @var int
      */
     protected $_userHeight = 0;
 
     /**
      * Width of the rendered image wanted by user
-     * @var integer
+     *
+     * @var int
      */
     protected $_userWidth = 0;
 
     /**
      * Set height of the result image
      *
-     * @param null|integer $value
+     * @param  null|int  $value
      * @return Zend_Image_Barcode_Abstract
+     *
      * @throws Zend_Barcode_Renderer_Exception
      */
     public function setHeight($value)
     {
-        if (!is_numeric($value) || intval($value) < 0) {
+        if (! is_numeric($value) || intval($value) < 0) {
             require_once 'Zend/Barcode/Renderer/Exception.php';
             throw new Zend_Barcode_Renderer_Exception(
                 'Svg height must be greater than or equals 0'
             );
         }
         $this->_userHeight = intval($value);
+
         return $this;
     }
 
@@ -90,19 +96,21 @@ class Zend_Barcode_Renderer_Svg extends Zend_Barcode_Renderer_RendererAbstract
     /**
      * Set barcode width
      *
-     * @param mixed $value
+     * @param  mixed  $value
      * @return self
+     *
      * @throws Zend_Barcode_Renderer_Exception
      */
     public function setWidth($value)
     {
-        if (!is_numeric($value) || intval($value) < 0) {
+        if (! is_numeric($value) || intval($value) < 0) {
             require_once 'Zend/Barcode/Renderer/Exception.php';
             throw new Zend_Barcode_Renderer_Exception(
                 'Svg width must be greater than or equals 0'
             );
         }
         $this->_userWidth = intval($value);
+
         return $this;
     }
 
@@ -119,19 +127,20 @@ class Zend_Barcode_Renderer_Svg extends Zend_Barcode_Renderer_RendererAbstract
     /**
      * Set an image resource to draw the barcode inside
      *
-     * @param $svg
      * @return Zend_Barcode_Renderer
+     *
      * @throws Zend_Barcode_Renderer_Exception
      */
     public function setResource($svg)
     {
-        if (!$svg instanceof DOMDocument) {
+        if (! $svg instanceof DOMDocument) {
             require_once 'Zend/Barcode/Renderer/Exception.php';
             throw new Zend_Barcode_Renderer_Exception(
                 'Invalid DOMDocument resource provided to setResource()'
             );
         }
         $this->_resource = $svg;
+
         return $this;
     }
 
@@ -142,13 +151,13 @@ class Zend_Barcode_Renderer_Svg extends Zend_Barcode_Renderer_RendererAbstract
      */
     protected function _initRenderer()
     {
-        $barcodeWidth  = $this->_barcode->getWidth(true);
+        $barcodeWidth = $this->_barcode->getWidth(true);
         $barcodeHeight = $this->_barcode->getHeight(true);
 
         $backgroundColor = $this->_barcode->getBackgroundColor();
-        $imageBackgroundColor = 'rgb(' . implode(', ', array(($backgroundColor & 0xFF0000) >> 16,
-                                                             ($backgroundColor & 0x00FF00) >> 8,
-                                                             ($backgroundColor & 0x0000FF))) . ')';
+        $imageBackgroundColor = 'rgb('.implode(', ', [($backgroundColor & 0xFF0000) >> 16,
+            ($backgroundColor & 0x00FF00) >> 8,
+            ($backgroundColor & 0x0000FF)]).')';
 
         $width = $barcodeWidth;
         $height = $barcodeHeight;
@@ -162,14 +171,14 @@ class Zend_Barcode_Renderer_Svg extends Zend_Barcode_Renderer_RendererAbstract
             $this->_resource = new DOMDocument('1.0', 'utf-8');
             $this->_resource->formatOutput = true;
             $this->_rootElement = $this->_resource->createElement('svg');
-            $this->_rootElement->setAttribute('xmlns', "http://www.w3.org/2000/svg");
+            $this->_rootElement->setAttribute('xmlns', 'http://www.w3.org/2000/svg');
             $this->_rootElement->setAttribute('version', '1.1');
             $this->_rootElement->setAttribute('width', $width);
             $this->_rootElement->setAttribute('height', $height);
 
             $this->_appendRootElement('title',
-                                      array(),
-                                      "Barcode " . strtoupper($this->_barcode->getType()) . " " . $this->_barcode->getText());
+                [],
+                'Barcode '.strtoupper($this->_barcode->getType()).' '.$this->_barcode->getText());
         } else {
             $this->_readRootElement();
             $width = $this->_rootElement->getAttribute('width');
@@ -178,11 +187,11 @@ class Zend_Barcode_Renderer_Svg extends Zend_Barcode_Renderer_RendererAbstract
         $this->_adjustPosition($height, $width);
 
         $this->_appendRootElement('rect',
-                          array('x' => $this->_leftOffset,
-                                'y' => $this->_topOffset,
-                                'width' => ($this->_leftOffset + $barcodeWidth - 1),
-                                'height' => ($this->_topOffset + $barcodeHeight - 1),
-                                'fill' => $imageBackgroundColor));
+            ['x' => $this->_leftOffset,
+                'y' => $this->_topOffset,
+                'width' => ($this->_leftOffset + $barcodeWidth - 1),
+                'height' => ($this->_topOffset + $barcodeHeight - 1),
+                'fill' => $imageBackgroundColor]);
     }
 
     protected function _readRootElement()
@@ -195,11 +204,11 @@ class Zend_Barcode_Renderer_Svg extends Zend_Barcode_Renderer_RendererAbstract
     /**
      * Append a new DOMElement to the root element
      *
-     * @param string $tagName
-     * @param array $attributes
-     * @param string $textContent
+     * @param  string  $tagName
+     * @param  array  $attributes
+     * @param  string  $textContent
      */
-    protected function _appendRootElement($tagName, $attributes = array(), $textContent = null)
+    protected function _appendRootElement($tagName, $attributes = [], $textContent = null)
     {
         $newElement = $this->_createElement($tagName, $attributes, $textContent);
         $this->_rootElement->appendChild($newElement);
@@ -208,20 +217,21 @@ class Zend_Barcode_Renderer_Svg extends Zend_Barcode_Renderer_RendererAbstract
     /**
      * Create DOMElement
      *
-     * @param string $tagName
-     * @param array $attributes
-     * @param string $textContent
+     * @param  string  $tagName
+     * @param  array  $attributes
+     * @param  string  $textContent
      * @return DOMElement
      */
-    protected function _createElement($tagName, $attributes = array(), $textContent = null)
+    protected function _createElement($tagName, $attributes = [], $textContent = null)
     {
         $element = $this->_resource->createElement($tagName);
-        foreach ($attributes as $k =>$v) {
+        foreach ($attributes as $k => $v) {
             $element->setAttribute($k, $v);
         }
         if ($textContent !== null) {
             $element->appendChild(new DOMText((string) $textContent));
         }
+
         return $element;
     }
 
@@ -239,6 +249,7 @@ class Zend_Barcode_Renderer_Svg extends Zend_Barcode_Renderer_RendererAbstract
      * Check barcode dimensions
      *
      * @return void
+     *
      * @throws Zend_Barcode_Renderer_Exception
      */
     protected function _checkDimensions()
@@ -291,12 +302,14 @@ class Zend_Barcode_Renderer_Svg extends Zend_Barcode_Renderer_RendererAbstract
 
     /**
      * Draw the barcode in the rendering resource
+     *
      * @return mixed
      */
     public function draw()
     {
         parent::draw();
         $this->_resource->appendChild($this->_rootElement);
+
         return $this->_resource;
     }
 
@@ -308,24 +321,24 @@ class Zend_Barcode_Renderer_Svg extends Zend_Barcode_Renderer_RendererAbstract
     public function render()
     {
         $this->draw();
-        header("Content-Type: image/svg+xml");
+        header('Content-Type: image/svg+xml');
         echo $this->_resource->saveXML();
     }
 
     /**
      * Draw a polygon in the svg resource
      *
-     * @param array $points
-     * @param integer $color
-     * @param boolean $filled
+     * @param  array  $points
+     * @param  int  $color
+     * @param  bool  $filled
      */
     protected function _drawPolygon($points, $color, $filled = true)
     {
-        $color = 'rgb(' . implode(', ', array(($color & 0xFF0000) >> 16,
-                                              ($color & 0x00FF00) >> 8,
-                                              ($color & 0x0000FF))) . ')';
+        $color = 'rgb('.implode(', ', [($color & 0xFF0000) >> 16,
+            ($color & 0x00FF00) >> 8,
+            ($color & 0x0000FF)]).')';
         $orientation = $this->getBarcode()->getOrientation();
-        $newPoints = array(
+        $newPoints = [
             $points[0][0] + $this->_leftOffset,
             $points[0][1] + $this->_topOffset,
             $points[1][0] + $this->_leftOffset,
@@ -334,7 +347,7 @@ class Zend_Barcode_Renderer_Svg extends Zend_Barcode_Renderer_RendererAbstract
             $points[2][1] + $this->_topOffset - sin($orientation),
             $points[3][0] + $this->_leftOffset + cos(-$orientation),
             $points[3][1] + $this->_topOffset - sin($orientation),
-        );
+        ];
         $newPoints = implode(' ', $newPoints);
         $attributes['points'] = $newPoints;
         $attributes['fill'] = $color;
@@ -344,22 +357,22 @@ class Zend_Barcode_Renderer_Svg extends Zend_Barcode_Renderer_RendererAbstract
     /**
      * Draw a polygon in the svg resource
      *
-     * @param string    $text
-     * @param float     $size
-     * @param array     $position
-     * @param string    $font
-     * @param integer   $color
-     * @param string    $alignment
-     * @param float|int $orientation
+     * @param  string  $text
+     * @param  float  $size
+     * @param  array  $position
+     * @param  string  $font
+     * @param  int  $color
+     * @param  string  $alignment
+     * @param  float|int  $orientation
      */
     protected function _drawText($text, $size, $position, $font, $color, $alignment = 'center', $orientation = 0)
     {
-        $color = 'rgb(' . implode(', ', array(($color & 0xFF0000) >> 16,
-                                              ($color & 0x00FF00) >> 8,
-                                              ($color & 0x0000FF))) . ')';
+        $color = 'rgb('.implode(', ', [($color & 0xFF0000) >> 16,
+            ($color & 0x00FF00) >> 8,
+            ($color & 0x0000FF)]).')';
         $attributes['x'] = $position[0] + $this->_leftOffset;
         $attributes['y'] = $position[1] + $this->_topOffset;
-        //$attributes['font-family'] = $font;
+        // $attributes['font-family'] = $font;
         $attributes['color'] = $color;
         $attributes['font-size'] = $size * 1.2;
         switch ($alignment) {
@@ -373,13 +386,13 @@ class Zend_Barcode_Renderer_Svg extends Zend_Barcode_Renderer_RendererAbstract
             default:
                 $textAnchor = 'middle';
         }
-        $attributes['style'] = 'text-anchor: ' . $textAnchor;
+        $attributes['style'] = 'text-anchor: '.$textAnchor;
         $attributes['transform'] = 'rotate('
-                                 . (- $orientation)
-                                 . ', '
-                                 . ($position[0] + $this->_leftOffset)
-                                 . ', ' . ($position[1] + $this->_topOffset)
-                                 . ')';
+                                 .(-$orientation)
+                                 .', '
+                                 .($position[0] + $this->_leftOffset)
+                                 .', '.($position[1] + $this->_topOffset)
+                                 .')';
         $this->_appendRootElement('text', $attributes, $text);
     }
 }

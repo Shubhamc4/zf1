@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,17 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Pubsubhubbub
- * @subpackage Callback
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Pubsubhubbub
- * @subpackage Callback
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -34,10 +34,10 @@ interface Zend_Feed_Pubsubhubbub_CallbackInterface
      * unsubscription request. This should be the Hub Server confirming the
      * the request prior to taking action on it.
      *
-     * @param array $httpData GET/POST data if available and not in $_GET/POST
-     * @param bool $sendResponseNow Whether to send response now or when asked
+     * @param  array  $httpData  GET/POST data if available and not in $_GET/POST
+     * @param  bool  $sendResponseNow  Whether to send response now or when asked
      */
-    public function handle(array $httpData = null, $sendResponseNow = false);
+    public function handle(?array $httpData = null, $sendResponseNow = false);
 
     /**
      * Send the response, including all headers.
@@ -54,7 +54,7 @@ interface Zend_Feed_Pubsubhubbub_CallbackInterface
      * Zend_Feed_Pubsubhubbub_HttpResponse which shares an unenforced interface with
      * (i.e. not inherited from) Zend_Controller_Response_Http.
      *
-     * @param Zend_Feed_Pubsubhubbub_HttpResponse|Zend_Controller_Response_Http $httpResponse
+     * @param  Zend_Feed_Pubsubhubbub_HttpResponse|Zend_Controller_Response_Http  $httpResponse
      */
     public function setHttpResponse($httpResponse);
 

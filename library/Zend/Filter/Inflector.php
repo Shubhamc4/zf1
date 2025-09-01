@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -34,7 +36,7 @@ require_once 'Zend/Loader/PluginLoader.php';
  * Filter chain for string inflection
  *
  * @category   Zend
- * @package    Zend_Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -63,34 +65,34 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
     /**
      * @var array
      */
-    protected $_rules = array();
+    protected $_rules = [];
 
     /**
      * Constructor
      *
-     * @param string|array $options Options to set
+     * @param  string|array  $options  Options to set
      */
     public function __construct($options = null)
     {
         if ($options instanceof Zend_Config) {
             $options = $options->toArray();
-        } else if (!is_array($options)) {
+        } elseif (! is_array($options)) {
             $options = func_get_args();
-            $temp    = array();
+            $temp = [];
 
-            if (!empty($options)) {
+            if (! empty($options)) {
                 $temp['target'] = array_shift($options);
             }
 
-            if (!empty($options)) {
+            if (! empty($options)) {
                 $temp['rules'] = array_shift($options);
             }
 
-            if (!empty($options)) {
+            if (! empty($options)) {
                 $temp['throwTargetExceptionsOn'] = array_shift($options);
             }
 
-            if (!empty($options)) {
+            if (! empty($options)) {
                 $temp['targetReplacementIdentifier'] = array_shift($options);
             }
 
@@ -107,8 +109,8 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
      */
     public function getPluginLoader()
     {
-        if (!$this->_pluginLoader instanceof Zend_Loader_PluginLoader_Interface) {
-            $this->_pluginLoader = new Zend_Loader_PluginLoader(array('Zend_Filter_' => 'Zend/Filter/'), __CLASS__);
+        if (! $this->_pluginLoader instanceof Zend_Loader_PluginLoader_Interface) {
+            $this->_pluginLoader = new Zend_Loader_PluginLoader(['Zend_Filter_' => 'Zend/Filter/'], __CLASS__);
         }
 
         return $this->_pluginLoader;
@@ -117,12 +119,12 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
     /**
      * Set PluginLoader
      *
-     * @param Zend_Loader_PluginLoader_Interface $pluginLoader
      * @return Zend_Filter_Inflector
      */
     public function setPluginLoader(Zend_Loader_PluginLoader_Interface $pluginLoader)
     {
         $this->_pluginLoader = $pluginLoader;
+
         return $this;
     }
 
@@ -130,7 +132,7 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
      * Use Zend_Config object to set object state
      *
      * @deprecated Use setOptions() instead
-     * @param  Zend_Config $config
+     *
      * @return Zend_Filter_Inflector
      */
     public function setConfig(Zend_Config $config)
@@ -141,17 +143,18 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
     /**
      * Set options
      *
-     * @param  array $options
+     * @param  array  $options
      * @return Zend_Filter_Inflector
      */
-    public function setOptions($options) {
+    public function setOptions($options)
+    {
         if ($options instanceof Zend_Config) {
             $options = $options->toArray();
         }
 
         // Set Präfix Path
         if (array_key_exists('filterPrefixPath', $options)) {
-            if (!is_scalar($options['filterPrefixPath'])) {
+            if (! is_scalar($options['filterPrefixPath'])) {
                 foreach ($options['filterPrefixPath'] as $prefix => $path) {
                     $this->addFilterPrefixPath($prefix, $path);
                 }
@@ -180,13 +183,14 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
     /**
      * Convienence method to add prefix and path to PluginLoader
      *
-     * @param string $prefix
-     * @param string $path
+     * @param  string  $prefix
+     * @param  string  $path
      * @return Zend_Filter_Inflector
      */
     public function addFilterPrefixPath($prefix, $path)
     {
         $this->getPluginLoader()->addPrefixPath($prefix, $path);
+
         return $this;
     }
 
@@ -194,12 +198,13 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
      * Set Whether or not the inflector should throw an exception when a replacement
      * identifier is still found within an inflected target.
      *
-     * @param bool $throwTargetExceptions
+     * @param  bool  $throwTargetExceptions
      * @return Zend_Filter_Inflector
      */
     public function setThrowTargetExceptionsOn($throwTargetExceptionsOn)
     {
         $this->_throwTargetExceptionsOn = ($throwTargetExceptionsOn == true) ? true : false;
+
         return $this;
     }
 
@@ -216,7 +221,7 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
     /**
      * Set the Target Replacement Identifier, by default ':'
      *
-     * @param string $targetReplacementIdentifier
+     * @param  string  $targetReplacementIdentifier
      * @return Zend_Filter_Inflector
      */
     public function setTargetReplacementIdentifier($targetReplacementIdentifier)
@@ -248,6 +253,7 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
     public function setTarget($target)
     {
         $this->_target = (string) $target;
+
         return $this;
     }
 
@@ -264,12 +270,13 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
     /**
      * Set Target Reference
      *
-     * @param reference $target
+     * @param  reference  $target
      * @return Zend_Filter_Inflector
      */
     public function setTargetReference(&$target)
     {
-        $this->_target =& $target;
+        $this->_target = &$target;
+
         return $this;
     }
 
@@ -277,13 +284,13 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
      * SetRules() is the same as calling addRules() with the exception that it
      * clears the rules before adding them.
      *
-     * @param array $rules
      * @return Zend_Filter_Inflector
      */
-    public function setRules(Array $rules)
+    public function setRules(array $rules)
     {
         $this->clearRules();
         $this->addRules($rules);
+
         return $this;
     }
 
@@ -303,7 +310,7 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
      * @param array
      * @return Zend_Filter_Inflector
      */
-    public function addRules(Array $rules)
+    public function addRules(array $rules)
     {
         $keys = array_keys($rules);
         foreach ($keys as $spec) {
@@ -323,7 +330,7 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
      * By default, returns all rules. If a $spec is provided, will return those
      * rules if found, false otherwise.
      *
-     * @param  string $spec
+     * @param  string  $spec
      * @return array|false
      */
     public function getRules($spec = null)
@@ -333,6 +340,7 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
             if (isset($this->_rules[$spec])) {
                 return $this->_rules[$spec];
             }
+
             return false;
         }
 
@@ -342,8 +350,8 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
     /**
      * getRule() returns a rule set by setFilterRule(), a numeric index must be provided
      *
-     * @param string $spec
-     * @param int $index
+     * @param  string  $spec
+     * @param  int  $index
      * @return Zend_Filter_Interface|false
      */
     public function getRule($spec, $index)
@@ -354,6 +362,7 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
                 return $this->_rules[$spec][$index];
             }
         }
+
         return false;
     }
 
@@ -364,7 +373,8 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
      */
     public function clearRules()
     {
-        $this->_rules = array();
+        $this->_rules = [];
+
         return $this;
     }
 
@@ -372,38 +382,39 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
      * Set a filtering rule for a spec.  $ruleSet can be a string, Filter object
      * or an array of strings or filter objects.
      *
-     * @param string $spec
-     * @param array|string|Zend_Filter_Interface $ruleSet
+     * @param  string  $spec
+     * @param  array|string|Zend_Filter_Interface  $ruleSet
      * @return Zend_Filter_Inflector
      */
     public function setFilterRule($spec, $ruleSet)
     {
         $spec = $this->_normalizeSpec($spec);
-        $this->_rules[$spec] = array();
+        $this->_rules[$spec] = [];
+
         return $this->addFilterRule($spec, $ruleSet);
     }
 
     /**
      * Add a filter rule for a spec
      *
-     * @param mixed $spec
-     * @param mixed $ruleSet
+     * @param  mixed  $spec
+     * @param  mixed  $ruleSet
      * @return void
      */
     public function addFilterRule($spec, $ruleSet)
     {
         $spec = $this->_normalizeSpec($spec);
-        if (!isset($this->_rules[$spec])) {
-            $this->_rules[$spec] = array();
+        if (! isset($this->_rules[$spec])) {
+            $this->_rules[$spec] = [];
         }
 
-        if (!is_array($ruleSet)) {
-            $ruleSet = array($ruleSet);
+        if (! is_array($ruleSet)) {
+            $ruleSet = [$ruleSet];
         }
 
         if (is_string($this->_rules[$spec])) {
             $temp = $this->_rules[$spec];
-            $this->_rules[$spec] = array();
+            $this->_rules[$spec] = [];
             $this->_rules[$spec][] = $temp;
         }
 
@@ -417,14 +428,15 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
     /**
      * Set a static rule for a spec.  This is a single string value
      *
-     * @param string $name
-     * @param string $value
+     * @param  string  $name
+     * @param  string  $value
      * @return Zend_Filter_Inflector
      */
     public function setStaticRule($name, $value)
     {
         $name = $this->_normalizeSpec($name);
         $this->_rules[$name] = (string) $value;
+
         return $this;
     }
 
@@ -435,32 +447,33 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
      * in to be referenced when its time to build the output string from the
      * target.
      *
-     * @param string $name
-     * @param mixed $reference
+     * @param  string  $name
+     * @param  mixed  $reference
      * @return Zend_Filter_Inflector
      */
     public function setStaticRuleReference($name, &$reference)
     {
         $name = $this->_normalizeSpec($name);
-        $this->_rules[$name] =& $reference;
+        $this->_rules[$name] = &$reference;
+
         return $this;
     }
 
     /**
      * Inflect
      *
-     * @param  string|array $source
+     * @param  string|array  $source
      * @return string
      */
     public function filter($source)
     {
         // clean source
-        foreach ( (array) $source as $sourceName => $sourceValue) {
+        foreach ((array) $source as $sourceName => $sourceValue) {
             $source[ltrim($sourceName, ':')] = $sourceValue;
         }
 
         $pregQuotedTargetReplacementIdentifier = preg_quote($this->_targetReplacementIdentifier, '#');
-        $processedParts = array();
+        $processedParts = [];
 
         foreach ($this->_rules as $ruleName => $ruleValue) {
             if (isset($source[$ruleName])) {
@@ -484,7 +497,7 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
 
         if ($this->_throwTargetExceptionsOn && (preg_match('#(?='.$pregQuotedTargetReplacementIdentifier.'[A-Za-z]{1})#', $inflectedTarget) == true)) {
             require_once 'Zend/Filter/Exception.php';
-            throw new Zend_Filter_Exception('A replacement identifier ' . $this->_targetReplacementIdentifier . ' was found inside the inflected target, perhaps a rule was not satisfied with a target source?  Unsatisfied inflected target: ' . $inflectedTarget);
+            throw new Zend_Filter_Exception('A replacement identifier '.$this->_targetReplacementIdentifier.' was found inside the inflected target, perhaps a rule was not satisfied with a target source?  Unsatisfied inflected target: '.$inflectedTarget);
         }
 
         return $inflectedTarget;
@@ -493,7 +506,7 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
     /**
      * Normalize spec string
      *
-     * @param  string $spec
+     * @param  string  $spec
      * @return string
      */
     protected function _normalizeSpec($spec)
@@ -504,7 +517,7 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
     /**
      * Resolve named filters and convert them to filter objects.
      *
-     * @param  string $rule
+     * @param  string  $rule
      * @return Zend_Filter_Interface
      */
     protected function _getRule($rule)
@@ -515,11 +528,11 @@ class Zend_Filter_Inflector implements Zend_Filter_Interface
 
         $rule = (string) $rule;
 
-        $className  = $this->getPluginLoader()->load($rule);
-        $ruleObject = new $className();
-        if (!$ruleObject instanceof Zend_Filter_Interface) {
+        $className = $this->getPluginLoader()->load($rule);
+        $ruleObject = new $className;
+        if (! $ruleObject instanceof Zend_Filter_Interface) {
             require_once 'Zend/Filter/Exception.php';
-            throw new Zend_Filter_Exception('No class named ' . $rule . ' implementing Zend_Filter_Interface could be found');
+            throw new Zend_Filter_Exception('No class named '.$rule.' implementing Zend_Filter_Interface could be found');
         }
 
         return $ruleObject;

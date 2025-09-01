@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Flickr
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,8 +26,7 @@ require_once 'Zend/Xml/Security.php';
 
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Flickr
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -52,21 +51,19 @@ class Zend_Service_Flickr
      */
     protected $_restClient = null;
 
-
     /**
      * Performs object initializations
      *
      *  # Sets up character encoding
      *  # Saves the API key
      *
-     * @param  string $apiKey Your Flickr API key
+     * @param  string  $apiKey  Your Flickr API key
      * @return void
      */
     public function __construct($apiKey)
     {
         $this->apiKey = (string) $apiKey;
     }
-
 
     /**
      * Find Flickr photos by tag.
@@ -82,18 +79,19 @@ class Zend_Service_Flickr
      *  # min_taken_date:  Minimum upload date to search on.  Date should be a MySQL datetime.
      *  # max_taken_date:  Maximum upload date to search on.  Date should be a MySQL datetime.
      *
-     * @param  string|array $query   A single tag or an array of tags.
-     * @param  array        $options Additional parameters to refine your query.
+     * @param  string|array  $query  A single tag or an array of tags.
+     * @param  array  $options  Additional parameters to refine your query.
      * @return Zend_Service_Flickr_ResultSet
+     *
      * @throws Zend_Service_Exception
      */
-    public function tagSearch($query, array $options = array())
+    public function tagSearch($query, array $options = [])
     {
         static $method = 'flickr.photos.search';
-        static $defaultOptions = array('per_page' => 10,
-                                       'page'     => 1,
-                                       'tag_mode' => 'or',
-                                       'extras'   => 'license, date_upload, date_taken, owner_name, icon_server');
+        static $defaultOptions = ['per_page' => 10,
+            'page' => 1,
+            'tag_mode' => 'or',
+            'extras' => 'license, date_upload, date_taken, owner_name, icon_server'];
 
         $options['tags'] = is_array($query) ? implode(',', $query) : $query;
 
@@ -112,10 +110,10 @@ class Zend_Service_Flickr
              */
             require_once 'Zend/Service/Exception.php';
             throw new Zend_Service_Exception('An error occurred sending request. Status code: '
-                                           . $response->getStatus());
+                                           .$response->getStatus());
         }
 
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
         $dom = Zend_Xml_Security::scan($response->getBody(), $dom);
         self::_checkErrors($dom);
 
@@ -123,9 +121,9 @@ class Zend_Service_Flickr
          * @see Zend_Service_Flickr_ResultSet
          */
         require_once 'Zend/Service/Flickr/ResultSet.php';
+
         return new Zend_Service_Flickr_ResultSet($dom, $this);
     }
-
 
     /**
      * Finds photos by a user's username or email.
@@ -139,21 +137,21 @@ class Zend_Service_Flickr
      *  # min_taken_date:  Minimum upload date to search on.  Date should be a MySQL datetime.
      *  # max_taken_date:  Maximum upload date to search on.  Date should be a MySQL datetime.
      *
-     * @param  string $query   username or email
-     * @param  array  $options Additional parameters to refine your query.
+     * @param  string  $query  username or email
+     * @param  array  $options  Additional parameters to refine your query.
      * @return Zend_Service_Flickr_ResultSet
+     *
      * @throws Zend_Service_Exception
      */
-    public function userSearch($query, array $options = null)
+    public function userSearch($query, ?array $options = null)
     {
         static $method = 'flickr.people.getPublicPhotos';
-        static $defaultOptions = array('per_page' => 10,
-                                       'page'     => 1,
-                                       'extras'   => 'license, date_upload, date_taken, owner_name, icon_server');
-
+        static $defaultOptions = ['per_page' => 10,
+            'page' => 1,
+            'extras' => 'license, date_upload, date_taken, owner_name, icon_server'];
 
         // can't access by username, must get ID first
-        if (strchr($query, '@')) {
+        if (strstr($query, '@')) {
             // optimistically hope this is an email
             $options['user_id'] = $this->getIdByEmail($query);
         } else {
@@ -175,10 +173,10 @@ class Zend_Service_Flickr
              */
             require_once 'Zend/Service/Exception.php';
             throw new Zend_Service_Exception('An error occurred sending request. Status code: '
-                                           . $response->getStatus());
+                                           .$response->getStatus());
         }
 
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
         $dom = Zend_Xml_Security::scan($response->getBody(), $dom);
         self::_checkErrors($dom);
 
@@ -186,25 +184,27 @@ class Zend_Service_Flickr
          * @see Zend_Service_Flickr_ResultSet
          */
         require_once 'Zend/Service/Flickr/ResultSet.php';
+
         return new Zend_Service_Flickr_ResultSet($dom, $this);
     }
 
     /**
      * Finds photos in a group's pool.
      *
-     * @param  string $query   group id
-     * @param  array  $options Additional parameters to refine your query.
+     * @param  string  $query  group id
+     * @param  array  $options  Additional parameters to refine your query.
      * @return Zend_Service_Flickr_ResultSet
+     *
      * @throws Zend_Service_Exception
      */
-    public function groupPoolGetPhotos($query, array $options = array())
+    public function groupPoolGetPhotos($query, array $options = [])
     {
         static $method = 'flickr.groups.pools.getPhotos';
-        static $defaultOptions = array('per_page' => 10,
-                                       'page'     => 1,
-                                       'extras'   => 'license, date_upload, date_taken, owner_name, icon_server');
+        static $defaultOptions = ['per_page' => 10,
+            'page' => 1,
+            'extras' => 'license, date_upload, date_taken, owner_name, icon_server'];
 
-        if (empty($query) || !is_string($query)) {
+        if (empty($query) || ! is_string($query)) {
             /**
              * @see Zend_Service_Exception
              */
@@ -225,40 +225,40 @@ class Zend_Service_Flickr
 
         if ($response->isError()) {
             /**
-            * @see Zend_Service_Exception
-            */
+             * @see Zend_Service_Exception
+             */
             require_once 'Zend/Service/Exception.php';
             throw new Zend_Service_Exception('An error occurred sending request. Status code: '
-                                           . $response->getStatus());
+                                           .$response->getStatus());
         }
 
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
         $dom = Zend_Xml_Security::scan($response->getBody(), $dom);
         self::_checkErrors($dom);
 
         /**
-        * @see Zend_Service_Flickr_ResultSet
-        */
+         * @see Zend_Service_Flickr_ResultSet
+         */
         require_once 'Zend/Service/Flickr/ResultSet.php';
+
         return new Zend_Service_Flickr_ResultSet($dom, $this);
     }
-
-
 
     /**
      * Utility function to find Flickr User IDs for usernames.
      *
      * (You can only find a user's photo with their NSID.)
      *
-     * @param  string $username the username
+     * @param  string  $username  the username
      * @return string the NSID (userid)
+     *
      * @throws Zend_Service_Exception
      */
     public function getIdByUsername($username)
     {
         static $method = 'flickr.people.findByUsername';
 
-        $options = array('api_key' => $this->apiKey, 'method' => $method, 'username' => (string) $username);
+        $options = ['api_key' => $this->apiKey, 'method' => $method, 'username' => (string) $username];
 
         if (empty($username)) {
             /**
@@ -278,24 +278,25 @@ class Zend_Service_Flickr
              */
             require_once 'Zend/Service/Exception.php';
             throw new Zend_Service_Exception('An error occurred sending request. Status code: '
-                                           . $response->getStatus());
+                                           .$response->getStatus());
         }
 
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
         $dom = Zend_Xml_Security::scan($response->getBody(), $dom);
         self::_checkErrors($dom);
         $xpath = new DOMXPath($dom);
+
         return (string) $xpath->query('//user')->item(0)->getAttribute('id');
     }
-
 
     /**
      * Utility function to find Flickr User IDs for emails.
      *
      * (You can only find a user's photo with their NSID.)
      *
-     * @param  string $email the email
+     * @param  string  $email  the email
      * @return string the NSID (userid)
+     *
      * @throws Zend_Service_Exception
      */
     public function getIdByEmail($email)
@@ -310,7 +311,7 @@ class Zend_Service_Flickr
             throw new Zend_Service_Exception('You must supply an e-mail address');
         }
 
-        $options = array('api_key' => $this->apiKey, 'method' => $method, 'find_email' => (string) $email);
+        $options = ['api_key' => $this->apiKey, 'method' => $method, 'find_email' => (string) $email];
 
         $restClient = $this->getRestClient();
         $restClient->getHttpClient()->resetParameters();
@@ -322,22 +323,23 @@ class Zend_Service_Flickr
              */
             require_once 'Zend/Service/Exception.php';
             throw new Zend_Service_Exception('An error occurred sending request. Status code: '
-                                           . $response->getStatus());
+                                           .$response->getStatus());
         }
 
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
         $dom = Zend_Xml_Security::scan($response->getBody(), $dom);
         self::_checkErrors($dom);
         $xpath = new DOMXPath($dom);
+
         return (string) $xpath->query('//user')->item(0)->getAttribute('id');
     }
-
 
     /**
      * Returns Flickr photo details by for the given photo ID
      *
-     * @param  string $id the NSID
+     * @param  string  $id  the NSID
      * @return array of Zend_Service_Flickr_Image, details for the specified image
+     *
      * @throws Zend_Service_Exception
      */
     public function getImageDetails($id)
@@ -352,17 +354,17 @@ class Zend_Service_Flickr
             throw new Zend_Service_Exception('You must supply a photo ID');
         }
 
-        $options = array('api_key' => $this->apiKey, 'method' => $method, 'photo_id' => $id);
+        $options = ['api_key' => $this->apiKey, 'method' => $method, 'photo_id' => $id];
 
         $restClient = $this->getRestClient();
         $restClient->getHttpClient()->resetParameters();
         $response = $restClient->restGet('/services/rest/', $options);
 
-        $dom = new DOMDocument();
+        $dom = new DOMDocument;
         $dom = Zend_Xml_Security::scan($response->getBody(), $dom);
         $xpath = new DOMXPath($dom);
         self::_checkErrors($dom);
-        $retval = array();
+        $retval = [];
         /**
          * @see Zend_Service_Flickr_Image
          */
@@ -374,7 +376,6 @@ class Zend_Service_Flickr
 
         return $retval;
     }
-
 
     /**
      * Returns a reference to the REST client, instantiating it if necessary
@@ -394,18 +395,17 @@ class Zend_Service_Flickr
         return $this->_restClient;
     }
 
-
     /**
      * Validate User Search Options
      *
-     * @param  array $options
      * @return void
+     *
      * @throws Zend_Service_Exception
      */
     protected function _validateUserSearch(array $options)
     {
-        $validOptions = array('api_key', 'method', 'user_id', 'per_page', 'page', 'extras', 'min_upload_date',
-                              'min_taken_date', 'max_upload_date', 'max_taken_date', 'safe_search');
+        $validOptions = ['api_key', 'method', 'user_id', 'per_page', 'page', 'extras', 'min_upload_date',
+            'min_taken_date', 'max_upload_date', 'max_taken_date', 'safe_search'];
 
         $this->_compareOptions($options, $validOptions);
 
@@ -414,56 +414,55 @@ class Zend_Service_Flickr
          */
         require_once 'Zend/Validate/Between.php';
         $between = new Zend_Validate_Between(1, 500, true);
-        if (!$between->isValid($options['per_page'])) {
+        if (! $between->isValid($options['per_page'])) {
             /**
              * @see Zend_Service_Exception
              */
             require_once 'Zend/Service/Exception.php';
-            throw new Zend_Service_Exception($options['per_page'] . ' is not valid for the "per_page" option');
+            throw new Zend_Service_Exception($options['per_page'].' is not valid for the "per_page" option');
         }
 
         /**
          * @see Zend_Validate_Int
          */
         require_once 'Zend/Validate/Int.php';
-        $int = new Zend_Validate_Int();
-        if (!$int->isValid($options['page'])) {
+        $int = new Zend_Validate_Int;
+        if (! $int->isValid($options['page'])) {
             /**
              * @see Zend_Service_Exception
              */
             require_once 'Zend/Service/Exception.php';
-            throw new Zend_Service_Exception($options['page'] . ' is not valid for the "page" option');
+            throw new Zend_Service_Exception($options['page'].' is not valid for the "page" option');
         }
 
         // validate extras, which are delivered in csv format
         if ($options['extras']) {
             $extras = explode(',', $options['extras']);
-            $validExtras = array('license', 'date_upload', 'date_taken', 'owner_name', 'icon_server');
-            foreach($extras as $extra) {
+            $validExtras = ['license', 'date_upload', 'date_taken', 'owner_name', 'icon_server'];
+            foreach ($extras as $extra) {
                 /**
                  * @todo The following does not do anything [yet], so it is commented out.
                  */
-                //in_array(trim($extra), $validExtras);
+                // in_array(trim($extra), $validExtras);
             }
         }
     }
-
 
     /**
      * Validate Tag Search Options
      *
-     * @param  array $options
      * @return void
+     *
      * @throws Zend_Service_Exception
      */
     protected function _validateTagSearch(array $options)
     {
-        $validOptions = array('method', 'api_key', 'user_id', 'tags', 'tag_mode', 'text', 'min_upload_date',
-                              'max_upload_date', 'min_taken_date', 'max_taken_date', 'license', 'sort',
-                              'privacy_filter', 'bbox', 'accuracy', 'safe_search', 'content_type', 'machine_tags',
-                              'machine_tag_mode', 'group_id', 'contacts', 'woe_id', 'place_id', 'media', 'has_geo',
-                              'geo_context', 'lat', 'lon', 'radius', 'radius_units', 'is_commons', 'is_gallery',
-                              'extras', 'per_page', 'page');
+        $validOptions = ['method', 'api_key', 'user_id', 'tags', 'tag_mode', 'text', 'min_upload_date',
+            'max_upload_date', 'min_taken_date', 'max_taken_date', 'license', 'sort',
+            'privacy_filter', 'bbox', 'accuracy', 'safe_search', 'content_type', 'machine_tags',
+            'machine_tag_mode', 'group_id', 'contacts', 'woe_id', 'place_id', 'media', 'has_geo',
+            'geo_context', 'lat', 'lon', 'radius', 'radius_units', 'is_commons', 'is_gallery',
+            'extras', 'per_page', 'page'];
 
         $this->_compareOptions($options, $validOptions);
 
@@ -472,101 +471,99 @@ class Zend_Service_Flickr
          */
         require_once 'Zend/Validate/Between.php';
         $between = new Zend_Validate_Between(1, 500, true);
-        if (!$between->isValid($options['per_page'])) {
+        if (! $between->isValid($options['per_page'])) {
             /**
              * @see Zend_Service_Exception
              */
             require_once 'Zend/Service/Exception.php';
-            throw new Zend_Service_Exception($options['per_page'] . ' is not valid for the "per_page" option');
+            throw new Zend_Service_Exception($options['per_page'].' is not valid for the "per_page" option');
         }
 
         /**
          * @see Zend_Validate_Int
          */
         require_once 'Zend/Validate/Int.php';
-        $int = new Zend_Validate_Int();
-        if (!$int->isValid($options['page'])) {
+        $int = new Zend_Validate_Int;
+        if (! $int->isValid($options['page'])) {
             /**
              * @see Zend_Service_Exception
              */
             require_once 'Zend/Service/Exception.php';
-            throw new Zend_Service_Exception($options['page'] . ' is not valid for the "page" option');
+            throw new Zend_Service_Exception($options['page'].' is not valid for the "page" option');
         }
 
         // validate extras, which are delivered in csv format
         if ($options['extras']) {
             $extras = explode(',', $options['extras']);
-            $validExtras = array('license', 'date_upload', 'date_taken', 'owner_name', 'icon_server');
-            foreach($extras as $extra) {
+            $validExtras = ['license', 'date_upload', 'date_taken', 'owner_name', 'icon_server'];
+            foreach ($extras as $extra) {
                 /**
                  * @todo The following does not do anything [yet], so it is commented out.
                  */
-                //in_array(trim($extra), $validExtras);
+                // in_array(trim($extra), $validExtras);
             }
         }
 
     }
 
-
     /**
-    * Validate Group Search Options
-    *
-    * @param  array $options
-    * @throws Zend_Service_Exception
-    * @return void
-    */
+     * Validate Group Search Options
+     *
+     * @return void
+     *
+     * @throws Zend_Service_Exception
+     */
     protected function _validateGroupPoolGetPhotos(array $options)
     {
-        $validOptions = array('api_key', 'tags', 'method', 'group_id', 'per_page', 'page', 'extras', 'user_id');
+        $validOptions = ['api_key', 'tags', 'method', 'group_id', 'per_page', 'page', 'extras', 'user_id'];
 
         $this->_compareOptions($options, $validOptions);
 
         /**
-        * @see Zend_Validate_Between
-        */
+         * @see Zend_Validate_Between
+         */
         require_once 'Zend/Validate/Between.php';
         $between = new Zend_Validate_Between(1, 500, true);
-        if (!$between->isValid($options['per_page'])) {
+        if (! $between->isValid($options['per_page'])) {
             /**
-            * @see Zend_Service_Exception
-            */
+             * @see Zend_Service_Exception
+             */
             require_once 'Zend/Service/Exception.php';
-            throw new Zend_Service_Exception($options['per_page'] . ' is not valid for the "per_page" option');
+            throw new Zend_Service_Exception($options['per_page'].' is not valid for the "per_page" option');
         }
 
         /**
-        * @see Zend_Validate_Int
-        */
+         * @see Zend_Validate_Int
+         */
         require_once 'Zend/Validate/Int.php';
-        $int = new Zend_Validate_Int();
+        $int = new Zend_Validate_Int;
 
-        if (!$int->isValid($options['page'])) {
+        if (! $int->isValid($options['page'])) {
             /**
-            * @see Zend_Service_Exception
-            */
+             * @see Zend_Service_Exception
+             */
             require_once 'Zend/Service/Exception.php';
-            throw new Zend_Service_Exception($options['page'] . ' is not valid for the "page" option');
+            throw new Zend_Service_Exception($options['page'].' is not valid for the "page" option');
         }
 
         // validate extras, which are delivered in csv format
         if (isset($options['extras'])) {
             $extras = explode(',', $options['extras']);
-            $validExtras = array('license', 'date_upload', 'date_taken', 'owner_name', 'icon_server');
-            foreach($extras as $extra) {
+            $validExtras = ['license', 'date_upload', 'date_taken', 'owner_name', 'icon_server'];
+            foreach ($extras as $extra) {
                 /**
                 * @todo The following does not do anything [yet], so it is commented out.
                 */
-                //in_array(trim($extra), $validExtras);
+                // in_array(trim($extra), $validExtras);
             }
         }
     }
 
-
     /**
      * Throws an exception if and only if the response status indicates a failure
      *
-     * @param  DOMDocument $dom
      * @return void
+     *
      * @throws Zend_Service_Exception
      */
     protected static function _checkErrors(DOMDocument $dom)
@@ -578,35 +575,34 @@ class Zend_Service_Flickr
              * @see Zend_Service_Exception
              */
             require_once 'Zend/Service/Exception.php';
-            throw new Zend_Service_Exception('Search failed due to error: ' . $err->getAttribute('msg')
-                                           . ' (error #' . $err->getAttribute('code') . ')');
+            throw new Zend_Service_Exception('Search failed due to error: '.$err->getAttribute('msg')
+                                           .' (error #'.$err->getAttribute('code').')');
         }
     }
-
 
     /**
      * Prepare options for the request
      *
-     * @param  string $method         Flickr Method to call
-     * @param  array  $options        User Options
-     * @param  array  $defaultOptions Default Options
+     * @param  string  $method  Flickr Method to call
+     * @param  array  $options  User Options
+     * @param  array  $defaultOptions  Default Options
      * @return array Merged array of user and default/required options
      */
     protected function _prepareOptions($method, array $options, array $defaultOptions)
     {
-        $options['method']  = (string) $method;
+        $options['method'] = (string) $method;
         $options['api_key'] = $this->apiKey;
 
         return array_merge($defaultOptions, $options);
     }
 
-
     /**
      * Throws an exception if and only if any user options are invalid
      *
-     * @param  array $options      User options
-     * @param  array $validOptions Valid options
+     * @param  array  $options  User options
+     * @param  array  $validOptions  Valid options
      * @return void
+     *
      * @throws Zend_Service_Exception
      */
     protected function _compareOptions(array $options, array $validOptions)
@@ -617,8 +613,7 @@ class Zend_Service_Flickr
              * @see Zend_Service_Exception
              */
             require_once 'Zend/Service/Exception.php';
-            throw new Zend_Service_Exception('The following parameters are invalid: ' . implode(',', $difference));
+            throw new Zend_Service_Exception('The following parameters are invalid: '.implode(',', $difference));
         }
     }
 }
-

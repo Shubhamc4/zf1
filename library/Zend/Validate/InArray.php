@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,7 +28,7 @@ require_once 'Zend/Validate/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -37,9 +39,9 @@ class Zend_Validate_InArray extends Zend_Validate_Abstract
     /**
      * @var array
      */
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::NOT_IN_ARRAY => "'%value%' was not found in the haystack",
-    );
+    ];
 
     /**
      * Haystack of possible values
@@ -51,41 +53,42 @@ class Zend_Validate_InArray extends Zend_Validate_Abstract
     /**
      * Whether a strict in_array() invocation is used
      *
-     * @var boolean
+     * @var bool
      */
     protected $_strict = false;
 
     /**
      * Whether a recursive search should be done
      *
-     * @var boolean
+     * @var bool
      */
     protected $_recursive = false;
 
     /**
      * Sets validator options
      *
-     * @param array|Zend_Config $options Validator options
+     * @param  array|Zend_Config  $options  Validator options
+     *
      * @throws Zend_Validate_Exception
      */
     public function __construct($options)
     {
         if ($options instanceof Zend_Config) {
             $options = $options->toArray();
-        } else if (!is_array($options)) {
+        } elseif (! is_array($options)) {
             require_once 'Zend/Validate/Exception.php';
             throw new Zend_Validate_Exception('Array expected as parameter');
         } else {
             $count = func_num_args();
-            $temp  = array();
+            $temp = [];
             if ($count > 1) {
                 $temp['haystack'] = func_get_arg(0);
-                $temp['strict']   = func_get_arg(1);
+                $temp['strict'] = func_get_arg(1);
                 $options = $temp;
             } else {
                 $temp = func_get_arg(0);
-                if (!array_key_exists('haystack', $options)) {
-                    $options = array();
+                if (! array_key_exists('haystack', $options)) {
+                    $options = [];
                     $options['haystack'] = $temp;
                 } else {
                     $options = $temp;
@@ -116,19 +119,20 @@ class Zend_Validate_InArray extends Zend_Validate_Abstract
     /**
      * Sets the haystack option
      *
-     * @param  mixed $haystack
+     * @param  mixed  $haystack
      * @return Zend_Validate_InArray Provides a fluent interface
      */
     public function setHaystack(array $haystack)
     {
         $this->_haystack = $haystack;
+
         return $this;
     }
 
     /**
      * Returns the strict option
      *
-     * @return boolean
+     * @return bool
      */
     public function getStrict()
     {
@@ -138,19 +142,20 @@ class Zend_Validate_InArray extends Zend_Validate_Abstract
     /**
      * Sets the strict option
      *
-     * @param  boolean $strict
+     * @param  bool  $strict
      * @return Zend_Validate_InArray Provides a fluent interface
      */
     public function setStrict($strict)
     {
-        $this->_strict = (boolean) $strict;
+        $this->_strict = (bool) $strict;
+
         return $this;
     }
 
     /**
      * Returns the recursive option
      *
-     * @return boolean
+     * @return bool
      */
     public function getRecursive()
     {
@@ -160,12 +165,13 @@ class Zend_Validate_InArray extends Zend_Validate_Abstract
     /**
      * Sets the recursive option
      *
-     * @param  boolean $recursive
+     * @param  bool  $recursive
      * @return Zend_Validate_InArray Provides a fluent interface
      */
     public function setRecursive($recursive)
     {
-        $this->_recursive = (boolean) $recursive;
+        $this->_recursive = (bool) $recursive;
+
         return $this;
     }
 
@@ -175,20 +181,20 @@ class Zend_Validate_InArray extends Zend_Validate_Abstract
      * Returns true if and only if $value is contained in the haystack option. If the strict
      * option is true, then the type of $value is also checked.
      *
-     * @param  mixed $value
-     * @return boolean
+     * @param  mixed  $value
+     * @return bool
      */
     public function isValid($value)
     {
         $this->_setValue($value);
         if ($this->getRecursive()) {
             $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($this->_haystack));
-            foreach($iterator as $element) {
+            foreach ($iterator as $element) {
                 if ($this->_strict) {
                     if ($element === $value) {
                         return true;
                     }
-                } else if ($element == $value) {
+                } elseif ($element == $value) {
                     return true;
                 }
             }
@@ -199,6 +205,7 @@ class Zend_Validate_InArray extends Zend_Validate_Abstract
         }
 
         $this->_error(self::NOT_IN_ARRAY);
+
         return false;
     }
 }

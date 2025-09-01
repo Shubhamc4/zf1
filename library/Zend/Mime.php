@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Mime
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -23,26 +25,39 @@
  * Support class for MultiPart Mime Messages
  *
  * @category   Zend
- * @package    Zend_Mime
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Mime
 {
-    const TYPE_OCTETSTREAM         = 'application/octet-stream';
-    const TYPE_TEXT                = 'text/plain';
-    const TYPE_HTML                = 'text/html';
-    const ENCODING_7BIT            = '7bit';
-    const ENCODING_8BIT            = '8bit';
+    const TYPE_OCTETSTREAM = 'application/octet-stream';
+
+    const TYPE_TEXT = 'text/plain';
+
+    const TYPE_HTML = 'text/html';
+
+    const ENCODING_7BIT = '7bit';
+
+    const ENCODING_8BIT = '8bit';
+
     const ENCODING_QUOTEDPRINTABLE = 'quoted-printable';
-    const ENCODING_BASE64          = 'base64';
-    const DISPOSITION_ATTACHMENT   = 'attachment';
-    const DISPOSITION_INLINE       = 'inline';
-    const LINELENGTH               = 72;
-    const LINEEND                  = "\n";
-    const MULTIPART_ALTERNATIVE    = 'multipart/alternative';
-    const MULTIPART_MIXED          = 'multipart/mixed';
-    const MULTIPART_RELATED        = 'multipart/related';
+
+    const ENCODING_BASE64 = 'base64';
+
+    const DISPOSITION_ATTACHMENT = 'attachment';
+
+    const DISPOSITION_INLINE = 'inline';
+
+    const LINELENGTH = 72;
+
+    const LINEEND = "\n";
+
+    const MULTIPART_ALTERNATIVE = 'multipart/alternative';
+
+    const MULTIPART_MIXED = 'multipart/mixed';
+
+    const MULTIPART_RELATED = 'multipart/related';
 
     /**
      * Boundary
@@ -61,7 +76,7 @@ class Zend_Mime
      *
      * @var array
      */
-    public static $qpKeys = array(
+    public static $qpKeys = [
         "\x00",
         "\x01",
         "\x02",
@@ -222,175 +237,175 @@ class Zend_Mime
         "\xFC",
         "\xFD",
         "\xFE",
-        "\xFF"
-    );
+        "\xFF",
+    ];
 
     /**
      * @var array
      */
-    public static $qpReplaceValues = array(
-        "=00",
-        "=01",
-        "=02",
-        "=03",
-        "=04",
-        "=05",
-        "=06",
-        "=07",
-        "=08",
-        "=09",
-        "=0A",
-        "=0B",
-        "=0C",
-        "=0D",
-        "=0E",
-        "=0F",
-        "=10",
-        "=11",
-        "=12",
-        "=13",
-        "=14",
-        "=15",
-        "=16",
-        "=17",
-        "=18",
-        "=19",
-        "=1A",
-        "=1B",
-        "=1C",
-        "=1D",
-        "=1E",
-        "=1F",
-        "=7F",
-        "=80",
-        "=81",
-        "=82",
-        "=83",
-        "=84",
-        "=85",
-        "=86",
-        "=87",
-        "=88",
-        "=89",
-        "=8A",
-        "=8B",
-        "=8C",
-        "=8D",
-        "=8E",
-        "=8F",
-        "=90",
-        "=91",
-        "=92",
-        "=93",
-        "=94",
-        "=95",
-        "=96",
-        "=97",
-        "=98",
-        "=99",
-        "=9A",
-        "=9B",
-        "=9C",
-        "=9D",
-        "=9E",
-        "=9F",
-        "=A0",
-        "=A1",
-        "=A2",
-        "=A3",
-        "=A4",
-        "=A5",
-        "=A6",
-        "=A7",
-        "=A8",
-        "=A9",
-        "=AA",
-        "=AB",
-        "=AC",
-        "=AD",
-        "=AE",
-        "=AF",
-        "=B0",
-        "=B1",
-        "=B2",
-        "=B3",
-        "=B4",
-        "=B5",
-        "=B6",
-        "=B7",
-        "=B8",
-        "=B9",
-        "=BA",
-        "=BB",
-        "=BC",
-        "=BD",
-        "=BE",
-        "=BF",
-        "=C0",
-        "=C1",
-        "=C2",
-        "=C3",
-        "=C4",
-        "=C5",
-        "=C6",
-        "=C7",
-        "=C8",
-        "=C9",
-        "=CA",
-        "=CB",
-        "=CC",
-        "=CD",
-        "=CE",
-        "=CF",
-        "=D0",
-        "=D1",
-        "=D2",
-        "=D3",
-        "=D4",
-        "=D5",
-        "=D6",
-        "=D7",
-        "=D8",
-        "=D9",
-        "=DA",
-        "=DB",
-        "=DC",
-        "=DD",
-        "=DE",
-        "=DF",
-        "=E0",
-        "=E1",
-        "=E2",
-        "=E3",
-        "=E4",
-        "=E5",
-        "=E6",
-        "=E7",
-        "=E8",
-        "=E9",
-        "=EA",
-        "=EB",
-        "=EC",
-        "=ED",
-        "=EE",
-        "=EF",
-        "=F0",
-        "=F1",
-        "=F2",
-        "=F3",
-        "=F4",
-        "=F5",
-        "=F6",
-        "=F7",
-        "=F8",
-        "=F9",
-        "=FA",
-        "=FB",
-        "=FC",
-        "=FD",
-        "=FE",
-        "=FF"
-    );
+    public static $qpReplaceValues = [
+        '=00',
+        '=01',
+        '=02',
+        '=03',
+        '=04',
+        '=05',
+        '=06',
+        '=07',
+        '=08',
+        '=09',
+        '=0A',
+        '=0B',
+        '=0C',
+        '=0D',
+        '=0E',
+        '=0F',
+        '=10',
+        '=11',
+        '=12',
+        '=13',
+        '=14',
+        '=15',
+        '=16',
+        '=17',
+        '=18',
+        '=19',
+        '=1A',
+        '=1B',
+        '=1C',
+        '=1D',
+        '=1E',
+        '=1F',
+        '=7F',
+        '=80',
+        '=81',
+        '=82',
+        '=83',
+        '=84',
+        '=85',
+        '=86',
+        '=87',
+        '=88',
+        '=89',
+        '=8A',
+        '=8B',
+        '=8C',
+        '=8D',
+        '=8E',
+        '=8F',
+        '=90',
+        '=91',
+        '=92',
+        '=93',
+        '=94',
+        '=95',
+        '=96',
+        '=97',
+        '=98',
+        '=99',
+        '=9A',
+        '=9B',
+        '=9C',
+        '=9D',
+        '=9E',
+        '=9F',
+        '=A0',
+        '=A1',
+        '=A2',
+        '=A3',
+        '=A4',
+        '=A5',
+        '=A6',
+        '=A7',
+        '=A8',
+        '=A9',
+        '=AA',
+        '=AB',
+        '=AC',
+        '=AD',
+        '=AE',
+        '=AF',
+        '=B0',
+        '=B1',
+        '=B2',
+        '=B3',
+        '=B4',
+        '=B5',
+        '=B6',
+        '=B7',
+        '=B8',
+        '=B9',
+        '=BA',
+        '=BB',
+        '=BC',
+        '=BD',
+        '=BE',
+        '=BF',
+        '=C0',
+        '=C1',
+        '=C2',
+        '=C3',
+        '=C4',
+        '=C5',
+        '=C6',
+        '=C7',
+        '=C8',
+        '=C9',
+        '=CA',
+        '=CB',
+        '=CC',
+        '=CD',
+        '=CE',
+        '=CF',
+        '=D0',
+        '=D1',
+        '=D2',
+        '=D3',
+        '=D4',
+        '=D5',
+        '=D6',
+        '=D7',
+        '=D8',
+        '=D9',
+        '=DA',
+        '=DB',
+        '=DC',
+        '=DD',
+        '=DE',
+        '=DF',
+        '=E0',
+        '=E1',
+        '=E2',
+        '=E3',
+        '=E4',
+        '=E5',
+        '=E6',
+        '=E7',
+        '=E8',
+        '=E9',
+        '=EA',
+        '=EB',
+        '=EC',
+        '=ED',
+        '=EE',
+        '=EF',
+        '=F0',
+        '=F1',
+        '=F2',
+        '=F3',
+        '=F4',
+        '=F5',
+        '=F6',
+        '=F7',
+        '=F8',
+        '=F9',
+        '=FA',
+        '=FB',
+        '=FC',
+        '=FD',
+        '=FE',
+        '=FF',
+    ];
 
     /**
      * @var string
@@ -404,28 +419,27 @@ class Zend_Mime
      * Checks that a string contains no unprintable characters. If this returns
      * false, encode the string for secure delivery.
      *
-     * @param string $str
-     * @return boolean
+     * @param  string  $str
+     * @return bool
      */
     public static function isPrintable($str)
     {
-        return (strcspn($str, self::$qpKeysString) == strlen($str));
+        return strcspn($str, self::$qpKeysString) == strlen($str);
     }
 
     /**
      * Encode a given string with the QUOTED_PRINTABLE mechanism and wrap the lines.
      *
-     * @param  string $str
-     * @param  int    $lineLength Line length; defaults to {@link LINELENGTH}
-     * @param  string $lineEnd    Line end; defaults to {@link LINEEND}
+     * @param  string  $str
+     * @param  int  $lineLength  Line length; defaults to {@link LINELENGTH}
+     * @param  string  $lineEnd  Line end; defaults to {@link LINEEND}
      * @return string
      */
     public static function encodeQuotedPrintable(
         $str,
         $lineLength = self::LINELENGTH,
         $lineEnd = self::LINEEND
-    )
-    {
+    ) {
         $out = '';
         $str = self::_encodeQuotedPrintable($str);
 
@@ -444,11 +458,11 @@ class Zend_Mime
 
             // Check if there is a space at the end of the line and rewind
             if ($ptr > 0 && $str[$ptr - 1] == ' ') {
-                --$ptr;
+                $ptr--;
             }
 
             // Add string and continue
-            $out .= substr($str, 0, $ptr) . '=' . $lineEnd;
+            $out .= substr($str, 0, $ptr).'='.$lineEnd;
             $str = substr($str, $ptr);
         }
 
@@ -461,7 +475,7 @@ class Zend_Mime
     /**
      * Converts a string into quoted printable format.
      *
-     * @param  string $str
+     * @param  string  $str
      * @return string
      */
     private static function _encodeQuotedPrintable($str)
@@ -479,47 +493,46 @@ class Zend_Mime
      * Mail headers depend on an extended quoted printable algorithm otherwise
      * a range of bugs can occur.
      *
-     * @param  string $str
-     * @param  string $charset
-     * @param  int    $lineLength Line length; defaults to {@link LINELENGTH}
-     * @param  string $lineEnd    Line end; defaults to {@link LINEEND}
+     * @param  string  $str
+     * @param  string  $charset
+     * @param  int  $lineLength  Line length; defaults to {@link LINELENGTH}
+     * @param  string  $lineEnd  Line end; defaults to {@link LINEEND}
      * @return string
      */
     public static function encodeQuotedPrintableHeader(
         $str, $charset, $lineLength = self::LINELENGTH, $lineEnd = self::LINEEND
-    )
-    {
+    ) {
         // Reduce line-length by the length of the required delimiter, charsets and encoding
-        $prefix     = sprintf('=?%s?Q?', $charset);
+        $prefix = sprintf('=?%s?Q?', $charset);
         $lineLength = $lineLength - strlen($prefix) - 3;
 
         $str = self::_encodeQuotedPrintable($str);
 
         // Mail-Header required chars have to be encoded also:
         $str = str_replace(
-            array('?', ' ', '_', ','), array('=3F', '=20', '=5F', '=2C'), $str
+            ['?', ' ', '_', ','], ['=3F', '=20', '=5F', '=2C'], $str
         );
 
         // initialize first line, we need it anyways
-        $lines = array(0 => "");
+        $lines = [0 => ''];
 
         // Split encoded text into separate lines
-        $tmp = "";
+        $tmp = '';
         while (strlen($str) > 0) {
             $currentLine = max(count($lines) - 1, 0);
-            $token       = self::getNextQuotedPrintableToken($str);
-            $str         = substr($str, strlen($token));
+            $token = self::getNextQuotedPrintableToken($str);
+            $str = substr($str, strlen($token));
 
             $tmp .= $token;
             if ($token == '=20') {
                 // only if we have a single char token or space, we can append the
                 // tempstring it to the current line or start a new line if necessary.
-                if (strlen($lines[$currentLine] . $tmp) > $lineLength) {
+                if (strlen($lines[$currentLine].$tmp) > $lineLength) {
                     $lines[$currentLine + 1] = $tmp;
                 } else {
                     $lines[$currentLine] .= $tmp;
                 }
-                $tmp = "";
+                $tmp = '';
             }
             // don't forget to append the rest to the last line
             if (strlen($str) == 0) {
@@ -529,7 +542,7 @@ class Zend_Mime
 
         // assemble the lines together by pre- and appending delimiters, charset, encoding.
         for ($i = 0; $i < count($lines); $i++) {
-            $lines[$i] = " " . $prefix . $lines[$i] . "?=";
+            $lines[$i] = ' '.$prefix.$lines[$i].'?=';
         }
         $str = trim(implode($lineEnd, $lines));
 
@@ -539,12 +552,12 @@ class Zend_Mime
     /**
      * Retrieves the first token from a quoted printable string.
      *
-     * @param  string $str
+     * @param  string  $str
      * @return string
      */
     private static function getNextQuotedPrintableToken($str)
     {
-        if (substr($str, 0, 1) == "=") {
+        if (substr($str, 0, 1) == '=') {
             $token = substr($str, 0, 3);
         } else {
             $token = substr($str, 0, 1);
@@ -556,25 +569,24 @@ class Zend_Mime
     /**
      * Encode a given string in mail header compatible base64 encoding.
      *
-     * @param  string $str
-     * @param  string $charset
-     * @param  int    $lineLength Line length; defaults to {@link LINELENGTH}
-     * @param  string $lineEnd    Line end; defaults to {@link LINEEND}
+     * @param  string  $str
+     * @param  string  $charset
+     * @param  int  $lineLength  Line length; defaults to {@link LINELENGTH}
+     * @param  string  $lineEnd  Line end; defaults to {@link LINEEND}
      * @return string
      */
     public static function encodeBase64Header(
         $str, $charset, $lineLength = self::LINELENGTH, $lineEnd = self::LINEEND
-    )
-    {
-        $prefix          = '=?' . $charset . '?B?';
-        $suffix          = '?=';
+    ) {
+        $prefix = '=?'.$charset.'?B?';
+        $suffix = '?=';
         $remainingLength = $lineLength - strlen($prefix) - strlen($suffix);
 
         $encodedValue = self::encodeBase64($str, $remainingLength, $lineEnd);
         $encodedValue = str_replace(
-            $lineEnd, $suffix . $lineEnd . ' ' . $prefix, $encodedValue
+            $lineEnd, $suffix.$lineEnd.' '.$prefix, $encodedValue
         );
-        $encodedValue = $prefix . $encodedValue . $suffix;
+        $encodedValue = $prefix.$encodedValue.$suffix;
 
         return $encodedValue;
     }
@@ -583,28 +595,27 @@ class Zend_Mime
      * Encode a given string in base64 encoding and break lines
      * according to the maximum linelength.
      *
-     * @param  string $str
-     * @param  int    $lineLength Line length; defaults to {@link LINELENGTH}
-     * @param  string $lineEnd    Line end; defaults to {@link LINEEND}
+     * @param  string  $str
+     * @param  int  $lineLength  Line length; defaults to {@link LINELENGTH}
+     * @param  string  $lineEnd  Line end; defaults to {@link LINEEND}
      * @return string
      */
     public static function encodeBase64(
         $str, $lineLength = self::LINELENGTH, $lineEnd = self::LINEEND
-    )
-    {
+    ) {
         return rtrim(chunk_split(base64_encode($str), $lineLength, $lineEnd));
     }
 
     /**
      * Constructor
      *
-     * @param null|string $boundary
+     * @param  null|string  $boundary
      */
     public function __construct($boundary = null)
     {
         // This string needs to be somewhat unique
         if ($boundary === null) {
-            $this->_boundary = '=_' . md5(microtime(1) . self::$makeUnique++);
+            $this->_boundary = '=_'.md5(microtime(1).self::$makeUnique++);
         } else {
             $this->_boundary = $boundary;
         }
@@ -613,9 +624,9 @@ class Zend_Mime
     /**
      * Encode the given string with the given encoding.
      *
-     * @param string $str
-     * @param string $encoding
-     * @param string $EOL Line end; defaults to {@link Zend_Mime::LINEEND}
+     * @param  string  $str
+     * @param  string  $encoding
+     * @param  string  $EOL  Line end; defaults to {@link Zend_Mime::LINEEND}
      * @return string
      */
     public static function encode($str, $encoding, $EOL = self::LINEEND)
@@ -638,7 +649,6 @@ class Zend_Mime
     /**
      * Return a MIME boundary
      *
-     * @access public
      * @return string
      */
     public function boundary()
@@ -649,22 +659,22 @@ class Zend_Mime
     /**
      * Return a MIME boundary line
      *
-     * @param  string $EOL Line end; defaults to {@link LINEEND}
+     * @param  string  $EOL  Line end; defaults to {@link LINEEND}
      * @return string
      */
     public function boundaryLine($EOL = self::LINEEND)
     {
-        return $EOL . '--' . $this->_boundary . $EOL;
+        return $EOL.'--'.$this->_boundary.$EOL;
     }
 
     /**
      * Return MIME ending
      *
-     * @param  string $EOL Line end; defaults to {@link LINEEND}
+     * @param  string  $EOL  Line end; defaults to {@link LINEEND}
      * @return string
      */
     public function mimeEnd($EOL = self::LINEEND)
     {
-        return $EOL . '--' . $this->_boundary . '--' . $EOL;
+        return $EOL.'--'.$this->_boundary.'--'.$EOL;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_InfoCard
- * @subpackage Zend_InfoCard_Xml
+ *
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Abstract.php 24593 2012-01-05 20:35:02Z matthew $
  */
 
@@ -31,19 +32,16 @@ require_once 'Zend/InfoCard/Xml/Element.php';
 require_once 'Zend/InfoCard/Xml/KeyInfo.php';
 
 /**
- * An #[AllowDynamicProperties]
-abstract class representing a generic EncryptedData XML block. This class is extended
+ * An abstract class representing a generic EncryptedData XML block. This class is extended
  * into a specific type of EncryptedData XML block (i.e. XmlEnc) as necessary
  *
  * @category   Zend
- * @package    Zend_InfoCard
- * @subpackage Zend_InfoCard_Xml
+ *
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_InfoCard_Xml_EncryptedData_Abstract extends Zend_InfoCard_Xml_Element
 {
-
     /**
      * Returns the KeyInfo Block
      *
@@ -58,8 +56,9 @@ abstract class Zend_InfoCard_Xml_EncryptedData_Abstract extends Zend_InfoCard_Xm
      * Return the Encryption method used to encrypt the assertion document
      * (the symmetric cipher)
      *
-     * @throws Zend_InfoCard_Xml_Exception
      * @return string The URI of the Symmetric Encryption Method used
+     *
+     * @throws Zend_InfoCard_Xml_Exception
      */
     public function getEncryptionMethod()
     {
@@ -69,16 +68,16 @@ abstract class Zend_InfoCard_Xml_EncryptedData_Abstract extends Zend_InfoCard_Xm
          * EncryptionMethod block is the correct one (the AES or compariable symetric algorithm)..
          * the second is the PK method if provided.
          */
-        list($encryption_method) = $this->xpath("//enc:EncryptionMethod");
+        [$encryption_method] = $this->xpath('//enc:EncryptionMethod');
 
-        if(!($encryption_method instanceof Zend_InfoCard_Xml_Element)) {
-            throw new Zend_InfoCard_Xml_Exception("Unable to find the enc:EncryptionMethod symmetric encryption block");
+        if (! ($encryption_method instanceof Zend_InfoCard_Xml_Element)) {
+            throw new Zend_InfoCard_Xml_Exception('Unable to find the enc:EncryptionMethod symmetric encryption block');
         }
 
         $dom = self::convertToDOM($encryption_method);
 
-        if(!$dom->hasAttribute('Algorithm')) {
-            throw new Zend_InfoCard_Xml_Exception("Unable to determine the encryption algorithm in the Symmetric enc:EncryptionMethod XML block");
+        if (! $dom->hasAttribute('Algorithm')) {
+            throw new Zend_InfoCard_Xml_Exception('Unable to determine the encryption algorithm in the Symmetric enc:EncryptionMethod XML block');
         }
 
         return $dom->getAttribute('Algorithm');
@@ -89,5 +88,5 @@ abstract class Zend_InfoCard_Xml_EncryptedData_Abstract extends Zend_InfoCard_Xm
      *
      * @return string the value of the encrypted CipherValue block
      */
-    abstract function getCipherValue();
+    abstract public function getCipherValue();
 }

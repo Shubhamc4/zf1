@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -32,40 +33,39 @@ require_once 'Zend/Tool/Framework/Metadata/Attributable.php';
 
 /**
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Tool_Framework_Metadata_Basic
-    implements Zend_Tool_Framework_Metadata_Interface, Zend_Tool_Framework_Metadata_Attributable
+class Zend_Tool_Framework_Metadata_Basic implements Zend_Tool_Framework_Metadata_Attributable, Zend_Tool_Framework_Metadata_Interface
 {
-
     /**#@+
      * Search constants
      */
-    const ATTRIBUTES_ALL        = 'attributesAll';
-    const ATTRIBUTES_NO_PARENT  = 'attributesParent';
+    const ATTRIBUTES_ALL = 'attributesAll';
+
+    const ATTRIBUTES_NO_PARENT = 'attributesParent';
     /**#@-*/
 
     /**#@+
      * @var string
      */
-    protected $_type        = 'Basic';
-    protected $_name        = null;
-    protected $_value       = null;
+    protected $_type = 'Basic';
+
+    protected $_name = null;
+
+    protected $_value = null;
     /**#@-*/
 
     /**
      * @var mixed
      */
-    protected $_reference   = null;
+    protected $_reference = null;
 
     /**
      * Constructor - allows for the setting of options
-     *
-     * @param array $options
      */
-    public function __construct(Array $options = array())
+    public function __construct(array $options = [])
     {
         if ($options) {
             $this->setOptions($options);
@@ -76,13 +76,12 @@ class Zend_Tool_Framework_Metadata_Basic
      * setOptions() - standard issue implementation, this will set any
      * options that are supported via a set method.
      *
-     * @param array $options
      * @return Zend_Tool_Framework_Metadata_Basic
      */
-    public function setOptions(Array $options)
+    public function setOptions(array $options)
     {
         foreach ($options as $optionName => $optionValue) {
-            $setMethod = 'set' . $optionName;
+            $setMethod = 'set'.$optionName;
             if (method_exists($this, $setMethod)) {
                 $this->{$setMethod}($optionValue);
             }
@@ -104,12 +103,13 @@ class Zend_Tool_Framework_Metadata_Basic
     /**
      * setType()
      *
-     * @param string $type
+     * @param  string  $type
      * @return Zend_Tool_Framework_Metadata_Basic
      */
     public function setType($type)
     {
         $this->_type = $type;
+
         return $this;
     }
 
@@ -126,12 +126,13 @@ class Zend_Tool_Framework_Metadata_Basic
     /**
      * setName()
      *
-     * @param string $name
+     * @param  string  $name
      * @return Zend_Tool_Framework_Metadata_Basic
      */
     public function setName($name)
     {
         $this->_name = $name;
+
         return $this;
     }
 
@@ -148,24 +149,26 @@ class Zend_Tool_Framework_Metadata_Basic
     /**
      * setValue()
      *
-     * @param unknown_type $Value
+     * @param  unknown_type  $Value
      * @return Zend_Tool_Framework_Metadata_Basic
      */
     public function setValue($value)
     {
         $this->_value = $value;
+
         return $this;
     }
 
     /**
      * setReference()
      *
-     * @param mixed $reference
+     * @param  mixed  $reference
      * @return Zend_Tool_Framework_Metadata_Basic
      */
     public function setReference($reference)
     {
         $this->_reference = $reference;
+
         return $this;
     }
 
@@ -183,14 +186,14 @@ class Zend_Tool_Framework_Metadata_Basic
      * getAttributes() - this will retrieve any attributes of this object that exist as properties
      * This is most useful for printing metadata.
      *
-     * @param const $type
+     * @param  const  $type
      * @return array
      */
     public function getAttributes($type = self::ATTRIBUTES_ALL, $stringRepresentationOfNonScalars = false)
     {
         $thisReflection = new ReflectionObject($this);
 
-        $metadataPairValues = array();
+        $metadataPairValues = [];
 
         foreach (get_object_vars($this) as $varName => $varValue) {
             if ($type == self::ATTRIBUTES_NO_PARENT && ($thisReflection->getProperty($varName)->getDeclaringClass()->getName() == 'Zend_Tool_Framework_Metadata_Basic')) {
@@ -222,6 +225,6 @@ class Zend_Tool_Framework_Metadata_Basic
      */
     public function __toString()
     {
-        return 'Type: ' . $this->_type . ', Name: ' . $this->_name . ', Value: ' . (is_array($this->_value) ? http_build_query($this->_value) : (string) $this->_value);
+        return 'Type: '.$this->_type.', Name: '.$this->_name.', Value: '.(is_array($this->_value) ? http_build_query($this->_value) : (string) $this->_value);
     }
 }

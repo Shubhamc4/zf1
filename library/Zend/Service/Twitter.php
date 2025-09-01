@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Twitter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -47,8 +48,7 @@ require_once 'Zend/Service/Twitter/Response.php';
 
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Twitter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -110,7 +110,7 @@ class Zend_Service_Twitter
      *
      * @var array
      */
-    protected $methodTypes = array(
+    protected $methodTypes = [
         'account',
         'application',
         'blocks',
@@ -120,14 +120,14 @@ class Zend_Service_Twitter
         'search',
         'statuses',
         'users',
-    );
+    ];
 
     /**
      * Options passed to constructor
      *
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * Username
@@ -139,17 +139,15 @@ class Zend_Service_Twitter
     /**
      * Constructor
      *
-     * @param  null|array|Zend_Config $options
-     * @param  null|Zend_Oauth_Consumer $consumer
-     * @param  null|Zend_Http_Client $httpClient
+     * @param  null|array|Zend_Config  $options
      */
-    public function __construct($options = null, Zend_Oauth_Consumer $consumer = null, Zend_Http_Client $httpClient = null)
+    public function __construct($options = null, ?Zend_Oauth_Consumer $consumer = null, ?Zend_Http_Client $httpClient = null)
     {
         if ($options instanceof Zend_Config) {
             $options = $options->toArray();
         }
-        if (!is_array($options)) {
-            $options = array();
+        if (! is_array($options)) {
+            $options = [];
         }
 
         $this->options = $options;
@@ -165,7 +163,7 @@ class Zend_Service_Twitter
             $accessToken = $options['access_token'];
         }
 
-        $oauthOptions = array();
+        $oauthOptions = [];
         if (isset($options['oauthOptions'])) {
             $oauthOptions = $options['oauthOptions'];
         } elseif (isset($options['oauth_options'])) {
@@ -173,7 +171,7 @@ class Zend_Service_Twitter
         }
         $oauthOptions['siteUrl'] = self::OAUTH_BASE_URI;
 
-        $httpClientOptions = array();
+        $httpClientOptions = [];
         if (isset($options['httpClientOptions'])) {
             $httpClientOptions = $options['httpClientOptions'];
         } elseif (isset($options['http_client_options'])) {
@@ -184,7 +182,7 @@ class Zend_Service_Twitter
         if ($accessToken && is_array($accessToken)
             && (isset($accessToken['token']) && isset($accessToken['secret']))
         ) {
-            $token = new Zend_Oauth_Token_Access();
+            $token = new Zend_Oauth_Token_Access;
             $token->setToken($accessToken['token']);
             $token->setTokenSecret($accessToken['secret']);
             $accessToken = $token;
@@ -192,6 +190,7 @@ class Zend_Service_Twitter
         if ($accessToken && $accessToken instanceof Zend_Oauth_Token_Access) {
             $oauthOptions['token'] = $accessToken;
             $this->setHttpClient($accessToken->getHttpClient($oauthOptions, self::OAUTH_BASE_URI, $httpClientOptions));
+
             return;
         }
 
@@ -217,70 +216,74 @@ class Zend_Service_Twitter
     /**
      * Proxy service methods
      *
-     * @param  string $type
+     * @param  string  $type
      * @return Twitter
+     *
      * @throws Exception\DomainException If method not in method types list
      */
     public function __get($type)
     {
         $type = strtolower($type);
         $type = str_replace('_', '', $type);
-        if (!in_array($type, $this->methodTypes)) {
+        if (! in_array($type, $this->methodTypes)) {
             require_once 'Zend/Service/Twitter/Exception.php';
             throw new Zend_Service_Twitter_Exception(
-                'Invalid method type "' . $type . '"'
+                'Invalid method type "'.$type.'"'
             );
         }
         $this->methodType = $type;
+
         return $this;
     }
 
     /**
      * Method overloading
      *
-     * @param  string $method
-     * @param  array $params
+     * @param  string  $method
+     * @param  array  $params
      * @return mixed
+     *
      * @throws Exception\BadMethodCallException if unable to find method
      */
     public function __call($method, $params)
     {
         if (method_exists($this->oauthConsumer, $method)) {
-            $return = call_user_func_array(array($this->oauthConsumer, $method), $params);
+            $return = call_user_func_array([$this->oauthConsumer, $method], $params);
             if ($return instanceof Zend_Oauth_Token_Access) {
                 $this->setHttpClient($return->getHttpClient($this->options));
             }
+
             return $return;
         }
         if (empty($this->methodType)) {
             require_once 'Zend/Service/Twitter/Exception.php';
             throw new Zend_Service_Twitter_Exception(
-                'Invalid method "' . $method . '"'
+                'Invalid method "'.$method.'"'
             );
         }
 
         $test = str_replace('_', '', strtolower($method));
-        $test = $this->methodType . $test;
-        if (!method_exists($this, $test)) {
+        $test = $this->methodType.$test;
+        if (! method_exists($this, $test)) {
             require_once 'Zend/Service/Twitter/Exception.php';
             throw new Zend_Service_Twitter_Exception(
-                'Invalid method "' . $test . '"'
+                'Invalid method "'.$test.'"'
             );
         }
 
-        return call_user_func_array(array($this, $test), $params);
+        return call_user_func_array([$this, $test], $params);
     }
 
     /**
      * Set HTTP client
      *
-     * @param Zend_Http_Client $client
      * @return self
      */
     public function setHttpClient(Zend_Http_Client $client)
     {
         $this->httpClient = $client;
-        $this->httpClient->setHeaders(array('Accept-Charset' => 'ISO-8859-1,utf-8'));
+        $this->httpClient->setHeaders(['Accept-Charset' => 'ISO-8859-1,utf-8']);
+
         return $this;
     }
 
@@ -294,8 +297,9 @@ class Zend_Service_Twitter
     public function getHttpClient()
     {
         if (null === $this->httpClient) {
-            $this->setHttpClient(new Zend_Http_Client());
+            $this->setHttpClient(new Zend_Http_Client);
         }
+
         return $this->httpClient;
     }
 
@@ -312,12 +316,13 @@ class Zend_Service_Twitter
     /**
      * Set username
      *
-     * @param  string $value
+     * @param  string  $value
      * @return self
      */
     public function setUsername($value)
     {
         $this->username = $value;
+
         return $this;
     }
 
@@ -331,20 +336,23 @@ class Zend_Service_Twitter
         if ($this->getHttpClient() instanceof Zend_Oauth_Client) {
             return true;
         }
+
         return false;
     }
 
     /**
      * Verify Account Credentials
      *
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
     public function accountVerifyCredentials()
     {
         $this->init();
         $response = $this->get('account/verify_credentials');
+
         return new Zend_Service_Twitter_Response($response);
     }
 
@@ -352,14 +360,17 @@ class Zend_Service_Twitter
      * Returns the number of api requests you have left per hour.
      *
      * @todo   Have a separate payload object to represent rate limits
+     *
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
     public function applicationRateLimitStatus()
     {
         $this->init();
         $response = $this->get('application/rate_limit_status');
+
         return new Zend_Service_Twitter_Response($response);
     }
 
@@ -367,79 +378,89 @@ class Zend_Service_Twitter
      * Blocks the user specified in the ID parameter as the authenticating user.
      * Destroys a friendship to the blocked user if it exists.
      *
-     * @param  integer|string $id       The ID or screen name of a user to block.
-     * @throws Exception\DomainException if unable to decode JSON payload
+     * @param  int|string  $id  The ID or screen name of a user to block.
      * @return Zend_Service_Twitter_Response
+     *
+     * @throws Exception\DomainException if unable to decode JSON payload
      */
     public function blocksCreate($id)
     {
         $this->init();
-        $path     = 'blocks/create';
-        $params   = $this->createUserParameter($id, array());
+        $path = 'blocks/create';
+        $params = $this->createUserParameter($id, []);
         $response = $this->post($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
     /**
      * Un-blocks the user specified in the ID parameter for the authenticating user
      *
-     * @param  integer|string $id       The ID or screen_name of the user to un-block.
-     * @throws Exception\DomainException if unable to decode JSON payload
+     * @param  int|string  $id  The ID or screen_name of the user to un-block.
      * @return Zend_Service_Twitter_Response
+     *
+     * @throws Exception\DomainException if unable to decode JSON payload
      */
     public function blocksDestroy($id)
     {
         $this->init();
-        $path   = 'blocks/destroy';
-        $params = $this->createUserParameter($id, array());
+        $path = 'blocks/destroy';
+        $params = $this->createUserParameter($id, []);
         $response = $this->post($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
     /**
      * Returns an array of user ids that the authenticating user is blocking
      *
-     * @param  integer $cursor  Optional. Specifies the cursor position at which to begin listing ids; defaults to first "page" of results.
-     * @throws Exception\DomainException if unable to decode JSON payload
+     * @param  int  $cursor  Optional. Specifies the cursor position at which to begin listing ids; defaults to first "page" of results.
      * @return Zend_Service_Twitter_Response
+     *
+     * @throws Exception\DomainException if unable to decode JSON payload
      */
     public function blocksIds($cursor = -1)
     {
         $this->init();
         $path = 'blocks/ids';
-        $response = $this->get($path, array('cursor' => $cursor));
+        $response = $this->get($path, ['cursor' => $cursor]);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
     /**
      * Returns an array of user objects that the authenticating user is blocking
      *
-     * @param  integer $cursor  Optional. Specifies the cursor position at which to begin listing ids; defaults to first "page" of results.
-     * @throws Exception\DomainException if unable to decode JSON payload
+     * @param  int  $cursor  Optional. Specifies the cursor position at which to begin listing ids; defaults to first "page" of results.
      * @return Zend_Service_Twitter_Response
+     *
+     * @throws Exception\DomainException if unable to decode JSON payload
      */
     public function blocksList($cursor = -1)
     {
         $this->init();
         $path = 'blocks/list';
-        $response = $this->get($path, array('cursor' => $cursor));
+        $response = $this->get($path, ['cursor' => $cursor]);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
     /**
      * Destroy a direct message
      *
-     * @param  int $id ID of message to destroy
+     * @param  int  $id  ID of message to destroy
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
     public function directMessagesDestroy($id)
     {
         $this->init();
-        $path     = 'direct_messages/destroy';
-        $params   = array('id' => $this->validInteger($id));
+        $path = 'direct_messages/destroy';
+        $params = ['id' => $this->validInteger($id)];
         $response = $this->post($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
@@ -453,16 +474,16 @@ class Zend_Service_Twitter
      * - include_entities: setting to false will disable embedded entities
      * - skip_status:setting to true, "t", or 1 will omit the status in returned users
      *
-     * @param  array $options
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
-    public function directMessagesMessages(array $options = array())
+    public function directMessagesMessages(array $options = [])
     {
         $this->init();
-        $path   = 'direct_messages';
-        $params = array();
+        $path = 'direct_messages';
+        $params = [];
         foreach ($options as $key => $value) {
             switch (strtolower($key)) {
                 case 'count':
@@ -485,19 +506,21 @@ class Zend_Service_Twitter
             }
         }
         $response = $this->get($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
     /**
      * Send a direct message to a user
      *
-     * @param  int|string $user User to whom to send message
-     * @param  string $text Message to send to user
+     * @param  int|string  $user  User to whom to send message
+     * @param  string  $text  Message to send to user
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Exception\InvalidArgumentException if message is empty
      * @throws Exception\OutOfRangeException if message is too long
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
     public function directMessagesNew($user, $text)
     {
@@ -510,16 +533,18 @@ class Zend_Service_Twitter
             throw new Zend_Service_Twitter_Exception(
                 'Direct message must contain at least one character'
             );
-        } elseif (140 < $len) {
+        }
+        if (140 < $len) {
             require_once 'Zend/Service/Twitter/Exception.php';
             throw new Zend_Service_Twitter_Exception(
                 'Direct message must contain no more than 140 characters'
             );
         }
 
-        $params         = $this->createUserParameter($user, array());
+        $params = $this->createUserParameter($user, []);
         $params['text'] = $text;
-        $response       = $this->post($path, $params);
+        $response = $this->post($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
@@ -533,16 +558,16 @@ class Zend_Service_Twitter
      * - max_id: return statuses with an ID less than (older than) or equal to that specified
      * - include_entities: setting to false will disable embedded entities
      *
-     * @param  array $options
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
-    public function directMessagesSent(array $options = array())
+    public function directMessagesSent(array $options = [])
     {
         $this->init();
-        $path   = 'direct_messages/sent';
-        $params = array();
+        $path = 'direct_messages/sent';
+        $params = [];
         foreach ($options as $key => $value) {
             switch (strtolower($key)) {
                 case 'count':
@@ -565,40 +590,45 @@ class Zend_Service_Twitter
             }
         }
         $response = $this->get($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
     /**
      * Mark a status as a favorite
      *
-     * @param  int $id Status ID you want to mark as a favorite
+     * @param  int  $id  Status ID you want to mark as a favorite
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
     public function favoritesCreate($id)
     {
         $this->init();
-        $path     = 'favorites/create';
-        $params   = array('id' => $this->validInteger($id));
+        $path = 'favorites/create';
+        $params = ['id' => $this->validInteger($id)];
         $response = $this->post($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
     /**
      * Remove a favorite
      *
-     * @param  int $id Status ID you want to de-list as a favorite
+     * @param  int  $id  Status ID you want to de-list as a favorite
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
     public function favoritesDestroy($id)
     {
         $this->init();
-        $path     = 'favorites/destroy';
-        $params   = array('id' => $this->validInteger($id));
+        $path = 'favorites/destroy';
+        $params = ['id' => $this->validInteger($id)];
         $response = $this->post($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
@@ -613,16 +643,17 @@ class Zend_Service_Twitter
      * - max_id: return results with an ID less than (older than) or equal to the specified ID
      * - include_entities: when set to false, entities member will be omitted
      *
-     * @param  array $params
+     * @param  array  $params
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
-    public function favoritesList(array $options = array())
+    public function favoritesList(array $options = [])
     {
         $this->init();
         $path = 'favorites/list';
-        $params = array();
+        $params = [];
         foreach ($options as $key => $value) {
             switch (strtolower($key)) {
                 case 'user_id':
@@ -648,47 +679,52 @@ class Zend_Service_Twitter
             }
         }
         $response = $this->get($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
     /**
      * Create friendship
      *
-     * @param  int|string $id User ID or name of new friend
-     * @param  array $params Additional parameters to pass
+     * @param  int|string  $id  User ID or name of new friend
+     * @param  array  $params  Additional parameters to pass
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
-    public function friendshipsCreate($id, array $params = array())
+    public function friendshipsCreate($id, array $params = [])
     {
         $this->init();
-        $path    = 'friendships/create';
-        $params  = $this->createUserParameter($id, $params);
-        $allowed = array(
-            'user_id'     => null,
+        $path = 'friendships/create';
+        $params = $this->createUserParameter($id, $params);
+        $allowed = [
+            'user_id' => null,
             'screen_name' => null,
-            'follow'      => null,
-        );
+            'follow' => null,
+        ];
         $params = array_intersect_key($params, $allowed);
         $response = $this->post($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
     /**
      * Destroy friendship
      *
-     * @param  int|string $id User ID or name of friend to remove
+     * @param  int|string  $id  User ID or name of friend to remove
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
     public function friendshipsDestroy($id)
     {
         $this->init();
-        $path     = 'friendships/destroy';
-        $params   = $this->createUserParameter($id, array());
+        $path = 'friendships/destroy';
+        $params = $this->createUserParameter($id, []);
         $response = $this->post($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
@@ -706,13 +742,13 @@ class Zend_Service_Twitter
      * - max_id: return results with an ID less than (older than) the given ID
      * - include_entities: whether or not to include embedded entities
      *
-     * @param  string $query
-     * @param  array $options
+     * @param  string  $query
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
-    public function searchTweets($query, array $options = array())
+    public function searchTweets($query, array $options = [])
     {
         $this->init();
         $path = 'search/tweets';
@@ -725,27 +761,27 @@ class Zend_Service_Twitter
             );
         }
 
-        $params = array('q' => $query);
+        $params = ['q' => $query];
         foreach ($options as $key => $value) {
             switch (strtolower($key)) {
                 case 'geocode':
-                    if (!substr_count($value, ',') !== 2) {
+                    if (! substr_count($value, ',') !== 2) {
                         require_once 'Zend/Service/Twitter/Exception.php';
                         throw new Zend_Service_Twitter_Exception(
                             '"geocode" must be of the format "latitude,longitude,radius"'
                         );
                     }
-                    list($latitude, $longitude, $radius) = explode(',', $value);
+                    [$latitude, $longitude, $radius] = explode(',', $value);
                     $radius = trim($radius);
-                    if (!preg_match('/^\d+(mi|km)$/', $radius)) {
+                    if (! preg_match('/^\d+(mi|km)$/', $radius)) {
                         require_once 'Zend/Service/Twitter/Exception.php';
                         throw new Zend_Service_Twitter_Exception(
                             'Radius segment of "geocode" must be of the format "[unit](mi|km)"'
                         );
                     }
-                    $latitude  = (float) $latitude;
+                    $latitude = (float) $latitude;
                     $longitude = (float) $longitude;
-                    $params['geocode'] = $latitude . ',' . $longitude . ',' . $radius;
+                    $params['geocode'] = $latitude.','.$longitude.','.$radius;
                     break;
                 case 'lang':
                     if (strlen($value) > 2) {
@@ -767,7 +803,7 @@ class Zend_Service_Twitter
                     break;
                 case 'result_type':
                     $value = strtolower($value);
-                    if (!in_array($value, array('mixed', 'recent', 'popular'))) {
+                    if (! in_array($value, ['mixed', 'recent', 'popular'])) {
                         require_once 'Zend/Service/Twitter/Exception.php';
                         throw new Zend_Service_Twitter_Exception(
                             'result_type must be one of "mixed", "recent", or "popular"'
@@ -786,7 +822,7 @@ class Zend_Service_Twitter
                     $params['count'] = $value;
                     break;
                 case 'until':
-                    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+                    if (! preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
                         require_once 'Zend/Service/Twitter/Exception.php';
                         throw new Zend_Service_Twitter_Exception(
                             '"until" must be a date in the format YYYY-MM-DD'
@@ -808,22 +844,25 @@ class Zend_Service_Twitter
             }
         }
         $response = $this->get($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
     /**
      * Destroy a status message
      *
-     * @param  int $id ID of status to destroy
+     * @param  int  $id  ID of status to destroy
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
     public function statusesDestroy($id)
     {
         $this->init();
-        $path = 'statuses/destroy/' . $this->validInteger($id);
+        $path = 'statuses/destroy/'.$this->validInteger($id);
         $response = $this->post($path);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
@@ -839,16 +878,17 @@ class Zend_Service_Twitter
      * - include_entities: when set to false, entities member will be omitted
      * - exclude_replies: when set to true, will strip replies appearing in the timeline
      *
-     * @param  array $params
+     * @param  array  $params
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
-    public function statusesHomeTimeline(array $options = array())
+    public function statusesHomeTimeline(array $options = [])
     {
         $this->init();
         $path = 'statuses/home_timeline';
-        $params = array();
+        $params = [];
         foreach ($options as $key => $value) {
             switch (strtolower($key)) {
                 case 'count':
@@ -861,7 +901,7 @@ class Zend_Service_Twitter
                     $params['max_id'] = $this->validInteger($value);
                     break;
                 case 'trim_user':
-                    if (in_array($value, array(true, 'true', 't', 1, '1'))) {
+                    if (in_array($value, [true, 'true', 't', 1, '1'])) {
                         $value = true;
                     } else {
                         $value = false;
@@ -882,6 +922,7 @@ class Zend_Service_Twitter
             }
         }
         $response = $this->get($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
@@ -896,16 +937,16 @@ class Zend_Service_Twitter
      * - contributor_details: when set to true, includes screen_name of each contributor
      * - include_entities: when set to false, entities member will be omitted
      *
-     * @param  array $options
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
-    public function statusesMentionsTimeline(array $options = array())
+    public function statusesMentionsTimeline(array $options = [])
     {
         $this->init();
-        $path   = 'statuses/mentions_timeline';
-        $params = array();
+        $path = 'statuses/mentions_timeline';
+        $params = [];
         foreach ($options as $key => $value) {
             switch (strtolower($key)) {
                 case 'count':
@@ -918,7 +959,7 @@ class Zend_Service_Twitter
                     $params['max_id'] = $this->validInteger($value);
                     break;
                 case 'trim_user':
-                    if (in_array($value, array(true, 'true', 't', 1, '1'))) {
+                    if (in_array($value, [true, 'true', 't', 1, '1'])) {
                         $value = true;
                     } else {
                         $value = false;
@@ -936,37 +977,42 @@ class Zend_Service_Twitter
             }
         }
         $response = $this->get($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
     /**
      * Public Timeline status
      *
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
     public function statusesSample()
     {
         $this->init();
         $path = 'statuses/sample';
         $response = $this->get($path);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
     /**
      * Show a single status
      *
-     * @param  int $id Id of status to show
+     * @param  int  $id  Id of status to show
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
     public function statusesShow($id)
     {
         $this->init();
-        $path = 'statuses/show/' . $this->validInteger($id);
+        $path = 'statuses/show/'.$this->validInteger($id);
         $response = $this->get($path);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
@@ -974,13 +1020,15 @@ class Zend_Service_Twitter
      * Update user's current status
      *
      * @todo   Support additional parameters supported by statuses/update endpoint
-     * @param  string $status
-     * @param  null|int $inReplyToStatusId
+     *
+     * @param  string  $status
+     * @param  null|int  $inReplyToStatusId
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\OutOfRangeException if message is too long
      * @throws Exception\InvalidArgumentException if message is empty
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
     public function statusesUpdate($status, $inReplyToStatusId = null)
     {
@@ -991,22 +1039,24 @@ class Zend_Service_Twitter
             require_once 'Zend/Service/Twitter/Exception.php';
             throw new Zend_Service_Twitter_Exception(
                 'Status must be no more than '
-                . self::STATUS_MAX_CHARACTERS
-                . ' characters in length'
+                .self::STATUS_MAX_CHARACTERS
+                .' characters in length'
             );
-        } elseif (0 == $len) {
+        }
+        if (0 == $len) {
             require_once 'Zend/Service/Twitter/Exception.php';
             throw new Zend_Service_Twitter_Exception(
                 'Status must contain at least one character'
             );
         }
 
-        $params = array('status' => $status);
+        $params = ['status' => $status];
         $inReplyToStatusId = $this->validInteger($inReplyToStatusId);
         if ($inReplyToStatusId) {
             $params['in_reply_to_status_id'] = $inReplyToStatusId;
         }
         $response = $this->post($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
@@ -1024,15 +1074,16 @@ class Zend_Service_Twitter
      * - contributor_details: when set to true, includes screen_name of each contributor
      * - include_rts: when set to false, will strip native retweets
      *
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
-    public function statusesUserTimeline(array $options = array())
+    public function statusesUserTimeline(array $options = [])
     {
         $this->init();
         $path = 'statuses/user_timeline';
-        $params = array();
+        $params = [];
         foreach ($options as $key => $value) {
             switch (strtolower($key)) {
                 case 'user_id':
@@ -1051,7 +1102,7 @@ class Zend_Service_Twitter
                     $params['max_id'] = $this->validInteger($value);
                     break;
                 case 'trim_user':
-                    if (in_array($value, array(true, 'true', 't', 1, '1'))) {
+                    if (in_array($value, [true, 'true', 't', 1, '1'])) {
                         $value = true;
                     } else {
                         $value = false;
@@ -1072,6 +1123,7 @@ class Zend_Service_Twitter
             }
         }
         $response = $this->get($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
@@ -1083,13 +1135,13 @@ class Zend_Service_Twitter
      * - count: the number of users to retrieve per page; max is 20
      * - include_entities: if set to boolean true, include embedded entities
      *
-     * @param  string $query
-     * @param  array $options
+     * @param  string  $query
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
-    public function usersSearch($query, array $options = array())
+    public function usersSearch($query, array $options = [])
     {
         $this->init();
         $path = 'users/search';
@@ -1102,7 +1154,7 @@ class Zend_Service_Twitter
             );
         }
 
-        $params = array('q' => $query);
+        $params = ['q' => $query];
         foreach ($options as $key => $value) {
             switch (strtolower($key)) {
                 case 'count':
@@ -1126,24 +1178,26 @@ class Zend_Service_Twitter
             }
         }
         $response = $this->get($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
-
 
     /**
      * Show extended information on a user
      *
-     * @param  int|string $id User ID or name
+     * @param  int|string  $id  User ID or name
+     * @return Zend_Service_Twitter_Response
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
      * @throws Exception\DomainException if unable to decode JSON payload
-     * @return Zend_Service_Twitter_Response
      */
     public function usersShow($id)
     {
         $this->init();
-        $path     = 'users/show';
-        $params   = $this->createUserParameter($id, array());
+        $path = 'users/show';
+        $params = $this->createUserParameter($id, []);
         $response = $this->get($path, $params);
+
         return new Zend_Service_Twitter_Response($response);
     }
 
@@ -1151,17 +1205,18 @@ class Zend_Service_Twitter
      * Initialize HTTP authentication
      *
      * @return void
+     *
      * @throws Exception\DomainException if unauthorised
      */
     protected function init()
     {
-        if (!$this->isAuthorised() && $this->getUsername() !== null) {
+        if (! $this->isAuthorised() && $this->getUsername() !== null) {
             require_once 'Zend/Service/Twitter/Exception.php';
             throw new Zend_Service_Twitter_Exception(
                 'Twitter session is unauthorised. You need to initialize '
-                . __CLASS__ . ' with an OAuth Access Token or use '
-                . 'its OAuth functionality to obtain an Access Token before '
-                . 'attempting any API actions that require authorisation'
+                .__CLASS__.' with an OAuth Access Token or use '
+                .'its OAuth functionality to obtain an Access Token before '
+                .'attempting any API actions that require authorisation'
             );
         }
         $client = $this->getHttpClient();
@@ -1169,7 +1224,7 @@ class Zend_Service_Twitter
         if (null === $this->cookieJar) {
             $cookieJar = $client->getCookieJar();
             if (null === $cookieJar) {
-                $cookieJar = new Zend_Http_CookieJar();
+                $cookieJar = new Zend_Http_CookieJar;
             }
             $this->cookieJar = $cookieJar;
             $this->cookieJar->reset();
@@ -1181,48 +1236,51 @@ class Zend_Service_Twitter
     /**
      * Protected function to validate that the integer is valid or return a 0
      *
-     * @param  $int
+     * @return int
+     *
      * @throws Zend_Http_Client_Exception if HTTP request fails or times out
-     * @return integer
      */
     protected function validInteger($int)
     {
         if (preg_match("/(\d+)/", $int)) {
             return $int;
         }
+
         return 0;
     }
 
     /**
      * Validate a screen name using Twitter rules
      *
-     * @param string $name
+     * @param  string  $name
      * @return string
+     *
      * @throws Exception\InvalidArgumentException
      */
     protected function validateScreenName($name)
     {
-        if (!preg_match('/^[a-zA-Z0-9_]{0,20}$/', $name)) {
+        if (! preg_match('/^[a-zA-Z0-9_]{0,20}$/', $name)) {
             require_once 'Zend/Service/Twitter/Exception.php';
             throw new Zend_Service_Twitter_Exception(
-                'Screen name, "' . $name
-                . '" should only contain alphanumeric characters and'
-                . ' underscores, and not exceed 15 characters.');
+                'Screen name, "'.$name
+                .'" should only contain alphanumeric characters and'
+                .' underscores, and not exceed 15 characters.');
         }
+
         return $name;
     }
 
     /**
      * Call a remote REST web service URI
      *
-     * @param  string $path The path to append to the URI
-     * @param  Zend_Http_Client $client
-     * @throws Zend_Http_Client_Exception
+     * @param  string  $path  The path to append to the URI
      * @return void
+     *
+     * @throws Zend_Http_Client_Exception
      */
     protected function prepare($path, Zend_Http_Client $client)
     {
-        $client->setUri(self::API_BASE_URI . $path . '.json');
+        $client->setUri(self::API_BASE_URI.$path.'.json');
 
         /**
          * Do this each time to ensure oauth calls do not inject new params
@@ -1233,33 +1291,37 @@ class Zend_Service_Twitter
     /**
      * Performs an HTTP GET request to the $path.
      *
-     * @param string $path
-     * @param array  $query Array of GET parameters
-     * @throws Zend_Http_Client_Exception
+     * @param  string  $path
+     * @param  array  $query  Array of GET parameters
      * @return Zend_Http_Response
+     *
+     * @throws Zend_Http_Client_Exception
      */
-    protected function get($path, array $query = array())
+    protected function get($path, array $query = [])
     {
         $client = $this->getHttpClient();
         $this->prepare($path, $client);
         $client->setParameterGet($query);
         $response = $client->request(Zend_Http_Client::GET);
+
         return $response;
     }
 
     /**
      * Performs an HTTP POST request to $path.
      *
-     * @param string $path
-     * @param mixed $data Raw data to send
-     * @throws Zend_Http_Client_Exception
+     * @param  string  $path
+     * @param  mixed  $data  Raw data to send
      * @return Zend_Http_Response
+     *
+     * @throws Zend_Http_Client_Exception
      */
     protected function post($path, $data = null)
     {
         $client = $this->getHttpClient();
         $this->prepare($path, $client);
         $response = $this->performPost(Zend_Http_Client::POST, $data, $client);
+
         return $response;
     }
 
@@ -1270,8 +1332,8 @@ class Zend_Service_Twitter
      * client. String data is pushed in as raw POST data; array or object data
      * is pushed in as POST parameters.
      *
-     * @param mixed $method
-     * @param mixed $data
+     * @param  mixed  $method
+     * @param  mixed  $data
      * @return Zend_Http_Response
      */
     protected function performPost($method, $data, Zend_Http_Client $client)
@@ -1281,6 +1343,7 @@ class Zend_Service_Twitter
         } elseif (is_array($data) || is_object($data)) {
             $client->setParameterPost((array) $data);
         }
+
         return $client->request($method);
     }
 
@@ -1290,18 +1353,19 @@ class Zend_Service_Twitter
      * Determines if $id is an integer, and, if so, sets the "user_id" parameter.
      * If not, assumes the $id is the "screen_name".
      *
-     * @param  int|string $id
-     * @param  array $params
+     * @param  int|string  $id
      * @return array
      */
     protected function createUserParameter($id, array $params)
     {
         if ($this->validInteger($id)) {
             $params['user_id'] = $id;
+
             return $params;
         }
 
         $params['screen_name'] = $this->validateScreenName($id);
+
         return $params;
     }
 }

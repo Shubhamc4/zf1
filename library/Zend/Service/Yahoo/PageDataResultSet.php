@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,30 +14,26 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Yahoo
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * @see Zend_Service_Yahoo_ResultSet
  */
 require_once 'Zend/Service/Yahoo/ResultSet.php';
 
-
 /**
  * @see Zend_Service_Yahoo_WebResult
  */
 require_once 'Zend/Service/Yahoo/PageDataResult.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Yahoo
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -49,13 +46,11 @@ class Zend_Service_Yahoo_PageDataResultSet extends Zend_Service_Yahoo_ResultSet
      */
     protected $_namespace = 'urn:yahoo:srch';
 
-
     /**
      * Overrides Zend_Service_Yahoo_ResultSet::current()
      *
      * @return Zend_Service_Yahoo_WebResult
      */
-    #[\ReturnTypeWillChange]
     public function current()
     {
         return new Zend_Service_Yahoo_PageDataResult($this->_results->item($this->_currentIndex));

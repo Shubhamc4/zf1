@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,17 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Pdf
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * Container which collects updated object info.
  *
- * @package    Zend_Pdf
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -32,22 +32,21 @@ class Zend_Pdf_UpdateInfoContainer
     /**
      * Object number
      *
-     * @var integer
+     * @var int
      */
     private $_objNum;
 
     /**
      * Generation number
      *
-     * @var integer
+     * @var int
      */
     private $_genNum;
-
 
     /**
      * Flag, which signals, that object is free
      *
-     * @var boolean
+     * @var bool
      */
     private $_isFree;
 
@@ -61,7 +60,7 @@ class Zend_Pdf_UpdateInfoContainer
     /**
      * Object constructor
      *
-     * @param integer $objCount
+     * @param  int  $objCount
      */
     public function __construct($objNum, $genNum, $isFree, $dump = null)
     {
@@ -79,11 +78,10 @@ class Zend_Pdf_UpdateInfoContainer
         }
     }
 
-
     /**
      * Get object number
      *
-     * @return integer
+     * @return int
      */
     public function getObjNum()
     {
@@ -93,7 +91,7 @@ class Zend_Pdf_UpdateInfoContainer
     /**
      * Get generation number
      *
-     * @return integer
+     * @return int
      */
     public function getGenNum()
     {
@@ -103,7 +101,7 @@ class Zend_Pdf_UpdateInfoContainer
     /**
      * Check, that object is free
      *
-     * @return boolean
+     * @return bool
      */
     public function isFree()
     {
@@ -128,4 +126,3 @@ class Zend_Pdf_UpdateInfoContainer
         return $this->_dump->getRef();
     }
 }
-

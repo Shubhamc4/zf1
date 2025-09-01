@@ -14,9 +14,9 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage Client_Adapter
+ *
  * @version    $Id$
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -27,8 +27,7 @@
  * This interface decribes Zend_Http_Client_Adapter which supports streaming.
  *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage Client_Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,8 +38,7 @@ interface Zend_Http_Client_Adapter_Stream
      *
      * This function sets output stream where the result will be stored.
      *
-     * @param resource $stream Stream to write the output to
-     *
+     * @param  resource  $stream  Stream to write the output to
      */
     public function setOutputStream($stream);
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,11 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_View
- * @subpackage Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ *
  * @version    $Id$
+ *
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -32,8 +34,6 @@ require_once 'Zend/View/Helper/Abstract.php';
  * for non-Placeholder things. That said, the support for this is only
  * guaranteed to effect subsequently rendered templates, and of course Layouts.
  *
- * @package    Zend_View
- * @subpackage Helper
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -41,9 +41,10 @@ class Zend_View_Helper_Placeholder extends Zend_View_Helper_Abstract
 {
     /**
      * Placeholder items
+     *
      * @var array
      */
-    protected $_items = array();
+    protected $_items = [];
 
     /**
      * @var Zend_View_Helper_Placeholder_Registry
@@ -62,16 +63,16 @@ class Zend_View_Helper_Placeholder extends Zend_View_Helper_Abstract
         $this->_registry = Zend_View_Helper_Placeholder_Registry::getRegistry();
     }
 
-
     /**
      * Placeholder helper
      *
-     * @param  string $name
+     * @param  string  $name
      * @return Zend_View_Helper_Placeholder_Container_Abstract
      */
     public function placeholder($name)
     {
         $name = (string) $name;
+
         return $this->_registry->getContainer($name);
     }
 

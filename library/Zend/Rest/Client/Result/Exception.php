@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,24 +14,22 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Rest
- * @subpackage Client
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * @see Zend_Rest_Client_Exception
  */
-require_once "Zend/Rest/Client/Exception.php";
+require_once 'Zend/Rest/Client/Exception.php';
 
 /**
  * Zend_Rest_Client_Result_Exception
  *
- * @package    Zend_Rest
- * @subpackage Client
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Rest_Client_Result_Exception extends Zend_Rest_Client_Exception{}
+class Zend_Rest_Client_Result_Exception extends Zend_Rest_Client_Exception {}

@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gapps
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -37,15 +37,14 @@ require_once 'Zend/Gdata/Gapps.php';
  * within an instance of Zend_Gdata_Gapps_EmailListEntry.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gapps
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Gapps_Extension_EmailList extends Zend_Gdata_Extension
 {
-
     protected $_rootNamespace = 'apps';
+
     protected $_rootElement = 'emailList';
 
     /**
@@ -59,7 +58,7 @@ class Zend_Gdata_Gapps_Extension_EmailList extends Zend_Gdata_Extension
     /**
      * Constructs a new Zend_Gdata_Gapps_Extension_EmailList object.
      *
-     * @param string $name (optional) The name to be used for this email list.
+     * @param  string  $name  (optional) The name to be used for this email list.
      */
     public function __construct($name = null)
     {
@@ -74,9 +73,9 @@ class Zend_Gdata_Gapps_Extension_EmailList extends Zend_Gdata_Extension
      * and eventually XML text for sending to the server upon updates, or
      * for application storage/persistence.
      *
-     * @param DOMDocument $doc The DOMDocument used to construct DOMElements
+     * @param  DOMDocument  $doc  The DOMDocument used to construct DOMElements
      * @return DOMElement The DOMElement representing this element and all
-     * child properties.
+     *                    child properties.
      */
     public function getDOM($doc = null, $majorVersion = 1, $minorVersion = null)
     {
@@ -84,6 +83,7 @@ class Zend_Gdata_Gapps_Extension_EmailList extends Zend_Gdata_Extension
         if ($this->_name !== null) {
             $element->setAttribute('name', $this->_name);
         }
+
         return $element;
     }
 
@@ -92,16 +92,16 @@ class Zend_Gdata_Gapps_Extension_EmailList extends Zend_Gdata_Extension
      * instance members.  If no mapping is defined, the name and value are
      * stored in an array.
      *
-     * @param DOMNode $attribute The DOMNode attribute needed to be handled
+     * @param  DOMNode  $attribute  The DOMNode attribute needed to be handled
      */
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'name':
-            $this->_name = $attribute->nodeValue;
-            break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            case 'name':
+                $this->_name = $attribute->nodeValue;
+                break;
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 
@@ -109,6 +109,7 @@ class Zend_Gdata_Gapps_Extension_EmailList extends Zend_Gdata_Extension
      * Get the value for this element's name attribute.
      *
      * @see setName
+     *
      * @return string The requested attribute.
      */
     public function getName()
@@ -121,12 +122,13 @@ class Zend_Gdata_Gapps_Extension_EmailList extends Zend_Gdata_Extension
      * name which will be used to identify this email list within this
      * domain, and will be used to form this email list's email address.
      *
-     * @param string $value The desired value for this attribute.
+     * @param  string  $value  The desired value for this attribute.
      * @return Zend_Gdata_Gapps_Extension_EmailList The element being modified.
      */
     public function setName($value)
     {
         $this->_name = $value;
+
         return $this;
     }
 
@@ -140,5 +142,4 @@ class Zend_Gdata_Gapps_Extension_EmailList extends Zend_Gdata_Extension
     {
         return $this->getName();
     }
-
 }

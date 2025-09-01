@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Rest
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -23,13 +25,13 @@
 require_once 'Zend/Controller/Action.php';
 
 /**
- * An #[AllowDynamicProperties]
-abstract class to guide implementation of action controllers for use with
+ * An abstract class to guide implementation of action controllers for use with
  * Zend_Rest_Route.
  *
  * @category   Zend
- * @package Zend_Rest
+ *
  * @see Zend_Rest_Route
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -74,5 +76,4 @@ abstract class Zend_Rest_Controller extends Zend_Controller_Action
      * identified by the 'id' value.
      */
     abstract public function deleteAction();
-
 }

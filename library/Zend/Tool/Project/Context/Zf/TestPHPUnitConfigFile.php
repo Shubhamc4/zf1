@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -32,13 +33,12 @@ require_once 'Zend/Tool/Project/Context/Filesystem/File.php';
  * items within a specific project.
  *
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Tool_Project_Context_Zf_TestPHPUnitConfigFile extends Zend_Tool_Project_Context_Filesystem_File
 {
-
     /**
      * @var string
      */
@@ -53,10 +53,10 @@ class Zend_Tool_Project_Context_Zf_TestPHPUnitConfigFile extends Zend_Tool_Proje
     {
         return 'TestPHPUnitConfigFile';
     }
-    
+
     public function getContents()
     {
-        return <<<EOS
+        return <<<'EOS'
 <phpunit bootstrap="./bootstrap.php">
     <testsuite name="Application Test Suite">
         <directory>./application</directory>
@@ -77,5 +77,4 @@ class Zend_Tool_Project_Context_Zf_TestPHPUnitConfigFile extends Zend_Tool_Proje
 
 EOS;
     }
-
 }

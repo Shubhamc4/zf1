@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,7 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_EventManager
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -26,7 +27,7 @@ require_once 'Zend/Stdlib/CallbackHandler.php';
  * FilterChain: intercepting filter manager
  *
  * @category   Zend
- * @package    Zend_EventManager
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -46,7 +47,7 @@ class Zend_EventManager_FilterChain implements Zend_EventManager_Filter
      */
     public function __construct()
     {
-        $this->filters = new Zend_EventManager_Filter_FilterIterator();
+        $this->filters = new Zend_EventManager_Filter_FilterIterator;
     }
 
     /**
@@ -54,11 +55,11 @@ class Zend_EventManager_FilterChain implements Zend_EventManager_Filter
      *
      * Begins iteration of the filters.
      * 
-     * @param  mixed $context Object under observation
-     * @param  mixed $argv Associative array of arguments
+     * @param  mixed  $context  Object under observation
+     * @param  mixed  $argv  Associative array of arguments
      * @return mixed
      */
-    public function run($context, array $argv = array())
+    public function run($context, array $argv = [])
     {
         $chain = clone $this->getFilters();
 
@@ -67,7 +68,7 @@ class Zend_EventManager_FilterChain implements Zend_EventManager_Filter
         }
 
         $next = $chain->extract();
-        if (!$next instanceof Zend_Stdlib_CallbackHandler) {
+        if (! $next instanceof Zend_Stdlib_CallbackHandler) {
             return;
         }
 
@@ -77,10 +78,11 @@ class Zend_EventManager_FilterChain implements Zend_EventManager_Filter
     /**
      * Connect a filter to the chain
      *
-     * @param  callback $callback PHP Callback
-     * @param  int      $priority Priority in the queue at which to execute; defaults to 1 (higher numbers == higher priority)
-     * @throws Zend_Stdlib_Exception_InvalidCallbackException
+     * @param  callable  $callback  PHP Callback
+     * @param  int  $priority  Priority in the queue at which to execute; defaults to 1 (higher numbers == higher priority)
      * @return Zend_Stdlib_CallbackHandler (to allow later unsubscribe)
+     *
+     * @throws Zend_Stdlib_Exception_InvalidCallbackException
      */
     public function attach($callback, $priority = 1)
     {
@@ -88,15 +90,15 @@ class Zend_EventManager_FilterChain implements Zend_EventManager_Filter
             require_once 'Zend/Stdlib/Exception/InvalidCallbackException.php';
             throw new Zend_Stdlib_Exception_InvalidCallbackException('No callback provided');
         }
-        $filter = new Zend_Stdlib_CallbackHandler($callback, array('priority' => $priority));
+        $filter = new Zend_Stdlib_CallbackHandler($callback, ['priority' => $priority]);
         $this->filters->insert($filter, $priority);
+
         return $filter;
     }
 
     /**
      * Detach a filter from the chain
      * 
-     * @param  Zend_Stdlib_CallbackHandler $filter 
      * @return bool Returns true if filter found and unsubscribed; returns false otherwise
      */
     public function detach(Zend_Stdlib_CallbackHandler $filter)
@@ -121,7 +123,7 @@ class Zend_EventManager_FilterChain implements Zend_EventManager_Filter
      */
     public function clearFilters()
     {
-        $this->filters = new Zend_EventManager_Filter_FilterIterator();
+        $this->filters = new Zend_EventManager_Filter_FilterIterator;
     }
 
     /**

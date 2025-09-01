@@ -440,7 +440,7 @@ class Zend_Gdata_App
      * cause a Zend_Gdata_App_InvalidArgumentException to be thrown.
      *
      * @see _minorProtocolVersion
-     * @param (int|NULL) $value The minor protocol version to use.
+     * @param (int|null) $value The minor protocol version to use.
      * @throws Zend_Gdata_App_InvalidArgumentException
      */
     public function setMinorProtocolVersion($value)
@@ -848,7 +848,7 @@ class Zend_Gdata_App
      *
      * @param  string $filename
      * @param  string $className The class which is used as the return type
-     * @param  string $useIncludePath Whether the include_path should be searched
+     * @param  bool $useIncludePath Whether the include_path should be searched
      * @throws Zend_Gdata_App_Exception
      * @return Zend_Gdata_App_Feed
      */
@@ -1084,11 +1084,11 @@ class Zend_Gdata_App
             } else {
                 require_once 'Zend/Gdata/App/Exception.php';
                 throw new Zend_Gdata_App_Exception(
-                        "Unable to find '${class}' in registered packages");
+                        "Unable to find '$class' in registered packages");
             }
         } else {
             require_once 'Zend/Gdata/App/Exception.php';
-            throw new Zend_Gdata_App_Exception("No such method ${method}");
+            throw new Zend_Gdata_App_Exception("No such method $method");
         }
     }
 

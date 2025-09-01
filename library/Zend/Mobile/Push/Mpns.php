@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Mobile
- * @subpackage Zend_Mobile_Push
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -33,10 +34,10 @@ require_once 'Zend/Mobile/Push/Message/Mpns.php';
  * Mpns Push
  *
  * @category   Zend
- * @package    Zend_Mobile
- * @subpackage Zend_Mobile_Push
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 class Zend_Mobile_Push_Mpns extends Zend_Mobile_Push_Abstract
@@ -55,12 +56,13 @@ class Zend_Mobile_Push_Mpns extends Zend_Mobile_Push_Abstract
      */
     public function getHttpClient()
     {
-        if (!$this->_httpClient) {
-            $this->_httpClient = new Zend_Http_Client();
-            $this->_httpClient->setConfig(array(
+        if (! $this->_httpClient) {
+            $this->_httpClient = new Zend_Http_Client;
+            $this->_httpClient->setConfig([
                 'strictredirects' => true,
-            ));
+            ]);
         }
+
         return $this->_httpClient;
     }
 
@@ -72,13 +74,15 @@ class Zend_Mobile_Push_Mpns extends Zend_Mobile_Push_Abstract
     public function setHttpClient(Zend_Http_Client $client)
     {
         $this->_httpClient = $client;
+
         return $this;
     }
 
     /**
      * Send Message
      *
-     * @param  Zend_Mobile_Push_Message_Abstract $message
+     * @return bool
+     *
      * @throws Zend_Http_Client_Exception
      * @throws Zend_Mobile_Push_Exception
      * @throws Zend_Mobile_Push_Exception_DeviceQuotaExceeded
@@ -86,11 +90,10 @@ class Zend_Mobile_Push_Mpns extends Zend_Mobile_Push_Abstract
      * @throws Zend_Mobile_Push_Exception_InvalidToken
      * @throws Zend_Mobile_Push_Exception_QuotaExceeded
      * @throws Zend_Mobile_Push_Exception_ServerUnavailable
-     * @return boolean
      */
     public function send(Zend_Mobile_Push_Message_Abstract $message)
     {
-        if (!$message->validate()) {
+        if (! $message->validate()) {
             throw new Zend_Mobile_Push_Exception('The message is not valid.');
         }
 
@@ -98,11 +101,11 @@ class Zend_Mobile_Push_Mpns extends Zend_Mobile_Push_Abstract
 
         $client = $this->getHttpClient();
         $client->setUri($message->getToken());
-        $client->setHeaders(array(
+        $client->setHeaders([
             'Context-Type' => 'text/xml',
             'Accept' => 'application/*',
-            'X-NotificationClass' => $message->getDelay()
-        ));
+            'X-NotificationClass' => $message->getDelay(),
+        ]);
         if ($message->getId()) {
             $client->setHeaders('X-MessageID', $message->getId());
         }
@@ -113,9 +116,7 @@ class Zend_Mobile_Push_Mpns extends Zend_Mobile_Push_Abstract
         $response = $client->request('POST');
         $this->close();
 
-
-        switch ($response->getStatus())
-        {
+        switch ($response->getStatus()) {
             case 200:
                 // check headers for response?  need to test how this actually works to correctly handle different states.
                 if ($response->getHeader('NotificationStatus') == 'QueueFull') {
@@ -153,6 +154,7 @@ class Zend_Mobile_Push_Mpns extends Zend_Mobile_Push_Abstract
             default:
                 break;
         }
+
         return true;
     }
 }

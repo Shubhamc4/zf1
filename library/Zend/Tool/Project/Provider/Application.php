@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,30 +14,26 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Tool_Project_Provider_Application
-    extends Zend_Tool_Project_Provider_Abstract
-    implements Zend_Tool_Framework_Provider_Pretendable
+class Zend_Tool_Project_Provider_Application extends Zend_Tool_Project_Provider_Abstract implements Zend_Tool_Framework_Provider_Pretendable
 {
-
-    protected $_specialties = array('ClassNamePrefix');
+    protected $_specialties = ['ClassNamePrefix'];
 
     /**
-     *
-     * @param string $classNamePrefix Prefix of classes
-     * @param bool   $force
+     * @param  string  $classNamePrefix  Prefix of classes
+     * @param  bool  $force
      */
     public function changeClassNamePrefix($classNamePrefix /* , $force = false */)
     {
@@ -51,7 +48,7 @@ class Zend_Tool_Project_Provider_Application
         $configFileResource = $profile->search('ApplicationConfigFile');
         $zc = $configFileResource->getAsZendConfig('production');
         if ($zc->appnamespace == $classNamePrefix) {
-            throw new Zend_Tool_Project_Exception('The requested name ' . $classNamePrefix . ' is already the prefix.');
+            throw new Zend_Tool_Project_Exception('The requested name '.$classNamePrefix.' is already the prefix.');
         }
 
         // remove the old
@@ -70,18 +67,17 @@ class Zend_Tool_Project_Provider_Application
 
         if ($originalClassNamePrefix !== $classNamePrefix) {
             $response->appendContent(
-                'Note: the name provided "' . $originalClassNamePrefix . '" was'
-                    . ' altered to "' . $classNamePrefix . '" for correctness.',
-                array('color' => 'yellow')
-                );
+                'Note: the name provided "'.$originalClassNamePrefix.'" was'
+                    .' altered to "'.$classNamePrefix.'" for correctness.',
+                ['color' => 'yellow']
+            );
         }
 
         // note to the user
-        $response->appendContent('Note: All existing models will need to be altered to this new namespace by hand', array('color' => 'yellow'));
-        $response->appendContent('application.ini updated with new appnamespace ' . $classNamePrefix);
+        $response->appendContent('Note: All existing models will need to be altered to this new namespace by hand', ['color' => 'yellow']);
+        $response->appendContent('application.ini updated with new appnamespace '.$classNamePrefix);
 
         // store profile
         $this->_storeProfile();
     }
-
 }

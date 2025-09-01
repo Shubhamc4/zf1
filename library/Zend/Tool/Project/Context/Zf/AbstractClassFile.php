@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -32,19 +33,17 @@ require_once 'Zend/Tool/Project/Context/Filesystem/File.php';
  * items within a specific project.
  *
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Tool_Project_Context_Zf_AbstractClassFile extends Zend_Tool_Project_Context_Filesystem_File
 {
-
     /**
      * getFullClassName()
      *
-     * @param string $localClassName
-     * @param string $classContextName
+     * @param  string  $localClassName
+     * @param  string  $classContextName
      */
     public function getFullClassName($localClassName, $classContextName = null)
     {
@@ -68,18 +67,17 @@ abstract class Zend_Tool_Project_Context_Zf_AbstractClassFile extends Zend_Tool_
                 $prefix = $containingResource->getAttribute('classNamePrefix');
                 $fullClassName = $prefix;
             } elseif ($containingResource->getName() == 'ModuleDirectory') {
-                $filter = new Zend_Filter_Word_DashToCamelCase();
-                $prefix = $filter->filter(ucfirst($containingResource->getAttribute('moduleName'))) . '_';
+                $filter = new Zend_Filter_Word_DashToCamelCase;
+                $prefix = $filter->filter(ucfirst($containingResource->getAttribute('moduleName'))).'_';
                 $fullClassName = $prefix;
             }
         }
 
         if ($classContextName) {
-            $fullClassName .= rtrim($classContextName, '_') . '_';
+            $fullClassName .= rtrim($classContextName, '_').'_';
         }
         $fullClassName .= $localClassName;
 
         return $fullClassName;
     }
-
 }

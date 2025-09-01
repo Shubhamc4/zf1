@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service_Amazon
- * @subpackage Ec2
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,8 +30,7 @@ require_once 'Zend/Service/Amazon/Ec2/Abstract.php';
  * Allows you to interface with the reserved instances on Amazon Ec2
  *
  * @category   Zend
- * @package    Zend_Service_Amazon
- * @subpackage Ec2
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,19 +39,19 @@ class Zend_Service_Amazon_Ec2_Instance_Reserved extends Zend_Service_Amazon_Ec2_
     /**
      * Describes Reserved Instances that you purchased.
      *
-     * @param string|array $instanceId        IDs of the Reserved Instance to describe.
+     * @param  string|array  $instanceId  IDs of the Reserved Instance to describe.
      * @return array
      */
     public function describeInstances($instanceId)
     {
-        $params = array();
+        $params = [];
         $params['Action'] = 'DescribeReservedInstances';
 
-        if(is_array($instanceId) && !empty($instanceId)) {
-            foreach($instanceId as $k=>$name) {
-                $params['ReservedInstancesId.' . ($k+1)] = $name;
+        if (is_array($instanceId) && ! empty($instanceId)) {
+            foreach ($instanceId as $k => $name) {
+                $params['ReservedInstancesId.'.($k + 1)] = $name;
             }
-        } elseif($instanceId) {
+        } elseif ($instanceId) {
             $params['ReservedInstancesId.1'] = $instanceId;
         }
 
@@ -60,9 +60,9 @@ class Zend_Service_Amazon_Ec2_Instance_Reserved extends Zend_Service_Amazon_Ec2_
         $xpath = $response->getXPath();
         $items = $xpath->query('//ec2:reservedInstancesSet/ec2:item');
 
-        $return = array();
-        foreach($items as $item) {
-            $i = array();
+        $return = [];
+        foreach ($items as $item) {
+            $i = [];
             $i['reservedInstancesId'] = $xpath->evaluate('string(ec2:reservedInstancesId/text())', $item);
             $i['instanceType'] = $xpath->evaluate('string(ec2:instanceType/text())', $item);
             $i['availabilityZone'] = $xpath->evaluate('string(ec2:availabilityZone/text())', $item);
@@ -90,7 +90,7 @@ class Zend_Service_Amazon_Ec2_Instance_Reserved extends Zend_Service_Amazon_Ec2_
      */
     public function describeOfferings()
     {
-        $params = array();
+        $params = [];
         $params['Action'] = 'DescribeReservedInstancesOfferings';
 
         $response = $this->sendRequest($params);
@@ -98,9 +98,9 @@ class Zend_Service_Amazon_Ec2_Instance_Reserved extends Zend_Service_Amazon_Ec2_
         $xpath = $response->getXPath();
         $items = $xpath->query('//ec2:reservedInstancesOfferingsSet/ec2:item');
 
-        $return = array();
-        foreach($items as $item) {
-            $i = array();
+        $return = [];
+        foreach ($items as $item) {
+            $i = [];
             $i['reservedInstancesOfferingId'] = $xpath->evaluate('string(ec2:reservedInstancesOfferingId/text())', $item);
             $i['instanceType'] = $xpath->evaluate('string(ec2:instanceType/text())', $item);
             $i['availabilityZone'] = $xpath->evaluate('string(ec2:availabilityZone/text())', $item);
@@ -122,13 +122,13 @@ class Zend_Service_Amazon_Ec2_Instance_Reserved extends Zend_Service_Amazon_Ec2_
      * for a period of time (without getting insufficient capacity errors) and
      * pay a lower usage rate for the actual time used.
      *
-     * @param string $offeringId            The offering ID of the Reserved Instance to purchase
-     * @param integer $intanceCount         The number of Reserved Instances to purchase.
-     * @return string                       The ID of the purchased Reserved Instances.
+     * @param  string  $offeringId  The offering ID of the Reserved Instance to purchase
+     * @param  int  $intanceCount  The number of Reserved Instances to purchase.
+     * @return string The ID of the purchased Reserved Instances.
      */
     public function purchaseOffering($offeringId, $intanceCount = 1)
     {
-        $params = array();
+        $params = [];
         $params['Action'] = 'PurchaseReservedInstancesOffering';
         $params['OfferingId.1'] = $offeringId;
         $params['instanceCount.1'] = intval($intanceCount);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Oauth
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,7 +29,7 @@ require_once 'Zend/Uri/Http.php';
 
 /**
  * @category   Zend
- * @package    Zend_Oauth
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,7 +41,7 @@ class Zend_Oauth_Http
      *
      * @var array
      */
-    protected $_parameters = array();
+    protected $_parameters = [];
 
     /**
      * Reference to the Zend_Oauth_Consumer instance in use.
@@ -74,15 +76,12 @@ class Zend_Oauth_Http
     /**
      * Constructor
      *
-     * @param  Zend_Oauth_Consumer $consumer
-     * @param  null|array $parameters
-     * @param  null|Zend_Oauth_Http_Utility $utility
      * @return void
      */
     public function __construct(
         Zend_Oauth_Consumer $consumer,
-        array $parameters = null,
-        Zend_Oauth_Http_Utility $utility = null
+        ?array $parameters = null,
+        ?Zend_Oauth_Http_Utility $utility = null
     ) {
         $this->_consumer = $consumer;
         $this->_preferredRequestScheme = $this->_consumer->getRequestScheme();
@@ -99,16 +98,17 @@ class Zend_Oauth_Http
     /**
      * Set a preferred HTTP request method.
      *
-     * @param  string $method
+     * @param  string  $method
      * @return Zend_Oauth_Http
      */
     public function setMethod($method)
     {
-        if (!in_array($method, array(Zend_Oauth::POST, Zend_Oauth::GET))) {
+        if (! in_array($method, [Zend_Oauth::POST, Zend_Oauth::GET])) {
             require_once 'Zend/Oauth/Exception.php';
-            throw new Zend_Oauth_Exception('invalid HTTP method: ' . $method);
+            throw new Zend_Oauth_Exception('invalid HTTP method: '.$method);
         }
         $this->_preferredRequestMethod = $method;
+
         return $this;
     }
 
@@ -125,12 +125,12 @@ class Zend_Oauth_Http
     /**
      * Mutator to set an array of custom parameters for the HTTP request.
      *
-     * @param  array $customServiceParameters
      * @return Zend_Oauth_Http
      */
     public function setParameters(array $customServiceParameters)
     {
         $this->_parameters = $customServiceParameters;
+
         return $this;
     }
 
@@ -161,16 +161,17 @@ class Zend_Oauth_Http
      * preference list for OAuth Request Schemes.
      * On success, return the Request object that results for processing.
      *
-     * @param  array $params
      * @return Zend_Http_Response
+     *
      * @throws Zend_Oauth_Exception on HTTP request errors
+     *
      * @todo   Remove cycling?; Replace with upfront do-or-die configuration
      */
     public function startRequestCycle(array $params)
     {
         $response = null;
-        $body     = null;
-        $status   = null;
+        $body = null;
+        $status = null;
         try {
             $response = $this->_attemptRequest($params);
         } catch (Zend_Http_Client_Exception $e) {
@@ -178,7 +179,7 @@ class Zend_Oauth_Http
             throw new Zend_Oauth_Exception('Error in HTTP request', null, $e);
         }
         if ($response !== null) {
-            $body   = $response->getBody();
+            $body = $response->getBody();
             $status = $response->getStatus();
         }
         if ($response === null // Request failure/exception
@@ -190,6 +191,7 @@ class Zend_Oauth_Http
             $this->_assessRequestAttempt($response);
             $response = $this->startRequestCycle($params);
         }
+
         return $response;
     }
 
@@ -197,8 +199,7 @@ class Zend_Oauth_Http
      * Return an instance of Zend_Http_Client configured to use the Query
      * String scheme for an OAuth driven HTTP request.
      *
-     * @param array $params
-     * @param string $url
+     * @param  string  $url
      * @return Zend_Http_Client
      */
     public function getRequestSchemeQueryStringClient(array $params, $url)
@@ -209,6 +210,7 @@ class Zend_Oauth_Http
             $this->_httpUtility->toEncodedQueryString($params)
         );
         $client->setMethod($this->_preferredRequestMethod);
+
         return $client;
     }
 
@@ -218,9 +220,10 @@ class Zend_Oauth_Http
      *
      * @param  Zend_Http_Response
      * @return void
+     *
      * @throws Zend_Oauth_Exception if unable to retrieve valid token response
      */
-    protected function _assessRequestAttempt(Zend_Http_Response $response = null)
+    protected function _assessRequestAttempt(?Zend_Http_Response $response = null)
     {
         switch ($this->_preferredRequestScheme) {
             case Zend_Oauth::REQUEST_SCHEME_HEADER:
@@ -233,8 +236,8 @@ class Zend_Oauth_Http
                 require_once 'Zend/Oauth/Exception.php';
                 throw new Zend_Oauth_Exception(
                     'Could not retrieve a valid Token response from Token URL:'
-                    . ($response !== null
-                        ? PHP_EOL . $response->getBody()
+                    .($response !== null
+                        ? PHP_EOL.$response->getBody()
                         : ' No body - check for headers')
                 );
         }
@@ -244,23 +247,23 @@ class Zend_Oauth_Http
      * Generates a valid OAuth Authorization header based on the provided
      * parameters and realm.
      *
-     * @param  array $params
-     * @param  string $realm
+     * @param  string  $realm
      * @return string
      */
     protected function _toAuthorizationHeader(array $params, $realm = null)
     {
-        $headerValue = array();
-        $headerValue[] = 'OAuth realm="' . $realm . '"';
+        $headerValue = [];
+        $headerValue[] = 'OAuth realm="'.$realm.'"';
         foreach ($params as $key => $value) {
-            if (!preg_match("/^oauth_/", $key)) {
+            if (! preg_match('/^oauth_/', $key)) {
                 continue;
             }
             $headerValue[] = Zend_Oauth_Http_Utility::urlEncode($key)
-                           . '="'
-                           . Zend_Oauth_Http_Utility::urlEncode($value)
-                           . '"';
+                           .'="'
+                           .Zend_Oauth_Http_Utility::urlEncode($value)
+                           .'"';
         }
-        return implode(",", $headerValue);
+
+        return implode(',', $headerValue);
     }
 }

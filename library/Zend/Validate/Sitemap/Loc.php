@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Validate
- * @subpackage Sitemap
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -36,8 +37,7 @@ require_once 'Zend/Uri.php';
  * @link       http://www.sitemaps.org/protocol.php Sitemaps XML format
  *
  * @category   Zend
- * @package    Zend_Validate
- * @subpackage Sitemap
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -45,20 +45,20 @@ class Zend_Validate_Sitemap_Loc extends Zend_Validate_Abstract
 {
     /**
      * Validation key for not valid
-     *
      */
     const NOT_VALID = 'sitemapLocNotValid';
-    const INVALID   = 'sitemapLocInvalid';
+
+    const INVALID = 'sitemapLocInvalid';
 
     /**
      * Validation failure message template definitions
      *
      * @var array
      */
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::NOT_VALID => "'%value%' is not a valid sitemap location",
-        self::INVALID   => "Invalid type given. String expected",
-    );
+        self::INVALID => 'Invalid type given. String expected',
+    ];
 
     /**
      * Validates if a string is valid as a sitemap location
@@ -66,12 +66,13 @@ class Zend_Validate_Sitemap_Loc extends Zend_Validate_Abstract
      * @link http://www.sitemaps.org/protocol.php#locdef <loc>
      *
      * @param  string  $value  value to validate
-     * @return boolean
+     * @return bool
      */
     public function isValid($value)
     {
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             $this->_error(self::INVALID);
+
             return false;
         }
 
@@ -79,6 +80,7 @@ class Zend_Validate_Sitemap_Loc extends Zend_Validate_Abstract
         $result = Zend_Uri::check($value);
         if ($result !== true) {
             $this->_error(self::NOT_VALID);
+
             return false;
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Oauth
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,33 +29,36 @@ require_once 'Zend/Uri/Http.php';
 
 /**
  * @category   Zend
- * @package    Zend_Oauth
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Oauth_Signature_SignatureAbstract
 {
     /**
      * Hash algorithm to use when generating signature
+     *
      * @var string
      */
     protected $_hashAlgorithm = null;
 
     /**
      * Key to use when signing
+     *
      * @var string
      */
     protected $_key = null;
 
     /**
      * Consumer secret
+     *
      * @var string
      */
     protected $_consumerSecret = null;
 
     /**
      * Token secret
+     *
      * @var string
      */
     protected $_tokenSecret = '';
@@ -61,9 +66,9 @@ abstract class Zend_Oauth_Signature_SignatureAbstract
     /**
      * Constructor
      *
-     * @param  string $consumerSecret
-     * @param  null|string $tokenSecret
-     * @param  null|string $hashAlgo
+     * @param  string  $consumerSecret
+     * @param  null|string  $tokenSecret
+     * @param  null|string  $hashAlgo
      * @return void
      */
     public function __construct($consumerSecret, $tokenSecret = null, $hashAlgo = null)
@@ -81,17 +86,16 @@ abstract class Zend_Oauth_Signature_SignatureAbstract
     /**
      * Sign a request
      *
-     * @param  array $params
-     * @param  null|string $method
-     * @param  null|string $url
+     * @param  null|string  $method
+     * @param  null|string  $url
      * @return string
      */
-    public abstract function sign(array $params, $method = null, $url = null);
+    abstract public function sign(array $params, $method = null, $url = null);
 
     /**
      * Normalize the base signature URL
      *
-     * @param  string $url
+     * @param  string  $url
      * @return string
      */
     public function normaliseBaseSignatureUrl($url)
@@ -105,6 +109,7 @@ abstract class Zend_Oauth_Signature_SignatureAbstract
         $uri->setQuery('');
         $uri->setFragment('');
         $uri->setHost(strtolower($uri->getHost()));
+
         return $uri->getUri(true);
     }
 
@@ -115,32 +120,32 @@ abstract class Zend_Oauth_Signature_SignatureAbstract
      */
     protected function _assembleKey()
     {
-        $parts = array($this->_consumerSecret);
+        $parts = [$this->_consumerSecret];
         if ($this->_tokenSecret !== null) {
             $parts[] = $this->_tokenSecret;
         }
         foreach ($parts as $key => $secret) {
             $parts[$key] = Zend_Oauth_Http_Utility::urlEncode($secret);
         }
+
         return implode('&', $parts);
     }
 
     /**
      * Get base signature string
      *
-     * @param  array $params
-     * @param  null|string $method
-     * @param  null|string $url
+     * @param  null|string  $method
+     * @param  null|string  $url
      * @return string
      */
     protected function _getBaseSignatureString(array $params, $method = null, $url = null)
     {
-        $encodedParams = array();
+        $encodedParams = [];
         foreach ($params as $key => $value) {
             $encodedParams[Zend_Oauth_Http_Utility::urlEncode($key)] =
                 Zend_Oauth_Http_Utility::urlEncode($value);
         }
-        $baseStrings = array();
+        $baseStrings = [];
         if (isset($method)) {
             $baseStrings[] = strtoupper($method);
         }
@@ -156,29 +161,30 @@ abstract class Zend_Oauth_Signature_SignatureAbstract
         $baseStrings[] = Zend_Oauth_Http_Utility::urlEncode(
             $this->_toByteValueOrderedQueryString($encodedParams)
         );
+
         return implode('&', $baseStrings);
     }
 
     /**
      * Transform an array to a byte value ordered query string
      *
-     * @param  array $params
      * @return string
      */
     protected function _toByteValueOrderedQueryString(array $params)
     {
-        $return = array();
+        $return = [];
         uksort($params, 'strnatcmp');
         foreach ($params as $key => $value) {
             if (is_array($value)) {
                 natsort($value);
                 foreach ($value as $keyduplicate) {
-                    $return[] = $key . '=' . $keyduplicate;
+                    $return[] = $key.'='.$keyduplicate;
                 }
             } else {
-                $return[] = $key . '=' . $value;
+                $return[] = $key.'='.$value;
             }
         }
+
         return implode('&', $return);
     }
 }

@@ -14,24 +14,21 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Yahoo
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * @see Zend_Service_Yahoo_Result
  */
 require_once 'Zend/Service/Yahoo/Result.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Yahoo
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -79,16 +76,14 @@ class Zend_Service_Yahoo_WebResult extends Zend_Service_Yahoo_Result
      */
     protected $_namespace = 'urn:yahoo:srch';
 
-
     /**
      * Initializes the web result
      *
-     * @param  DOMElement $result
      * @return void
      */
     public function __construct(DOMElement $result)
     {
-        $this->_fields = array('Summary', 'MimeType', 'ModificationDate');
+        $this->_fields = ['Summary', 'MimeType', 'ModificationDate'];
         parent::__construct($result);
 
         $this->_xpath = new DOMXPath($result->ownerDocument);
@@ -96,13 +91,11 @@ class Zend_Service_Yahoo_WebResult extends Zend_Service_Yahoo_Result
 
         // check if the cache section exists
         $cacheUrl = $this->_xpath->query('./yh:Cache/yh:Url/text()', $result)->item(0);
-        if ($cacheUrl instanceof DOMNode)
-        {
+        if ($cacheUrl instanceof DOMNode) {
             $this->CacheUrl = $cacheUrl->data;
         }
         $cacheSize = $this->_xpath->query('./yh:Cache/yh:Size/text()', $result)->item(0);
-        if ($cacheSize instanceof DOMNode)
-        {
+        if ($cacheSize instanceof DOMNode) {
             $this->CacheSize = (int) $cacheSize->data;
         }
     }

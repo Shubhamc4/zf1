@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,8 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service_Amazon
- * @subpackage SimpleDb
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -28,8 +28,7 @@ require_once 'Zend/Service/Amazon/Exception.php';
  * The Custom Exception class that allows you to have access to the AWS Error Code.
  *
  * @category   Zend
- * @package    Zend_Service_Amazon
- * @subpackage SimpleDb
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -52,8 +51,8 @@ class Zend_Service_Amazon_SimpleDb_Page
     /**
      * Constructor
      *
-     * @param string      $data
-     * @param string|null $token
+     * @param  string  $data
+     * @param  string|null  $token
      */
     public function __construct($data, $token = null)
     {
@@ -64,7 +63,7 @@ class Zend_Service_Amazon_SimpleDb_Page
     /**
      * Set page data
      *
-     * @param string $data
+     * @param  string  $data
      */
     public function setData($data)
     {
@@ -84,7 +83,7 @@ class Zend_Service_Amazon_SimpleDb_Page
     /**
      * Set token
      *
-     * @param string|null $token
+     * @param  string|null  $token
      */
     public function setToken($token)
     {
@@ -108,7 +107,7 @@ class Zend_Service_Amazon_SimpleDb_Page
      */
     public function isLast()
     {
-        return (null === $this->_token);
+        return null === $this->_token;
     }
 
     /**
@@ -118,7 +117,7 @@ class Zend_Service_Amazon_SimpleDb_Page
      */
     public function __toString()
     {
-        return "Page with token: " . $this->_token
-             . "\n and data: " . $this->_data;
+        return 'Page with token: '.$this->_token
+             ."\n and data: ".$this->_data;
     }
 }

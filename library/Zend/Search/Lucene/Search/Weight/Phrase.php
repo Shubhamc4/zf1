@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,24 +14,21 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Search
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * Zend_Search_Lucene_Search_Weight
  */
 require_once 'Zend/Search/Lucene/Search/Weight.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Search
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -59,14 +57,11 @@ class Zend_Search_Lucene_Search_Weight_Phrase extends Zend_Search_Lucene_Search_
 
     /**
      * Zend_Search_Lucene_Search_Weight_Phrase constructor
-     *
-     * @param Zend_Search_Lucene_Search_Query_Phrase $query
-     * @param Zend_Search_Lucene_Interface           $reader
      */
     public function __construct(Zend_Search_Lucene_Search_Query_Phrase $query,
-                                Zend_Search_Lucene_Interface           $reader)
+        Zend_Search_Lucene_Interface $reader)
     {
-        $this->_query  = $query;
+        $this->_query = $query;
         $this->_reader = $reader;
     }
 
@@ -87,11 +82,10 @@ class Zend_Search_Lucene_Search_Weight_Phrase extends Zend_Search_Lucene_Search_
         return $this->_queryWeight * $this->_queryWeight;
     }
 
-
     /**
      * Assigns the query normalization factor to this.
      *
-     * @param float $queryNorm
+     * @param  float  $queryNorm
      */
     public function normalize($queryNorm)
     {
@@ -104,5 +98,3 @@ class Zend_Search_Lucene_Search_Weight_Phrase extends Zend_Search_Lucene_Search_
         $this->_value = $this->_queryWeight * $this->_idf;
     }
 }
-
-

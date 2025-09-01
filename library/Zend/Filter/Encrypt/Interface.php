@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -23,7 +25,7 @@
  * Encryption interface
  *
  * @category   Zend
- * @package    Zend_Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -32,7 +34,7 @@ interface Zend_Filter_Encrypt_Interface
     /**
      * Encrypts $value with the defined settings
      *
-     * @param  string $value Data to encrypt
+     * @param  string  $value  Data to encrypt
      * @return string The encrypted data
      */
     public function encrypt($value);
@@ -40,7 +42,7 @@ interface Zend_Filter_Encrypt_Interface
     /**
      * Decrypts $value with the defined settings
      *
-     * @param  string $value Data to decrypt
+     * @param  string  $value  Data to decrypt
      * @return string The decrypted data
      */
     public function decrypt($value);

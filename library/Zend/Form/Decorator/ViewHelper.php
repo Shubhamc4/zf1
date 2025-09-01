@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,7 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Form
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -35,26 +36,28 @@ require_once 'Zend/Form/Decorator/Abstract.php';
  * optional attributes; these will be provided by the element.
  *
  * @category   Zend
- * @package    Zend_Form
- * @subpackage Decorator
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 class Zend_Form_Decorator_ViewHelper extends Zend_Form_Decorator_Abstract
 {
     /**
      * Element types that represent buttons
+     *
      * @var array
      */
-    protected $_buttonTypes = array(
+    protected $_buttonTypes = [
         'Zend_Form_Element_Button',
         'Zend_Form_Element_Reset',
         'Zend_Form_Element_Submit',
-    );
+    ];
 
     /**
      * View helper to use when rendering
+     *
      * @var string
      */
     protected $_helper;
@@ -62,12 +65,13 @@ class Zend_Form_Decorator_ViewHelper extends Zend_Form_Decorator_Abstract
     /**
      * Set view helper to use when rendering
      *
-     * @param  string $helper
+     * @param  string  $helper
      * @return Zend_Form_Decorator_Element_ViewHelper
      */
     public function setHelper($helper)
     {
         $this->_helper = (string) $helper;
+
         return $this;
     }
 
@@ -93,7 +97,7 @@ class Zend_Form_Decorator_ViewHelper extends Zend_Form_Decorator_Abstract
                         if ($pos = strrpos($type, '_')) {
                             $type = substr($type, $pos + 1);
                         }
-                        $this->setHelper('form' . ucfirst($type));
+                        $this->setHelper('form'.ucfirst($type));
                     }
                 }
             }
@@ -118,14 +122,14 @@ class Zend_Form_Decorator_ViewHelper extends Zend_Form_Decorator_Abstract
 
         $name = $element->getName();
 
-        if (!$element instanceof Zend_Form_Element) {
+        if (! $element instanceof Zend_Form_Element) {
             return $name;
         }
 
         if (null !== ($belongsTo = $element->getBelongsTo())) {
-            $name = $belongsTo . '['
-                  . $name
-                  . ']';
+            $name = $belongsTo.'['
+                  .$name
+                  .']';
         }
 
         if ($element->isArray()) {
@@ -145,7 +149,7 @@ class Zend_Form_Decorator_ViewHelper extends Zend_Form_Decorator_Abstract
     public function getElementAttribs()
     {
         if (null === ($element = $this->getElement())) {
-            return null;
+            return;
         }
 
         $attribs = $element->getAttribs();
@@ -168,7 +172,7 @@ class Zend_Form_Decorator_ViewHelper extends Zend_Form_Decorator_Abstract
         if ($element instanceof Zend_Form_Element) {
             if (null !== ($belongsTo = $element->getBelongsTo())) {
                 $belongsTo = preg_replace('/\[([^\]]+)\]/', '-$1', $belongsTo);
-                $id = $belongsTo . '-' . $id;
+                $id = $belongsTo.'-'.$id;
             }
         }
 
@@ -183,13 +187,13 @@ class Zend_Form_Decorator_ViewHelper extends Zend_Form_Decorator_Abstract
      *
      * If element type is one of the button types, returns the label.
      *
-     * @param  Zend_Form_Element $element
+     * @param  Zend_Form_Element  $element
      * @return string|null
      */
     public function getValue($element)
     {
-        if (!$element instanceof Zend_Form_Element) {
-            return null;
+        if (! $element instanceof Zend_Form_Element) {
+            return;
         }
 
         foreach ($this->_buttonTypes as $type) {
@@ -199,6 +203,7 @@ class Zend_Form_Decorator_ViewHelper extends Zend_Form_Decorator_Abstract
 
                     return $element->getValue();
                 }
+
                 return $element->getLabel();
             }
         }
@@ -213,8 +218,9 @@ class Zend_Form_Decorator_ViewHelper extends Zend_Form_Decorator_Abstract
      * the element type. Then call as
      * helper($element->getName(), $element->getValue(), $element->getAttribs())
      *
-     * @param  string $content
+     * @param  string  $content
      * @return string
+     *
      * @throws Zend_Form_Decorator_Exception if element or view are not registered
      */
     public function render($content)
@@ -231,22 +237,22 @@ class Zend_Form_Decorator_ViewHelper extends Zend_Form_Decorator_Abstract
             $element->getMultiOptions();
         }
 
-        $helper        = $this->getHelper();
-        $separator     = $this->getSeparator();
-        $value         = $this->getValue($element);
-        $attribs       = $this->getElementAttribs();
-        $name          = $element->getFullyQualifiedName();
-        $id            = $element->getId();
+        $helper = $this->getHelper();
+        $separator = $this->getSeparator();
+        $value = $this->getValue($element);
+        $attribs = $this->getElementAttribs();
+        $name = $element->getFullyQualifiedName();
+        $id = $element->getId();
         $attribs['id'] = $id;
 
-        $helperObject  = $view->getHelper($helper);
+        $helperObject = $view->getHelper($helper);
         if (method_exists($helperObject, 'setTranslator')) {
             $helperObject->setTranslator($element->getTranslator());
         }
 
         // Check list separator
         if (isset($attribs['listsep'])
-            && in_array($helper, array('formMultiCheckbox', 'formRadio', 'formSelect'))
+            && in_array($helper, ['formMultiCheckbox', 'formRadio', 'formSelect'])
         ) {
             $listsep = $attribs['listsep'];
             unset($attribs['listsep']);
@@ -258,9 +264,9 @@ class Zend_Form_Decorator_ViewHelper extends Zend_Form_Decorator_Abstract
 
         switch ($this->getPlacement()) {
             case self::APPEND:
-                return $content . $separator . $elementContent;
+                return $content.$separator.$elementContent;
             case self::PREPEND:
-                return $elementContent . $separator . $content;
+                return $elementContent.$separator.$content;
             default:
                 return $elementContent;
         }

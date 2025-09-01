@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,8 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage UserAgent
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -30,13 +30,10 @@ require_once 'Zend/Http/UserAgent/Features/Adapter.php';
  * Requires that you have a PHP-compatible version of the browscap.ini, per the
  * instructions at http://php.net/get_browser
  *
- * @package    Zend_Http
- * @subpackage UserAgent
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Http_UserAgent_Features_Adapter_Browscap
-    implements Zend_Http_UserAgent_Features_Adapter
+class Zend_Http_UserAgent_Features_Adapter_Browscap implements Zend_Http_UserAgent_Features_Adapter
 {
     /**
      * Constructor
@@ -48,7 +45,7 @@ class Zend_Http_UserAgent_Features_Adapter_Browscap
     public function __construct()
     {
         $browscap = ini_get('browscap');
-        if (empty($browscap) || !file_exists($browscap)) {
+        if (empty($browscap) || ! file_exists($browscap)) {
             require_once 'Zend/Http/UserAgent/Features/Exception.php';
             throw new Zend_Http_UserAgent_Features_Exception(sprintf(
                 '%s requires a browscap entry in php.ini pointing to a valid browscap.ini; none present',
@@ -60,14 +57,14 @@ class Zend_Http_UserAgent_Features_Adapter_Browscap
     /**
      * Get features from request
      *
-     * @param  array $request $_SERVER variable
-     * @param  array $config  ignored; included only to satisfy parent class
+     * @param  array  $request  $_SERVER variable
+     * @param  array  $config  ignored; included only to satisfy parent class
      * @return array
      */
     public static function getFromRequest($request, array $config)
     {
         $browscap = get_browser($request['http_user_agent'], true);
-        $features = array();
+        $features = [];
 
         if (is_array($browscap)) {
             foreach ($browscap as $key => $value) {

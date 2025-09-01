@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -28,7 +30,7 @@ require_once 'Zend/Filter/Compress.php';
  * Decompresses a given string
  *
  * @category   Zend
- * @package    Zend_Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,7 +41,7 @@ class Zend_Filter_Decompress extends Zend_Filter_Compress
      *
      * Decompresses the content $value with the defined settings
      *
-     * @param  string $value Content to decompress
+     * @param  string  $value  Content to decompress
      * @return string The decompressed content
      */
     public function filter($value)

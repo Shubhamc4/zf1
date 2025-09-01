@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Debug
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -23,14 +25,12 @@
  * Concrete class for generating debug dumps related to the output source.
  *
  * @category   Zend
- * @package    Zend_Debug
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-
 class Zend_Debug
 {
-
     /**
      * @var string
      */
@@ -47,6 +47,7 @@ class Zend_Debug
         if (self::$_sapi === null) {
             self::$_sapi = PHP_SAPI;
         }
+
         return self::$_sapi;
     }
 
@@ -54,7 +55,7 @@ class Zend_Debug
      * Set the debug ouput environment.
      * Setting a value of null causes Zend_Debug to use PHP_SAPI.
      *
-     * @param string $sapi
+     * @param  string  $sapi
      * @return void;
      */
     public static function setSapi($sapi)
@@ -67,15 +68,15 @@ class Zend_Debug
      * the <pre /> tags, cleans up newlines and indents, and runs
      * htmlentities() before output.
      *
-     * @param  mixed  $var   The variable to dump.
-     * @param  string $label OPTIONAL Label to prepend to output.
-     * @param  bool   $echo  OPTIONAL Echo output if true.
+     * @param  mixed  $var  The variable to dump.
+     * @param  string  $label  OPTIONAL Label to prepend to output.
+     * @param  bool  $echo  OPTIONAL Echo output if true.
      * @return string
      */
-    public static function dump($var, $label=null, $echo=true)
+    public static function dump($var, $label = null, $echo = true)
     {
         // format the label
-        $label = ($label===null) ? '' : rtrim($label) . ' ';
+        $label = ($label === null) ? '' : rtrim($label).' ';
 
         // var_dump the variable into a buffer and keep the output
         ob_start();
@@ -83,13 +84,13 @@ class Zend_Debug
         $output = ob_get_clean();
 
         // neaten the newlines and indents
-        $output = preg_replace("/\]\=\>\n(\s+)/m", "] => ", $output);
+        $output = preg_replace("/\]\=\>\n(\s+)/m", '] => ', $output);
         if (self::getSapi() == 'cli') {
-            $output = PHP_EOL . $label
-                    . PHP_EOL . $output
-                    . PHP_EOL;
+            $output = PHP_EOL.$label
+                    .PHP_EOL.$output
+                    .PHP_EOL;
         } else {
-            if(!extension_loaded('xdebug')) {
+            if (! extension_loaded('xdebug')) {
                 $flags = ENT_QUOTES;
                 // PHP 5.4.0+
                 if (defined('ENT_SUBSTITUTE')) {
@@ -99,15 +100,15 @@ class Zend_Debug
             }
 
             $output = '<pre>'
-                    . $label
-                    . $output
-                    . '</pre>';
+                    .$label
+                    .$output
+                    .'</pre>';
         }
 
         if ($echo) {
-            echo($output);
+            echo $output;
         }
+
         return $output;
     }
-
 }

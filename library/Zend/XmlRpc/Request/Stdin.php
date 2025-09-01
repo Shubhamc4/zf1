@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,7 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Controller
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -31,15 +32,17 @@ require_once 'Zend/XmlRpc/Request.php';
  * request is declared a fault.
  *
  * @category Zend
- * @package  Zend_XmlRpc
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version $Id$
  */
 class Zend_XmlRpc_Request_Stdin extends Zend_XmlRpc_Request
 {
     /**
      * Raw XML as received via request
+     *
      * @var string
      */
     protected $_xml;
@@ -56,13 +59,14 @@ class Zend_XmlRpc_Request_Stdin extends Zend_XmlRpc_Request
     public function __construct()
     {
         $fh = fopen('php://stdin', 'r');
-        if (!$fh) {
+        if (! $fh) {
             $this->_fault = new Zend_XmlRpc_Server_Exception(630);
+
             return;
         }
 
         $xml = '';
-        while (!feof($fh)) {
+        while (! feof($fh)) {
             $xml .= fgets($fh);
         }
         fclose($fh);

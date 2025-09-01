@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,8 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Dojo
- * @subpackage Form_Element
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -26,16 +26,17 @@ require_once 'Zend/Dojo/Form/Element/Dijit.php';
  * Button dijit
  *
  * @category   Zend
- * @package    Zend_Dojo
- * @subpackage Form_Element
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 class Zend_Dojo_Form_Element_Button extends Zend_Dojo_Form_Element_Dijit
 {
     /**
      * Use Button dijit view helper
+     *
      * @var string
      */
     public $helper = 'Button';
@@ -43,14 +44,14 @@ class Zend_Dojo_Form_Element_Button extends Zend_Dojo_Form_Element_Dijit
     /**
      * Constructor
      *
-     * @param  string|array|Zend_Config $spec Element name or configuration
-     * @param  string|array|Zend_Config $options Element value or configuration
+     * @param  string|array|Zend_Config  $spec  Element name or configuration
+     * @param  string|array|Zend_Config  $options  Element value or configuration
      * @return void
      */
     public function __construct($spec, $options = null)
     {
         if (is_string($spec) && ((null !== $options) && is_string($options))) {
-            $options = array('label' => $options);
+            $options = ['label' => $options];
         }
 
         parent::__construct($spec, $options);
@@ -115,7 +116,7 @@ class Zend_Dojo_Form_Element_Button extends Zend_Dojo_Form_Element_Dijit
         $decorators = $this->getDecorators();
         if (empty($decorators)) {
             $this->addDecorator('DijitElement')
-                 ->addDecorator('DtDdWrapper');
+                ->addDecorator('DtDdWrapper');
         }
     }
 }

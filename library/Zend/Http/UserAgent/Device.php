@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,8 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage UserAgent
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -23,8 +23,7 @@
  * Interface defining a browser device type.
  *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage UserAgent
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -37,20 +36,18 @@ interface Zend_Http_UserAgent_Device extends Serializable
      * array is provided for the first argument, the assumption should be that
      * the device object is being seeded with cached values from serialization.
      *
-     * @param  null|string|array $userAgent
-     * @param  array $server
-     * @param  array $config
+     * @param  null|string|array  $userAgent
      * @return void
      */
-    public function __construct($userAgent = null, array $server = array(), array $config = array());
+    public function __construct($userAgent = null, array $server = [], array $config = []);
 
     /**
      * Attempt to match the user agent
      *
      * Return either an array of browser signature strings, or a boolean.
      *
-     * @param  string $userAgent
-     * @param  array $server
+     * @param  string  $userAgent
+     * @param  array  $server
      * @return bool|array
      */
     public static function match($userAgent, $server);
@@ -72,7 +69,7 @@ interface Zend_Http_UserAgent_Device extends Serializable
     /**
      * Whether or not the device has a given feature
      *
-     * @param  string $feature
+     * @param  string  $feature
      * @return bool
      */
     public function hasFeature($feature);
@@ -80,7 +77,7 @@ interface Zend_Http_UserAgent_Device extends Serializable
     /**
      * Get the value of a specific device feature
      *
-     * @param  string $feature
+     * @param  string  $feature
      * @return mixed
      */
     public function getFeature($feature);
@@ -102,7 +99,7 @@ interface Zend_Http_UserAgent_Device extends Serializable
     /**
      * Get an array of features associated with a group
      *
-     * @param  string $group
+     * @param  string  $group
      * @return array
      */
     public function getGroup($group);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,12 +14,12 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Mail
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * @see Zend_Mime_Decode
@@ -40,10 +41,9 @@ require_once 'Zend/Mail/Header/HeaderValue.php';
  */
 require_once 'Zend/Mail/Part/Interface.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Mail
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -51,55 +51,64 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
 {
     /**
      * headers of part as array
+     *
      * @var null|array
      */
     protected $_headers;
 
     /**
      * raw part body
+     *
      * @var null|string
      */
     protected $_content;
 
     /**
      * toplines as fetched with headers
+     *
      * @var string
      */
     protected $_topLines = '';
 
     /**
      * parts of multipart message
+     *
      * @var array
      */
-    protected $_parts = array();
+    protected $_parts = [];
 
     /**
      * count of parts of a multipart message
+     *
      * @var null|int
      */
     protected $_countParts;
 
     /**
      * current position of iterator
+     *
      * @var int
      */
     protected $_iterationPos = 1;
 
     /**
      * mail handler, if late fetch is active
+     *
      * @var null|Zend_Mail_Storage_Abstract
      */
     protected $_mail;
 
     /**
      * message number for mail handler
+     *
      * @var int
      */
     protected $_messageNum = 0;
-    
+
     /**
      * Class to use when creating message parts
-     * @var string 
+     *
+     * @var string
      */
     protected $_partClass;
 
@@ -114,20 +123,21 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
      * - noToplines ignore content found after headers in param 'headers'
      * - content    content as string
      *
-     * @param   array $params  full message with or without headers
-     * @throws  Zend_Mail_Exception
+     * @param  array  $params  full message with or without headers
+     *
+     * @throws Zend_Mail_Exception
      */
     public function __construct(array $params)
     {
         if (isset($params['handler'])) {
-            if (!$params['handler'] instanceof Zend_Mail_Storage_Abstract) {
+            if (! $params['handler'] instanceof Zend_Mail_Storage_Abstract) {
                 /**
                  * @see Zend_Mail_Exception
                  */
                 require_once 'Zend/Mail/Exception.php';
                 throw new Zend_Mail_Exception('handler is not a valid mail handler');
             }
-            if (!isset($params['id'])) {
+            if (! isset($params['id'])) {
                 /**
                  * @see Zend_Mail_Exception
                  */
@@ -135,22 +145,22 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
                 throw new Zend_Mail_Exception('need a message id with a handler');
             }
 
-            $this->_mail       = $params['handler'];
+            $this->_mail = $params['handler'];
             $this->_messageNum = $params['id'];
         }
-        
+
         if (isset($params['partclass'])) {
             $this->setPartClass($params['partclass']);
         }
 
         if (isset($params['raw'])) {
             Zend_Mime_Decode::splitMessage($params['raw'], $this->_headers, $this->_content, "\r\n");
-        } else if (isset($params['headers'])) {
+        } elseif (isset($params['headers'])) {
             if (is_array($params['headers'])) {
                 $this->_headers = $params['headers'];
                 $this->_validateHeaders($this->_headers);
             } else {
-                if (!empty($params['noToplines'])) {
+                if (! empty($params['noToplines'])) {
                     Zend_Mime_Decode::splitMessage($params['headers'], $this->_headers, $null, "\r\n");
                 } else {
                     Zend_Mime_Decode::splitMessage($params['headers'], $this->_headers, $this->_topLines, "\r\n");
@@ -162,42 +172,46 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
             }
         }
     }
-    
+
     /**
      * Set name pf class used to encapsulate message parts
-     * @param string $class
+     *
+     * @param  string  $class
      * @return Zend_Mail_Part
      */
     public function setPartClass($class)
     {
-        if ( !class_exists($class) ) {
+        if (! class_exists($class)) {
             /**
              * @see Zend_Mail_Exception
              */
             require_once 'Zend/Mail/Exception.php';
             throw new Zend_Mail_Exception("Class '{$class}' does not exist");
         }
-        if ( !is_subclass_of($class, 'Zend_Mail_Part_Interface') ) {
+        if (! is_subclass_of($class, 'Zend_Mail_Part_Interface')) {
             /**
              * @see Zend_Mail_Exception
              */
             require_once 'Zend/Mail/Exception.php';
             throw new Zend_Mail_Exception("Class '{$class}' must implement Zend_Mail_Part_Interface");
         }
-        
+
         $this->_partClass = $class;
+
         return $this;
     }
-    
+
     /**
      * Retrieve the class name used to encapsulate message parts
-     * @return string 
+     *
+     * @return string
      */
     public function getPartClass()
     {
-        if ( !$this->_partClass ) {
+        if (! $this->_partClass) {
             $this->_partClass = __CLASS__;
         }
+
         return $this->_partClass;
     }
 
@@ -210,11 +224,10 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
     {
         try {
             return stripos($this->contentType, 'multipart/') === 0;
-        } catch(Zend_Mail_Exception $e) {
+        } catch (Zend_Mail_Exception $e) {
             return false;
         }
     }
-
 
     /**
      * Body of part
@@ -222,6 +235,7 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
      * If part is multipart the raw content of this part with all sub parts is returned
      *
      * @return string body
+     *
      * @throws Zend_Mail_Exception
      */
     public function getContent()
@@ -232,13 +246,12 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
 
         if ($this->_mail) {
             return $this->_mail->getRawContent($this->_messageNum);
-        } else {
-            /**
-             * @see Zend_Mail_Exception
-             */
-            require_once 'Zend/Mail/Exception.php';
-            throw new Zend_Mail_Exception('no content');
         }
+        /**
+         * @see Zend_Mail_Exception
+         */
+        require_once 'Zend/Mail/Exception.php';
+        throw new Zend_Mail_Exception('no content');
     }
 
     /**
@@ -248,15 +261,16 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
      *
      * @return int size
      */
-    public function getSize() {
+    public function getSize()
+    {
         return strlen($this->getContent());
     }
-
 
     /**
      * Cache content and split in parts if multipart
      *
      * @return null
+     *
      * @throws Zend_Mail_Exception
      */
     protected function _cacheContent()
@@ -266,13 +280,13 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
             $this->_content = $this->_mail->getRawContent($this->_messageNum);
         }
 
-        if (!$this->isMultipart()) {
+        if (! $this->isMultipart()) {
             return;
         }
 
         // split content in parts
         $boundary = $this->getHeaderField('content-type', 'boundary');
-        if (!$boundary) {
+        if (! $boundary) {
             /**
              * @see Zend_Mail_Exception
              */
@@ -286,15 +300,16 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
         $partClass = $this->getPartClass();
         $counter = 1;
         foreach ($parts as $part) {
-            $this->_parts[$counter++] = new $partClass(array('headers' => $part['header'], 'content' => $part['body']));
+            $this->_parts[$counter++] = new $partClass(['headers' => $part['header'], 'content' => $part['body']]);
         }
     }
 
     /**
      * Get part of multipart message
      *
-     * @param  int $num number of part starting with 1 for first part
+     * @param  int  $num  number of part starting with 1 for first part
      * @return Zend_Mail_Part wanted part
+     *
      * @throws Zend_Mail_Exception
      */
     public function getPart($num)
@@ -303,7 +318,7 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
             return $this->_parts[$num];
         }
 
-        if (!$this->_mail && $this->_content === null) {
+        if (! $this->_mail && $this->_content === null) {
             /**
              * @see Zend_Mail_Exception
              */
@@ -318,7 +333,7 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
 
         $this->_cacheContent();
 
-        if (!isset($this->_parts[$num])) {
+        if (! isset($this->_parts[$num])) {
             /**
              * @see Zend_Mail_Exception
              */
@@ -353,9 +368,9 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
         $this->_cacheContent();
 
         $this->_countParts = count($this->_parts);
+
         return $this->_countParts;
     }
-
 
     /**
      * Get all headers
@@ -368,8 +383,8 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
     public function getHeaders()
     {
         if ($this->_headers === null) {
-            if (!$this->_mail) {
-                $this->_headers = array();
+            if (! $this->_mail) {
+                $this->_headers = [];
             } else {
                 $part = $this->_mail->getRawHeader($this->_messageNum);
                 Zend_Mime_Decode::splitMessage($part, $this->_headers, $null);
@@ -385,9 +400,10 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
      * Internally headers that occur more than once are saved as array, all other as string. If $format
      * is set to string implode is used to concat the values (with Zend_Mime::LINEEND as delim).
      *
-     * @param  string $name   name of header, matches case-insensitive, but camel-case is replaced with dashes
-     * @param  string $format change type of return value to 'string' or 'array'
+     * @param  string  $name  name of header, matches case-insensitive, but camel-case is replaced with dashes
+     * @param  string  $format  change type of return value to 'string' or 'array'
      * @return string|array value of header in wanted or internal format
+     *
      * @throws Zend_Mail_Exception
      */
     public function getHeader($name, $format = null)
@@ -400,12 +416,12 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
 
         if ($this->headerExists($name) == false) {
             $lowerName = strtolower(preg_replace('%([a-z])([A-Z])%', '\1-\2', $name));
-            if($this->headerExists($lowerName) == false) {
+            if ($this->headerExists($lowerName) == false) {
                 /**
                  * @see Zend_Mail_Exception
                  */
                 require_once 'Zend/Mail/Exception.php';
-                throw new Zend_Mail_Exception("no Header with Name $name or $lowerName found");
+                throw new Zend_Mail_Exception("no Header with Name {$name} or {$lowerName} found");
             }
         }
         $name = $lowerName;
@@ -419,7 +435,7 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
                 }
                 break;
             case 'array':
-                $header = (array)$header;
+                $header = (array) $header;
             default:
                 // do nothing
         }
@@ -430,17 +446,18 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
     /**
      * Check wheater the Mail part has a specific header.
      *
-     * @param  string $name
-     * @return boolean
+     * @param  string  $name
+     * @return bool
      */
     public function headerExists($name)
     {
         $name = strtolower($name);
-        if(isset($this->_headers[$name])) {
+        if (isset($this->_headers[$name])) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
+
     }
 
     /**
@@ -452,16 +469,17 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
      * Throws a Zend_Mail_Exception if the requested header does not exist. If
      * the specific header field does not exist, returns null.
      *
-     * @param  string $name       name of header, like in getHeader()
-     * @param  string $wantedPart the wanted part, default is first, if null an array with all parts is returned
-     * @param  string $firstName  key name for the first part
+     * @param  string  $name  name of header, like in getHeader()
+     * @param  string  $wantedPart  the wanted part, default is first, if null an array with all parts is returned
+     * @param  string  $firstName  key name for the first part
      * @return string|array wanted part or all parts as array($firstName => firstPart, partname => value)
+     *
      * @throws Zend_Exception, Zend_Mail_Exception
      */
-    public function getHeaderField($name, $wantedPart = 0, $firstName = 0) {
+    public function getHeaderField($name, $wantedPart = 0, $firstName = 0)
+    {
         return Zend_Mime_Decode::splitHeaderField(current($this->getHeader($name, 'array')), $wantedPart, $firstName);
     }
-
 
     /**
      * Getter for mail headers - name is matched in lowercase
@@ -470,8 +488,9 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
      *
      * @see Zend_Mail_Part::getHeader()
      *
-     * @param  string $name header name
+     * @param  string  $name  header name
      * @return string value of header
+     *
      * @throws Zend_Mail_Exception
      */
     public function __get($name)
@@ -487,7 +506,7 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
      * @see Zend_Mail_Part::hasHeader
      *
      * @param  string
-     * @return boolean
+     * @return bool
      */
     public function __isset($name)
     {
@@ -512,6 +531,7 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
     public function hasChildren()
     {
         $current = $this->current();
+
         return $current && $current instanceof Zend_Mail_Part && $current->isMultipart();
     }
 
@@ -530,12 +550,12 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
      *
      * @return bool check if there's a current element
      */
-    #[\ReturnTypeWillChange]
     public function valid()
     {
         if ($this->_countParts === null) {
             $this->countParts();
         }
+
         return $this->_iterationPos && $this->_iterationPos <= $this->_countParts;
     }
 
@@ -544,10 +564,9 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
      *
      * @return null
      */
-    #[\ReturnTypeWillChange]
     public function next()
     {
-        ++$this->_iterationPos;
+        $this->_iterationPos++;
     }
 
     /**
@@ -555,7 +574,6 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
      *
      * @return string key/number of current part
      */
-    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->_iterationPos;
@@ -566,7 +584,6 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
      *
      * @return Zend_Mail_Part current part
      */
-    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->getPart($this->_iterationPos);
@@ -577,7 +594,6 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
      *
      * @return null
      */
-    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->countParts();
@@ -587,8 +603,7 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
     /**
      * Ensure headers do not contain invalid characters
      *
-     * @param array $headers
-     * @param bool $assertNames
+     * @param  bool  $assertNames
      */
     protected function _validateHeaders(array $headers, $assertNames = true)
     {
@@ -599,6 +614,7 @@ class Zend_Mail_Part implements RecursiveIterator, Zend_Mail_Part_Interface
 
             if (is_array($value)) {
                 $this->_validateHeaders($value, false);
+
                 continue;
             }
 

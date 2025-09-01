@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_CodeGenerator
- * @subpackage PHP
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,13 +28,12 @@ require_once 'Zend/CodeGenerator/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_CodeGenerator
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_CodeGenerator_Php_Body extends Zend_CodeGenerator_Abstract
 {
-
     /**
      * @var string
      */
@@ -42,12 +42,13 @@ class Zend_CodeGenerator_Php_Body extends Zend_CodeGenerator_Abstract
     /**
      * setContent()
      *
-     * @param string $content
+     * @param  string  $content
      * @return Zend_CodeGenerator_Php_Body
      */
     public function setContent($content)
     {
         $this->_content = $content;
+
         return $this;
     }
 

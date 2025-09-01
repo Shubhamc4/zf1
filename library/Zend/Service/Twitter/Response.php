@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Twitter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -42,8 +43,7 @@ require_once 'Zend/Json.php';
  * - proxying to elements of the decoded response via property overloading
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Twitter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -70,13 +70,12 @@ class Zend_Service_Twitter_Response
      * Assigns the HTTP response to a property, as well as the body
      * representation. It then attempts to decode the body as JSON.
      *
-     * @param  Zend_Http_Response $httpResponse
      * @throws Zend_Service_Twitter_Exception if unable to decode JSON response
      */
     public function __construct(Zend_Http_Response $httpResponse)
     {
         $this->httpResponse = $httpResponse;
-        $this->rawBody      = $httpResponse->getBody();
+        $this->rawBody = $httpResponse->getBody();
         try {
             $jsonBody = Zend_Json::decode($this->rawBody, Zend_Json::TYPE_OBJECT);
             $this->jsonBody = $jsonBody;
@@ -95,17 +94,18 @@ class Zend_Service_Twitter_Response
      * If a named property exists within the JSON response returned,
      * proxies to it. Otherwise, returns null.
      *
-     * @param  string $name
+     * @param  string  $name
      * @return mixed
      */
     public function __get($name)
     {
         if (null === $this->jsonBody) {
-            return null;
+            return;
         }
-        if (!isset($this->jsonBody->{$name})) {
-            return null;
+        if (! isset($this->jsonBody->{$name})) {
+            return;
         }
+
         return $this->jsonBody->{$name};
     }
 
@@ -126,7 +126,7 @@ class Zend_Service_Twitter_Response
      */
     public function isError()
     {
-        return !$this->httpResponse->isSuccessful();
+        return ! $this->httpResponse->isSuccessful();
     }
 
     /**
@@ -139,21 +139,23 @@ class Zend_Service_Twitter_Response
      * If the response was successful, an empty array is returned.
      *
      * @return array
+     *
      * @throws Exception\DomainException if unable to detect structure of error response
      */
     public function getErrors()
     {
-        if (!$this->isError()) {
-            return array();
+        if (! $this->isError()) {
+            return [];
         }
         if (null === $this->jsonBody
-            || !isset($this->jsonBody->errors)
+            || ! isset($this->jsonBody->errors)
         ) {
             require_once 'Zend/Service/Twitter/Exception.php';
             throw new Zend_Service_Twitter_Exception(
                 'Either no JSON response received, or JSON error response is malformed; cannot return errors'
             );
         }
+
         return $this->jsonBody->errors;
     }
 

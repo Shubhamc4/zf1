@@ -14,32 +14,32 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_OpenId
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * @see Zend_Exception
  */
-require_once "Zend/Exception.php";
+require_once 'Zend/Exception.php';
 
 /**
  * Exception class for Zend_OpenId
  *
  * @category   Zend
- * @package    Zend_OpenId
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_OpenId_Exception extends Zend_Exception
 {
-
     /**
      * The specified digest algotithm is not supported by this PHP installation
      */
-    const UNSUPPORTED_DIGEST    = 1;
+    const UNSUPPORTED_DIGEST = 1;
 
     /**
      * The long math arithmetick is not supported by this PHP installation
@@ -49,10 +49,10 @@ class Zend_OpenId_Exception extends Zend_Exception
     /**
      * Internal long math arithmetic error
      */
-    const ERROR_LONG_MATH       = 3;
+    const ERROR_LONG_MATH = 3;
 
     /**
      * Iternal storage error
      */
-    const ERROR_STORAGE         = 4;
+    const ERROR_STORAGE = 4;
 }

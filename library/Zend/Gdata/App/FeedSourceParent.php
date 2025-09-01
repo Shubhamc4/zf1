@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage App
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -55,15 +55,12 @@ require_once 'Zend/Gdata/App/Extension/Subtitle.php';
  * Atom feed class
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage App
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Gdata_App_FeedSourceParent extends Zend_Gdata_App_FeedEntryParent
 {
-
     /**
      * The classname for individual feed elements.
      *
@@ -79,8 +76,11 @@ abstract class Zend_Gdata_App_FeedSourceParent extends Zend_Gdata_App_FeedEntryP
     protected $_rootElement = null;
 
     protected $_generator = null;
+
     protected $_icon = null;
+
     protected $_logo = null;
+
     protected $_subtitle = null;
 
     /**
@@ -90,7 +90,7 @@ abstract class Zend_Gdata_App_FeedSourceParent extends Zend_Gdata_App_FeedEntryP
      *
      * @deprecated Deprecated as of Zend Framework 1.7. Use
      *             setService() instead.
-     * @param  Zend_Http_Client $httpClient
+     *
      * @return Zend_Gdata_App_FeedSourceParent Provides a fluent interface
      */
     public function setHttpClient(Zend_Http_Client $httpClient)
@@ -99,6 +99,7 @@ abstract class Zend_Gdata_App_FeedSourceParent extends Zend_Gdata_App_FeedEntryP
         foreach ($this->_entry as $entry) {
             $entry->setHttpClient($httpClient);
         }
+
         return $this;
     }
 
@@ -107,7 +108,7 @@ abstract class Zend_Gdata_App_FeedSourceParent extends Zend_Gdata_App_FeedEntryP
      * This will be used to perform network requests, such as when calling
      * save() and delete().
      *
-     * @param Zend_Gdata_App $instance The new service instance.
+     * @param  Zend_Gdata_App  $instance  The new service instance.
      * @return Zend_Gdata_App_FeedEntryParent Provides a fluent interface.
      */
     public function setService($instance)
@@ -116,6 +117,7 @@ abstract class Zend_Gdata_App_FeedSourceParent extends Zend_Gdata_App_FeedEntryP
         foreach ($this->_entry as $entry) {
             $entry->setService($instance);
         }
+
         return $this;
     }
 
@@ -127,7 +129,7 @@ abstract class Zend_Gdata_App_FeedSourceParent extends Zend_Gdata_App_FeedEntryP
      * using foreach ($feed->entries as $entry) or foreach
      * ($feed->entry as $entry).
      *
-     * @param  string $var The property to access.
+     * @param  string  $var  The property to access.
      * @return mixed
      */
     public function __get($var)
@@ -137,7 +139,6 @@ abstract class Zend_Gdata_App_FeedSourceParent extends Zend_Gdata_App_FeedEntryP
                 return parent::__get($var);
         }
     }
-
 
     public function getDOM($doc = null, $majorVersion = 1, $minorVersion = null)
     {
@@ -154,6 +155,7 @@ abstract class Zend_Gdata_App_FeedSourceParent extends Zend_Gdata_App_FeedEntryP
         if ($this->_subtitle != null) {
             $element->appendChild($this->_subtitle->getDOM($element->ownerDocument));
         }
+
         return $element;
     }
 
@@ -161,35 +163,35 @@ abstract class Zend_Gdata_App_FeedSourceParent extends Zend_Gdata_App_FeedEntryP
      * Creates individual Entry objects of the appropriate type and
      * stores them in the $_entry array based upon DOM data.
      *
-     * @param DOMNode $child The DOMNode to process
+     * @param  DOMNode  $child  The DOMNode to process
      */
     protected function takeChildFromDOM($child)
     {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        $absoluteNodeName = $child->namespaceURI.':'.$child->localName;
         switch ($absoluteNodeName) {
-        case $this->lookupNamespace('atom') . ':' . 'generator':
-            $generator = new Zend_Gdata_App_Extension_Generator();
-            $generator->transferFromDOM($child);
-            $this->_generator = $generator;
-            break;
-        case $this->lookupNamespace('atom') . ':' . 'icon':
-            $icon = new Zend_Gdata_App_Extension_Icon();
-            $icon->transferFromDOM($child);
-            $this->_icon = $icon;
-            break;
-        case $this->lookupNamespace('atom') . ':' . 'logo':
-            $logo = new Zend_Gdata_App_Extension_Logo();
-            $logo->transferFromDOM($child);
-            $this->_logo = $logo;
-            break;
-        case $this->lookupNamespace('atom') . ':' . 'subtitle':
-            $subtitle = new Zend_Gdata_App_Extension_Subtitle();
-            $subtitle->transferFromDOM($child);
-            $this->_subtitle = $subtitle;
-            break;
-        default:
-            parent::takeChildFromDOM($child);
-            break;
+            case $this->lookupNamespace('atom').':'.'generator':
+                $generator = new Zend_Gdata_App_Extension_Generator;
+                $generator->transferFromDOM($child);
+                $this->_generator = $generator;
+                break;
+            case $this->lookupNamespace('atom').':'.'icon':
+                $icon = new Zend_Gdata_App_Extension_Icon;
+                $icon->transferFromDOM($child);
+                $this->_icon = $icon;
+                break;
+            case $this->lookupNamespace('atom').':'.'logo':
+                $logo = new Zend_Gdata_App_Extension_Logo;
+                $logo->transferFromDOM($child);
+                $this->_logo = $logo;
+                break;
+            case $this->lookupNamespace('atom').':'.'subtitle':
+                $subtitle = new Zend_Gdata_App_Extension_Subtitle;
+                $subtitle->transferFromDOM($child);
+                $this->_subtitle = $subtitle;
+                break;
+            default:
+                parent::takeChildFromDOM($child);
+                break;
         }
     }
 
@@ -202,12 +204,13 @@ abstract class Zend_Gdata_App_FeedSourceParent extends Zend_Gdata_App_FeedEntryP
     }
 
     /**
-     * @param Zend_Gdata_App_Extension_Generator $value
+     * @param  Zend_Gdata_App_Extension_Generator  $value
      * @return Zend_Gdata_App_FeedSourceParent Provides a fluent interface
      */
     public function setGenerator($value)
     {
         $this->_generator = $value;
+
         return $this;
     }
 
@@ -220,12 +223,13 @@ abstract class Zend_Gdata_App_FeedSourceParent extends Zend_Gdata_App_FeedEntryP
     }
 
     /**
-     * @param Zend_Gdata_App_Extension_Icon $value
+     * @param  Zend_Gdata_App_Extension_Icon  $value
      * @return Zend_Gdata_App_FeedSourceParent Provides a fluent interface
      */
     public function setIcon($value)
     {
         $this->_icon = $value;
+
         return $this;
     }
 
@@ -238,12 +242,13 @@ abstract class Zend_Gdata_App_FeedSourceParent extends Zend_Gdata_App_FeedEntryP
     }
 
     /**
-     * @param Zend_Gdata_App_Extension_logo $value
+     * @param  Zend_Gdata_App_Extension_logo  $value
      * @return Zend_Gdata_App_FeedSourceParent Provides a fluent interface
      */
     public function setlogo($value)
     {
         $this->_logo = $value;
+
         return $this;
     }
 
@@ -256,13 +261,13 @@ abstract class Zend_Gdata_App_FeedSourceParent extends Zend_Gdata_App_FeedEntryP
     }
 
     /**
-     * @param Zend_Gdata_App_Extension_Subtitle $value
+     * @param  Zend_Gdata_App_Extension_Subtitle  $value
      * @return Zend_Gdata_App_FeedSourceParent Provides a fluent interface
      */
     public function setSubtitle($value)
     {
         $this->_subtitle = $value;
+
         return $this;
     }
-
 }

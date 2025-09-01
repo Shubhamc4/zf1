@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,8 +30,7 @@ require_once 'Zend/Ldap/Filter/Logical.php';
  * Zend_Ldap_Filter_Or provides an 'or' filter.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -38,8 +38,6 @@ class Zend_Ldap_Filter_Or extends Zend_Ldap_Filter_Logical
 {
     /**
      * Creates an 'or' grouping filter.
-     *
-     * @param array $subfilters
      */
     public function __construct(array $subfilters)
     {

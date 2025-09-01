@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,7 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Cloud
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -22,7 +23,7 @@
  * Abstract factory for Zend_Cloud resources
  *
  * @category   Zend
- * @package    Zend_Cloud
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,8 +40,8 @@ class Zend_Cloud_AbstractFactory
     /**
      * Get an individual adapter instance
      *
-     * @param  string $adapterOption
-     * @param  array|Zend_Config $options
+     * @param  string  $adapterOption
+     * @param  array|Zend_Config  $options
      * @return null|Zend_Cloud_DocumentService_Adapter|Zend_Cloud_QueueService_Adapter|Zend_Cloud_StorageService_Adapter
      */
     protected static function _getAdapter($adapterOption, $options)
@@ -49,13 +50,13 @@ class Zend_Cloud_AbstractFactory
             $options = $options->toArray();
         }
 
-        if (!isset($options[$adapterOption])) {
-            return null;
+        if (! isset($options[$adapterOption])) {
+            return;
         }
 
         $classname = $options[$adapterOption];
         unset($options[$adapterOption]);
-        if (!class_exists($classname)) {
+        if (! class_exists($classname)) {
             require_once 'Zend/Loader.php';
             Zend_Loader::loadClass($classname);
         }

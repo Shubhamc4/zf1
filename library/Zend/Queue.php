@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Queue
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -23,7 +25,7 @@
  * Class for connecting to queues performing common operations.
  *
  * @category   Zend
- * @package    Zend_Queue
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -54,7 +56,7 @@ class Zend_Queue implements Countable
      *
      * @var array
      */
-    protected $_options = array();
+    protected $_options = [];
 
     /**
      * Zend_Queue_Message class
@@ -86,10 +88,10 @@ class Zend_Queue implements Countable
      * $queue = new Zend_Queue(null, $config); // Zend_Queue->createQueue();
      *
      * @param  string|Zend_Queue_Adapter|array|Zend_Config|null String or adapter instance, or options array or Zend_Config instance
-     * @param  Zend_Config|array $options Zend_Config or a configuration array
+     * @param  Zend_Config|array  $options  Zend_Config or a configuration array
      * @return void
      */
-    public function __construct($spec, $options = array())
+    public function __construct($spec, $options = [])
     {
         $adapter = null;
         if ($spec instanceof Zend_Queue_Adapter_AdapterInterface) {
@@ -104,7 +106,7 @@ class Zend_Queue implements Countable
 
         // last minute error checking
         if ((null === $adapter)
-            && (!is_array($options) && (!$options instanceof Zend_Config))
+            && (! is_array($options) && (! $options instanceof Zend_Config))
         ) {
             require_once 'Zend/Queue/Exception.php';
             throw new Zend_Queue_Exception('No valid params passed to constructor');
@@ -113,17 +115,17 @@ class Zend_Queue implements Countable
         // Now continue as we would if we were a normal constructor
         if ($options instanceof Zend_Config) {
             $options = $options->toArray();
-        } elseif (!is_array($options)) {
-            $options = array();
+        } elseif (! is_array($options)) {
+            $options = [];
         }
 
         // Make sure we have some defaults to work with
-        if (!isset($options[self::TIMEOUT])) {
+        if (! isset($options[self::TIMEOUT])) {
             $options[self::TIMEOUT] = self::VISIBILITY_TIMEOUT;
         }
 
         // Make sure all defaults are appropriately set.
-        if (!array_key_exists('timeout', $options)) {
+        if (! array_key_exists('timeout', $options)) {
             $options[self::TIMEOUT] = self::VISIBILITY_TIMEOUT;
         }
         if (array_key_exists('messageClass', $options)) {
@@ -144,25 +146,26 @@ class Zend_Queue implements Countable
     /**
      * Set queue options
      *
-     * @param  array $options
      * @return Zend_Queue
      */
     public function setOptions(array $options)
     {
         $this->_options = array_merge($this->_options, $options);
+
         return $this;
     }
 
     /**
      * Set an individual configuration option
      *
-     * @param  string $name
-     * @param  mixed $value
+     * @param  string  $name
+     * @param  mixed  $value
      * @return Zend_Queue
      */
     public function setOption($name, $value)
     {
         $this->_options[(string) $name] = $value;
+
         return $this;
     }
 
@@ -179,7 +182,7 @@ class Zend_Queue implements Countable
     /**
      * Determine if a requested option has been defined
      *
-     * @param  string $name
+     * @param  string  $name
      * @return bool
      */
     public function hasOption($name)
@@ -190,7 +193,7 @@ class Zend_Queue implements Countable
     /**
      * Retrieve a single option
      *
-     * @param  string $name
+     * @param  string  $name
      * @return null|mixed Returns null if option does not exist; option value otherwise
      */
     public function getOption($name)
@@ -198,13 +201,13 @@ class Zend_Queue implements Countable
         if ($this->hasOption($name)) {
             return $this->_options[$name];
         }
-        return null;
+
     }
 
     /**
      * Set the adapter for this queue
      *
-     * @param  string|Zend_Queue_Adapter_AdapterInterface $adapter
+     * @param  string|Zend_Queue_Adapter_AdapterInterface  $adapter
      * @return Zend_Queue Provides a fluent interface
      */
     public function setAdapter($adapter)
@@ -221,12 +224,12 @@ class Zend_Queue implements Countable
                     str_replace(
                         '_',
                         ' ',
-                        strtolower($adapterNamespace . '_' . $adapter)
+                        strtolower($adapterNamespace.'_'.$adapter)
                     )
                 )
             );
 
-            if (!class_exists($adapterName)) {
+            if (! class_exists($adapterName)) {
                 require_once 'Zend/Loader.php';
                 Zend_Loader::loadClass($adapterName);
             }
@@ -238,9 +241,9 @@ class Zend_Queue implements Countable
             $adapter = new $adapterName($this->getOptions(), $this);
         }
 
-        if (!$adapter instanceof Zend_Queue_Adapter_AdapterInterface) {
+        if (! $adapter instanceof Zend_Queue_Adapter_AdapterInterface) {
             require_once 'Zend/Queue/Exception.php';
-            throw new Zend_Queue_Exception("Adapter class '" . get_class($adapterName) . "' does not implement Zend_Queue_Adapter_AdapterInterface");
+            throw new Zend_Queue_Exception("Adapter class '".get_class($adapterName)."' does not implement Zend_Queue_Adapter_AdapterInterface");
         }
 
         $this->_adapter = $adapter;
@@ -265,12 +268,13 @@ class Zend_Queue implements Countable
     }
 
     /**
-     * @param  string $className
+     * @param  string  $className
      * @return Zend_Queue Provides a fluent interface
      */
     public function setMessageClass($className)
     {
         $this->_messageClass = (string) $className;
+
         return $this;
     }
 
@@ -283,12 +287,13 @@ class Zend_Queue implements Countable
     }
 
     /**
-     * @param  string $className
+     * @param  string  $className
      * @return Zend_Queue Provides a fluent interface
      */
     public function setMessageSetClass($className)
     {
         $this->_messageSetClass = (string) $className;
+
         return $this;
     }
 
@@ -316,19 +321,20 @@ class Zend_Queue implements Countable
     /**
      * Create a new queue
      *
-     * @param  string           $name    queue name
-     * @param  integer          $timeout default visibility timeout
+     * @param  string  $name  queue name
+     * @param  int  $timeout  default visibility timeout
      * @return Zend_Queue|false
+     *
      * @throws Zend_Queue_Exception
      */
     public function createQueue($name, $timeout = null)
     {
-        if (!is_string($name)) {
+        if (! is_string($name)) {
             require_once 'Zend/Queue/Exception.php';
             throw new Zend_Queue_Exception('$name is not a string');
         }
 
-        if ((null !== $timeout) && !is_integer($timeout)) {
+        if ((null !== $timeout) && ! is_int($timeout)) {
             require_once 'Zend/Queue/Exception.php';
             throw new Zend_Queue_Exception('$timeout must be an integer');
         }
@@ -345,15 +351,15 @@ class Zend_Queue implements Countable
                 return false;
             }
 
-            if (!$this->getAdapter()->create($name, $timeout)) {
+            if (! $this->getAdapter()->create($name, $timeout)) {
                 return false;
             }
         }
 
-        $options = array(
-            self::NAME  => $name,
-            'timeout'   => $timeout
-        );
+        $options = [
+            self::NAME => $name,
+            'timeout' => $timeout,
+        ];
 
         return new self($this->getAdapter(), $options);
     }
@@ -364,21 +370,20 @@ class Zend_Queue implements Countable
      * This queue is disabled, regardless of the outcome of the deletion
      * of the queue, because the programmers intent is to disable this queue.
      *
-     * @return boolean
+     * @return bool
      */
     public function deleteQueue()
     {
         if ($this->isSupported('delete')) {
             $deleted = $this->getAdapter()->delete($this->getName());
-        }
-        else {
+        } else {
             $deleted = true;
         }
 
         /**
          * @see Zend_Queue_Adapter_Null
          */
-        require_once('Zend/Queue/Adapter/Null.php');
+        require_once 'Zend/Queue/Adapter/Null.php';
         $this->setAdapter(new Zend_Queue_Adapter_Null($this->getOptions()));
 
         return $deleted;
@@ -392,8 +397,8 @@ class Zend_Queue implements Countable
      *
      * Returns true if the adapter doesn't support message deletion.
      *
-     * @param  Zend_Queue_Message $message
-     * @return boolean
+     * @return bool
+     *
      * @throws Zend_Queue_Exception
      */
     public function deleteMessage(Zend_Queue_Message $message)
@@ -401,14 +406,16 @@ class Zend_Queue implements Countable
         if ($this->getAdapter()->isSupported('deleteMessage')) {
             return $this->getAdapter()->deleteMessage($message);
         }
+
         return true;
     }
 
     /**
      * Send a message to the queue
      *
-     * @param  mixed $message message
+     * @param  mixed  $message  message
      * @return Zend_Queue_Message
+     *
      * @throws Zend_Queue_Exception
      */
     public function send($message)
@@ -419,32 +426,32 @@ class Zend_Queue implements Countable
     /**
      * Returns the approximate number of messages in the queue
      *
-     * @return integer
+     * @return int
      */
-    #[\ReturnTypeWillChange]
     public function count()
     {
         if ($this->getAdapter()->isSupported('count')) {
             return $this->getAdapter()->count();
         }
+
         return 0;
     }
 
     /**
      * Return the first element in the queue
      *
-     * @param  integer $maxMessages
-     * @param  integer $timeout
+     * @param  int  $maxMessages
+     * @param  int  $timeout
      * @return Zend_Queue_Message_Iterator
      */
-    public function receive($maxMessages=null, $timeout=null)
+    public function receive($maxMessages = null, $timeout = null)
     {
-        if (($maxMessages !== null) && !is_integer($maxMessages)) {
+        if (($maxMessages !== null) && ! is_int($maxMessages)) {
             require_once 'Zend/Queue/Exception.php';
             throw new Zend_Queue_Exception('$maxMessages must be an integer or null');
         }
 
-        if (($timeout !== null) && !is_integer($timeout)) {
+        if (($timeout !== null) && ! is_int($timeout)) {
             require_once 'Zend/Queue/Exception.php';
             throw new Zend_Queue_Exception('$timeout must be an integer or null');
         }
@@ -468,7 +475,7 @@ class Zend_Queue implements Countable
      * $array['function name'] = true or false
      * true is supported, false is not supported.
      *
-     * @param  string $name
+     * @param  string  $name
      * @return array
      */
     public function getCapabilities()
@@ -479,15 +486,15 @@ class Zend_Queue implements Countable
     /**
      * Indicates if a function is supported or not.
      *
-     * @param  string $name
-     * @return boolean
+     * @param  string  $name
+     * @return bool
      */
     public function isSupported($name)
     {
-        $translation = array(
+        $translation = [
             'deleteQueue' => 'delete',
-            'createQueue' => 'create'
-        );
+            'createQueue' => 'create',
+        ];
 
         if (isset($translation[$name])) {
             $name = $translation[$name];
@@ -500,12 +507,13 @@ class Zend_Queue implements Countable
      * Get an array of all available queues
      *
      * @return array
+     *
      * @throws Zend_Queue_Exception
      */
     public function getQueues()
     {
-        if (!$this->isSupported('getQueues')) {
-            throw new Zend_Queue_Exception( __FUNCTION__ . '() is not supported by ' . get_class($this->getAdapter()));
+        if (! $this->isSupported('getQueues')) {
+            throw new Zend_Queue_Exception(__FUNCTION__.'() is not supported by '.get_class($this->getAdapter()));
         }
 
         return $this->getAdapter()->getQueues();
@@ -516,24 +524,24 @@ class Zend_Queue implements Countable
      *
      * This is AN UNSUPPORTED FUNCTION
      *
-     * @param  string           $name
+     * @param  string  $name
      * @return Zend_Queue|false Provides a fluent interface
      */
     protected function _setName($name)
     {
-        if (!is_string($name)) {
+        if (! is_string($name)) {
             /**
              * @see Zend_Queue_Exception
              */
             require_once 'Zend/Queue/Exception.php';
-            throw new Zend_Queue_Exception("$name is not a string");
+            throw new Zend_Queue_Exception("{$name} is not a string");
         }
 
         if ($this->getAdapter()->isSupported('create')) {
-            if (!$this->getAdapter()->isExists($name)) {
+            if (! $this->getAdapter()->isExists($name)) {
                 $timeout = $this->getOption(self::TIMEOUT);
 
-                if (!$this->getAdapter()->create($name, $timeout)) {
+                if (! $this->getAdapter()->create($name, $timeout)) {
                     // Unable to create the new queue
                     return false;
                 }
@@ -553,17 +561,17 @@ class Zend_Queue implements Countable
      */
     public function debugInfo()
     {
-        $info = array();
-        $info['self']                     = get_class($this);
-        $info['adapter']                  = get_class($this->getAdapter());
+        $info = [];
+        $info['self'] = get_class($this);
+        $info['adapter'] = get_class($this->getAdapter());
         foreach ($this->getAdapter()->getCapabilities() as $feature => $supported) {
-            $info['adapter-' . $feature]  = ($supported) ? 'yes' : 'no';
+            $info['adapter-'.$feature] = ($supported) ? 'yes' : 'no';
         }
-        $info['options']                  = $this->getOptions();
+        $info['options'] = $this->getOptions();
         $info['options']['driverOptions'] = '[hidden]';
-        $info['currentQueue']             = $this->getName();
-        $info['messageClass']             = $this->getMessageClass();
-        $info['messageSetClass']          = $this->getMessageSetClass();
+        $info['currentQueue'] = $this->getName();
+        $info['messageClass'] = $this->getMessageClass();
+        $info['messageSetClass'] = $this->getMessageSetClass();
 
         return $info;
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Serializer
- * @subpackage Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -25,12 +26,10 @@ require_once 'Zend/Serializer/Adapter/AdapterInterface.php';
 
 /**
  * @category   Zend
- * @package    Zend_Serializer
- * @subpackage Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Serializer_Adapter_AdapterAbstract implements Zend_Serializer_Adapter_AdapterInterface
 {
     /**
@@ -38,14 +37,14 @@ abstract class Zend_Serializer_Adapter_AdapterAbstract implements Zend_Serialize
      *
      * @var array
      */
-    protected $_options = array();
+    protected $_options = [];
 
     /**
      * Constructor
      *
-     * @param array|Zend_Config $opts Serializer options
+     * @param  array|Zend_Config  $opts  Serializer options
      */
-    public function __construct($opts = array())
+    public function __construct($opts = [])
     {
         $this->setOptions($opts);
     }
@@ -53,7 +52,7 @@ abstract class Zend_Serializer_Adapter_AdapterAbstract implements Zend_Serialize
     /**
      * Set serializer options
      *
-     * @param  array|Zend_Config $opts Serializer options
+     * @param  array|Zend_Config  $opts  Serializer options
      * @return Zend_Serializer_Adapter_AdapterAbstract
      */
     public function setOptions($opts)
@@ -67,19 +66,21 @@ abstract class Zend_Serializer_Adapter_AdapterAbstract implements Zend_Serialize
         foreach ($opts as $k => $v) {
             $this->setOption($k, $v);
         }
+
         return $this;
     }
 
     /**
      * Set a serializer option
      *
-     * @param  string $name Option name
-     * @param  mixed $value Option value
+     * @param  string  $name  Option name
+     * @param  mixed  $value  Option value
      * @return Zend_Serializer_Adapter_AdapterAbstract
      */
     public function setOption($name, $value)
     {
         $this->_options[(string) $name] = $value;
+
         return $this;
     }
 
@@ -96,14 +97,15 @@ abstract class Zend_Serializer_Adapter_AdapterAbstract implements Zend_Serialize
     /**
      * Get a serializer option
      *
-     * @param  string $name
+     * @param  string  $name
      * @return mixed
+     *
      * @throws Zend_Serializer_Exception
      */
     public function getOption($name)
     {
         $name = (string) $name;
-        if (!array_key_exists($name, $this->_options)) {
+        if (! array_key_exists($name, $this->_options)) {
             require_once 'Zend/Serializer/Exception.php';
             throw new Zend_Serializer_Exception('Unknown option name "'.$name.'"');
         }

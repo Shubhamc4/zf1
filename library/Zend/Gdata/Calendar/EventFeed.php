@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Calendar
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -35,14 +35,12 @@ require_once 'Zend/Gdata/Calendar/Extension/Timezone.php';
  * Data model for a Google Calendar feed of events
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Calendar
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Calendar_EventFeed extends Zend_Gdata_Feed
 {
-
     protected $_timezone = null;
 
     /**
@@ -77,11 +75,11 @@ class Zend_Gdata_Calendar_EventFeed extends Zend_Gdata_Feed
 
     protected function takeChildFromDOM($child)
     {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        $absoluteNodeName = $child->namespaceURI.':'.$child->localName;
 
         switch ($absoluteNodeName) {
-            case $this->lookupNamespace('gCal') . ':' . 'timezone';
-                $timezone = new Zend_Gdata_Calendar_Extension_Timezone();
+            case $this->lookupNamespace('gCal').':'.'timezone':
+                $timezone = new Zend_Gdata_Calendar_Extension_Timezone;
                 $timezone->transferFromDOM($child);
                 $this->_timezone = $timezone;
                 break;
@@ -100,7 +98,7 @@ class Zend_Gdata_Calendar_EventFeed extends Zend_Gdata_Feed
     public function setTimezone($value)
     {
         $this->_timezone = $value;
+
         return $this;
     }
-
 }

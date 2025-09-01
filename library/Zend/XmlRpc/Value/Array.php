@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,24 +14,21 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_XmlRpc
- * @subpackage Value
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * Zend_XmlRpc_Value_Collection
  */
 require_once 'Zend/XmlRpc/Value/Collection.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_XmlRpc
- * @subpackage Value
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,14 +37,13 @@ class Zend_XmlRpc_Value_Array extends Zend_XmlRpc_Value_Collection
     /**
      * Set the value of an array native type
      *
-     * @param array $value
+     * @param  array  $value
      */
     public function __construct($value)
     {
         $this->_type = self::XMLRPC_TYPE_ARRAY;
         parent::__construct($value);
     }
-
 
     /**
      * Generate the XML code that represent an array native MXL-RPC value
@@ -57,8 +54,8 @@ class Zend_XmlRpc_Value_Array extends Zend_XmlRpc_Value_Collection
     {
         $generator = $this->getGenerator();
         $generator->openElement('value')
-                  ->openElement('array')
-                  ->openElement('data');
+            ->openElement('array')
+            ->openElement('data');
 
         if (is_array($this->_value)) {
             foreach ($this->_value as $val) {
@@ -66,8 +63,7 @@ class Zend_XmlRpc_Value_Array extends Zend_XmlRpc_Value_Collection
             }
         }
         $generator->closeElement('data')
-                  ->closeElement('array')
-                  ->closeElement('value');
+            ->closeElement('array')
+            ->closeElement('value');
     }
 }
-

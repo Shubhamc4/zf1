@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Mobile
- * @subpackage Push
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id $
  */
 
@@ -28,10 +29,8 @@ require_once 'Zend/Mobile/Push/Apns.php';
  * This class is utilized for unit testing purposes
  *
  * @category   Zend
- * @package    Zend_Mobile
- * @subpackage Push
  */
-class Zend_Mobile_Push_Test_ApnsProxy extends Zend_Mobile_Push_Apns 
+class Zend_Mobile_Push_Test_ApnsProxy extends Zend_Mobile_Push_Apns
 {
     /**
      * Read Response
@@ -50,16 +49,17 @@ class Zend_Mobile_Push_Test_ApnsProxy extends Zend_Mobile_Push_Apns
     /**
      * Set the Response
      *
-     * @param string $str
+     * @param  string  $str
      */
-    public function setReadResponse($str) {
+    public function setReadResponse($str)
+    {
         $this->_readResponse = $str;
     }
 
     /**
      * Set the write response
      *
-     * @param mixed $resp
+     * @param  mixed  $resp
      * @return void
      */
     public function setWriteResponse($resp)
@@ -72,31 +72,36 @@ class Zend_Mobile_Push_Test_ApnsProxy extends Zend_Mobile_Push_Apns
      *
      * @return true
      */
-    protected function _connect($uri) {
+    protected function _connect($uri)
+    {
         return true;
     }
 
     /**
      * Return Response
      *
-     * @param string $length
+     * @param  string  $length
      * @return string
      */
-    protected function _read($length) {
+    protected function _read($length)
+    {
         $ret = substr($this->_readResponse, 0, $length);
         $this->_readResponse = null;
+
         return $ret;
     }
 
     /**
      * Write and Return Length
      *
-     * @param string $payload
+     * @param  string  $payload
      * @return int
      */
-    protected function _write($payload) {
+    protected function _write($payload)
+    {
         $ret = $this->_writeResponse;
         $this->_writeResponse = null;
+
         return (null === $ret) ? strlen($payload) : $ret;
     }
 }

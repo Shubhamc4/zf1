@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,26 +14,20 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Pdf
- * @subpackage Actions
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /** Zend_Pdf_Action */
 require_once 'Zend/Pdf/Action.php';
 
-
 /**
  * PDF 'Go to a destination in an embedded file' action
  *
- * @package    Zend_Pdf
- * @subpackage Actions
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Pdf_Action_GoToE extends Zend_Pdf_Action
-{
-}
-
+class Zend_Pdf_Action_GoToE extends Zend_Pdf_Action {}

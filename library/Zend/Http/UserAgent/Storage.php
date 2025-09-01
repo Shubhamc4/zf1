@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,16 +14,14 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage UserAgent
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
 /**
  * @category   Zend
- * @package    Zend_Http
- * @subpackage UserAgent
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -31,8 +30,9 @@ interface Zend_Http_UserAgent_Storage
     /**
      * Returns true if and only if storage is empty
      *
+     * @return bool
+     *
      * @throws Zend_Http_UserAgent_Storage_Exception If it is impossible to determine whether storage is empty
-     * @return boolean
      */
     public function isEmpty();
 
@@ -41,25 +41,28 @@ interface Zend_Http_UserAgent_Storage
      *
      * Behavior is undefined when storage is empty.
      *
-     * @throws Zend_Http_UserAgent_Storage_Exception If reading contents from storage is impossible
      * @return mixed
+     *
+     * @throws Zend_Http_UserAgent_Storage_Exception If reading contents from storage is impossible
      */
     public function read();
 
     /**
      * Writes $contents associated to the key parameter to storage
      *
-     * @param  mixed $contents
-     * @throws Zend_Http_UserAgent_Storage_Exception If writing $contents to storage is impossible
+     * @param  mixed  $contents
      * @return void
+     *
+     * @throws Zend_Http_UserAgent_Storage_Exception If writing $contents to storage is impossible
      */
     public function write($contents);
 
     /**
      * Clears contents from storage
      *
-     * @throws Zend_Http_UserAgent_Storage_Exception If clearing contents from storage is impossible
      * @return void
+     *
+     * @throws Zend_Http_UserAgent_Storage_Exception If clearing contents from storage is impossible
      */
     public function clear();
 }

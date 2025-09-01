@@ -14,17 +14,17 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gapps
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id:$
  */
 
 /**
  * @see Zend_Gdata_Gapps_Query
  */
-require_once('Zend/Gdata/Gapps/Query.php');
+require_once 'Zend/Gdata/Gapps/Query.php';
 
 /**
  * Assists in constructing queries for Google Apps member entries.
@@ -35,14 +35,12 @@ require_once('Zend/Gdata/Gapps/Query.php');
  * service class, Zend_Gdata_Gapps.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gapps
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Gapps_MemberQuery extends Zend_Gdata_Gapps_Query
 {
-
     /**
      * If not null, specifies the group id
      *
@@ -61,15 +59,15 @@ class Zend_Gdata_Gapps_MemberQuery extends Zend_Gdata_Gapps_Query
     /**
      * Create a new instance.
      *
-     * @param string $domain (optional) The Google Apps-hosted domain to use
-     *          when constructing query URIs.
-     * @param string $groupId (optional) Value for the groupId property.
-     * @param string $memberId (optional) Value for the memberId property.
-     * @param string $startMemberId (optional) Value for the
-     *          startMemberId property.
+     * @param  string  $domain  (optional) The Google Apps-hosted domain to use
+     *                          when constructing query URIs.
+     * @param  string  $groupId  (optional) Value for the groupId property.
+     * @param  string  $memberId  (optional) Value for the memberId property.
+     * @param  string  $startMemberId  (optional) Value for the
+     *                                 startMemberId property.
      */
     public function __construct($domain = null, $groupId = null, $memberId = null,
-            $startMemberId = null)
+        $startMemberId = null)
     {
         parent::__construct($domain);
         $this->setGroupId($groupId);
@@ -81,8 +79,9 @@ class Zend_Gdata_Gapps_MemberQuery extends Zend_Gdata_Gapps_Query
      * Set the group id to query for.
      *
      * @see getGroupId
-     * @param string $value The group id to filter search results by, or null to
-     *              disable.
+     *
+     * @param  string  $value  The group id to filter search results by, or null to
+     *                         disable.
      */
     public function setGroupId($value)
     {
@@ -93,8 +92,8 @@ class Zend_Gdata_Gapps_MemberQuery extends Zend_Gdata_Gapps_Query
      * Get the group id to query for. If no group id is set, null will be
      * returned.
      *
-     * @param string $value The group id to filter search results by, or
-     *          null if disabled.
+     * @param  string  $value  The group id to filter search results by, or
+     *                         null if disabled.
      * @return string The group id
      */
     public function getGroupId()
@@ -102,15 +101,15 @@ class Zend_Gdata_Gapps_MemberQuery extends Zend_Gdata_Gapps_Query
         return $this->_groupId;
     }
 
-
     /**
      * Set the member id to query for. When set, only users with a member id
      * matching this value will be returned in search results. Set to
      * null to disable filtering by member id.
      *
      * @see getMemberId
-     * @param string $value The member id to filter search results by, or null to
-     *              disable.
+     *
+     * @param  string  $value  The member id to filter search results by, or null to
+     *                         disable.
      */
     public function setMemberId($value)
     {
@@ -121,8 +120,8 @@ class Zend_Gdata_Gapps_MemberQuery extends Zend_Gdata_Gapps_Query
      * Get the member id to query for. If no member id is set, null will be
      * returned.
      *
-     * @param string $value The member id to filter search results by, or
-     *          null if disabled.
+     * @param  string  $value  The member id to filter search results by, or
+     *                         null if disabled.
      * @return The member id
      */
     public function getMemberId()
@@ -134,8 +133,8 @@ class Zend_Gdata_Gapps_MemberQuery extends Zend_Gdata_Gapps_Query
      * Set the first member id which should be displayed when retrieving
      * a list of members.
      *
-     * @param string $value The first member id to be returned, or null to
-     *          disable.
+     * @param  string  $value  The first member id to be returned, or null to
+     *                         disable.
      */
     public function setStartMemberId($value)
     {
@@ -151,16 +150,16 @@ class Zend_Gdata_Gapps_MemberQuery extends Zend_Gdata_Gapps_Query
      * a list of users.
      *
      * @see setStartUsername
+     *
      * @return string The first username to be returned, or null if
-     *          disabled.
+     *                disabled.
      */
     public function getStartMemberId()
     {
         if (array_key_exists('start', $this->_params)) {
             return $this->_params['start'];
-        } else {
-            return null;
         }
+
     }
 
     /**
@@ -173,22 +172,22 @@ class Zend_Gdata_Gapps_MemberQuery extends Zend_Gdata_Gapps_Query
 
         $uri = Zend_Gdata_Gapps::APPS_BASE_FEED_URI;
         $uri .= Zend_Gdata_Gapps::APPS_GROUP_PATH;
-        $uri .= '/' . $this->_domain;
+        $uri .= '/'.$this->_domain;
         if ($this->_groupId !== null) {
-            $uri .= '/' . $this->_groupId;
+            $uri .= '/'.$this->_groupId;
         } else {
             require_once 'Zend/Gdata/App/InvalidArgumentException.php';
             throw new Zend_Gdata_App_InvalidArgumentException(
-                    'groupId must not be null');
+                'groupId must not be null');
         }
 
         $uri .= '/member';
 
         if ($this->_memberId !== null) {
-            $uri .= '/' . $this->_memberId;
+            $uri .= '/'.$this->_memberId;
         }
         $uri .= $this->getQueryString();
+
         return $uri;
     }
-
 }

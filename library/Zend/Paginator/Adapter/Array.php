@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Paginator
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,7 +28,7 @@ require_once 'Zend/Paginator/Adapter/Interface.php';
 
 /**
  * @category   Zend
- * @package    Zend_Paginator
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -42,14 +44,14 @@ class Zend_Paginator_Adapter_Array implements Zend_Paginator_Adapter_Interface
     /**
      * Item count
      *
-     * @var integer
+     * @var int
      */
     protected $_count = null;
 
     /**
      * Constructor.
      *
-     * @param array $array Array to paginate
+     * @param  array  $array  Array to paginate
      */
     public function __construct(array $array)
     {
@@ -60,8 +62,8 @@ class Zend_Paginator_Adapter_Array implements Zend_Paginator_Adapter_Interface
     /**
      * Returns an array of items for a page.
      *
-     * @param  integer $offset Page offset
-     * @param  integer $itemCountPerPage Number of items per page
+     * @param  int  $offset  Page offset
+     * @param  int  $itemCountPerPage  Number of items per page
      * @return array
      */
     public function getItems($offset, $itemCountPerPage)
@@ -72,9 +74,8 @@ class Zend_Paginator_Adapter_Array implements Zend_Paginator_Adapter_Interface
     /**
      * Returns the total number of rows in the array.
      *
-     * @return integer
+     * @return int
      */
-    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->_count;

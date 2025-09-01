@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,24 +14,23 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Soap
- * @subpackage Wsdl
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * @see Zend_Soap_Wsdl_Strategy_Abstract
  */
-require_once "Zend/Soap/Wsdl/Strategy/Abstract.php";
+require_once 'Zend/Soap/Wsdl/Strategy/Abstract.php';
 
 /**
  * Zend_Soap_Wsdl_Strategy_DefaultComplexType
  *
  * @category   Zend
- * @package    Zend_Soap
- * @subpackage Wsdl
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,15 +39,15 @@ class Zend_Soap_Wsdl_Strategy_DefaultComplexType extends Zend_Soap_Wsdl_Strategy
     /**
      * Add a complex type by recursivly using all the class properties fetched via Reflection.
      *
-     * @param  string $type Name of the class to be specified
+     * @param  string  $type  Name of the class to be specified
      * @return string XSD Type for the given PHP type
      */
     public function addComplexType($type)
     {
-        if(!class_exists($type)) {
-            require_once "Zend/Soap/Wsdl/Exception.php";
+        if (! class_exists($type)) {
+            require_once 'Zend/Soap/Wsdl/Exception.php';
             throw new Zend_Soap_Wsdl_Exception(sprintf(
-                "Cannot add a complex type %s that is not an object or where ".
+                'Cannot add a complex type %s that is not an object or where '.
                 "class could not be found in 'DefaultComplexType' strategy.", $type
             ));
         }
@@ -86,6 +86,6 @@ class Zend_Soap_Wsdl_Strategy_DefaultComplexType extends Zend_Soap_Wsdl_Strategy
         $this->getContext()->getSchema()->appendChild($complexType);
         $this->getContext()->addType($type);
 
-        return "tns:$type";
+        return "tns:{$type}";
     }
 }

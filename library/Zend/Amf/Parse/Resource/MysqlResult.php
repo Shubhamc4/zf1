@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Amf
- * @subpackage Parse
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -24,8 +25,6 @@
  * This class will convert mysql result resource to array suitable for passing
  * to the external entities.
  *
- * @package    Zend_Amf
- * @subpackage Parse
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -36,35 +35,38 @@ class Zend_Amf_Parse_Resource_MysqlResult
      *
      * Key => Value is Mysql type (exact string) => PHP type
      */
-    static public $fieldTypes = array(
-        "int" => "int",
-        "timestamp" => "int",
-        "year" => "int",
-        "real" => "float",
-    );
+    public static $fieldTypes = [
+        'int' => 'int',
+        'timestamp' => 'int',
+        'year' => 'int',
+        'real' => 'float',
+    ];
+
     /**
      * Parse resource into array
      *
-     * @param resource $resource
+     * @param  resource  $resource
      * @return array
      */
-    public function parse($resource) {
-        $result = array();
+    public function parse($resource)
+    {
+        $result = [];
         $fieldcnt = mysql_num_fields($resource);
-        $fields_transform = array();
-        for($i=0;$i<$fieldcnt;$i++) {
+        $fields_transform = [];
+        for ($i = 0; $i < $fieldcnt; $i++) {
             $type = mysql_field_type($resource, $i);
-            if(isset(self::$fieldTypes[$type])) {
+            if (isset(self::$fieldTypes[$type])) {
                 $fields_transform[mysql_field_name($resource, $i)] = self::$fieldTypes[$type];
             }
         }
 
-        while($row = mysql_fetch_object($resource)) {
-            foreach($fields_transform as $fieldname => $fieldtype) {
-               settype($row->$fieldname, $fieldtype);
+        while ($row = mysql_fetch_object($resource)) {
+            foreach ($fields_transform as $fieldname => $fieldtype) {
+                settype($row->$fieldname, $fieldtype);
             }
             $result[] = $row;
         }
+
         return $result;
     }
 }

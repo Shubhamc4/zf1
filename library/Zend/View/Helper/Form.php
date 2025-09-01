@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,11 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_View
- * @subpackage Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ *
  * @version    $Id$
+ *
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -26,8 +28,6 @@ require_once 'Zend/View/Helper/FormElement.php';
 /**
  * Helper for rendering HTML forms
  *
- * @package    Zend_View
- * @subpackage Helper
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -36,9 +36,9 @@ class Zend_View_Helper_Form extends Zend_View_Helper_FormElement
     /**
      * Render HTML form
      *
-     * @param  string $name Form name
-     * @param  null|array $attribs HTML form attributes
-     * @param  false|string $content Form content
+     * @param  string  $name  Form name
+     * @param  null|array  $attribs  HTML form attributes
+     * @param  false|string  $content  Form content
      * @return string
      */
     public function form($name, $attribs = null, $content = false)
@@ -46,8 +46,8 @@ class Zend_View_Helper_Form extends Zend_View_Helper_FormElement
         $info = $this->_getInfo($name, $content, $attribs);
         extract($info);
 
-        if (!empty($id)) {
-            $id = ' id="' . $this->view->escape($id) . '"';
+        if (! empty($id)) {
+            $id = ' id="'.$this->view->escape($id).'"';
         } else {
             $id = '';
         }
@@ -55,30 +55,30 @@ class Zend_View_Helper_Form extends Zend_View_Helper_FormElement
         if (array_key_exists('id', $attribs) && empty($attribs['id'])) {
             unset($attribs['id']);
         }
-        
-        if (!empty($name) && !($this->_isXhtml() && $this->_isStrictDoctype())) {
-            $name = ' name="' . $this->view->escape($name) . '"';
+
+        if (! empty($name) && ! ($this->_isXhtml() && $this->_isStrictDoctype())) {
+            $name = ' name="'.$this->view->escape($name).'"';
         } else {
             $name = '';
         }
-        
-        if ($this->_isHtml5() && array_key_exists('action', $attribs) && !$attribs['action']) {
+
+        if ($this->_isHtml5() && array_key_exists('action', $attribs) && ! $attribs['action']) {
             unset($attribs['action']);
         }
 
-        if ( array_key_exists('name', $attribs) && empty($attribs['id'])) {
+        if (array_key_exists('name', $attribs) && empty($attribs['id'])) {
             unset($attribs['id']);
         }
 
         $xhtml = '<form'
-               . $id
-               . $name
-               . $this->_htmlAttribs($attribs)
-               . '>';
+               .$id
+               .$name
+               .$this->_htmlAttribs($attribs)
+               .'>';
 
         if (false !== $content) {
             $xhtml .= $content
-                   .  '</form>';
+                   .'</form>';
         }
 
         return $xhtml;

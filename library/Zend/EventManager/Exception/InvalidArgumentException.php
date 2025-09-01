@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,7 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_EventManager
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -32,11 +33,8 @@ require_once 'Zend/EventManager/Exception.php';
  * Invalid argument exception
  *
  * @category   Zend
- * @package    Zend_EventManager
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_EventManager_Exception_InvalidArgumentException
-    extends Zend_Exception implements Zend_EventManager_Exception
-{
-}
+class Zend_EventManager_Exception_InvalidArgumentException extends Zend_Exception implements Zend_EventManager_Exception {}

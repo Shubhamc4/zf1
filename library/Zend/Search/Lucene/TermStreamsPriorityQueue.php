@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,21 +14,19 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Index
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /** Zend_Search_Lucene_Index_TermsStream_Interface */
 require_once 'Zend/Search/Lucene/Index/TermsStream/Interface.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Index
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -54,11 +53,10 @@ class Zend_Search_Lucene_TermStreamsPriorityQueue implements Zend_Search_Lucene_
      */
     protected $_lastTerm = null;
 
-
     /**
      * Object constructor
      *
-     * @param array $termStreams  array of term streams (Zend_Search_Lucene_Index_TermsStream_Interface objects)
+     * @param  array  $termStreams  array of term streams (Zend_Search_Lucene_Index_TermsStream_Interface objects)
      */
     public function __construct(array $termStreams)
     {
@@ -75,7 +73,7 @@ class Zend_Search_Lucene_TermStreamsPriorityQueue implements Zend_Search_Lucene_
         /** Zend_Search_Lucene_Index_TermsPriorityQueue */
         require_once 'Zend/Search/Lucene/Index/TermsPriorityQueue.php';
 
-        $this->_termsStreamQueue = new Zend_Search_Lucene_Index_TermsPriorityQueue();
+        $this->_termsStreamQueue = new Zend_Search_Lucene_Index_TermsPriorityQueue;
 
         foreach ($this->_termStreams as $termStream) {
             $termStream->resetTermsStream();
@@ -93,12 +91,10 @@ class Zend_Search_Lucene_TermStreamsPriorityQueue implements Zend_Search_Lucene_
      * Skip terms stream up to the specified term preffix.
      *
      * Prefix contains fully specified field info and portion of searched term
-     *
-     * @param Zend_Search_Lucene_Index_Term $prefix
      */
     public function skipTo(Zend_Search_Lucene_Index_Term $prefix)
     {
-        $this->_termsStreamQueue = new Zend_Search_Lucene_Index_TermsPriorityQueue();
+        $this->_termsStreamQueue = new Zend_Search_Lucene_Index_TermsPriorityQueue;
 
         foreach ($this->_termStreams as $termStream) {
             $termStream->skipTo($prefix);
@@ -142,7 +138,6 @@ class Zend_Search_Lucene_TermStreamsPriorityQueue implements Zend_Search_Lucene_
         // End of stream
         $this->_lastTerm = null;
 
-        return null;
     }
 
     /**
@@ -167,6 +162,6 @@ class Zend_Search_Lucene_TermStreamsPriorityQueue implements Zend_Search_Lucene_
         }
 
         $this->_termsStreamQueue = null;
-        $this->_lastTerm         = null;
+        $this->_lastTerm = null;
     }
 }

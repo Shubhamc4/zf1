@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Controller
- * @subpackage Zend_Controller_Action_Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,9 +30,9 @@ require_once 'Zend/Controller/Action/Helper/AutoComplete/Abstract.php';
  * Create and send Dojo-compatible autocompletion lists
  *
  * @uses       Zend_Controller_Action_Helper_AutoComplete_Abstract
+ *
  * @category   Zend
- * @package    Zend_Controller
- * @subpackage Zend_Controller_Action_Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -42,8 +43,8 @@ class Zend_Controller_Action_Helper_AutoCompleteDojo extends Zend_Controller_Act
      *
      * Stub; unused
      *
-     * @param  mixed $data
-     * @return boolean
+     * @param  mixed  $data
+     * @return bool
      */
     public function validateData($data)
     {
@@ -53,22 +54,22 @@ class Zend_Controller_Action_Helper_AutoCompleteDojo extends Zend_Controller_Act
     /**
      * Prepare data for autocompletion
      *
-     * @param  mixed   $data
-     * @param  boolean $keepLayouts
+     * @param  mixed  $data
+     * @param  bool  $keepLayouts
      * @return string
      */
     public function prepareAutoCompletion($data, $keepLayouts = false)
     {
-        if (!$data instanceof Zend_Dojo_Data) {
+        if (! $data instanceof Zend_Dojo_Data) {
             require_once 'Zend/Dojo/Data.php';
-            $items = array();
+            $items = [];
             foreach ($data as $key => $value) {
-                $items[] = array('label' => $value, 'name' => $value);
+                $items[] = ['label' => $value, 'name' => $value];
             }
             $data = new Zend_Dojo_Data('name', $items);
         }
 
-        if (!$keepLayouts) {
+        if (! $keepLayouts) {
             require_once 'Zend/Controller/Action/HelperBroker.php';
             Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer')->setNoRender(true);
 

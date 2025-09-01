@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Serializer
- * @subpackage Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -25,8 +26,7 @@ require_once 'Zend/Serializer/Adapter/AdapterAbstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Serializer
- * @subpackage Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -40,13 +40,14 @@ class Zend_Serializer_Adapter_Igbinary extends Zend_Serializer_Adapter_AdapterAb
     /**
      * Constructor
      *
-     * @param  array|Zend_Config $opts
+     * @param  array|Zend_Config  $opts
      * @return void
+     *
      * @throws Zend_Serializer_Exception If igbinary extension is not present
      */
-    public function __construct($opts = array())
+    public function __construct($opts = [])
     {
-        if (!extension_loaded('igbinary')) {
+        if (! extension_loaded('igbinary')) {
             require_once 'Zend/Serializer/Exception.php';
             throw new Zend_Serializer_Exception('PHP extension "igbinary" is required for this adapter');
         }
@@ -61,12 +62,12 @@ class Zend_Serializer_Adapter_Igbinary extends Zend_Serializer_Adapter_AdapterAb
     /**
      * Serialize PHP value to igbinary
      *
-     * @param  mixed $value
-     * @param  array $opts
+     * @param  mixed  $value
      * @return string
+     *
      * @throws Zend_Serializer_Exception on igbinary error
      */
-    public function serialize($value, array $opts = array())
+    public function serialize($value, array $opts = [])
     {
         $ret = igbinary_serialize($value);
         if ($ret === false) {
@@ -74,18 +75,19 @@ class Zend_Serializer_Adapter_Igbinary extends Zend_Serializer_Adapter_AdapterAb
             require_once 'Zend/Serializer/Exception.php';
             throw new Zend_Serializer_Exception($lastErr['message']);
         }
+
         return $ret;
     }
 
     /**
      * Deserialize igbinary string to PHP value
      *
-     * @param  string|binary $serialized
-     * @param  array $opts
+     * @param  string|binary  $serialized
      * @return mixed
+     *
      * @throws Zend_Serializer_Exception on igbinary error
      */
-    public function unserialize($serialized, array $opts = array())
+    public function unserialize($serialized, array $opts = [])
     {
         $ret = igbinary_unserialize($serialized);
         if ($ret === null && $serialized !== self::$_serializedNull) {
@@ -93,6 +95,7 @@ class Zend_Serializer_Adapter_Igbinary extends Zend_Serializer_Adapter_AdapterAb
             require_once 'Zend/Serializer/Exception.php';
             throw new Zend_Serializer_Exception($lastErr['message']);
         }
+
         return $ret;
     }
 }

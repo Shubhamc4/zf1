@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Wildfire
- * @subpackage Protocol
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -33,8 +34,7 @@ require_once 'Zend/Json.php';
  * Encodes messages into the Wildfire JSON Stream Communication Protocol.
  *
  * @category   Zend
- * @package    Zend_Wildfire
- * @subpackage Protocol
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -47,60 +47,64 @@ class Zend_Wildfire_Protocol_JsonStream
 
     /**
      * All messages to be sent.
+     *
      * @var array
      */
-    protected $_messages = array();
+    protected $_messages = [];
 
     /**
      * Plugins that are using this protocol
+     *
      * @var array
      */
-    protected $_plugins = array();
+    protected $_plugins = [];
 
     /**
      * Register a plugin that uses this protocol
      *
-     * @param Zend_Wildfire_Plugin_Interface $plugin The plugin to be registered
-     * @return boolean Returns TRUE if plugin was registered, false if it was already registered
+     * @param  Zend_Wildfire_Plugin_Interface  $plugin  The plugin to be registered
+     * @return bool Returns TRUE if plugin was registered, false if it was already registered
      */
     public function registerPlugin(Zend_Wildfire_Plugin_Interface $plugin)
     {
-        if (in_array($plugin,$this->_plugins)) {
+        if (in_array($plugin, $this->_plugins)) {
             return false;
         }
         $this->_plugins[] = $plugin;
+
         return true;
     }
 
     /**
      * Record a message with the given data in the given structure
      *
-     * @param Zend_Wildfire_Plugin_Interface $plugin The plugin recording the message
-     * @param string $structure The structure to be used for the data
-     * @param array $data The data to be recorded
-     * @return boolean Returns TRUE if message was recorded
+     * @param  Zend_Wildfire_Plugin_Interface  $plugin  The plugin recording the message
+     * @param  string  $structure  The structure to be used for the data
+     * @param  array  $data  The data to be recorded
+     * @return bool Returns TRUE if message was recorded
      */
     public function recordMessage(Zend_Wildfire_Plugin_Interface $plugin, $structure, $data)
     {
-        if(!isset($this->_messages[$structure])) {
-            $this->_messages[$structure] = array();
+        if (! isset($this->_messages[$structure])) {
+            $this->_messages[$structure] = [];
         }
 
         $uri = $plugin->getUri();
 
-        if(!isset($this->_messages[$structure][$uri])) {
-            $this->_messages[$structure][$uri] = array();
+        if (! isset($this->_messages[$structure][$uri])) {
+            $this->_messages[$structure][$uri] = [];
         }
 
         $this->_messages[$structure][$uri][] = $this->_encode($data);
+
         return true;
     }
 
     /**
      * Remove all qued messages
      *
-     * @param Zend_Wildfire_Plugin_Interface $plugin The plugin for which to clear messages
-     * @return boolean Returns TRUE if messages were present
+     * @param  Zend_Wildfire_Plugin_Interface  $plugin  The plugin for which to clear messages
+     * @return bool Returns TRUE if messages were present
      */
     public function clearMessages(Zend_Wildfire_Plugin_Interface $plugin)
     {
@@ -109,7 +113,7 @@ class Zend_Wildfire_Protocol_JsonStream
         $present = false;
         foreach ($this->_messages as $structure => $messages) {
 
-            if(!isset($this->_messages[$structure][$uri])) {
+            if (! isset($this->_messages[$structure][$uri])) {
                 continue;
             }
 
@@ -117,10 +121,11 @@ class Zend_Wildfire_Protocol_JsonStream
 
             unset($this->_messages[$structure][$uri]);
 
-            if (!$this->_messages[$structure]) {
+            if (! $this->_messages[$structure]) {
                 unset($this->_messages[$structure]);
             }
         }
+
         return $present;
     }
 
@@ -131,33 +136,35 @@ class Zend_Wildfire_Protocol_JsonStream
      */
     public function getMessages()
     {
-        if (!$this->_messages) {
+        if (! $this->_messages) {
             return false;
         }
+
         return $this->_messages;
     }
 
     /**
      * Use the JSON encoding scheme for the value specified
      *
-     * @param mixed $value The value to be encoded
-     * @return string  The encoded value
+     * @param  mixed  $value  The value to be encoded
+     * @return string The encoded value
      */
     protected function _encode($value)
     {
-        return Zend_Json::encode($value, true, array('silenceCyclicalExceptions'=>true));
+        return Zend_Json::encode($value, true, ['silenceCyclicalExceptions' => true]);
     }
 
     /**
      * Retrieves all formatted data ready to be sent by the channel.
      *
-     * @param Zend_Wildfire_Channel_Interface $channel The instance of the channel that will be transmitting the data
+     * @param  Zend_Wildfire_Channel_Interface  $channel  The instance of the channel that will be transmitting the data
      * @return mixed Returns the data to be sent by the channel.
+     *
      * @throws Zend_Wildfire_Exception
      */
     public function getPayload(Zend_Wildfire_Channel_Interface $channel)
     {
-        if (!$channel instanceof Zend_Wildfire_Channel_HttpHeaders) {
+        if (! $channel instanceof Zend_Wildfire_Channel_HttpHeaders) {
             require_once 'Zend/Wildfire/Exception.php';
             throw new Zend_Wildfire_Exception('The '.get_class($channel).' channel is not supported by the '.get_class($this).' protocol.');
         }
@@ -168,7 +175,7 @@ class Zend_Wildfire_Protocol_JsonStream
             }
         }
 
-        if (!$this->_messages) {
+        if (! $this->_messages) {
             return false;
         }
 
@@ -177,42 +184,42 @@ class Zend_Wildfire_Protocol_JsonStream
         $plugin_index = 1;
         $message_index = 1;
 
-        $payload = array();
+        $payload = [];
 
-        $payload[] = array('Protocol-'.$protocol_index, self::PROTOCOL_URI);
+        $payload[] = ['Protocol-'.$protocol_index, self::PROTOCOL_URI];
 
-        foreach ($this->_messages as $structure_uri => $plugin_messages ) {
+        foreach ($this->_messages as $structure_uri => $plugin_messages) {
 
-            $payload[] = array($protocol_index.'-Structure-'.$structure_index, $structure_uri);
+            $payload[] = [$protocol_index.'-Structure-'.$structure_index, $structure_uri];
 
-            foreach ($plugin_messages as $plugin_uri => $messages ) {
+            foreach ($plugin_messages as $plugin_uri => $messages) {
 
-                $payload[] = array($protocol_index.'-Plugin-'.$plugin_index, $plugin_uri);
+                $payload[] = [$protocol_index.'-Plugin-'.$plugin_index, $plugin_uri];
 
                 foreach ($messages as $message) {
 
-                    $parts = explode("\n",chunk_split($message, 5000, "\n"));
+                    $parts = explode("\n", chunk_split($message, 5000, "\n"));
 
-                    for ($i=0 ; $i<count($parts) ; $i++) {
+                    for ($i = 0; $i < count($parts); $i++) {
 
                         $part = $parts[$i];
                         if ($part) {
 
                             $msg = '';
 
-                            if (count($parts)>2) {
-                                $msg = (($i==0)?strlen($message):'')
-                                       . '|' . $part . '|'
-                                       . (($i<count($parts)-2)?'\\':'');
+                            if (count($parts) > 2) {
+                                $msg = (($i == 0) ? strlen($message) : '')
+                                       .'|'.$part.'|'
+                                       .(($i < count($parts) - 2) ? '\\' : '');
                             } else {
-                                $msg = strlen($part) . '|' . $part . '|';
+                                $msg = strlen($part).'|'.$part.'|';
                             }
 
-                            $payload[] = array($protocol_index . '-'
-                                               . $structure_index . '-'
-                                               . $plugin_index . '-'
-                                               . $message_index,
-                                               $msg);
+                            $payload[] = [$protocol_index.'-'
+                                               .$structure_index.'-'
+                                               .$plugin_index.'-'
+                                               .$message_index,
+                                $msg];
 
                             $message_index++;
 
@@ -230,6 +237,4 @@ class Zend_Wildfire_Protocol_JsonStream
 
         return $payload;
     }
-
 }
-

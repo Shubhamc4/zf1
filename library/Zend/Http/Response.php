@@ -14,9 +14,9 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage Response
+ *
  * @version    $Id$
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -31,8 +31,6 @@ require_once 'Zend/Http/Header/HeaderValue.php';
  * includes easy access to all the response's different elemts, as well as some
  * convenience methods for parsing and validating HTTP responses.
  *
- * @package    Zend_Http
- * @subpackage Response
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -44,7 +42,7 @@ class Zend_Http_Response
      *
      * @var array
      */
-    protected static $messages = array(
+    protected static $messages = [
         // Informational 1xx
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -95,8 +93,8 @@ class Zend_Http_Response
         503 => 'Service Unavailable',
         504 => 'Gateway Timeout',
         505 => 'HTTP Version Not Supported',
-        509 => 'Bandwidth Limit Exceeded'
-    );
+        509 => 'Bandwidth Limit Exceeded',
+    ];
 
     /**
      * The HTTP version (1.0, 1.1)
@@ -125,7 +123,7 @@ class Zend_Http_Response
      *
      * @var array
      */
-    protected $headers = array();
+    protected $headers = [];
 
     /**
      * The HTTP response body
@@ -146,11 +144,12 @@ class Zend_Http_Response
      *
      * If no message is passed, the message will be guessed according to the response code.
      *
-     * @param int    $code Response code (200, 404, ...)
-     * @param array  $headers Headers array
-     * @param string $body Response body
-     * @param string $version HTTP version
-     * @param string $message Response code as text
+     * @param  int  $code  Response code (200, 404, ...)
+     * @param  array  $headers  Headers array
+     * @param  string  $body  Response body
+     * @param  string  $version  HTTP version
+     * @param  string  $message  Response code as text
+     *
      * @throws Zend_Http_Exception
      */
     public function __construct($code, array $headers, $body = null, $version = '1.1', $message = null)
@@ -165,13 +164,13 @@ class Zend_Http_Response
 
         foreach ($headers as $name => $value) {
             if (is_int($name)) {
-                $header = explode(":", $value, 2);
+                $header = explode(':', $value, 2);
                 if (count($header) != 2) {
                     require_once 'Zend/Http/Exception.php';
                     throw new Zend_Http_Exception("'{$value}' is not a valid HTTP header");
                 }
 
-                $name  = trim($header[0]);
+                $name = trim($header[0]);
                 $value = trim($header[1]);
             }
 
@@ -184,7 +183,7 @@ class Zend_Http_Response
         // Set the HTTP version
         if (! preg_match('|^\d\.\d$|', $version)) {
             require_once 'Zend/Http/Exception.php';
-            throw new Zend_Http_Exception("Invalid HTTP response version: $version");
+            throw new Zend_Http_Exception("Invalid HTTP response version: {$version}");
         }
 
         $this->version = $version;
@@ -201,7 +200,7 @@ class Zend_Http_Response
     /**
      * Check whether the response is an error
      *
-     * @return boolean
+     * @return bool
      */
     public function isError()
     {
@@ -216,7 +215,7 @@ class Zend_Http_Response
     /**
      * Check whether the response in successful
      *
-     * @return boolean
+     * @return bool
      */
     public function isSuccessful()
     {
@@ -231,7 +230,7 @@ class Zend_Http_Response
     /**
      * Check whether the response is a redirection
      *
-     * @return boolean
+     * @return bool
      */
     public function isRedirect()
     {
@@ -267,8 +266,8 @@ class Zend_Http_Response
                 $body = self::decodeChunkedBody($this->body);
                 break;
 
-            // No transfer encoding, or unknown encoding extension:
-            // return body as is
+                // No transfer encoding, or unknown encoding extension:
+                // return body as is
             default:
                 $body = $this->body;
                 break;
@@ -282,7 +281,7 @@ class Zend_Http_Response
                 $body = self::decodeGzip($body);
                 break;
 
-            // Handle deflate encoding
+                // Handle deflate encoding
             case 'deflate':
                 $body = self::decodeDeflate($body);
                 break;
@@ -351,13 +350,15 @@ class Zend_Http_Response
     /**
      * Get a specific header as string, or null if it is not set
      *
-     * @param string$header
+     * @param  string  $header
      * @return string|array|null
      */
     public function getHeader($header)
     {
         $header = ucwords(strtolower($header));
-        if (! is_string($header) || ! isset($this->headers[$header])) return null;
+        if (! is_string($header) || ! isset($this->headers[$header])) {
+            return;
+        }
 
         return $this->headers[$header];
     }
@@ -365,8 +366,8 @@ class Zend_Http_Response
     /**
      * Get all headers as string
      *
-     * @param boolean $status_line Whether to return the first status line (IE "HTTP 200 OK")
-     * @param string $br Line breaks (eg. "\n", "\r\n", "<br />")
+     * @param  bool  $status_line  Whether to return the first status line (IE "HTTP 200 OK")
+     * @param  string  $br  Line breaks (eg. "\n", "\r\n", "<br />")
      * @return string
      */
     public function getHeadersAsString($status_line = true, $br = "\n")
@@ -378,12 +379,10 @@ class Zend_Http_Response
         }
 
         // Iterate over the headers and stringify them
-        foreach ($this->headers as $name => $value)
-        {
-            if (is_string($value))
+        foreach ($this->headers as $name => $value) {
+            if (is_string($value)) {
                 $str .= "{$name}: {$value}{$br}";
-
-            elseif (is_array($value)) {
+            } elseif (is_array($value)) {
                 foreach ($value as $subval) {
                     $str .= "{$name}: {$subval}{$br}";
                 }
@@ -396,12 +395,12 @@ class Zend_Http_Response
     /**
      * Get the entire response as string
      *
-     * @param string $br Line breaks (eg. "\n", "\r\n", "<br />")
+     * @param  string  $br  Line breaks (eg. "\n", "\r\n", "<br />")
      * @return string
      */
     public function asString($br = "\r\n")
     {
-        return $this->getHeadersAsString(true, $br) . $br . $this->getRawBody();
+        return $this->getHeadersAsString(true, $br).$br.$this->getRawBody();
     }
 
     /**
@@ -422,28 +421,32 @@ class Zend_Http_Response
      * Conforms to HTTP/1.1 as defined in RFC 2616 (except for 'Unknown')
      * See http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10 for reference
      *
-     * @param int $code HTTP response code
-     * @param boolean $http11 Use HTTP version 1.1
+     * @param  int  $code  HTTP response code
+     * @param  bool  $http11  Use HTTP version 1.1
      * @return string
      */
     public static function responseCodeAsText($code = null, $http11 = true)
     {
         $messages = self::$messages;
-        if (! $http11) $messages[302] = 'Moved Temporarily';
+        if (! $http11) {
+            $messages[302] = 'Moved Temporarily';
+        }
 
         if ($code === null) {
             return $messages;
-        } elseif (isset($messages[$code])) {
-            return $messages[$code];
-        } else {
-            return 'Unknown';
         }
+        if (isset($messages[$code])) {
+            return $messages[$code];
+        }
+
+        return 'Unknown';
+
     }
 
     /**
      * Extract the response code from a response string
      *
-     * @param string $response_str
+     * @param  string  $response_str
      * @return int
      */
     public static function extractCode($response_str)
@@ -452,15 +455,16 @@ class Zend_Http_Response
 
         if (isset($m[1])) {
             return (int) $m[1];
-        } else {
-            return false;
         }
+
+        return false;
+
     }
 
     /**
      * Extract the HTTP message from a response
      *
-     * @param string $response_str
+     * @param  string  $response_str
      * @return string
      */
     public static function extractMessage($response_str)
@@ -469,15 +473,16 @@ class Zend_Http_Response
 
         if (isset($m[1])) {
             return $m[1];
-        } else {
-            return false;
         }
+
+        return false;
+
     }
 
     /**
      * Extract the HTTP version from a response
      *
-     * @param string $response_str
+     * @param  string  $response_str
      * @return string
      */
     public static function extractVersion($response_str)
@@ -486,20 +491,21 @@ class Zend_Http_Response
 
         if (isset($m[1])) {
             return $m[1];
-        } else {
-            return false;
         }
+
+        return false;
+
     }
 
     /**
      * Extract the headers from a response string
      *
-     * @param   string $response_str
-     * @return  array
+     * @param  string  $response_str
+     * @return array
      */
     public static function extractHeaders($response_str)
     {
-        $headers = array();
+        $headers = [];
 
         // First, split body and headers. Headers are separated from the
         // message at exactly the sequence "\r\n\r\n"
@@ -513,13 +519,13 @@ class Zend_Http_Response
         unset($parts);
         $last_header = null;
 
-        foreach($lines as $index => $line) {
+        foreach ($lines as $index => $line) {
             if ($index === 0 && preg_match('#^HTTP/\d+(?:\.\d+) [1-5]\d+#', $line)) {
                 // Status line; ignore
                 continue;
             }
 
-            if ($line == "") {
+            if ($line == '') {
                 // Done processing headers
                 break;
             }
@@ -527,22 +533,24 @@ class Zend_Http_Response
             // Locate headers like 'Location: ...' and 'Location:...' (note the missing space)
             if (preg_match("|^([a-zA-Z0-9\'`#$%&*+.^_\|\~!-]+):\s*(.*)|s", $line, $m)) {
                 unset($last_header);
-                $h_name  = strtolower($m[1]);
+                $h_name = strtolower($m[1]);
                 $h_value = $m[2];
                 Zend_Http_Header_HeaderValue::assertValid($h_value);
 
                 if (isset($headers[$h_name])) {
                     if (! is_array($headers[$h_name])) {
-                        $headers[$h_name] = array($headers[$h_name]);
+                        $headers[$h_name] = [$headers[$h_name]];
                     }
 
                     $headers[$h_name][] = ltrim($h_value);
                     $last_header = $h_name;
+
                     continue;
                 }
 
                 $headers[$h_name] = ltrim($h_value);
                 $last_header = $h_name;
+
                 continue;
             }
 
@@ -553,17 +561,19 @@ class Zend_Http_Response
                     end($headers[$last_header]);
                     $last_header_key = key($headers[$last_header]);
 
-                    $h_value = $headers[$last_header][$last_header_key] . $h_value;
+                    $h_value = $headers[$last_header][$last_header_key].$h_value;
                     Zend_Http_Header_HeaderValue::assertValid($h_value);
 
                     $headers[$last_header][$last_header_key] = $h_value;
+
                     continue;
                 }
 
-                $h_value = $headers[$last_header] . $h_value;
+                $h_value = $headers[$last_header].$h_value;
                 Zend_Http_Header_HeaderValue::assertValid($h_value);
 
                 $headers[$last_header] = $h_value;
+
                 continue;
             }
 
@@ -578,7 +588,7 @@ class Zend_Http_Response
     /**
      * Extract the body from a response string
      *
-     * @param string $response_str
+     * @param  string  $response_str
      * @return string
      */
     public static function extractBody($response_str)
@@ -587,13 +597,14 @@ class Zend_Http_Response
         if (isset($parts[1])) {
             return $parts[1];
         }
+
         return '';
     }
 
     /**
      * Decode a "chunked" transfer-encoded body and return the decoded text
      *
-     * @param string $body
+     * @param  string  $body
      * @return string
      */
     public static function decodeChunkedBody($body)
@@ -633,7 +644,7 @@ class Zend_Http_Response
      *
      * Currently requires PHP with zlib support
      *
-     * @param string $body
+     * @param  string  $body
      * @return string
      */
     public static function decodeGzip($body)
@@ -653,7 +664,7 @@ class Zend_Http_Response
      *
      * Currently requires PHP with zlib support
      *
-     * @param string $body
+     * @param  string  $body
      * @return string
      */
     public static function decodeDeflate($body)
@@ -677,24 +688,25 @@ class Zend_Http_Response
          * @link http://framework.zend.com/issues/browse/ZF-6040
          */
         $zlibHeader = unpack('n', substr($body, 0, 2));
-        if ($zlibHeader[1] % 31 == 0 && ord($body[0]) == 0x78 && in_array(ord($body[1]), array(0x01, 0x5e, 0x9c, 0xda))) {
+        if ($zlibHeader[1] % 31 == 0 && ord($body[0]) == 0x78 && in_array(ord($body[1]), [0x01, 0x5E, 0x9C, 0xDA])) {
             return gzuncompress($body);
-        } else {
-            return gzinflate($body);
         }
+
+        return gzinflate($body);
+
     }
 
     /**
      * Create a new Zend_Http_Response object from a string
      *
-     * @param string $response_str
+     * @param  string  $response_str
      * @return Zend_Http_Response
      */
     public static function fromString($response_str)
     {
-        $code    = self::extractCode($response_str);
+        $code = self::extractCode($response_str);
         $headers = self::extractHeaders($response_str);
-        $body    = self::extractBody($response_str);
+        $body = self::extractBody($response_str);
         $version = self::extractVersion($response_str);
         $message = self::extractMessage($response_str);
 

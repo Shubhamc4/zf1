@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Memory
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -28,7 +30,7 @@ require_once 'Zend/Memory/Container.php';
  * Locked (always stored in memory).
  *
  * @category   Zend
- * @package    Zend_Memory
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -41,13 +43,12 @@ class Zend_Memory_Container_Locked extends Zend_Memory_Container
      */
     public $value;
 
-
     /**
      * Object constructor
      *
-     * @param Zend_Memory_Manager $memoryManager
-     * @param integer $id
-     * @param string $value
+     * @param  Zend_Memory_Manager  $memoryManager
+     * @param  int  $id
+     * @param  string  $value
      */
     public function __construct($value)
     {
@@ -73,7 +74,7 @@ class Zend_Memory_Container_Locked extends Zend_Memory_Container
     /**
      * Return true if object is locked
      *
-     * @return boolean
+     * @return bool
      */
     public function isLocked()
     {

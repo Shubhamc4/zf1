@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -32,13 +33,12 @@ require_once 'Zend/Tool/Project/Context/Filesystem/Directory.php';
  * items within a specific project.
  *
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Tool_Project_Context_Zf_ApplicationDirectory extends Zend_Tool_Project_Context_Filesystem_Directory
 {
-
     protected $_filesystemName = 'application';
 
     protected $_classNamePrefix = 'Application_';
@@ -58,9 +58,9 @@ class Zend_Tool_Project_Context_Zf_ApplicationDirectory extends Zend_Tool_Projec
      */
     public function getPersistentAttributes()
     {
-        return array(
-            'classNamePrefix' => $this->getClassNamePrefix()
-            );
+        return [
+            'classNamePrefix' => $this->getClassNamePrefix(),
+        ];
     }
 
     public function getName()
@@ -77,5 +77,4 @@ class Zend_Tool_Project_Context_Zf_ApplicationDirectory extends Zend_Tool_Projec
     {
         return $this->_classNamePrefix;
     }
-
 }

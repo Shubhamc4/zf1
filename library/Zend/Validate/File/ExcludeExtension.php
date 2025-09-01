@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category  Zend
- * @package   Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version   $Id$
  */
 
@@ -28,7 +30,7 @@ require_once 'Zend/Validate/File/Extension.php';
  * Validator for the excluding file extensions
  *
  * @category  Zend
- * @package   Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -38,15 +40,16 @@ class Zend_Validate_File_ExcludeExtension extends Zend_Validate_File_Extension
      * @const string Error constants
      */
     const FALSE_EXTENSION = 'fileExcludeExtensionFalse';
-    const NOT_FOUND       = 'fileExcludeExtensionNotFound';
+
+    const NOT_FOUND = 'fileExcludeExtensionNotFound';
 
     /**
      * @var array Error message templates
      */
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::FALSE_EXTENSION => "File '%value%' has a false extension",
-        self::NOT_FOUND       => "File '%value%' is not readable or does not exist",
-    );
+        self::NOT_FOUND => "File '%value%' is not readable or does not exist",
+    ];
 
     /**
      * Defined by Zend_Validate_Interface
@@ -54,15 +57,15 @@ class Zend_Validate_File_ExcludeExtension extends Zend_Validate_File_Extension
      * Returns true if and only if the fileextension of $value is not included in the
      * set extension list
      *
-     * @param  string  $value Real file to check for extension
-     * @param  array   $file  File data from Zend_File_Transfer
-     * @return boolean
+     * @param  string  $value  Real file to check for extension
+     * @param  array  $file  File data from Zend_File_Transfer
+     * @return bool
      */
     public function isValid($value, $file = null)
     {
         // Is file readable ?
         require_once 'Zend/Loader.php';
-        if (!Zend_Loader::isReadable($value)) {
+        if (! Zend_Loader::isReadable($value)) {
             return $this->_throw($file, self::NOT_FOUND);
         }
 
@@ -74,9 +77,10 @@ class Zend_Validate_File_ExcludeExtension extends Zend_Validate_File_Extension
 
         $extensions = $this->getExtension();
 
-        if ($this->_case and (!in_array($info['extension'], $extensions))) {
+        if ($this->_case and (! in_array($info['extension'], $extensions))) {
             return true;
-        } else if (!$this->_case) {
+        }
+        if (! $this->_case) {
             $found = false;
             foreach ($extensions as $extension) {
                 if (strtolower($extension) == strtolower($info['extension'])) {
@@ -84,7 +88,7 @@ class Zend_Validate_File_ExcludeExtension extends Zend_Validate_File_Extension
                 }
             }
 
-            if (!$found) {
+            if (! $found) {
                 return true;
             }
         }

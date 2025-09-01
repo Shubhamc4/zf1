@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,7 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Server
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -34,10 +35,10 @@ require_once 'Zend/Server/Reflection/Parameter.php';
  * Contains accessors for the return value and all method arguments.
  *
  * @category   Zend
- * @package    Zend_Server
- * @subpackage Reflection
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version $Id$
  */
 class Zend_Server_Reflection_Prototype
@@ -45,22 +46,21 @@ class Zend_Server_Reflection_Prototype
     /**
      * Constructor
      *
-     * @param Zend_Server_Reflection_ReturnValue $return
-     * @param array $params
+     * @param  array  $params
      * @return void
      */
     public function __construct(Zend_Server_Reflection_ReturnValue $return, $params = null)
     {
         $this->_return = $return;
 
-        if (!is_array($params) && (null !== $params)) {
+        if (! is_array($params) && (null !== $params)) {
             require_once 'Zend/Server/Reflection/Exception.php';
             throw new Zend_Server_Reflection_Exception('Invalid parameters');
         }
 
         if (is_array($params)) {
             foreach ($params as $param) {
-                if (!$param instanceof Zend_Server_Reflection_Parameter) {
+                if (! $param instanceof Zend_Server_Reflection_Parameter) {
                     require_once 'Zend/Server/Reflection/Exception.php';
                     throw new Zend_Server_Reflection_Exception('One or more params are invalid');
                 }
@@ -83,7 +83,6 @@ class Zend_Server_Reflection_Prototype
     /**
      * Retrieve the return value object
      *
-     * @access public
      * @return Zend_Server_Reflection_ReturnValue
      */
     public function getReturnValue()

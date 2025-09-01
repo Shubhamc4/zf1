@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -37,13 +38,12 @@ require_once 'Zend/Tool/Project/Profile/Resource/Container.php';
  * items within a specific project.
  *
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Tool_Project_Profile extends Zend_Tool_Project_Profile_Resource_Container
 {
-
     /**
      * @var bool
      */
@@ -52,7 +52,7 @@ class Zend_Tool_Project_Profile extends Zend_Tool_Project_Profile_Resource_Conta
     /**
      * Constructor, standard usage would allow the setting of options
      *
-     * @param array $options
+     * @param  array  $options
      * @return bool
      */
     public function __construct($options = null)
@@ -61,16 +61,14 @@ class Zend_Tool_Project_Profile extends Zend_Tool_Project_Profile_Resource_Conta
             $this->setOptions($options);
         }
 
-        $this->_topResources = new Zend_Tool_Project_Profile_Resource_Container();
+        $this->_topResources = new Zend_Tool_Project_Profile_Resource_Container;
     }
 
     /**
      * Process options and either set a profile property or
      * set a profile 'attribute'
-     *
-     * @param array $options
      */
-    public function setOptions(Array $options)
+    public function setOptions(array $options)
     {
         $this->setAttributes($options);
     }
@@ -80,7 +78,6 @@ class Zend_Tool_Project_Profile extends Zend_Tool_Project_Profile_Resource_Conta
      *
      * @return RecursiveIteratorIterator
      */
-    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         require_once 'Zend/Tool/Project/Profile/Iterator/EnabledResourceFilter.php';
@@ -88,22 +85,21 @@ class Zend_Tool_Project_Profile extends Zend_Tool_Project_Profile_Resource_Conta
         return new RecursiveIteratorIterator(
             new Zend_Tool_Project_Profile_Iterator_EnabledResourceFilter($this),
             RecursiveIteratorIterator::SELF_FIRST
-            );
+        );
     }
 
     /**
      * loadFromData() - Load a profile from data provided by the
      * 'profilData' attribute
-     *
      */
     public function loadFromData()
     {
-        if (!isset($this->_attributes['profileData'])) {
+        if (! isset($this->_attributes['profileData'])) {
             require_once 'Zend/Tool/Project/Exception.php';
             throw new Zend_Tool_Project_Exception('loadFromData() must have "profileData" set.');
         }
 
-        $profileFileParser = new Zend_Tool_Project_Profile_FileParser_Xml();
+        $profileFileParser = new Zend_Tool_Project_Profile_FileParser_Xml;
         $profileFileParser->unserialize($this->_attributes['profileData'], $this);
 
         $this->rewind();
@@ -120,18 +116,18 @@ class Zend_Tool_Project_Profile extends Zend_Tool_Project_Profile_Resource_Conta
      */
     public function isLoadableFromFile()
     {
-        if (!isset($this->_attributes['projectProfileFile']) && !isset($this->_attributes['projectDirectory'])) {
+        if (! isset($this->_attributes['projectProfileFile']) && ! isset($this->_attributes['projectDirectory'])) {
             return false;
         }
 
         if (isset($this->_attributes['projectProfileFile'])) {
             $projectProfileFilePath = $this->_attributes['projectProfileFile'];
-            if (!file_exists($projectProfileFilePath)) {
+            if (! file_exists($projectProfileFilePath)) {
                 return false;
             }
         } else {
-            $projectProfileFilePath = rtrim($this->_attributes['projectDirectory'], '/\\') . '/.zfproject.xml';
-            if (!file_exists($projectProfileFilePath)) {
+            $projectProfileFilePath = rtrim($this->_attributes['projectDirectory'], '/\\').'/.zfproject.xml';
+            if (! file_exists($projectProfileFilePath)) {
                 return false;
             }
         }
@@ -145,35 +141,34 @@ class Zend_Tool_Project_Profile extends Zend_Tool_Project_Profile_Resource_Conta
      * this attempts to load a project profile file from a variety of locations depending
      * on what information the user provided vie $options or attributes, specifically the
      * 'projectDirectory' or 'projectProfileFile'
-     *
      */
     public function loadFromFile()
     {
         // if no data is supplied, need either a projectProfileFile or a projectDirectory
-        if (!isset($this->_attributes['projectProfileFile']) && !isset($this->_attributes['projectDirectory'])) {
+        if (! isset($this->_attributes['projectProfileFile']) && ! isset($this->_attributes['projectDirectory'])) {
             require_once 'Zend/Tool/Project/Exception.php';
             throw new Zend_Tool_Project_Exception('loadFromFile() must have at least "projectProfileFile" or "projectDirectory" set.');
         }
 
         if (isset($this->_attributes['projectProfileFile'])) {
             $projectProfileFilePath = $this->_attributes['projectProfileFile'];
-            if (!file_exists($projectProfileFilePath)) {
+            if (! file_exists($projectProfileFilePath)) {
                 require_once 'Zend/Tool/Project/Exception.php';
-                throw new Zend_Tool_Project_Exception('"projectProfileFile" was supplied but file was not found at location ' . $projectProfileFilePath);
+                throw new Zend_Tool_Project_Exception('"projectProfileFile" was supplied but file was not found at location '.$projectProfileFilePath);
             }
             $this->_attributes['projectDirectory'] = dirname($projectProfileFilePath);
         } else {
-            $projectProfileFilePath = rtrim($this->_attributes['projectDirectory'], '/\\') . '/.zfproject.xml';
-            if (!file_exists($projectProfileFilePath)) {
+            $projectProfileFilePath = rtrim($this->_attributes['projectDirectory'], '/\\').'/.zfproject.xml';
+            if (! file_exists($projectProfileFilePath)) {
                 require_once 'Zend/Tool/Project/Exception.php';
-                throw new Zend_Tool_Project_Exception('"projectDirectory" was supplied but no profile file file was not found at location ' . $projectProfileFilePath);
+                throw new Zend_Tool_Project_Exception('"projectDirectory" was supplied but no profile file file was not found at location '.$projectProfileFilePath);
             }
             $this->_attributes['projectProfileFile'] = $projectProfileFilePath;
         }
 
         $profileData = file_get_contents($projectProfileFilePath);
 
-        $profileFileParser = new Zend_Tool_Project_Profile_FileParser_Xml();
+        $profileFileParser = new Zend_Tool_Project_Profile_FileParser_Xml;
         $profileFileParser->unserialize($profileData, $this);
 
         $this->rewind();
@@ -184,7 +179,6 @@ class Zend_Tool_Project_Profile extends Zend_Tool_Project_Profile_Resource_Conta
      *
      * This will store the profile in memory to a place on disk determined by the attributes
      * available, specifically if the key 'projectProfileFile' is available
-     *
      */
     public function storeToFile()
     {
@@ -199,7 +193,7 @@ class Zend_Tool_Project_Profile extends Zend_Tool_Project_Profile_Resource_Conta
             throw new Zend_Tool_Project_Exception('storeToFile() must have a "projectProfileFile" attribute set.');
         }
 
-        $parser = new Zend_Tool_Project_Profile_FileParser_Xml();
+        $parser = new Zend_Tool_Project_Profile_FileParser_Xml;
         $xml = $parser->serialize($this);
         file_put_contents($file, $xml);
     }
@@ -211,8 +205,9 @@ class Zend_Tool_Project_Profile extends Zend_Tool_Project_Profile_Resource_Conta
      */
     public function storeToData()
     {
-        $parser = new Zend_Tool_Project_Profile_FileParser_Xml();
+        $parser = new Zend_Tool_Project_Profile_FileParser_Xml;
         $xml = $parser->serialize($this);
+
         return $xml;
     }
 
@@ -225,14 +220,15 @@ class Zend_Tool_Project_Profile extends Zend_Tool_Project_Profile_Resource_Conta
     {
         $string = '';
         foreach ($this as $resource) {
-            $string .= $resource->getName() . PHP_EOL;
+            $string .= $resource->getName().PHP_EOL;
             $rii = new RecursiveIteratorIterator($resource, RecursiveIteratorIterator::SELF_FIRST);
             foreach ($rii as $item) {
-                $string .= str_repeat('  ', $rii->getDepth()+1) . $item->getName()
-                        . ((count($attributes = $item->getAttributes()) > 0) ? ' [' . http_build_query($attributes) . ']' : '')
-                        . PHP_EOL;
+                $string .= str_repeat('  ', $rii->getDepth() + 1).$item->getName()
+                        .((count($attributes = $item->getAttributes()) > 0) ? ' ['.http_build_query($attributes).']' : '')
+                        .PHP_EOL;
             }
         }
+
         return $string;
     }
 }

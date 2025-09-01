@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,7 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Controller
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -31,21 +32,24 @@ require_once 'Zend/XmlRpc/Request.php';
  * request is declared a fault.
  *
  * @category Zend
- * @package  Zend_XmlRpc
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version $Id$
  */
 class Zend_XmlRpc_Request_Http extends Zend_XmlRpc_Request
 {
     /**
      * Array of headers
+     *
      * @var array
      */
     protected $_headers;
 
     /**
      * Raw XML as received via request
+     *
      * @var string
      */
     protected $_xml;
@@ -62,9 +66,10 @@ class Zend_XmlRpc_Request_Http extends Zend_XmlRpc_Request
     public function __construct()
     {
         $xml = @file_get_contents('php://input');
-        if (!$xml) {
+        if (! $xml) {
             require_once 'Zend/XmlRpc/Fault.php';
             $this->_fault = new Zend_XmlRpc_Fault(630);
+
             return;
         }
 
@@ -93,7 +98,7 @@ class Zend_XmlRpc_Request_Http extends Zend_XmlRpc_Request
     public function getHeaders()
     {
         if (null === $this->_headers) {
-            $this->_headers = array();
+            $this->_headers = [];
             foreach ($_SERVER as $key => $value) {
                 if ('HTTP_' == substr($key, 0, 5)) {
                     $header = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
@@ -114,7 +119,7 @@ class Zend_XmlRpc_Request_Http extends Zend_XmlRpc_Request
     {
         $request = '';
         foreach ($this->getHeaders() as $key => $value) {
-            $request .= $key . ': ' . $value . "\n";
+            $request .= $key.': '.$value."\n";
         }
 
         $request .= $this->_xml;

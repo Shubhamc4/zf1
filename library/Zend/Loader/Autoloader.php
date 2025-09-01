@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,11 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Loader
- * @subpackage Autoloader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ *
  * @version    $Id$
+ *
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -27,8 +29,7 @@ require_once 'Zend/Loader.php';
  * Autoloader stack and namespace autoloader
  *
  * @uses       Zend_Loader_Autoloader
- * @package    Zend_Loader
- * @subpackage Autoloader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -42,12 +43,12 @@ class Zend_Loader_Autoloader
     /**
      * @var array Concrete autoloader callback implementations
      */
-    protected $_autoloaders = array();
+    protected $_autoloaders = [];
 
     /**
      * @var array Default autoloader callback
      */
-    protected $_defaultAutoloader = array('Zend_Loader', 'loadClass');
+    protected $_defaultAutoloader = ['Zend_Loader', 'loadClass'];
 
     /**
      * @var bool Whether or not to act as a fallback autoloader
@@ -62,15 +63,15 @@ class Zend_Loader_Autoloader
     /**
      * @var array Supported namespaces 'Zend' and 'ZendX' by default.
      */
-    protected $_namespaces = array(
-        'Zend_'  => true,
+    protected $_namespaces = [
+        'Zend_' => true,
         'ZendX_' => true,
-    );
+    ];
 
     /**
      * @var array Namespace-specific autoloaders
      */
-    protected $_namespaceAutoloaders = array();
+    protected $_namespaceAutoloaders = [];
 
     /**
      * @var bool Whether or not to suppress file not found warnings
@@ -90,8 +91,9 @@ class Zend_Loader_Autoloader
     public static function getInstance()
     {
         if (null === self::$_instance) {
-            self::$_instance = new self();
+            self::$_instance = new self;
         }
+
         return self::$_instance;
     }
 
@@ -108,7 +110,7 @@ class Zend_Loader_Autoloader
     /**
      * Autoload a class
      *
-     * @param  string $class
+     * @param  string  $class
      * @return bool
      */
     public static function autoload($class)
@@ -137,16 +139,17 @@ class Zend_Loader_Autoloader
     /**
      * Set the default autoloader implementation
      *
-     * @param  string|array $callback PHP callback
+     * @param  string|array  $callback  PHP callback
      * @return void
      */
     public function setDefaultAutoloader($callback)
     {
-        if (!is_callable($callback)) {
+        if (! is_callable($callback)) {
             throw new Zend_Loader_Exception('Invalid callback specified for default autoloader');
         }
 
         $this->_defaultAutoloader = $callback;
+
         return $this;
     }
 
@@ -163,12 +166,13 @@ class Zend_Loader_Autoloader
     /**
      * Set several autoloader callbacks at once
      *
-     * @param  array $autoloaders Array of PHP callbacks (or Zend_Loader_Autoloader_Interface implementations) to act as autoloaders
+     * @param  array  $autoloaders  Array of PHP callbacks (or Zend_Loader_Autoloader_Interface implementations) to act as autoloaders
      * @return Zend_Loader_Autoloader
      */
     public function setAutoloaders(array $autoloaders)
     {
         $this->_autoloaders = $autoloaders;
+
         return $this;
     }
 
@@ -185,51 +189,53 @@ class Zend_Loader_Autoloader
     /**
      * Return all autoloaders for a given namespace
      *
-     * @param  string $namespace
+     * @param  string  $namespace
      * @return array
      */
     public function getNamespaceAutoloaders($namespace)
     {
         $namespace = (string) $namespace;
-        if (!array_key_exists($namespace, $this->_namespaceAutoloaders)) {
-            return array();
+        if (! array_key_exists($namespace, $this->_namespaceAutoloaders)) {
+            return [];
         }
+
         return $this->_namespaceAutoloaders[$namespace];
     }
 
     /**
      * Register a namespace to autoload
      *
-     * @param  string|array $namespace
+     * @param  string|array  $namespace
      * @return Zend_Loader_Autoloader
      */
     public function registerNamespace($namespace)
     {
         if (is_string($namespace)) {
             $namespace = (array) $namespace;
-        } elseif (!is_array($namespace)) {
+        } elseif (! is_array($namespace)) {
             throw new Zend_Loader_Exception('Invalid namespace provided');
         }
 
         foreach ($namespace as $ns) {
-            if (!isset($this->_namespaces[$ns])) {
+            if (! isset($this->_namespaces[$ns])) {
                 $this->_namespaces[$ns] = true;
             }
         }
+
         return $this;
     }
 
     /**
      * Unload a registered autoload namespace
      *
-     * @param  string|array $namespace
+     * @param  string|array  $namespace
      * @return Zend_Loader_Autoloader
      */
     public function unregisterNamespace($namespace)
     {
         if (is_string($namespace)) {
             $namespace = (array) $namespace;
-        } elseif (!is_array($namespace)) {
+        } elseif (! is_array($namespace)) {
             throw new Zend_Loader_Exception('Invalid namespace provided');
         }
 
@@ -238,6 +244,7 @@ class Zend_Loader_Autoloader
                 unset($this->_namespaces[$ns]);
             }
         }
+
         return $this;
     }
 
@@ -255,7 +262,7 @@ class Zend_Loader_Autoloader
     {
         $path = $spec;
         if (is_array($spec)) {
-            if (!isset($spec['path'])) {
+            if (! isset($spec['path'])) {
                 throw new Zend_Loader_Exception('No path specified for ZF');
             }
             $path = $spec['path'];
@@ -265,10 +272,11 @@ class Zend_Loader_Autoloader
         }
 
         $this->_zfPath = $this->_getVersionPath($path, $version);
-        set_include_path(implode(PATH_SEPARATOR, array(
+        set_include_path(implode(PATH_SEPARATOR, [
             $this->_zfPath,
             get_include_path(),
-        )));
+        ]));
+
         return $this;
     }
 
@@ -280,7 +288,7 @@ class Zend_Loader_Autoloader
     /**
      * Get or set the value of the "suppress not found warnings" flag
      *
-     * @param  null|bool $flag
+     * @param  null|bool  $flag
      * @return bool|Zend_Loader_Autoloader Returns boolean if no argument is passed, object instance otherwise
      */
     public function suppressNotFoundWarnings($flag = null)
@@ -289,18 +297,20 @@ class Zend_Loader_Autoloader
             return $this->_suppressNotFoundWarnings;
         }
         $this->_suppressNotFoundWarnings = (bool) $flag;
+
         return $this;
     }
 
     /**
      * Indicate whether or not this autoloader should be a fallback autoloader
      *
-     * @param  bool $flag
+     * @param  bool  $flag
      * @return Zend_Loader_Autoloader
      */
     public function setFallbackAutoloader($flag)
     {
         $this->_fallbackAutoloader = (bool) $flag;
+
         return $this;
     }
 
@@ -321,13 +331,13 @@ class Zend_Loader_Autoloader
      * returns only the autoloaders for that namespace. Otherwise, it returns
      * all non-namespaced autoloaders.
      *
-     * @param  string $class
+     * @param  string  $class
      * @return array Array of autoloaders to use
      */
     public function getClassAutoloaders($class)
     {
-        $namespace   = false;
-        $autoloaders = array();
+        $namespace = false;
+        $autoloaders = [];
 
         // Add concrete namespaced autoloaders
         foreach (array_keys($this->_namespaceAutoloaders) as $ns) {
@@ -345,7 +355,7 @@ class Zend_Loader_Autoloader
         // Add internal namespaced autoloader
         foreach ($this->getRegisteredNamespaces() as $ns) {
             if (0 === strpos($class, $ns)) {
-                $namespace     = $ns;
+                $namespace = $ns;
                 $autoloaders[] = $this->_internalAutoloader;
                 break;
             }
@@ -361,7 +371,7 @@ class Zend_Loader_Autoloader
         }
 
         // Add fallback autoloader
-        if (!$namespace && $this->isFallbackAutoloader()) {
+        if (! $namespace && $this->isFallbackAutoloader()) {
             $autoloaders[] = $this->_internalAutoloader;
         }
 
@@ -371,8 +381,8 @@ class Zend_Loader_Autoloader
     /**
      * Add an autoloader to the beginning of the stack
      *
-     * @param  object|array|string $callback PHP callback or Zend_Loader_Autoloader_Interface implementation
-     * @param  string|array $namespace Specific namespace(s) under which to register callback
+     * @param  object|array|string  $callback  PHP callback or Zend_Loader_Autoloader_Interface implementation
+     * @param  string|array  $namespace  Specific namespace(s) under which to register callback
      * @return Zend_Loader_Autoloader
      */
     public function unshiftAutoloader($callback, $namespace = '')
@@ -394,8 +404,8 @@ class Zend_Loader_Autoloader
     /**
      * Append an autoloader to the autoloader stack
      *
-     * @param  object|array|string $callback PHP callback or Zend_Loader_Autoloader_Interface implementation
-     * @param  string|array $namespace Specific namespace(s) under which to register callback
+     * @param  object|array|string  $callback  PHP callback or Zend_Loader_Autoloader_Interface implementation
+     * @param  string|array  $namespace  Specific namespace(s) under which to register callback
      * @return Zend_Loader_Autoloader
      */
     public function pushAutoloader($callback, $namespace = '')
@@ -417,8 +427,8 @@ class Zend_Loader_Autoloader
     /**
      * Remove an autoloader from the autoloader stack
      *
-     * @param  object|array|string $callback PHP callback or Zend_Loader_Autoloader_Interface implementation
-     * @param  null|string|array $namespace Specific namespace(s) from which to remove autoloader
+     * @param  object|array|string  $callback  PHP callback or Zend_Loader_Autoloader_Interface implementation
+     * @param  null|string|array  $namespace  Specific namespace(s) from which to remove autoloader
      * @return Zend_Loader_Autoloader
      */
     public function removeAutoloader($callback, $namespace = null)
@@ -459,14 +469,14 @@ class Zend_Loader_Autoloader
      */
     protected function __construct()
     {
-        spl_autoload_register(array(__CLASS__, 'autoload'));
-        $this->_internalAutoloader = array($this, '_autoload');
+        spl_autoload_register([__CLASS__, 'autoload']);
+        $this->_internalAutoloader = [$this, '_autoload'];
     }
 
     /**
      * Internal autoloader implementation
      *
-     * @param  string $class
+     * @param  string  $class
      * @return bool
      */
     protected function _autoload($class)
@@ -478,6 +488,7 @@ class Zend_Loader_Autoloader
             } else {
                 call_user_func($callback, $class);
             }
+
             return $class;
         } catch (Zend_Exception $e) {
             return false;
@@ -487,22 +498,22 @@ class Zend_Loader_Autoloader
     /**
      * Set autoloaders for a specific namespace
      *
-     * @param  array $autoloaders
-     * @param  string $namespace
+     * @param  string  $namespace
      * @return Zend_Loader_Autoloader
      */
     protected function _setNamespaceAutoloaders(array $autoloaders, $namespace = '')
     {
         $namespace = (string) $namespace;
         $this->_namespaceAutoloaders[$namespace] = $autoloaders;
+
         return $this;
     }
 
     /**
      * Retrieve the filesystem path for the requested ZF version
      *
-     * @param  string $path
-     * @param  string $version
+     * @param  string  $path
+     * @param  string  $version
      * @return void
      */
     protected function _getVersionPath($path, $version)
@@ -519,14 +530,16 @@ class Zend_Loader_Autoloader
         }
 
         $matchedVersion = array_pop($availableVersions);
+
         return $matchedVersion;
     }
 
     /**
      * Retrieve the ZF version type
      *
-     * @param  string $version
+     * @param  string  $version
      * @return string "latest", "major", "minor", or "specific"
+     *
      * @throws Zend_Loader_Exception if version string contains too many dots
      */
     protected function _getVersionType($version)
@@ -546,30 +559,31 @@ class Zend_Loader_Autoloader
         if (3 < $count) {
             throw new Zend_Loader_Exception('Invalid version string provided');
         }
+
         return 'specific';
     }
 
     /**
      * Get available versions for the version type requested
      *
-     * @param  string $path
-     * @param  string $version
+     * @param  string  $path
+     * @param  string  $version
      * @return array
      */
     protected function _getAvailableVersions($path, $version)
     {
-        if (!is_dir($path)) {
+        if (! is_dir($path)) {
             throw new Zend_Loader_Exception('Invalid ZF path provided');
         }
 
-        $path       = rtrim($path, '/');
-        $path       = rtrim($path, '\\');
+        $path = rtrim($path, '/');
+        $path = rtrim($path, '\\');
         $versionLen = strlen($version);
-        $versions   = array();
-        $dirs       = glob("$path/*", GLOB_ONLYDIR);
+        $versions = [];
+        $dirs = glob("{$path}/*", GLOB_ONLYDIR);
         foreach ((array) $dirs as $dir) {
             $dirName = substr($dir, strlen($path) + 1);
-            if (!preg_match('/^(?:ZendFramework-)?(\d+\.\d+\.\d+((a|b|pl|pr|p|rc)\d+)?)(?:-minimal)?$/i', $dirName, $matches)) {
+            if (! preg_match('/^(?:ZendFramework-)?(\d+\.\d+\.\d+((a|b|pl|pr|p|rc)\d+)?)(?:-minimal)?$/i', $dirName, $matches)) {
                 continue;
             }
 
@@ -579,11 +593,12 @@ class Zend_Loader_Autoloader
                 || ((strlen($matchedVersion) >= $versionLen)
                     && (0 === strpos($matchedVersion, $version)))
             ) {
-                $versions[$matchedVersion] = $dir . '/library';
+                $versions[$matchedVersion] = $dir.'/library';
             }
         }
 
         uksort($versions, 'version_compare');
+
         return $versions;
     }
 }

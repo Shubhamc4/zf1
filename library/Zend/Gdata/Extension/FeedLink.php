@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gdata
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -35,23 +35,26 @@ require_once 'Zend/Gdata/Feed.php';
  * Represents the gd:feedLink element
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gdata
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Extension_FeedLink extends Zend_Gdata_Extension
 {
-
     protected $_rootElement = 'feedLink';
+
     protected $_countHint = null;
+
     protected $_href = null;
+
     protected $_readOnly = null;
+
     protected $_rel = null;
+
     protected $_feed = null;
 
     public function __construct($href = null, $rel = null,
-            $countHint = null, $readOnly = null, $feed = null)
+        $countHint = null, $readOnly = null, $feed = null)
     {
         parent::__construct();
         $this->_countHint = $countHint;
@@ -71,7 +74,7 @@ class Zend_Gdata_Extension_FeedLink extends Zend_Gdata_Extension
             $element->setAttribute('href', $this->_href);
         }
         if ($this->_readOnly !== null) {
-            $element->setAttribute('readOnly', ($this->_readOnly ? "true" : "false"));
+            $element->setAttribute('readOnly', ($this->_readOnly ? 'true' : 'false'));
         }
         if ($this->_rel !== null) {
             $element->setAttribute('rel', $this->_rel);
@@ -79,49 +82,48 @@ class Zend_Gdata_Extension_FeedLink extends Zend_Gdata_Extension
         if ($this->_feed !== null) {
             $element->appendChild($this->_feed->getDOM($element->ownerDocument));
         }
+
         return $element;
     }
 
     protected function takeChildFromDOM($child)
     {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        $absoluteNodeName = $child->namespaceURI.':'.$child->localName;
         switch ($absoluteNodeName) {
-            case $this->lookupNamespace('atom') . ':' . 'feed';
-                $feed = new Zend_Gdata_Feed();
+            case $this->lookupNamespace('atom').':'.'feed':
+                $feed = new Zend_Gdata_Feed;
                 $feed->transferFromDOM($child);
                 $this->_feed = $feed;
                 break;
-        default:
-            parent::takeChildFromDOM($child);
-            break;
+            default:
+                parent::takeChildFromDOM($child);
+                break;
         }
     }
 
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'countHint':
-            $this->_countHint = $attribute->nodeValue;
-            break;
-        case 'href':
-            $this->_href = $attribute->nodeValue;
-            break;
-        case 'readOnly':
-            if ($attribute->nodeValue == "true") {
-                $this->_readOnly = true;
-            }
-            else if ($attribute->nodeValue == "false") {
-                $this->_readOnly = false;
-            }
-            else {
-                throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for gCal:selected#value.");
-            }
-            break;
-        case 'rel':
-            $this->_rel = $attribute->nodeValue;
-            break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            case 'countHint':
+                $this->_countHint = $attribute->nodeValue;
+                break;
+            case 'href':
+                $this->_href = $attribute->nodeValue;
+                break;
+            case 'readOnly':
+                if ($attribute->nodeValue == 'true') {
+                    $this->_readOnly = true;
+                } elseif ($attribute->nodeValue == 'false') {
+                    $this->_readOnly = false;
+                } else {
+                    throw new Zend_Gdata_App_InvalidArgumentException("Expected 'true' or 'false' for gCal:selected#value.");
+                }
+                break;
+            case 'rel':
+                $this->_rel = $attribute->nodeValue;
+                break;
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 
@@ -136,6 +138,7 @@ class Zend_Gdata_Extension_FeedLink extends Zend_Gdata_Extension
     public function setHref($value)
     {
         $this->_href = $value;
+
         return $this;
     }
 
@@ -147,6 +150,7 @@ class Zend_Gdata_Extension_FeedLink extends Zend_Gdata_Extension
     public function setReadOnly($value)
     {
         $this->_readOnly = $value;
+
         return $this;
     }
 
@@ -158,6 +162,7 @@ class Zend_Gdata_Extension_FeedLink extends Zend_Gdata_Extension
     public function setRel($value)
     {
         $this->_rel = $value;
+
         return $this;
     }
 
@@ -169,7 +174,7 @@ class Zend_Gdata_Extension_FeedLink extends Zend_Gdata_Extension
     public function setFeed($value)
     {
         $this->_feed = $value;
+
         return $this;
     }
-
 }

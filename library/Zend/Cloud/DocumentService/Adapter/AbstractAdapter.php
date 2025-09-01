@@ -12,8 +12,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Cloud
- * @subpackage DocumentService
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -32,27 +31,28 @@ require_once 'Zend/Cloud/DocumentService/Query.php';
  * - query class objects
  *
  * @category   Zend
- * @package    Zend_Cloud
- * @subpackage DocumentService
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
-abstract class Zend_Cloud_DocumentService_Adapter_AbstractAdapter
-implements Zend_Cloud_DocumentService_Adapter
+abstract class Zend_Cloud_DocumentService_Adapter_AbstractAdapter implements Zend_Cloud_DocumentService_Adapter
 {
-    const DOCUMENT_CLASS    = 'document_class';
+    const DOCUMENT_CLASS = 'document_class';
+
     const DOCUMENTSET_CLASS = 'documentset_class';
-    const QUERY_CLASS       = 'query_class';
+
+    const QUERY_CLASS = 'query_class';
 
     /**
      * Class to utilize for new document objects
+     *
      * @var string
      */
     protected $_documentClass = 'Zend_Cloud_DocumentService_Document';
 
     /**
      * Class to utilize for new document set objects
+     *
      * @var string
      */
     protected $_documentSetClass = 'Zend_Cloud_DocumentService_DocumentSet';
@@ -67,12 +67,13 @@ implements Zend_Cloud_DocumentService_Adapter
     /**
      * Set the class for document objects
      *
-     * @param  string $class
+     * @param  string  $class
      * @return Zend_Cloud_DocumentService_Adapter_AbstractAdapter
      */
     public function setDocumentClass($class)
     {
         $this->_documentClass = (string) $class;
+
         return $this;
     }
 
@@ -89,12 +90,13 @@ implements Zend_Cloud_DocumentService_Adapter
     /**
      * Set the class for document set objects
      *
-     * @param  string $class
+     * @param  string  $class
      * @return Zend_Cloud_DocumentService_Adapter_AbstractAdapter
      */
     public function setDocumentSetClass($class)
     {
         $this->_documentSetClass = (string) $class;
+
         return $this;
     }
 
@@ -111,12 +113,13 @@ implements Zend_Cloud_DocumentService_Adapter
     /**
      * Set the query class for query objects
      *
-     * @param  string $class
+     * @param  string  $class
      * @return Zend_Cloud_DocumentService_Adapter_AbstractAdapter
      */
     public function setQueryClass($class)
     {
         $this->_queryClass = (string) $class;
+
         return $this;
     }
 

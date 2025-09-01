@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gapps
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -39,15 +39,13 @@ require_once 'Zend/Gdata/Gapps/NicknameEntry.php';
  * Apps service class, Zend_Gdata_Gapps.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gapps
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Gapps_NicknameFeed extends Zend_Gdata_Feed
 {
-
     protected $_entryClassName = 'Zend_Gdata_Gapps_NicknameEntry';
-    protected $_feedClassName = 'Zend_Gdata_Gapps_NicknameFeed';
 
+    protected $_feedClassName = 'Zend_Gdata_Gapps_NicknameFeed';
 }

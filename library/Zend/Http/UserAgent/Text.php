@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,8 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage UserAgent
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -25,8 +25,7 @@ require_once 'Zend/Http/UserAgent/AbstractDevice.php';
  * Text browser type matcher
  *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage UserAgent
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -37,17 +36,17 @@ class Zend_Http_UserAgent_Text extends Zend_Http_UserAgent_AbstractDevice
      *
      * @var array
      */
-    protected static $_uaSignatures = array(
+    protected static $_uaSignatures = [
         'lynx',
         'retawq',
         'w3m',
-    );
+    ];
 
     /**
      * Comparison of the UserAgent chain and User Agent signatures
      *
-     * @param string $userAgent User Agent chain
-     * @param  array $server $_SERVER like param
+     * @param  string  $userAgent  User Agent chain
+     * @param  array  $server  $_SERVER like param
      * @return bool
      */
     public static function match($userAgent, $server)
@@ -76,6 +75,7 @@ class Zend_Http_UserAgent_Text extends Zend_Http_UserAgent_AbstractDevice
         $this->setFeature('iframes', false, 'product_capability');
         $this->setFeature('frames', false, 'product_capability');
         $this->setFeature('javascript', false, 'product_capability');
+
         return parent::_defineFeatures();
     }
 
@@ -84,10 +84,7 @@ class Zend_Http_UserAgent_Text extends Zend_Http_UserAgent_AbstractDevice
      *
      * @return null
      */
-    public function getImageFormatSupport()
-    {
-        return null;
-    }
+    public function getImageFormatSupport() {}
 
     /**
      * Get preferred markup format

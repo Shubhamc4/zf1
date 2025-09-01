@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,14 +28,12 @@ require_once 'Zend/Feed/Writer/Extension/RendererAbstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Feed_Writer_Extension_Threading_Renderer_Entry
-    extends Zend_Feed_Writer_Extension_RendererAbstract
+class Zend_Feed_Writer_Extension_Threading_Renderer_Entry extends Zend_Feed_Writer_Extension_RendererAbstract
 {
-
     /**
      * Set to TRUE if a rendering method actually renders something. This
      * is used to prevent premature appending of a XML namespace declaration
@@ -75,14 +75,12 @@ class Zend_Feed_Writer_Extension_Threading_Renderer_Entry
     /**
      * Set comment link
      *
-     * @param  DOMDocument $dom
-     * @param  DOMElement $root
      * @return void
      */
     protected function _setCommentLink(DOMDocument $dom, DOMElement $root)
     {
         $link = $this->getDataContainer()->getCommentLink();
-        if (!$link) {
+        if (! $link) {
             return;
         }
         $clink = $this->_dom->createElement('link');
@@ -100,20 +98,18 @@ class Zend_Feed_Writer_Extension_Threading_Renderer_Entry
     /**
      * Set comment feed links
      *
-     * @param  DOMDocument $dom
-     * @param  DOMElement $root
      * @return void
      */
     protected function _setCommentFeedLinks(DOMDocument $dom, DOMElement $root)
     {
         $links = $this->getDataContainer()->getCommentFeedLinks();
-        if (!$links || empty($links)) {
+        if (! $links || empty($links)) {
             return;
         }
         foreach ($links as $link) {
             $flink = $this->_dom->createElement('link');
             $flink->setAttribute('rel', 'replies');
-            $flink->setAttribute('type', 'application/'. $link['type'] .'+xml');
+            $flink->setAttribute('type', 'application/'.$link['type'].'+xml');
             $flink->setAttribute('href', $link['uri']);
             $count = $this->getDataContainer()->getCommentCount();
             if ($count !== null) {
@@ -127,8 +123,6 @@ class Zend_Feed_Writer_Extension_Threading_Renderer_Entry
     /**
      * Set entry comment count
      *
-     * @param  DOMDocument $dom
-     * @param  DOMElement $root
      * @return void
      */
     protected function _setCommentCount(DOMDocument $dom, DOMElement $root)

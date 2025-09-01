@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Reflection
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -24,7 +26,7 @@ require_once 'Zend/Loader.php';
 
 /**
  * @category   Zend
- * @package    Zend_Reflection
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -33,10 +35,10 @@ class Zend_Reflection_Docblock_Tag implements Reflector
     /**
      * @var array Array of Class names
      */
-    protected static $_tagClasses = array(
-        'param'  => 'Zend_Reflection_Docblock_Tag_Param',
+    protected static $_tagClasses = [
+        'param' => 'Zend_Reflection_Docblock_Tag_Param',
         'return' => 'Zend_Reflection_Docblock_Tag_Return',
-        );
+    ];
 
     /**
      * @var string
@@ -51,14 +53,14 @@ class Zend_Reflection_Docblock_Tag implements Reflector
     /**
      * Factory: Create the appropriate annotation tag object
      *
-     * @param  string $tagDocblockLine
+     * @param  string  $tagDocblockLine
      * @return Zend_Reflection_Docblock_Tag
      */
     public static function factory($tagDocblockLine)
     {
-        $matches = array();
+        $matches = [];
 
-        if (!preg_match('#^@(\w+)(\s|$)#', $tagDocblockLine, $matches)) {
+        if (! preg_match('#^@(\w+)(\s|$)#', $tagDocblockLine, $matches)) {
             require_once 'Zend/Reflection/Exception.php';
             throw new Zend_Reflection_Exception('No valid tag name found within provided docblock line.');
         }
@@ -66,11 +68,13 @@ class Zend_Reflection_Docblock_Tag implements Reflector
         $tagName = $matches[1];
         if (array_key_exists($tagName, self::$_tagClasses)) {
             $tagClass = self::$_tagClasses[$tagName];
-            if (!class_exists($tagClass)) {
+            if (! class_exists($tagClass)) {
                 Zend_Loader::loadClass($tagClass);
             }
+
             return new $tagClass($tagDocblockLine);
         }
+
         return new self($tagDocblockLine);
     }
 
@@ -80,11 +84,10 @@ class Zend_Reflection_Docblock_Tag implements Reflector
      * Required by Reflector
      *
      * @todo   What should this do?
+     *
      * @return void
      */
-    public static function export()
-    {
-    }
+    public static function export() {}
 
     /**
      * Serialize to string
@@ -92,11 +95,12 @@ class Zend_Reflection_Docblock_Tag implements Reflector
      * Required by Reflector
      *
      * @todo   What should this do?
+     *
      * @return string
      */
     public function __toString()
     {
-        $str = "Docblock Tag [ * @".$this->_name." ]".PHP_EOL;
+        $str = 'Docblock Tag [ * @'.$this->_name.' ]'.PHP_EOL;
 
         return $str;
     }
@@ -104,15 +108,15 @@ class Zend_Reflection_Docblock_Tag implements Reflector
     /**
      * Constructor
      *
-     * @param  string $tagDocblockLine
+     * @param  string  $tagDocblockLine
      * @return void
      */
     public function __construct($tagDocblockLine)
     {
-        $matches = array();
+        $matches = [];
 
         // find the line
-        if (!preg_match('#^@(\w+)(?:\s+([^\s].*)|$)?#', $tagDocblockLine, $matches)) {
+        if (! preg_match('#^@(\w+)(?:\s+([^\s].*)|$)?#', $tagDocblockLine, $matches)) {
             require_once 'Zend/Reflection/Exception.php';
             throw new Zend_Reflection_Exception('Provided docblock line does not contain a valid tag');
         }

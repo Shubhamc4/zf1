@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Oauth
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -24,7 +26,7 @@ require_once 'Zend/Oauth/Token.php';
 
 /**
  * @category   Zend
- * @package    Zend_Oauth
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -33,16 +35,14 @@ class Zend_Oauth_Token_AuthorizedRequest extends Zend_Oauth_Token
     /**
      * @var array
      */
-    protected $_data = array();
+    protected $_data = [];
 
     /**
      * Constructor
      *
-     * @param  null|array $data
-     * @param  null|Zend_Oauth_Http_Utility $utility
      * @return void
      */
-    public function __construct(array $data = null, Zend_Oauth_Http_Utility $utility = null)
+    public function __construct(?array $data = null, ?Zend_Oauth_Http_Utility $utility = null)
     {
         if ($data !== null) {
             $this->_data = $data;
@@ -76,10 +76,11 @@ class Zend_Oauth_Token_AuthorizedRequest extends Zend_Oauth_Token
     public function isValid()
     {
         if (isset($this->_params[self::TOKEN_PARAM_KEY])
-            && !empty($this->_params[self::TOKEN_PARAM_KEY])
+            && ! empty($this->_params[self::TOKEN_PARAM_KEY])
         ) {
             return true;
         }
+
         return false;
     }
 
@@ -90,13 +91,14 @@ class Zend_Oauth_Token_AuthorizedRequest extends Zend_Oauth_Token
      */
     protected function _parseData()
     {
-        $params = array();
+        $params = [];
         if (empty($this->_data)) {
             return;
         }
         foreach ($this->_data as $key => $value) {
             $params[rawurldecode($key)] = rawurldecode($value);
         }
+
         return $params;
     }
 }

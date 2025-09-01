@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_InfoCard
- * @subpackage Zend_InfoCard_Xml_Security
+ *
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Exception.php 24593 2012-01-05 20:35:02Z matthew $
  */
 
@@ -27,11 +28,8 @@ require_once 'Zend/InfoCard/Xml/Exception.php';
 
 /**
  * @category   Zend
- * @package    Zend_InfoCard
- * @subpackage Zend_InfoCard_Xml_Security
+ *
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_InfoCard_Xml_Security_Exception extends Zend_InfoCard_Xml_Exception
-{
-}
+class Zend_InfoCard_Xml_Security_Exception extends Zend_InfoCard_Xml_Exception {}

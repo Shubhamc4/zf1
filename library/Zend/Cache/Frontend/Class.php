@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Cache
- * @subpackage Zend_Cache_Frontend
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -25,10 +26,7 @@
  */
 require_once 'Zend/Cache/Core.php';
 
-
 /**
- * @package    Zend_Cache
- * @subpackage Zend_Cache_Frontend
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd New BSD License
  */
@@ -38,8 +36,7 @@ class Zend_Cache_Frontend_Class extends Zend_Cache_Core
      * Available options
      *
      * ====> (mixed) cached_entity :
-     * - if set to a class name, we will cache an #[AllowDynamicProperties]
-abstract class and will use only static calls
+     * - if set to a class name, we will cache an abstract class and will use only static calls
      * - if set to an object, we will cache this object methods
      *
      * ====> (boolean) cache_by_default :
@@ -53,19 +50,19 @@ abstract class and will use only static calls
      *
      * @var array available options
      */
-    protected $_specificOptions = array(
-        'cached_entity'      => null,
-        'cache_by_default'   => true,
-        'cached_methods'     => array(),
-        'non_cached_methods' => array()
-    );
+    protected $_specificOptions = [
+        'cached_entity' => null,
+        'cache_by_default' => true,
+        'cached_methods' => [],
+        'non_cached_methods' => [],
+    ];
 
     /**
      * Tags array
      *
      * @var array
      */
-    protected $_tags = array();
+    protected $_tags = [];
 
     /**
      * SpecificLifetime value
@@ -83,13 +80,13 @@ abstract class and will use only static calls
      */
     protected $_cachedEntity = null;
 
-     /**
-      * The class name of the cached object or cached abstract class
-      *
-      * Used to differentiate between different classes with the same method calls.
-      *
-      * @var string
-      */
+    /**
+     * The class name of the cached object or cached abstract class
+     *
+     * Used to differentiate between different classes with the same method calls.
+     *
+     * @var string
+     */
     protected $_cachedEntityLabel = '';
 
     /**
@@ -102,10 +99,11 @@ abstract class and will use only static calls
     /**
      * Constructor
      *
-     * @param  array $options Associative array of options
+     * @param  array  $options  Associative array of options
+     *
      * @throws Zend_Cache_Exception
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = [])
     {
         foreach ($options as $name => $value) {
             $this->setOption($name, $value);
@@ -120,7 +118,7 @@ abstract class and will use only static calls
     /**
      * Set a specific life time
      *
-     * @param  bool|int $specificLifetime
+     * @param  bool|int  $specificLifetime
      * @return void
      */
     public function setSpecificLifetime($specificLifetime = false)
@@ -131,7 +129,7 @@ abstract class and will use only static calls
     /**
      * Set the priority (used by some particular backends)
      *
-     * @param int $priority integer between 0 (very low priority) and 10 (maximum priority)
+     * @param  int  $priority  integer between 0 (very low priority) and 10 (maximum priority)
      */
     public function setPriority($priority)
     {
@@ -143,10 +141,11 @@ abstract class and will use only static calls
      *
      * Just a wrapper to get a specific behaviour for cached_entity
      *
-     * @param  string $name  Name of the option
-     * @param  mixed  $value Value of the option
-     * @throws Zend_Cache_Exception
+     * @param  string  $name  Name of the option
+     * @param  mixed  $value  Value of the option
      * @return void
+     *
+     * @throws Zend_Cache_Exception
      */
     public function setOption($name, $value)
     {
@@ -160,21 +159,20 @@ abstract class and will use only static calls
     /**
      * Specific method to set the cachedEntity
      *
-     * if set to a class name, we will cache an #[AllowDynamicProperties]
-abstract class and will use only static calls
+     * if set to a class name, we will cache an abstract class and will use only static calls
      * if set to an object, we will cache this object methods
      *
-     * @param mixed $cachedEntity
+     * @param  mixed  $cachedEntity
      */
     public function setCachedEntity($cachedEntity)
     {
-        if (!is_string($cachedEntity) && !is_object($cachedEntity)) {
+        if (! is_string($cachedEntity) && ! is_object($cachedEntity)) {
             Zend_Cache::throwException(
                 'cached_entity must be an object or a class name'
             );
         }
 
-        $this->_cachedEntity                     = $cachedEntity;
+        $this->_cachedEntity = $cachedEntity;
         $this->_specificOptions['cached_entity'] = $cachedEntity;
 
         if (is_string($this->_cachedEntity)) {
@@ -188,10 +186,10 @@ abstract class and will use only static calls
     /**
      * Set the cache array
      *
-     * @param  array $tags
+     * @param  array  $tags
      * @return void
      */
-    public function setTagsArray($tags = array())
+    public function setTagsArray($tags = [])
     {
         $this->_tags = $tags;
     }
@@ -199,25 +197,26 @@ abstract class and will use only static calls
     /**
      * Main method : call the specified method or get the result from cache
      *
-     * @param  string $name       Method name
-     * @param  array  $parameters Method parameters
+     * @param  string  $name  Method name
+     * @param  array  $parameters  Method parameters
      * @return mixed Result
+     *
      * @throws Exception
      */
     public function __call($name, $parameters)
     {
-        $callback = array($this->_cachedEntity, $name);
+        $callback = [$this->_cachedEntity, $name];
 
-        if (!is_callable($callback, false)) {
+        if (! is_callable($callback, false)) {
             Zend_Cache::throwException('Invalid callback');
         }
 
         $cacheBool1 = $this->_specificOptions['cache_by_default'];
         $cacheBool2 = in_array($name, $this->_specificOptions['cached_methods']);
         $cacheBool3 = in_array($name, $this->_specificOptions['non_cached_methods']);
-        $cache      = (($cacheBool1 || $cacheBool2) && (!$cacheBool3));
+        $cache = (($cacheBool1 || $cacheBool2) && (! $cacheBool3));
 
-        if (!$cache) {
+        if (! $cache) {
             // We do not have not cache
             return call_user_func_array($callback, $parameters);
         }
@@ -237,7 +236,7 @@ abstract class and will use only static calls
             try {
                 $return = call_user_func_array($callback, $parameters);
                 $output = ob_get_clean();
-                $data   = array($output, $return);
+                $data = [$output, $return];
 
                 $this->save(
                     $data, $id, $this->_tags, $this->_specificLifetime,
@@ -250,6 +249,7 @@ abstract class and will use only static calls
         }
 
         echo $output;
+
         return $return;
     }
 
@@ -266,12 +266,12 @@ abstract class and will use only static calls
     /**
      * Make a cache id from the method name and parameters
      *
-     * @param  string $name Method name
-     * @param  array  $args Method parameters
+     * @param  string  $name  Method name
+     * @param  array  $args  Method parameters
      * @return string Cache id
      */
-    public function makeId($name, array $args = array())
+    public function makeId($name, array $args = [])
     {
-        return md5($this->_cachedEntityLabel . '__' . $name . '__' . serialize($args));
+        return md5($this->_cachedEntityLabel.'__'.$name.'__'.serialize($args));
     }
 }

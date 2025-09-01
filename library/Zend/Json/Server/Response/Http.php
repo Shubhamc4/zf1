@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Json
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,7 +28,7 @@ require_once 'Zend/Json/Server/Response.php';
 
 /**
  * @category   Zend
- * @package    Zend_Json
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -42,7 +44,7 @@ class Zend_Json_Server_Response_Http extends Zend_Json_Server_Response
     public function toJson()
     {
         $this->sendHeaders();
-        if (!$this->isError() && null === $this->getId()) {
+        if (! $this->isError() && null === $this->getId()) {
             return '';
         }
 
@@ -64,8 +66,9 @@ class Zend_Json_Server_Response_Http extends Zend_Json_Server_Response
             return;
         }
 
-        if (!$this->isError() && (null === $this->getId())) {
+        if (! $this->isError() && (null === $this->getId())) {
             header('HTTP/1.1 204 No Content');
+
             return;
         }
 
@@ -74,8 +77,8 @@ class Zend_Json_Server_Response_Http extends Zend_Json_Server_Response
         }
 
         $contentType = $smd->getContentType();
-        if (!empty($contentType)) {
-            header('Content-Type: ' . $contentType);
+        if (! empty($contentType)) {
+            header('Content-Type: '.$contentType);
         }
     }
 }

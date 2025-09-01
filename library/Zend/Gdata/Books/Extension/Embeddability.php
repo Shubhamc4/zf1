@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Books
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,24 +30,24 @@ require_once 'Zend/Gdata/Extension.php';
  * Describes an embeddability
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Books
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Books_Extension_Embeddability extends Zend_Gdata_Extension
 {
-
     protected $_rootNamespace = 'gbs';
+
     protected $_rootElement = 'embeddability';
+
     protected $_value = null;
 
     /**
      * Constructor for Zend_Gdata_Books_Extension_Embeddability which
      * Describes an embeddability.
      *
-     * @param string|null $value A programmatic value representing the book's
-     *        embeddability.
+     * @param  string|null  $value  A programmatic value representing the book's
+     *                              embeddability.
      */
     public function __construct($value = null)
     {
@@ -62,9 +62,9 @@ class Zend_Gdata_Books_Extension_Embeddability extends Zend_Gdata_Extension
      * and eventually XML text for sending to the server upon updates, or
      * for application storage/persistance.
      *
-     * @param DOMDocument $doc The DOMDocument used to construct DOMElements
+     * @param  DOMDocument  $doc  The DOMDocument used to construct DOMElements
      * @return DOMElement The DOMElement representing this element and all
-     * child properties.
+     *                    child properties.
      */
     public function getDOM($doc = null, $majorVersion = 1, $minorVersion = null)
     {
@@ -72,6 +72,7 @@ class Zend_Gdata_Books_Extension_Embeddability extends Zend_Gdata_Extension
         if ($this->_value !== null) {
             $element->setAttribute('value', $this->_value);
         }
+
         return $element;
     }
 
@@ -79,16 +80,16 @@ class Zend_Gdata_Books_Extension_Embeddability extends Zend_Gdata_Extension
      * Extracts XML attributes from the DOM and converts them to the
      * appropriate object members.
      *
-     * @param DOMNode $attribute The DOMNode attribute to be handled.
+     * @param  DOMNode  $attribute  The DOMNode attribute to be handled.
      */
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'value':
-            $this->_value = $attribute->nodeValue;
-            break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            case 'value':
+                $this->_value = $attribute->nodeValue;
+                break;
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 
@@ -107,16 +108,15 @@ class Zend_Gdata_Books_Extension_Embeddability extends Zend_Gdata_Extension
      * Sets the programmatic value that describes the embeddability of a
      * volume in Google Book Search
      *
-     * @param string|null $value Programmatic value that describes the
-     *        embeddability of a volume in Google Book Search
+     * @param  string|null  $value  Programmatic value that describes the
+     *                              embeddability of a volume in Google Book Search
      * @return Zend_Gdata_Books_Extension_Embeddability Provides a fluent
-     *     interface
+     *                                                  interface
      */
     public function setValue($value)
     {
         $this->_value = $value;
+
         return $this;
     }
-
 }
-

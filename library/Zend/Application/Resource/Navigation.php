@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Application
- * @subpackage Resource
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -25,20 +26,18 @@
  */
 require_once 'Zend/Application/Resource/ResourceAbstract.php';
 
-
 /**
  * Resource for setting navigation structure
  *
  * @uses       Zend_Application_Resource_ResourceAbstract
+ *
  * @category   Zend
- * @package    Zend_Application
- * @subpackage Resource
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @author     Dolf Schimmel
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Application_Resource_Navigation
-    extends Zend_Application_Resource_ResourceAbstract
+class Zend_Application_Resource_Navigation extends Zend_Application_Resource_ResourceAbstract
 {
     const DEFAULT_REGISTRY_KEY = 'Zend_Navigation';
 
@@ -54,7 +53,7 @@ class Zend_Application_Resource_Navigation
      */
     public function init()
     {
-        if (!$this->_container) {
+        if (! $this->_container) {
             $options = $this->getOptions();
 
             if (isset($options['defaultPageType'])) {
@@ -63,11 +62,12 @@ class Zend_Application_Resource_Navigation
                 );
             }
 
-            $pages = isset($options['pages']) ? $options['pages'] : array();
+            $pages = $options['pages'] ?? [];
             $this->_container = new Zend_Navigation($pages);
         }
 
         $this->store();
+
         return $this->_container;
     }
 
@@ -97,7 +97,7 @@ class Zend_Application_Resource_Navigation
         $options = $this->getOptions();
         // see ZF-7461
         if (isset($options['storage']['registry']['key'])
-            && !is_numeric($options['storage']['registry']['key'])
+            && ! is_numeric($options['storage']['registry']['key'])
         ) {
             $key = $options['storage']['registry']['key'];
         } else {

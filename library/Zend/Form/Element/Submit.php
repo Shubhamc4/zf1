@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,8 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Form
- * @subpackage Element
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -26,16 +26,17 @@ require_once 'Zend/Form/Element/Xhtml.php';
  * Submit form element
  *
  * @category   Zend
- * @package    Zend_Form
- * @subpackage Element
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 class Zend_Form_Element_Submit extends Zend_Form_Element_Xhtml
 {
     /**
      * Default view helper to use
+     *
      * @var string
      */
     public $helper = 'formSubmit';
@@ -43,17 +44,17 @@ class Zend_Form_Element_Submit extends Zend_Form_Element_Xhtml
     /**
      * Constructor
      *
-     * @param  string|array|Zend_Config $spec Element name or configuration
-     * @param  string|array|Zend_Config $options Element value or configuration
+     * @param  string|array|Zend_Config  $spec  Element name or configuration
+     * @param  string|array|Zend_Config  $options  Element value or configuration
      * @return void
      */
     public function __construct($spec, $options = null)
     {
         if (is_string($spec) && ((null !== $options) && is_string($options))) {
-            $options = array('label' => $options);
+            $options = ['label' => $options];
         }
 
-        if (!isset($options['ignore'])) {
+        if (! isset($options['ignore'])) {
             $options['ignore'] = true;
         }
 
@@ -119,9 +120,10 @@ class Zend_Form_Element_Submit extends Zend_Form_Element_Xhtml
         $decorators = $this->getDecorators();
         if (empty($decorators)) {
             $this->addDecorator('Tooltip')
-                 ->addDecorator('ViewHelper')
-                 ->addDecorator('DtDdWrapper');
+                ->addDecorator('ViewHelper')
+                ->addDecorator('DtDdWrapper');
         }
+
         return $this;
     }
 }

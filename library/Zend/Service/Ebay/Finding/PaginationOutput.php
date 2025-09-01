@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: PaginationOutput.php 22791 2010-08-04 16:11:47Z renanbr $
  */
 
@@ -27,10 +28,10 @@ require_once 'Zend/Service/Ebay/Finding/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @uses       Zend_Service_Ebay_Finding_Abstract
  */
 class Zend_Service_Ebay_Finding_PaginationOutput extends Zend_Service_Ebay_Finding_Abstract
@@ -46,7 +47,7 @@ class Zend_Service_Ebay_Finding_PaginationOutput extends Zend_Service_Ebay_Findi
      * This can be determined by comparing the entriesPerPage value with the
      * value returned in the count attribute for the searchResult field.
      *
-     * @var integer
+     * @var int
      */
     public $entriesPerPage;
 
@@ -70,7 +71,7 @@ class Zend_Service_Ebay_Finding_PaginationOutput extends Zend_Service_Ebay_Findi
      * page of item data in the result set, and the value for pageNumber is set
      * to the respective (last) page number.
      *
-     * @var integer
+     * @var int
      */
     public $pageNumber;
 
@@ -83,7 +84,7 @@ class Zend_Service_Ebay_Finding_PaginationOutput extends Zend_Service_Ebay_Findi
      * is returned if eBay does not find any items that match the search
      * criteria.
      *
-     * @var integer
+     * @var int
      */
     public $totalEntries;
 
@@ -95,7 +96,7 @@ class Zend_Service_Ebay_Finding_PaginationOutput extends Zend_Service_Ebay_Findi
      * request, the value output for totalPages will change. A value of "0" is
      * returned if eBay does not find any items that match the search criteria.
      *
-     * @var integer
+     * @var int
      */
     public $totalPages;
 
@@ -107,9 +108,9 @@ class Zend_Service_Ebay_Finding_PaginationOutput extends Zend_Service_Ebay_Findi
         parent::_init();
         $ns = Zend_Service_Ebay_Finding::XMLNS_FINDING;
 
-        $this->entriesPerPage = $this->_query(".//$ns:entriesPerPage[1]", 'integer');
-        $this->pageNumber     = $this->_query(".//$ns:pageNumber[1]", 'integer');
-        $this->totalEntries   = $this->_query(".//$ns:totalEntries[1]", 'integer');
-        $this->totalPages     = $this->_query(".//$ns:totalPages[1]", 'integer');
+        $this->entriesPerPage = $this->_query(".//{$ns}:entriesPerPage[1]", 'integer');
+        $this->pageNumber = $this->_query(".//{$ns}:pageNumber[1]", 'integer');
+        $this->totalEntries = $this->_query(".//{$ns}:totalEntries[1]", 'integer');
+        $this->totalPages = $this->_query(".//{$ns}:totalPages[1]", 'integer');
     }
 }

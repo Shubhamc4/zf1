@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service_Amazon
- * @subpackage Ec2
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,8 +31,7 @@ require_once 'Zend/Service/Amazon/Ec2/Abstract.php';
  * Ec2 Instances.
  *
  * @category   Zend
- * @package    Zend_Service_Amazon
- * @subpackage Ec2
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -109,10 +109,10 @@ class Zend_Service_Amazon_Ec2_CloudWatch extends Zend_Service_Amazon_Ec2_Abstrac
      *
      * @var array
      */
-    protected $_validMetrics = array('CPUUtilization', 'NetworkIn', 'NetworkOut',
-                                    'DiskWriteOps', 'DiskReadBytes', 'DiskReadOps',
-                                    'DiskWriteBytes', 'Latency', 'RequestCount',
-                                    'HealthyHostCount', 'UnHealthyHostCount');
+    protected $_validMetrics = ['CPUUtilization', 'NetworkIn', 'NetworkOut',
+        'DiskWriteOps', 'DiskReadBytes', 'DiskReadOps',
+        'DiskWriteBytes', 'Latency', 'RequestCount',
+        'HealthyHostCount', 'UnHealthyHostCount'];
 
     /**
      * Amazon CloudWatch not only aggregates the raw data coming in, it also computes
@@ -150,7 +150,7 @@ class Zend_Service_Amazon_Ec2_CloudWatch extends Zend_Service_Amazon_Ec2_Abstrac
      *
      * @var array
      */
-    protected $_validStatistics = array('Average', 'Maximum', 'Minimum', 'Samples', 'Sum');
+    protected $_validStatistics = ['Average', 'Maximum', 'Minimum', 'Samples', 'Sum'];
 
     /**
      * Valid Dimention Keys for getMetricStatistics
@@ -181,8 +181,8 @@ class Zend_Service_Amazon_Ec2_CloudWatch extends Zend_Service_Amazon_Ec2_Abstrac
      *
      * @var array
      */
-    protected $_validDimensionsKeys = array('ImageId', 'AvailabilityZone', 'AutoScalingGroupName',
-                                            'InstanceId', 'InstanceType', 'LoadBalancerName');
+    protected $_validDimensionsKeys = ['ImageId', 'AvailabilityZone', 'AutoScalingGroupName',
+        'InstanceId', 'InstanceType', 'LoadBalancerName'];
 
     /**
      * Returns data for one or more statistics of given a metric
@@ -196,89 +196,97 @@ class Zend_Service_Amazon_Ec2_CloudWatch extends Zend_Service_Amazon_Ec2_Abstrac
      * also get all of the data at the granularity you originally asked for by making
      * multiple requests with adjacent time ranges.
      *
-     * @param array $options            The options you want to get statistics for:
-     *                                  ** Required **
-     *                                  MeasureName: The measure name that corresponds to
-     *                                      the measure for the gathered metric. Valid EC2 Values are
-     *                                      CPUUtilization, NetworkIn, NetworkOut, DiskWriteOps
-     *                                      DiskReadBytes, DiskReadOps, DiskWriteBytes. Valid Elastic
-     *                                      Load Balancing Metrics are Latency, RequestCount, HealthyHostCount
-     *                                      UnHealthyHostCount
-     *                                  Statistics: The statistics to be returned for the given metric. Valid
-     *                                      values are Average, Maximum, Minimum, Samples, Sum.  You can specify
-     *                                      this as a string or as an array of values.  If you don't specify one
-     *                                      it will default to Average instead of failing out.  If you specify an incorrect
-     *                                      option it will just skip it.
-     *                                  ** Optional **
-     *                                  Dimensions: Amazon CloudWatch allows you to specify one Dimension to further filter
-     *                                      metric data on. If you don't specify a dimension, the service returns the aggregate
-     *                                      of all the measures with the given measure name and time range.
-     *                                  Unit: The standard unit of Measurement for a given Measure. Valid Values: Seconds,
-     *                                      Percent, Bytes, Bits, Count, Bytes/Second, Bits/Second, Count/Second, and None
-     *                                      Constraints: When using count/second as the unit, you should use Sum as the statistic
-     *                                      instead of Average. Otherwise, the sample returns as equal to the number of requests
-     *                                      instead of the number of 60-second intervals. This will cause the Average to
-     *                                      always equals one when the unit is count/second.
-     *                                  StartTime: The timestamp of the first datapoint to return, inclusive. For example,
-     *                                      2008-02-26T19:00:00+00:00. We round your value down to the nearest minute.
-     *                                      You can set your start time for more than two weeks in the past. However,
-     *                                      you will only get data for the past two weeks. (in ISO 8601 format)
-     *                                      Constraints: Must be before EndTime
-     *                                  EndTime: The timestamp to use for determining the last datapoint to return. This is
-     *                                      the last datapoint to fetch, exclusive. For example, 2008-02-26T20:00:00+00:00.
-     *                                      (in ISO 8601 format)
+     * @param  array  $options  The options you want to get statistics for:
+     *                          ** Required **
+     *                          MeasureName: The measure name that corresponds to
+     *                          the measure for the gathered metric. Valid EC2 Values are
+     *                          CPUUtilization, NetworkIn, NetworkOut, DiskWriteOps
+     *                          DiskReadBytes, DiskReadOps, DiskWriteBytes. Valid Elastic
+     *                          Load Balancing Metrics are Latency, RequestCount, HealthyHostCount
+     *                          UnHealthyHostCount
+     *                          Statistics: The statistics to be returned for the given metric. Valid
+     *                          values are Average, Maximum, Minimum, Samples, Sum.  You can specify
+     *                          this as a string or as an array of values.  If you don't specify one
+     *                          it will default to Average instead of failing out.  If you specify an incorrect
+     *                          option it will just skip it.
+     *                          ** Optional **
+     *                          Dimensions: Amazon CloudWatch allows you to specify one Dimension to further filter
+     *                          metric data on. If you don't specify a dimension, the service returns the aggregate
+     *                          of all the measures with the given measure name and time range.
+     *                          Unit: The standard unit of Measurement for a given Measure. Valid Values: Seconds,
+     *                          Percent, Bytes, Bits, Count, Bytes/Second, Bits/Second, Count/Second, and None
+     *                          Constraints: When using count/second as the unit, you should use Sum as the statistic
+     *                          instead of Average. Otherwise, the sample returns as equal to the number of requests
+     *                          instead of the number of 60-second intervals. This will cause the Average to
+     *                          always equals one when the unit is count/second.
+     *                          StartTime: The timestamp of the first datapoint to return, inclusive. For example,
+     *                          2008-02-26T19:00:00+00:00. We round your value down to the nearest minute.
+     *                          You can set your start time for more than two weeks in the past. However,
+     *                          you will only get data for the past two weeks. (in ISO 8601 format)
+     *                          Constraints: Must be before EndTime
+     *                          EndTime: The timestamp to use for determining the last datapoint to return. This is
+     *                          the last datapoint to fetch, exclusive. For example, 2008-02-26T20:00:00+00:00.
+     *                          (in ISO 8601 format)
      */
     public function getMetricStatistics(array $options)
     {
-        $_usedStatistics = array();
+        $_usedStatistics = [];
 
-        $params = array();
+        $params = [];
         $params['Action'] = 'GetMetricStatistics';
 
-        if (!isset($options['Period'])) {
+        if (! isset($options['Period'])) {
             $options['Period'] = 60;
         }
-        if (!isset($options['Namespace'])) {
+        if (! isset($options['Namespace'])) {
             $options['Namespace'] = 'AWS/EC2';
         }
 
-        if (!isset($options['MeasureName']) || !in_array($options['MeasureName'], $this->_validMetrics, true)) {
-            throw new Zend_Service_Amazon_Ec2_Exception('Invalid Metric Type: ' . $options['MeasureName']);
+        if (! isset($options['MeasureName']) || ! in_array($options['MeasureName'], $this->_validMetrics, true)) {
+            throw new Zend_Service_Amazon_Ec2_Exception('Invalid Metric Type: '.$options['MeasureName']);
         }
 
-        if(!isset($options['Statistics'])) {
+        if (! isset($options['Statistics'])) {
             $options['Statistics'][] = 'Average';
-        } elseif(!is_array($options['Statistics'])) {
+        } elseif (! is_array($options['Statistics'])) {
             $options['Statistics'][] = $options['Statistics'];
         }
 
-        foreach($options['Statistics'] as $k=>$s) {
-            if(!in_array($s, $this->_validStatistics, true)) continue;
-            $options['Statistics.member.' . ($k+1)] = $s;
+        foreach ($options['Statistics'] as $k => $s) {
+            if (! in_array($s, $this->_validStatistics, true)) {
+                continue;
+            }
+            $options['Statistics.member.'.($k + 1)] = $s;
             $_usedStatistics[] = $s;
         }
         unset($options['Statistics']);
 
-        if(isset($options['StartTime'])) {
-            if(!is_numeric($options['StartTime'])) $options['StartTime'] = strtotime($options['StartTime']);
+        if (isset($options['StartTime'])) {
+            if (! is_numeric($options['StartTime'])) {
+                $options['StartTime'] = strtotime($options['StartTime']);
+            }
             $options['StartTime'] = gmdate('c', $options['StartTime']);
         } else {
             $options['StartTime'] = gmdate('c', strtotime('-1 hour'));
         }
 
-        if(isset($options['EndTime'])) {
-            if(!is_numeric($options['EndTime'])) $options['EndTime'] = strtotime($options['EndTime']);
+        if (isset($options['EndTime'])) {
+            if (! is_numeric($options['EndTime'])) {
+                $options['EndTime'] = strtotime($options['EndTime']);
+            }
             $options['EndTime'] = gmdate('c', $options['EndTime']);
         } else {
             $options['EndTime'] = gmdate('c');
         }
 
-        if(isset($options['Dimensions'])) {
+        if (isset($options['Dimensions'])) {
             $x = 1;
-            foreach($options['Dimensions'] as $dimKey=>$dimVal) {
-                if(!in_array($dimKey, $this->_validDimensionsKeys, true)) continue;
-                $options['Dimensions.member.' . $x . '.Name'] = $dimKey;
-                $options['Dimensions.member.' . $x . '.Value'] = $dimVal;
+            foreach ($options['Dimensions'] as $dimKey => $dimVal) {
+                if (! in_array($dimKey, $this->_validDimensionsKeys, true)) {
+                    continue;
+                }
+                $options['Dimensions.member.'.$x.'.Name'] = $dimKey;
+                $options['Dimensions.member.'.$x.'.Value'] = $dimVal;
                 $x++;
             }
 
@@ -293,16 +301,16 @@ class Zend_Service_Amazon_Ec2_CloudWatch extends Zend_Service_Amazon_Ec2_Abstrac
         $xpath = $response->getXPath();
         $nodes = $xpath->query('//ec2:GetMetricStatisticsResult/ec2:Datapoints/ec2:member');
 
-        $return = array();
+        $return = [];
         $return['label'] = $xpath->evaluate('string(//ec2:GetMetricStatisticsResult/ec2:Label/text())');
-        foreach ( $nodes as $node ) {
-            $item = array();
+        foreach ($nodes as $node) {
+            $item = [];
 
             $item['Timestamp'] = $xpath->evaluate('string(ec2:Timestamp/text())', $node);
             $item['Unit'] = $xpath->evaluate('string(ec2:Unit/text())', $node);
             $item['Samples'] = $xpath->evaluate('string(ec2:Samples/text())', $node);
-            foreach($_usedStatistics as $us) {
-                $item[$us] = $xpath->evaluate('string(ec2:' . $us . '/text())', $node);
+            foreach ($_usedStatistics as $us) {
+                $item[$us] = $xpath->evaluate('string(ec2:'.$us.'/text())', $node);
             }
 
             $return['datapoints'][] = $item;
@@ -316,16 +324,16 @@ class Zend_Service_Amazon_Ec2_CloudWatch extends Zend_Service_Amazon_Ec2_Abstrac
     /**
      * Return the Metrics that are aviable for your current monitored instances
      *
-     * @param string $nextToken     The NextToken parameter is an optional parameter
-     *                                 that allows you to retrieve the next set of results
-     *                                 for your ListMetrics query.
+     * @param  string  $nextToken  The NextToken parameter is an optional parameter
+     *                             that allows you to retrieve the next set of results
+     *                             for your ListMetrics query.
      * @return array
      */
     public function listMetrics($nextToken = null)
     {
-        $params = array();
+        $params = [];
         $params['Action'] = 'ListMetrics';
-        if (!empty($nextToken)) {
+        if (! empty($nextToken)) {
             $params['NextToken'] = $nextToken;
         }
 
@@ -335,9 +343,9 @@ class Zend_Service_Amazon_Ec2_CloudWatch extends Zend_Service_Amazon_Ec2_Abstrac
         $xpath = $response->getXPath();
         $nodes = $xpath->query('//ec2:ListMetricsResult/ec2:Metrics/ec2:member');
 
-        $return = array();
-        foreach ( $nodes as $node ) {
-            $item = array();
+        $return = [];
+        foreach ($nodes as $node) {
+            $item = [];
 
             $item['MeasureName'] = $xpath->evaluate('string(ec2:MeasureName/text())', $node);
             $item['Namespace'] = $xpath->evaluate('string(ec2:Namespace/text())', $node);
@@ -345,7 +353,7 @@ class Zend_Service_Amazon_Ec2_CloudWatch extends Zend_Service_Amazon_Ec2_Abstrac
             $item['Deminsions']['value'] = $xpath->evaluate('string(ec2:Dimensions/ec2:member/ec2:Value/text())', $node);
 
             if (empty($item['Deminsions']['name'])) {
-                $item['Deminsions'] = array();
+                $item['Deminsions'] = [];
             }
 
             $return[] = $item;

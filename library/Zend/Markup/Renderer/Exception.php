@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Markup
- * @subpackage Renderer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,12 +30,10 @@ require_once 'Zend/Markup/Exception.php';
  * Exception class for Zend_Markup_Renderer
  *
  * @category   Zend
+ *
  * @uses       Zend_Markup_Exception
- * @package    Zend_Markup
- * @subpackage Renderer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Markup_Renderer_Exception extends Zend_Markup_Exception
-{
-}
+class Zend_Markup_Renderer_Exception extends Zend_Markup_Exception {}

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,14 +28,12 @@ require_once 'Zend/Feed/Writer/Extension/RendererAbstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Feed_Writer_Extension_Content_Renderer_Entry
-    extends Zend_Feed_Writer_Extension_RendererAbstract
+class Zend_Feed_Writer_Extension_Content_Renderer_Entry extends Zend_Feed_Writer_Extension_RendererAbstract
 {
-
     /**
      * Set to TRUE if a rendering method actually renders something. This
      * is used to prevent premature appending of a XML namespace declaration
@@ -73,14 +73,12 @@ class Zend_Feed_Writer_Extension_Content_Renderer_Entry
     /**
      * Set entry content
      *
-     * @param  DOMDocument $dom
-     * @param  DOMElement $root
      * @return void
      */
     protected function _setContent(DOMDocument $dom, DOMElement $root)
     {
         $content = $this->getDataContainer()->getContent();
-        if (!$content) {
+        if (! $content) {
             return;
         }
         $element = $dom->createElement('content:encoded');

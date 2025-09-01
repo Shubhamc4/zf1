@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Paginator
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -31,7 +33,7 @@ require_once 'Zend/Paginator/SerializableLimitIterator.php';
 
 /**
  * @category   Zend
- * @package    Zend_Paginator
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -47,19 +49,20 @@ class Zend_Paginator_Adapter_Iterator implements Zend_Paginator_Adapter_Interfac
     /**
      * Item count
      *
-     * @var integer
+     * @var int
      */
     protected $_count = null;
 
     /**
      * Constructor.
      *
-     * @param  Iterator $iterator Iterator to paginate
+     * @param  Iterator  $iterator  Iterator to paginate
+     *
      * @throws Zend_Paginator_Exception
      */
     public function __construct(Iterator $iterator)
     {
-        if (!$iterator instanceof Countable) {
+        if (! $iterator instanceof Countable) {
             /**
              * @see Zend_Paginator_Exception
              */
@@ -75,14 +78,14 @@ class Zend_Paginator_Adapter_Iterator implements Zend_Paginator_Adapter_Interfac
     /**
      * Returns an iterator of items for a page, or an empty array.
      *
-     * @param  integer $offset Page offset
-     * @param  integer $itemCountPerPage Number of items per page
+     * @param  int  $offset  Page offset
+     * @param  int  $itemCountPerPage  Number of items per page
      * @return LimitIterator|array
      */
     public function getItems($offset, $itemCountPerPage)
     {
         if ($this->_count == 0) {
-            return array();
+            return [];
         }
 
         // @link http://bugs.php.net/bug.php?id=49906 | ZF-8084
@@ -93,9 +96,8 @@ class Zend_Paginator_Adapter_Iterator implements Zend_Paginator_Adapter_Interfac
     /**
      * Returns the total number of rows in the collection.
      *
-     * @return integer
+     * @return int
      */
-    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->_count;

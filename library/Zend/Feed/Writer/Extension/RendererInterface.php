@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,15 +14,16 @@
  * to padraic dot brady at yahoo dot com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -30,7 +32,7 @@ interface Zend_Feed_Writer_Extension_RendererInterface
     /**
      * Constructor
      *
-     * @param  mixed $container
+     * @param  mixed  $container
      * @return void
      */
     public function __construct($container);
@@ -38,8 +40,6 @@ interface Zend_Feed_Writer_Extension_RendererInterface
     /**
      * Set DOMDocument and DOMElement on which to operate
      *
-     * @param  DOMDocument $dom
-     * @param  DOMElement $base
      * @return void
      */
     public function setDomDocument(DOMDocument $dom, DOMElement $base);

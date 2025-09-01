@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,25 +14,22 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Amazon_S3
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * Zend_Service_Amazon_Exception
  */
 require_once 'Zend/Service/Amazon/Exception.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Service
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Service_Amazon_S3_Exception extends Zend_Service_Amazon_Exception
-{}
+class Zend_Service_Amazon_S3_Exception extends Zend_Service_Amazon_Exception {}

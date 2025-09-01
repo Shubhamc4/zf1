@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gdata
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,15 +30,14 @@ require_once 'Zend/Gdata/Extension.php';
  * Represents the openSeach:startIndex element
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gdata
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Extension_OpenSearchStartIndex extends Zend_Gdata_Extension
 {
-
     protected $_rootElement = 'startIndex';
+
     protected $_rootNamespace = 'openSearch';
 
     public function __construct($text = null)
@@ -46,5 +45,4 @@ class Zend_Gdata_Extension_OpenSearchStartIndex extends Zend_Gdata_Extension
         parent::__construct();
         $this->_text = $text;
     }
-
 }

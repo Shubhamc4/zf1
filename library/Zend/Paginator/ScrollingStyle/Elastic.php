@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Paginator
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,8 +32,9 @@ require_once 'Zend/Paginator/ScrollingStyle/Sliding.php';
  * link.
  *
  * @link       http://www.google.com/search?q=Zend+Framework
+ *
  * @category   Zend
- * @package    Zend_Paginator
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -40,21 +43,20 @@ class Zend_Paginator_ScrollingStyle_Elastic extends Zend_Paginator_ScrollingStyl
     /**
      * Returns an array of "local" pages given a page number and range.
      *
-     * @param  Zend_Paginator $paginator
-     * @param  integer $pageRange Unused
+     * @param  int  $pageRange  Unused
      * @return array
      */
     public function getPages(Zend_Paginator $paginator, $pageRange = null)
     {
-        $pageRange  = $paginator->getPageRange();
+        $pageRange = $paginator->getPageRange();
         $pageNumber = $paginator->getCurrentPageNumber();
 
         $originalPageRange = $pageRange;
-        $pageRange         = $pageRange * 2 - 1;
+        $pageRange = $pageRange * 2 - 1;
 
         if ($originalPageRange + $pageNumber - 1 < $pageRange) {
             $pageRange = $originalPageRange + $pageNumber - 1;
-        } else if ($originalPageRange + $pageNumber - 1 > count($paginator)) {
+        } elseif ($originalPageRange + $pageNumber - 1 > count($paginator)) {
             $pageRange = $originalPageRange + count($paginator) - $pageNumber;
         }
 

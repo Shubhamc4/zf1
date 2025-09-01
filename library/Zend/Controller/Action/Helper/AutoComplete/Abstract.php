@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Controller
- * @subpackage Zend_Controller_Action_Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,35 +30,34 @@ require_once 'Zend/Controller/Action/Helper/Abstract.php';
  * Create and send autocompletion lists
  *
  * @uses       Zend_Controller_Action_Helper_Abstract
+ *
  * @category   Zend
- * @package    Zend_Controller
- * @subpackage Zend_Controller_Action_Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Controller_Action_Helper_AutoComplete_Abstract extends Zend_Controller_Action_Helper_Abstract
 {
     /**
      * Suppress exit when sendJson() called
      *
-     * @var boolean
+     * @var bool
      */
     public $suppressExit = false;
 
     /**
      * Validate autocompletion data
      *
-     * @param  mixed $data
-     * @return boolean
+     * @param  mixed  $data
+     * @return bool
      */
     abstract public function validateData($data);
 
     /**
      * Prepare autocompletion data
      *
-     * @param  mixed   $data
-     * @param  boolean $keepLayouts
+     * @param  mixed  $data
+     * @param  bool  $keepLayouts
      * @return mixed
      */
     abstract public function prepareAutoCompletion($data, $keepLayouts = false);
@@ -85,10 +85,11 @@ abstract class Zend_Controller_Action_Helper_AutoComplete_Abstract extends Zend_
     /**
      * Encode data to JSON
      *
-     * @param  mixed $data
+     * @param  mixed  $data
      * @param  bool  $keepLayouts
-     * @throws Zend_Controller_Action_Exception
      * @return string
+     *
+     * @throws Zend_Controller_Action_Exception
      */
     public function encodeJson($data, $keepLayouts = false)
     {
@@ -109,7 +110,7 @@ abstract class Zend_Controller_Action_Helper_AutoComplete_Abstract extends Zend_
      * Calls prepareAutoCompletion, populates response body with this
      * information, and sends response.
      *
-     * @param  mixed $data
+     * @param  mixed  $data
      * @param  bool  $keepLayouts
      * @return string|void
      */
@@ -120,7 +121,7 @@ abstract class Zend_Controller_Action_Helper_AutoComplete_Abstract extends Zend_
         $response = $this->getResponse();
         $response->setBody($data);
 
-        if (!$this->suppressExit) {
+        if (! $this->suppressExit) {
             $response->sendResponse();
             exit;
         }
@@ -134,7 +135,7 @@ abstract class Zend_Controller_Action_Helper_AutoComplete_Abstract extends Zend_
      * Prepares autocompletion data and, if $sendNow is true, immediately sends
      * response.
      *
-     * @param  mixed $data
+     * @param  mixed  $data
      * @param  bool  $sendNow
      * @param  bool  $keepLayouts
      * @return string|void

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Controller
- * @subpackage Zend_Controller_Action_Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,9 +30,9 @@ require_once 'Zend/Controller/Action/Helper/AutoComplete/Abstract.php';
  * Create and send Scriptaculous-compatible autocompletion lists
  *
  * @uses       Zend_Controller_Action_Helper_AutoComplete_Abstract
+ *
  * @category   Zend
- * @package    Zend_Controller
- * @subpackage Zend_Controller_Action_Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -40,12 +41,12 @@ class Zend_Controller_Action_Helper_AutoCompleteScriptaculous extends Zend_Contr
     /**
      * Validate data for autocompletion
      *
-     * @param  mixed $data
+     * @param  mixed  $data
      * @return bool
      */
     public function validateData($data)
     {
-        if (!is_array($data) && !is_scalar($data)) {
+        if (! is_array($data) && ! is_scalar($data)) {
             return false;
         }
 
@@ -55,14 +56,15 @@ class Zend_Controller_Action_Helper_AutoCompleteScriptaculous extends Zend_Contr
     /**
      * Prepare data for autocompletion
      *
-     * @param  mixed   $data
-     * @param  boolean $keepLayouts
-     * @throws Zend_Controller_Action_Exception
+     * @param  mixed  $data
+     * @param  bool  $keepLayouts
      * @return string
+     *
+     * @throws Zend_Controller_Action_Exception
      */
     public function prepareAutoCompletion($data, $keepLayouts = false)
     {
-        if (!$this->validateData($data)) {
+        if (! $this->validateData($data)) {
             /**
              * @see Zend_Controller_Action_Exception
              */
@@ -71,9 +73,9 @@ class Zend_Controller_Action_Helper_AutoCompleteScriptaculous extends Zend_Contr
         }
 
         $data = (array) $data;
-        $data = '<ul><li>' . implode('</li><li>', $data) . '</li></ul>';
+        $data = '<ul><li>'.implode('</li><li>', $data).'</li></ul>';
 
-        if (!$keepLayouts) {
+        if (! $keepLayouts) {
             $this->disableLayouts();
         }
 

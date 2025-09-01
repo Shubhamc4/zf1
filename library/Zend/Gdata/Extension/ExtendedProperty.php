@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gdata
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -31,16 +31,16 @@ require_once 'Zend/Gdata/Extension.php';
  * services to implement arbitrary name/value pair storage
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gdata
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Extension_ExtendedProperty extends Zend_Gdata_Extension
 {
-
     protected $_rootElement = 'extendedProperty';
+
     protected $_name = null;
+
     protected $_value = null;
 
     public function __construct($name = null, $value = null)
@@ -59,26 +59,27 @@ class Zend_Gdata_Extension_ExtendedProperty extends Zend_Gdata_Extension
         if ($this->_value !== null) {
             $element->setAttribute('value', $this->_value);
         }
+
         return $element;
     }
 
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'name':
-            $this->_name = $attribute->nodeValue;
-            break;
-        case 'value':
-            $this->_value = $attribute->nodeValue;
-            break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            case 'name':
+                $this->_name = $attribute->nodeValue;
+                break;
+            case 'value':
+                $this->_value = $attribute->nodeValue;
+                break;
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 
     public function __toString()
     {
-        return $this->getName() . '=' . $this->getValue();
+        return $this->getName().'='.$this->getValue();
     }
 
     public function getName()
@@ -89,6 +90,7 @@ class Zend_Gdata_Extension_ExtendedProperty extends Zend_Gdata_Extension
     public function setName($value)
     {
         $this->_name = $value;
+
         return $this;
     }
 
@@ -100,7 +102,7 @@ class Zend_Gdata_Extension_ExtendedProperty extends Zend_Gdata_Extension
     public function setValue($value)
     {
         $this->_value = $value;
+
         return $this;
     }
-
 }

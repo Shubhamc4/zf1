@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LICENSE
  *
@@ -11,8 +12,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Cloud
- * @subpackage QueueService
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -21,21 +21,21 @@
  * Generic message class
  *
  * @category   Zend
- * @package    Zend_Cloud
- * @subpackage QueueService
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Cloud_QueueService_Message
 {
     protected $_body;
+
     protected $_clientMessage;
 
     /**
-     * @param string $body Message text
-     * @param string $message Original message
+     * @param  string  $body  Message text
+     * @param  string  $message  Original message
      */
-    function __construct($body, $message)
+    public function __construct($body, $message)
     {
         $this->_body = $body;
         $this->_clientMessage = $message;
@@ -43,6 +43,7 @@ class Zend_Cloud_QueueService_Message
 
     /**
      * Get the message body
+     *
      * @return string
      */
     public function getBody()

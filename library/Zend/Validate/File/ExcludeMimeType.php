@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category  Zend
- * @package   Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version   $Id$
  */
 
@@ -28,24 +30,26 @@ require_once 'Zend/Validate/File/MimeType.php';
  * Validator for the mime type of a file
  *
  * @category  Zend
- * @package   Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Validate_File_ExcludeMimeType extends Zend_Validate_File_MimeType
 {
-    const FALSE_TYPE   = 'fileExcludeMimeTypeFalse';
+    const FALSE_TYPE = 'fileExcludeMimeTypeFalse';
+
     const NOT_DETECTED = 'fileExcludeMimeTypeNotDetected';
+
     const NOT_READABLE = 'fileExcludeMimeTypeNotReadable';
 
     /**
      * @var array Error message templates
      */
-    protected $_messageTemplates = array(
-        self::FALSE_TYPE   => "File '%value%' has a false mimetype of '%type%'",
+    protected $_messageTemplates = [
+        self::FALSE_TYPE => "File '%value%' has a false mimetype of '%type%'",
         self::NOT_DETECTED => "The mimetype of file '%value%' could not be detected",
         self::NOT_READABLE => "File '%value%' is not readable or does not exist",
-    );
+    ];
 
     /**
      * Defined by Zend_Validate_Interface
@@ -54,22 +58,22 @@ class Zend_Validate_File_ExcludeMimeType extends Zend_Validate_File_MimeType
      * of mimetypes can be checked. If you give for example "image" all image
      * mime types will not be accepted like "image/gif", "image/jpeg" and so on.
      *
-     * @param  string $value Real file to check for mimetype
+     * @param  string  $value  Real file to check for mimetype
      * @param  array  $file  File data from Zend_File_Transfer
-     * @return boolean
+     * @return bool
      */
     public function isValid($value, $file = null)
     {
         if ($file === null) {
-            $file = array(
+            $file = [
                 'type' => null,
-                'name' => $value
-            );
+                'name' => $value,
+            ];
         }
 
         // Is file readable ?
         require_once 'Zend/Loader.php';
-        if (!Zend_Loader::isReadable($value)) {
+        if (! Zend_Loader::isReadable($value)) {
             return $this->_throw($file, self::NOT_READABLE);
         }
 
@@ -90,7 +94,7 @@ class Zend_Validate_File_ExcludeMimeType extends Zend_Validate_File_MimeType
 
         $types = explode('/', $this->_type);
         $types = array_merge($types, explode('-', $this->_type));
-        foreach($mimetype as $mime) {
+        foreach ($mimetype as $mime) {
             if (in_array($mime, $types)) {
                 return $this->_throw($file, self::FALSE_TYPE);
             }

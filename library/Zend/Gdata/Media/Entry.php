@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Media
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -40,14 +40,12 @@ require_once 'Zend/Gdata/Media/Extension/MediaGroup.php';
  * Represents the Gdata flavor of an Atom entry
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Media
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Media_Entry extends Zend_Gdata_Entry
 {
-
     protected $_entryClassName = 'Zend_Gdata_Media_Entry';
 
     /**
@@ -60,8 +58,8 @@ class Zend_Gdata_Media_Entry extends Zend_Gdata_Entry
     /**
      * Create a new instance.
      *
-     * @param DOMElement $element (optional) DOMElement from which this
-     *          object should be constructed.
+     * @param  DOMElement  $element  (optional) DOMElement from which this
+     *                               object should be constructed.
      */
     public function __construct($element = null)
     {
@@ -74,9 +72,9 @@ class Zend_Gdata_Media_Entry extends Zend_Gdata_Entry
      * child properties.  This is used to build an entry back into a DOM
      * and eventually XML text for application storage/persistence.
      *
-     * @param DOMDocument $doc The DOMDocument used to construct DOMElements
+     * @param  DOMDocument  $doc  The DOMDocument used to construct DOMElements
      * @return DOMElement The DOMElement representing this element and all
-     *          child properties.
+     *                    child properties.
      */
     public function getDOM($doc = null, $majorVersion = 1, $minorVersion = null)
     {
@@ -84,6 +82,7 @@ class Zend_Gdata_Media_Entry extends Zend_Gdata_Entry
         if ($this->_mediaGroup != null) {
             $element->appendChild($this->_mediaGroup->getDOM($element->ownerDocument));
         }
+
         return $element;
     }
 
@@ -91,20 +90,20 @@ class Zend_Gdata_Media_Entry extends Zend_Gdata_Entry
      * Creates individual Entry objects of the appropriate type and
      * stores them as members of this entry based upon DOM data.
      *
-     * @param DOMNode $child The DOMNode to process
+     * @param  DOMNode  $child  The DOMNode to process
      */
     protected function takeChildFromDOM($child)
     {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        $absoluteNodeName = $child->namespaceURI.':'.$child->localName;
         switch ($absoluteNodeName) {
-        case $this->lookupNamespace('media') . ':' . 'group':
-            $mediaGroup = new Zend_Gdata_Media_Extension_MediaGroup();
-            $mediaGroup->transferFromDOM($child);
-            $this->_mediaGroup = $mediaGroup;
-            break;
-        default:
-            parent::takeChildFromDOM($child);
-            break;
+            case $this->lookupNamespace('media').':'.'group':
+                $mediaGroup = new Zend_Gdata_Media_Extension_MediaGroup;
+                $mediaGroup->transferFromDOM($child);
+                $this->_mediaGroup = $mediaGroup;
+                break;
+            default:
+                parent::takeChildFromDOM($child);
+                break;
         }
     }
 
@@ -112,7 +111,7 @@ class Zend_Gdata_Media_Entry extends Zend_Gdata_Entry
      * Returns the entry's mediaGroup object.
      *
      * @return Zend_Gdata_Media_Extension_MediaGroup
-    */
+     */
     public function getMediaGroup()
     {
         return $this->_mediaGroup;
@@ -121,14 +120,13 @@ class Zend_Gdata_Media_Entry extends Zend_Gdata_Entry
     /**
      * Sets the entry's mediaGroup object.
      *
-     * @param Zend_Gdata_Media_Extension_MediaGroup $mediaGroup
+     * @param  Zend_Gdata_Media_Extension_MediaGroup  $mediaGroup
      * @return Zend_Gdata_Media_Entry Provides a fluent interface
      */
     public function setMediaGroup($mediaGroup)
     {
         $this->_mediaGroup = $mediaGroup;
+
         return $this;
     }
-
-
 }

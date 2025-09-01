@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,22 +14,19 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Search
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /** Zend_Search_Lucene_Search_Weight */
 require_once 'Zend/Search/Lucene/Search/Weight.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Search
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -56,21 +54,17 @@ class Zend_Search_Lucene_Search_Weight_MultiTerm extends Zend_Search_Lucene_Sear
      */
     private $_weights;
 
-
     /**
      * Zend_Search_Lucene_Search_Weight_MultiTerm constructor
      * query - the query that this concerns.
      * reader - index reader
-     *
-     * @param Zend_Search_Lucene_Search_Query $query
-     * @param Zend_Search_Lucene_Interface    $reader
      */
     public function __construct(Zend_Search_Lucene_Search_Query $query,
-                                Zend_Search_Lucene_Interface    $reader)
+        Zend_Search_Lucene_Interface $reader)
     {
-        $this->_query   = $query;
-        $this->_reader  = $reader;
-        $this->_weights = array();
+        $this->_query = $query;
+        $this->_reader = $reader;
+        $this->_weights = [];
 
         $signs = $query->getSigns();
 
@@ -83,7 +77,6 @@ class Zend_Search_Lucene_Search_Weight_MultiTerm extends Zend_Search_Lucene_Sear
         }
     }
 
-
     /**
      * The weight for this query
      * Standard Weight::$_value is not used for boolean queries
@@ -94,7 +87,6 @@ class Zend_Search_Lucene_Search_Weight_MultiTerm extends Zend_Search_Lucene_Sear
     {
         return $this->_query->getBoost();
     }
-
 
     /**
      * The sum of squared weights of contained query clauses.
@@ -116,14 +108,14 @@ class Zend_Search_Lucene_Search_Weight_MultiTerm extends Zend_Search_Lucene_Sear
         if ($sum == 0) {
             $sum = 1.0;
         }
+
         return $sum;
     }
-
 
     /**
      * Assigns the query normalization factor to this.
      *
-     * @param float $queryNorm
+     * @param  float  $queryNorm
      */
     public function normalize($queryNorm)
     {
@@ -135,5 +127,3 @@ class Zend_Search_Lucene_Search_Weight_MultiTerm extends Zend_Search_Lucene_Sear
         }
     }
 }
-
-

@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage App
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -35,16 +35,16 @@ require_once 'Zend/Gdata/App/Extension/Draft.php';
  * Represents the app:control element
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage App
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_App_Extension_Control extends Zend_Gdata_App_Extension
 {
-
     protected $_rootNamespace = 'app';
+
     protected $_rootElement = 'control';
+
     protected $_draft = null;
 
     public function __construct($draft = null)
@@ -59,21 +59,22 @@ class Zend_Gdata_App_Extension_Control extends Zend_Gdata_App_Extension
         if ($this->_draft != null) {
             $element->appendChild($this->_draft->getDOM($element->ownerDocument));
         }
+
         return $element;
     }
 
     protected function takeChildFromDOM($child)
     {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        $absoluteNodeName = $child->namespaceURI.':'.$child->localName;
         switch ($absoluteNodeName) {
-        case $this->lookupNamespace('app') . ':' . 'draft':
-            $draft = new Zend_Gdata_App_Extension_Draft();
-            $draft->transferFromDOM($child);
-            $this->_draft = $draft;
-            break;
-        default:
-            parent::takeChildFromDOM($child);
-            break;
+            case $this->lookupNamespace('app').':'.'draft':
+                $draft = new Zend_Gdata_App_Extension_Draft;
+                $draft->transferFromDOM($child);
+                $this->_draft = $draft;
+                break;
+            default:
+                parent::takeChildFromDOM($child);
+                break;
         }
     }
 
@@ -86,13 +87,13 @@ class Zend_Gdata_App_Extension_Control extends Zend_Gdata_App_Extension
     }
 
     /**
-     * @param Zend_Gdata_App_Extension_Draft $value
+     * @param  Zend_Gdata_App_Extension_Draft  $value
      * @return Zend_Gdata_App_Entry Provides a fluent interface
      */
     public function setDraft($value)
     {
         $this->_draft = $value;
+
         return $this;
     }
-
 }

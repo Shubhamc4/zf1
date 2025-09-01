@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,33 +14,29 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Search
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /** Zend_Search_Lucene_Search_Similarity */
 require_once 'Zend/Search/Lucene/Search/Similarity.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Search
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Search_Lucene_Search_Similarity_Default extends Zend_Search_Lucene_Search_Similarity
 {
-
     /**
      * Implemented as '1/sqrt(numTerms)'.
      *
-     * @param string $fieldName
-     * @param integer $numTerms
+     * @param  string  $fieldName
+     * @param  int  $numTerms
      * @return float
      */
     public function lengthNorm($fieldName, $numTerms)
@@ -48,24 +45,24 @@ class Zend_Search_Lucene_Search_Similarity_Default extends Zend_Search_Lucene_Se
             return 1E10;
         }
 
-        return 1.0/sqrt($numTerms);
+        return 1.0 / sqrt($numTerms);
     }
 
     /**
      * Implemented as '1/sqrt(sumOfSquaredWeights)'.
      *
-     * @param float $sumOfSquaredWeights
+     * @param  float  $sumOfSquaredWeights
      * @return float
      */
     public function queryNorm($sumOfSquaredWeights)
     {
-        return 1.0/sqrt($sumOfSquaredWeights);
+        return 1.0 / sqrt($sumOfSquaredWeights);
     }
 
     /**
      * Implemented as 'sqrt(freq)'.
      *
-     * @param float $freq
+     * @param  float  $freq
      * @return float
      */
     public function tf($freq)
@@ -76,35 +73,35 @@ class Zend_Search_Lucene_Search_Similarity_Default extends Zend_Search_Lucene_Se
     /**
      * Implemented as '1/(distance + 1)'.
      *
-     * @param integer $distance
+     * @param  int  $distance
      * @return float
      */
     public function sloppyFreq($distance)
     {
-        return 1.0/($distance + 1);
+        return 1.0 / ($distance + 1);
     }
 
     /**
      * Implemented as 'log(numDocs/(docFreq+1)) + 1'.
      *
-     * @param integer $docFreq
-     * @param integer $numDocs
+     * @param  int  $docFreq
+     * @param  int  $numDocs
      * @return float
      */
     public function idfFreq($docFreq, $numDocs)
     {
-        return log($numDocs/(float)($docFreq+1)) + 1.0;
+        return log($numDocs / (float) ($docFreq + 1)) + 1.0;
     }
 
     /**
      * Implemented as 'overlap/maxOverlap'.
      *
-     * @param integer $overlap
-     * @param integer $maxOverlap
+     * @param  int  $overlap
+     * @param  int  $maxOverlap
      * @return float
      */
     public function coord($overlap, $maxOverlap)
     {
-        return $overlap/(float)$maxOverlap;
+        return $overlap / (float) $maxOverlap;
     }
 }

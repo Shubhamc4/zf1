@@ -14,8 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Captcha
- * @subpackage Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -32,13 +31,12 @@ require_once 'Zend/Validate/Abstract.php';
  * Provides some utility functionality to build on
  *
  * @category   Zend
- * @package    Zend_Captcha
- * @subpackage Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-#[AllowDynamicProperties]
 abstract class Zend_Captcha_Base extends Zend_Validate_Abstract implements Zend_Captcha_Adapter
 {
     /**
@@ -55,16 +53,17 @@ abstract class Zend_Captcha_Base extends Zend_Validate_Abstract implements Zend_
      *
      * @var array
      */
-    protected $_options = array();
+    protected $_options = [];
 
     /**
      * Options to skip when processing options
+     *
      * @var array
      */
-    protected $_skipOptions = array(
+    protected $_skipOptions = [
         'options',
         'config',
-    );
+    ];
 
     /**
      * Get name
@@ -79,26 +78,27 @@ abstract class Zend_Captcha_Base extends Zend_Validate_Abstract implements Zend_
     /**
      * Set name
      *
-     * @param string $name
+     * @param  string  $name
      * @return Zend_Captcha_Adapter
      */
     public function setName($name)
     {
         $this->_name = $name;
+
         return $this;
     }
 
     /**
      * Constructor
      *
-     * @param  array|Zend_Config $options
+     * @param  array|Zend_Config  $options
      */
     public function __construct($options = null)
     {
         // Set options
         if (is_array($options)) {
             $this->setOptions($options);
-        } else if ($options instanceof Zend_Config) {
+        } elseif ($options instanceof Zend_Config) {
             $this->setConfig($options);
         }
     }
@@ -106,8 +106,8 @@ abstract class Zend_Captcha_Base extends Zend_Validate_Abstract implements Zend_
     /**
      * Set single option for the object
      *
-     * @param string $key
-     * @param string $value
+     * @param  string  $key
+     * @param  string  $value
      * @return Zend_Form_Element
      */
     public function setOption($key, $value)
@@ -116,7 +116,7 @@ abstract class Zend_Captcha_Base extends Zend_Validate_Abstract implements Zend_
             return $this;
         }
 
-        $method = 'set' . ucfirst($key);
+        $method = 'set'.ucfirst($key);
         if (method_exists($this, $method)) {
             // Setter exists; use it
             $this->$method($value);
@@ -126,13 +126,14 @@ abstract class Zend_Captcha_Base extends Zend_Validate_Abstract implements Zend_
             $this->$key = $value;
             $this->_options[$key] = $value;
         }
+
         return $this;
     }
 
     /**
      * Set object state from options array
      *
-     * @param  array $options
+     * @param  array  $options
      * @return Zend_Form_Element
      */
     public function setOptions($options = null)
@@ -140,6 +141,7 @@ abstract class Zend_Captcha_Base extends Zend_Validate_Abstract implements Zend_
         foreach ($options as $key => $value) {
             $this->setOption($key, $value);
         }
+
         return $this;
     }
 
@@ -156,7 +158,6 @@ abstract class Zend_Captcha_Base extends Zend_Validate_Abstract implements Zend_
     /**
      * Set object state from config object
      *
-     * @param  Zend_Config $config
      * @return Zend_Captcha_Base
      */
     public function setConfig(Zend_Config $config)
@@ -171,8 +172,5 @@ abstract class Zend_Captcha_Base extends Zend_Validate_Abstract implements Zend_
      *
      * @return null
      */
-    public function getDecorator()
-    {
-        return null;
-    }
+    public function getDecorator() {}
 }

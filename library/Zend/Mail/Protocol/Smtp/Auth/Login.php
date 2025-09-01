@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,26 +14,23 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Mail
- * @subpackage Protocol
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * @see Zend_Mail_Protocol_Smtp
  */
 require_once 'Zend/Mail/Protocol/Smtp.php';
 
-
 /**
  * Performs LOGIN authentication
  *
  * @category   Zend
- * @package    Zend_Mail
- * @subpackage Protocol
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -45,7 +43,6 @@ class Zend_Mail_Protocol_Smtp_Auth_Login extends Zend_Mail_Protocol_Smtp
      */
     protected $_username;
 
-
     /**
      * LOGIN password
      *
@@ -53,13 +50,12 @@ class Zend_Mail_Protocol_Smtp_Auth_Login extends Zend_Mail_Protocol_Smtp
      */
     protected $_password;
 
-
     /**
      * Constructor.
      *
-     * @param  string $host   (Default: 127.0.0.1)
-     * @param  int    $port   (Default: null)
-     * @param  array  $config Auth-specific parameters
+     * @param  string  $host  (Default: 127.0.0.1)
+     * @param  int  $port  (Default: null)
+     * @param  array  $config  Auth-specific parameters
      * @return void
      */
     public function __construct($host = '127.0.0.1', $port = null, $config = null)
@@ -75,7 +71,6 @@ class Zend_Mail_Protocol_Smtp_Auth_Login extends Zend_Mail_Protocol_Smtp
 
         parent::__construct($host, $port, $config);
     }
-
 
     /**
      * Perform LOGIN authentication with supplied credentials

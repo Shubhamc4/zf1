@@ -14,20 +14,18 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Delicious
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * Represents a publicly available post
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Delicious
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -51,18 +49,19 @@ class Zend_Service_Delicious_SimplePost
     /**
      * @var array Post tags
      */
-    protected $_tags = array();
+    protected $_tags = [];
 
     /**
      * Constructor
      *
-     * @param   array $post Post data
-     * @return  void
-     * @throws  Zend_Service_Delicious_Exception
+     * @param  array  $post  Post data
+     * @return void
+     *
+     * @throws Zend_Service_Delicious_Exception
      */
     public function __construct(array $post)
     {
-        if (!isset($post['u']) || !isset($post['d'])) {
+        if (! isset($post['u']) || ! isset($post['d'])) {
             /**
              * @see Zend_Service_Delicious_Exception
              */
@@ -70,7 +69,7 @@ class Zend_Service_Delicious_SimplePost
             throw new Zend_Service_Delicious_Exception('Title and URL not set.');
         }
 
-        $this->_url   = $post['u'];
+        $this->_url = $post['u'];
         $this->_title = $post['d'];
 
         if (isset($post['t'])) {

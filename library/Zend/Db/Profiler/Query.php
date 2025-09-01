@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,24 +14,21 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Db
- * @subpackage Profiler
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
-
 /**
  * @category   Zend
- * @package    Zend_Db
- * @subpackage Profiler
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Db_Profiler_Query
 {
-
     /**
      * SQL query string or user comment, set by $query argument in constructor.
      *
@@ -41,7 +39,7 @@ class Zend_Db_Profiler_Query
     /**
      * One of the Zend_Db_Profiler constants for query type, set by $queryType argument in constructor.
      *
-     * @var integer
+     * @var int
      */
     protected $_queryType = 0;
 
@@ -55,14 +53,14 @@ class Zend_Db_Profiler_Query
     /**
      * Unix timestamp with microseconds when self::queryEnd() was called.
      *
-     * @var integer
+     * @var int
      */
     protected $_endedMicrotime = null;
 
     /**
      * @var array
      */
-    protected $_boundParams = array();
+    protected $_boundParams = [];
 
     /**
      * @var array
@@ -73,7 +71,7 @@ class Zend_Db_Profiler_Query
      * type (one of the Zend_Db_Profiler::* constants).
      *
      * @param  string  $query
-     * @param  integer $queryType
+     * @param  int  $queryType
      * @return void
      */
     public function __construct($query, $queryType)
@@ -86,11 +84,12 @@ class Zend_Db_Profiler_Query
 
     /**
      * Clone handler for the query object.
+     *
      * @return void
      */
     public function __clone()
     {
-        $this->_boundParams = array();
+        $this->_boundParams = [];
         $this->_endedMicrotime = null;
         $this->start();
     }
@@ -121,7 +120,7 @@ class Zend_Db_Profiler_Query
     /**
      * Returns true if and only if the query has ended.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasEnded()
     {
@@ -141,7 +140,7 @@ class Zend_Db_Profiler_Query
     /**
      * Get the type of this query (one of the Zend_Db_Profiler::* constants)
      *
-     * @return integer
+     * @return int
      */
     public function getQueryType()
     {
@@ -149,8 +148,8 @@ class Zend_Db_Profiler_Query
     }
 
     /**
-     * @param string $param
-     * @param mixed $variable
+     * @param  string  $param
+     * @param  mixed  $variable
      * @return void
      */
     public function bindParam($param, $variable)
@@ -159,7 +158,7 @@ class Zend_Db_Profiler_Query
     }
 
     /**
-     * @param array $param
+     * @param  array  $param
      * @return void
      */
     public function bindParams(array $params)
@@ -203,11 +202,10 @@ class Zend_Db_Profiler_Query
      */
     public function getStartedMicrotime()
     {
-        if(null === $this->_startedMicrotime) {
+        if (null === $this->_startedMicrotime) {
             return false;
         }
 
         return $this->_startedMicrotime;
     }
 }
-

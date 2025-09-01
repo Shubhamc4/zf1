@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_XmlRpc
- * @subpackage Client
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -24,8 +25,7 @@
  * Wraps the XML-RPC system.* introspection methods
  *
  * @category   Zend
- * @package    Zend_XmlRpc
- * @subpackage Client
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -36,10 +36,6 @@ class Zend_XmlRpc_Client_ServerIntrospection
      */
     private $_system = null;
 
-
-    /**
-     * @param Zend_XmlRpc_Client $client
-     */
     public function __construct(Zend_XmlRpc_Client $client)
     {
         $this->_system = $client->getProxy('system');
@@ -75,7 +71,7 @@ class Zend_XmlRpc_Client_ServerIntrospection
      * This is a boxcar feature of XML-RPC and is found on fewer servers.  However,
      * can significantly improve performance if present.
      *
-     * @param  array $methods
+     * @param  array  $methods
      * @return array array(array(return, param, param, param...))
      */
     public function getSignatureForEachMethodByMulticall($methods = null)
@@ -84,17 +80,17 @@ class Zend_XmlRpc_Client_ServerIntrospection
             $methods = $this->listMethods();
         }
 
-        $multicallParams = array();
+        $multicallParams = [];
         foreach ($methods as $method) {
-            $multicallParams[] = array('methodName' => 'system.methodSignature',
-                                       'params'     => array($method));
+            $multicallParams[] = ['methodName' => 'system.methodSignature',
+                'params' => [$method]];
         }
 
         $serverSignatures = $this->_system->multicall($multicallParams);
 
         if (! is_array($serverSignatures)) {
             $type = gettype($serverSignatures);
-            $error = "Multicall return is malformed.  Expected array, got $type";
+            $error = "Multicall return is malformed.  Expected array, got {$type}";
             require_once 'Zend/XmlRpc/Client/IntrospectException.php';
             throw new Zend_XmlRpc_Client_IntrospectException($error);
         }
@@ -106,7 +102,7 @@ class Zend_XmlRpc_Client_ServerIntrospection
         }
 
         // Create a new signatures array with the methods name as keys and the signature as value
-        $signatures = array();
+        $signatures = [];
         foreach ($serverSignatures as $i => $signature) {
             $signatures[$methods[$i]] = $signature;
         }
@@ -118,7 +114,7 @@ class Zend_XmlRpc_Client_ServerIntrospection
      * Get the method signatures for every method by
      * successively calling system.methodSignature
      *
-     * @param array $methods
+     * @param  array  $methods
      * @return array
      */
     public function getSignatureForEachMethodByLooping($methods = null)
@@ -127,7 +123,7 @@ class Zend_XmlRpc_Client_ServerIntrospection
             $methods = $this->listMethods();
         }
 
-        $signatures = array();
+        $signatures = [];
         foreach ($methods as $method) {
             $signatures[$method] = $this->getMethodSignature($method);
         }
@@ -139,16 +135,17 @@ class Zend_XmlRpc_Client_ServerIntrospection
      * Call system.methodSignature() for the given method
      *
      * @param  array  $method
-     * @return array  array(array(return, param, param, param...))
+     * @return array array(array(return, param, param, param...))
      */
     public function getMethodSignature($method)
     {
         $signature = $this->_system->methodSignature($method);
-        if (!is_array($signature)) {
-            $error = 'Invalid signature for method "' . $method . '"';
+        if (! is_array($signature)) {
+            $error = 'Invalid signature for method "'.$method.'"';
             require_once 'Zend/XmlRpc/Client/IntrospectException.php';
             throw new Zend_XmlRpc_Client_IntrospectException($error);
         }
+
         return $signature;
     }
 
@@ -156,11 +153,10 @@ class Zend_XmlRpc_Client_ServerIntrospection
      * Call system.listMethods()
      *
      * @param  array  $method
-     * @return array  array(method, method, method...)
+     * @return array array(method, method, method...)
      */
     public function listMethods()
     {
         return $this->_system->listMethods();
     }
-
 }

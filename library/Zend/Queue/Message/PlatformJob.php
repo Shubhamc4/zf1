@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Queue
- * @subpackage Message
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,8 +30,7 @@ require_once 'Zend/Queue/Message.php';
  * Class for managing Zend Platform JobQueue jobs via Zend_Queue
  *
  * @category   Zend
- * @package    Zend_Queue
- * @subpackage Message
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -43,6 +43,7 @@ class Zend_Queue_Message_PlatformJob extends Zend_Queue_Message
 
     /**
      * Job identifier
+     *
      * @var string
      */
     protected $_id = null;
@@ -60,14 +61,14 @@ class Zend_Queue_Message_PlatformJob extends Zend_Queue_Message
      * JobQueue script the job will request. A new ZendApi_Job object will then
      * be created using that script and any options you provide.
      *
-     * @param  array $options
      * @return void
+     *
      * @throws Zend_Queue_Exception
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = [])
     {
         if (isset($options['data'])) {
-            if (!($options['data'] instanceof ZendApi_Job)) {
+            if (! ($options['data'] instanceof ZendApi_Job)) {
                 require_once 'Zend/Queue/Exception.php';
                 throw new Zend_Queue_Exception('Data must be an instance of ZendApi_Job');
             }
@@ -76,7 +77,7 @@ class Zend_Queue_Message_PlatformJob extends Zend_Queue_Message
         } else {
             parent::__construct($options);
 
-            if (!isset($options['script'])) {
+            if (! isset($options['script'])) {
                 require_once 'Zend/Queue/Exception.php';
                 throw new Zend_Queue_Exception('The script is mandatory data');
             }
@@ -91,12 +92,13 @@ class Zend_Queue_Message_PlatformJob extends Zend_Queue_Message
      *
      * Used within Zend_Queue only.
      *
-     * @param  string $id
+     * @param  string  $id
      * @return Zend_Queue_Message_PlatformJob
      */
     public function setJobId($id)
     {
         $this->_id = $id;
+
         return $this;
     }
 
@@ -107,7 +109,7 @@ class Zend_Queue_Message_PlatformJob extends Zend_Queue_Message
      */
     public function getJobId()
     {
-        return (($this->_id) ?  $this->_id : $this->_job->getID());
+        return ($this->_id) ? $this->_id : $this->_job->getID();
     }
 
     /**
@@ -150,7 +152,8 @@ class Zend_Queue_Message_PlatformJob extends Zend_Queue_Message
      *
      * @return void
      */
-    protected function _setJobProperties() {
+    protected function _setJobProperties()
+    {
 
         if (isset($this->_data['script'])) {
             $this->_job->setScript($this->_data['script']);
@@ -176,11 +179,11 @@ class Zend_Queue_Message_PlatformJob extends Zend_Queue_Message
             $this->_job->setUserVariables($this->_data['user_variables']);
         }
 
-        if (!empty($this->_data['interval'])) {
-            $endTime = isset($this->_data['end_time']) ? $this->_data['end_time'] : null;
+        if (! empty($this->_data['interval'])) {
+            $endTime = $this->_data['end_time'] ?? null;
             $this->_job->setRecurrenceData($this->_data['interval'], $endTime);
         } elseif (isset($this->_data['interval']) && ($this->_data['interval'] === '')) {
-            $this->_job->setRecurrenceData(0,0);
+            $this->_job->setRecurrenceData(0, 0);
         }
 
         if (isset($this->_data['scheduled_time'])) {

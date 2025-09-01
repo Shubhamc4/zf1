@@ -14,12 +14,12 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * @see Zend_Feed_Abstract
@@ -31,7 +31,6 @@ require_once 'Zend/Feed/Abstract.php';
  */
 require_once 'Zend/Feed/Entry/Rss.php';
 
-
 /**
  * RSS channel class
  *
@@ -42,7 +41,7 @@ require_once 'Zend/Feed/Entry/Rss.php';
  * RSS-formatted data instead of Atom.
  *
  * @category   Zend
- * @package    Zend_Feed
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -73,6 +72,7 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
      * Override Zend_Feed_Abstract to set up the $_element and $_entries aliases.
      *
      * @return void
+     *
      * @throws Zend_Feed_Exception
      */
     public function __wakeup()
@@ -83,10 +83,10 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
         $rdfTags = $this->_element->getElementsByTagNameNS('http://www.w3.org/1999/02/22-rdf-syntax-ns#', 'RDF');
         if ($rdfTags->length != 0) {
             $this->_element = $rdfTags->item(0);
-        } else  {
+        } else {
             $this->_element = $this->_element->getElementsByTagName('channel')->item(0);
         }
-        if (!$this->_element) {
+        if (! $this->_element) {
             /**
              * @see Zend_Feed_Exception
              */
@@ -99,7 +99,6 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
         $this->_buildEntryCache();
     }
 
-
     /**
      * Make accessing some individual elements of the channel easier.
      *
@@ -108,7 +107,7 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
      * using foreach ($channel->items as $item) or foreach
      * ($channel->item as $item).
      *
-     * @param  string $var The property to access.
+     * @param  string  $var  The property to access.
      * @return mixed
      */
     public function __get($var)
@@ -127,7 +126,7 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
     /**
      * Generate the header of the feed when working in write mode
      *
-     * @param  array $array the data to use
+     * @param  array  $array  the data to use
      * @return DOMElement root node
      */
     protected function _mapFeedHeaders($array)
@@ -141,12 +140,12 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
         $link = $this->_element->createElement('link', $array->link);
         $channel->appendChild($link);
 
-        $desc = isset($array->description) ? $array->description : '';
+        $desc = $array->description ?? '';
         $description = $this->_element->createElement('description');
         $description->appendChild($this->_element->createCDATASection($desc));
         $channel->appendChild($description);
 
-        $pubdate = isset($array->lastUpdate) ? $array->lastUpdate : time();
+        $pubdate = $array->lastUpdate ?? time();
         $pubdate = $this->_element->createElement('pubDate', date(DATE_RSS, $pubdate));
         $channel->appendChild($pubdate);
 
@@ -156,13 +155,13 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
         }
 
         $editor = '';
-        if (!empty($array->email)) {
+        if (! empty($array->email)) {
             $editor .= $array->email;
         }
-        if (!empty($array->author)) {
-            $editor .= ' (' . $array->author . ')';
+        if (! empty($array->author)) {
+            $editor .= ' ('.$array->author.')';
         }
-        if (!empty($editor)) {
+        if (! empty($editor)) {
             $author = $this->_element->createElement('managingEditor', ltrim($editor));
             $channel->appendChild($author);
         }
@@ -170,7 +169,7 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
             $channel->appendChild($this->_element->createElement('webMaster', $array->webmaster));
         }
 
-        if (!empty($array->copyright)) {
+        if (! empty($array->copyright)) {
             $copyright = $this->_element->createElement('copyright', $array->copyright);
             $channel->appendChild($copyright);
         }
@@ -180,7 +179,7 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
             $channel->appendChild($category);
         }
 
-        if (!empty($array->image)) {
+        if (! empty($array->image)) {
             $image = $this->_element->createElement('image');
             $url = $this->_element->createElement('url', $array->image);
             $image->appendChild($url);
@@ -193,11 +192,11 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
             $channel->appendChild($image);
         }
 
-        $generator = !empty($array->generator) ? $array->generator : 'Zend_Feed';
+        $generator = ! empty($array->generator) ? $array->generator : 'Zend_Feed';
         $generator = $this->_element->createElement('generator', $generator);
         $channel->appendChild($generator);
 
-        if (!empty($array->language)) {
+        if (! empty($array->language)) {
             $language = $this->_element->createElement('language', $array->language);
             $channel->appendChild($language);
         }
@@ -260,8 +259,7 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
     /**
      * Adds the iTunes extensions to a root node
      *
-     * @param  DOMElement $root
-     * @param  array $array
+     * @param  array  $array
      * @return void
      */
     private function _buildiTunes(DOMElement $root, $array)
@@ -273,7 +271,7 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
         } elseif (isset($array->author)) {
             $author = $array->author;
         }
-        if (!empty($author)) {
+        if (! empty($author)) {
             $node = $this->_element->createElementNS('http://www.itunes.com/DTDs/Podcast-1.0.dtd', 'itunes:author', $author);
             $root->appendChild($node);
         }
@@ -295,13 +293,13 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
         if (empty($email) && isset($array->email)) {
             $email = $array->email;
         }
-        if (!empty($author) || !empty($email)) {
+        if (! empty($author) || ! empty($email)) {
             $owner = $this->_element->createElementNS('http://www.itunes.com/DTDs/Podcast-1.0.dtd', 'itunes:owner');
-            if (!empty($author)) {
+            if (! empty($author)) {
                 $node = $this->_element->createElementNS('http://www.itunes.com/DTDs/Podcast-1.0.dtd', 'itunes:name', $author);
                 $owner->appendChild($node);
             }
-            if (!empty($email)) {
+            if (! empty($email)) {
                 $node = $this->_element->createElementNS('http://www.itunes.com/DTDs/Podcast-1.0.dtd', 'itunes:email', $email);
                 $owner->appendChild($node);
             }
@@ -313,7 +311,7 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
         } elseif (isset($array->image)) {
             $image = $array->image;
         }
-        if (!empty($image)) {
+        if (! empty($image)) {
             $node = $this->_element->createElementNS('http://www.itunes.com/DTDs/Podcast-1.0.dtd', 'itunes:image');
             $node->setAttribute('href', $image);
             $root->appendChild($node);
@@ -324,7 +322,7 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
         } elseif (isset($array->description)) {
             $subtitle = $array->description;
         }
-        if (!empty($subtitle)) {
+        if (! empty($subtitle)) {
             $node = $this->_element->createElementNS('http://www.itunes.com/DTDs/Podcast-1.0.dtd', 'itunes:subtitle', $subtitle);
             $root->appendChild($node);
         }
@@ -334,7 +332,7 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
         } elseif (isset($array->description)) {
             $summary = $array->description;
         }
-        if (!empty($summary)) {
+        if (! empty($summary)) {
             $node = $this->_element->createElementNS('http://www.itunes.com/DTDs/Podcast-1.0.dtd', 'itunes:summary', $summary);
             $root->appendChild($node);
         }
@@ -360,7 +358,7 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
                 $node->setAttribute('text', $category['main']);
                 $root->appendChild($node);
                 $add_end_category = false;
-                if (!empty($category['sub'])) {
+                if (! empty($category['sub'])) {
                     $add_end_category = true;
                     $node = $this->_element->createElementNS('http://www.itunes.com/DTDs/Podcast-1.0.dtd', 'itunes:category');
                     $node->setAttribute('text', $category['sub']);
@@ -386,8 +384,8 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
      *    <content:encoded>long version, can contain html</content:encoded>
      * </item>
      *
-     * @param  DOMElement $root the root node to use
-     * @param  array $array the data to use
+     * @param  DOMElement  $root  the root node to use
+     * @param  array  $array  the data to use
      * @return void
      */
     protected function _mapFeedEntries(DOMElement $root, $array)
@@ -411,7 +409,7 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
 
             if (isset($dataentry->guid)) {
                 $guid = $this->_element->createElement('guid', $dataentry->guid);
-                if (!Zend_Uri::check($dataentry->guid)) {
+                if (! Zend_Uri::check($dataentry->guid)) {
                     $guid->setAttribute('isPermaLink', 'false');
                 }
                 $item->appendChild($guid);
@@ -427,7 +425,7 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
                 $item->appendChild($content);
             }
 
-            $pubdate = isset($dataentry->lastUpdate) ? $dataentry->lastUpdate : time();
+            $pubdate = $dataentry->lastUpdate ?? time();
             $pubdate = $this->_element->createElement('pubDate', date(DATE_RSS, $pubdate));
             $item->appendChild($pubdate);
 
@@ -454,11 +452,10 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
             }
             if (isset($dataentry->commentRss)) {
                 $comments = $this->_element->createElementNS('http://wellformedweb.org/CommentAPI/',
-                                                             'wfw:commentRss',
-                                                             $dataentry->commentRss);
+                    'wfw:commentRss',
+                    $dataentry->commentRss);
                 $item->appendChild($comments);
             }
-
 
             if (isset($dataentry->enclosure)) {
                 foreach ($dataentry->enclosure as $enclosure) {
@@ -487,7 +484,7 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
     {
         // Return a complete document including XML prologue.
         $doc = new DOMDocument($this->_element->ownerDocument->version,
-                               $this->_element->ownerDocument->actualEncoding);
+            $this->_element->ownerDocument->actualEncoding);
         $root = $doc->createElement('rss');
 
         // Use rss version 2.0
@@ -510,6 +507,7 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
      * Send feed to a http client with the correct header
      *
      * @return void
+     *
      * @throws Zend_Feed_Exception if headers have already been sent
      */
     public function send()
@@ -522,9 +520,8 @@ class Zend_Feed_Rss extends Zend_Feed_Abstract
             throw new Zend_Feed_Exception('Cannot send RSS because headers have already been sent.');
         }
 
-        header('Content-Type: application/rss+xml; charset=' . $this->_element->ownerDocument->actualEncoding);
+        header('Content-Type: application/rss+xml; charset='.$this->_element->ownerDocument->actualEncoding);
 
         echo $this->saveXml();
     }
-
 }

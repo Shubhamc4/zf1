@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Serializer
- * @subpackage Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -25,8 +26,7 @@ require_once 'Zend/Serializer/Adapter/AdapterAbstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Serializer
- * @subpackage Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -35,11 +35,10 @@ class Zend_Serializer_Adapter_PhpCode extends Zend_Serializer_Adapter_AdapterAbs
     /**
      * Serialize PHP using var_export
      *
-     * @param  mixed $value
-     * @param  array $opts
+     * @param  mixed  $value
      * @return string
      */
-    public function serialize($value, array $opts = array())
+    public function serialize($value, array $opts = [])
     {
         return var_export($value, true);
     }
@@ -49,19 +48,20 @@ class Zend_Serializer_Adapter_PhpCode extends Zend_Serializer_Adapter_AdapterAbs
      *
      * Warning: this uses eval(), and should likely be avoided.
      *
-     * @param  string $code
-     * @param  array $opts
+     * @param  string  $code
      * @return mixed
+     *
      * @throws Zend_Serializer_Exception on eval error
      */
-    public function unserialize($code, array $opts = array())
+    public function unserialize($code, array $opts = [])
     {
-        $eval = @eval('$ret=' . $code . ';');
+        $eval = @eval('$ret='.$code.';');
         if ($eval === false) {
-                $lastErr = error_get_last();
-                require_once 'Zend/Serializer/Exception.php';
-                throw new Zend_Serializer_Exception('eval failed: ' . $lastErr['message']);
+            $lastErr = error_get_last();
+            require_once 'Zend/Serializer/Exception.php';
+            throw new Zend_Serializer_Exception('eval failed: '.$lastErr['message']);
         }
+
         return $ret;
     }
 }

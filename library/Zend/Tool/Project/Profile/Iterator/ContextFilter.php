@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -24,45 +25,43 @@
  * This class is an iterator that will iterate only over enabled resources
  *
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Tool_Project_Profile_Iterator_ContextFilter extends RecursiveFilterIterator
 {
+    /**
+     * @var array
+     */
+    protected $_acceptTypes = [];
 
     /**
      * @var array
      */
-    protected $_acceptTypes = array();
+    protected $_denyTypes = [];
 
     /**
      * @var array
      */
-    protected $_denyTypes   = array();
+    protected $_acceptNames = [];
 
     /**
      * @var array
      */
-    protected $_acceptNames = array();
+    protected $_denyNames = [];
 
     /**
      * @var array
      */
-    protected $_denyNames   = array();
-
-    /**
-     * @var array
-     */
-    protected $_rawOptions = array();
+    protected $_rawOptions = [];
 
     /**
      * __construct()
      *
-     * @param RecursiveIterator $iterator
-     * @param array $options
+     * @param  array  $options
      */
-    public function __construct(RecursiveIterator $iterator, $options = array())
+    public function __construct(RecursiveIterator $iterator, $options = [])
     {
         parent::__construct($iterator);
         $this->_rawOptions = $options;
@@ -73,17 +72,15 @@ class Zend_Tool_Project_Profile_Iterator_ContextFilter extends RecursiveFilterIt
 
     /**
      * setOptions()
-     *
-     * @param array $options
      */
-    public function setOptions(Array $options)
+    public function setOptions(array $options)
     {
         foreach ($options as $optionName => $optionValue) {
             if (substr($optionName, -1, 1) != 's') {
                 $optionName .= 's';
             }
-            if (method_exists($this, 'set' . $optionName)) {
-                $this->{'set' . $optionName}($optionValue);
+            if (method_exists($this, 'set'.$optionName)) {
+                $this->{'set'.$optionName}($optionValue);
             }
         }
     }
@@ -91,45 +88,47 @@ class Zend_Tool_Project_Profile_Iterator_ContextFilter extends RecursiveFilterIt
     /**
      * setAcceptTypes()
      *
-     * @param array|string $acceptTypes
+     * @param  array|string  $acceptTypes
      * @return Zend_Tool_Project_Profile_Iterator_ContextFilter
      */
     public function setAcceptTypes($acceptTypes)
     {
-        if (!is_array($acceptTypes)) {
-            $acceptTypes = array($acceptTypes);
+        if (! is_array($acceptTypes)) {
+            $acceptTypes = [$acceptTypes];
         }
 
         $this->_acceptTypes = $acceptTypes;
+
         return $this;
     }
 
     /**
      * setDenyTypes()
      *
-     * @param array|string $denyTypes
+     * @param  array|string  $denyTypes
      * @return Zend_Tool_Project_Profile_Iterator_ContextFilter
      */
     public function setDenyTypes($denyTypes)
     {
-        if (!is_array($denyTypes)) {
-            $denyTypes = array($denyTypes);
+        if (! is_array($denyTypes)) {
+            $denyTypes = [$denyTypes];
         }
 
         $this->_denyTypes = $denyTypes;
+
         return $this;
     }
 
     /**
      * setAcceptNames()
      *
-     * @param array|string $acceptNames
+     * @param  array|string  $acceptNames
      * @return Zend_Tool_Project_Profile_Iterator_ContextFilter
      */
     public function setAcceptNames($acceptNames)
     {
-        if (!is_array($acceptNames)) {
-            $acceptNames = array($acceptNames);
+        if (! is_array($acceptNames)) {
+            $acceptNames = [$acceptNames];
         }
 
         foreach ($acceptNames as $n => $v) {
@@ -137,19 +136,20 @@ class Zend_Tool_Project_Profile_Iterator_ContextFilter extends RecursiveFilterIt
         }
 
         $this->_acceptNames = $acceptNames;
+
         return $this;
     }
 
     /**
      * setDenyNames()
      *
-     * @param array|string $denyNames
+     * @param  array|string  $denyNames
      * @return Zend_Tool_Project_Profile_Iterator_ContextFilter
      */
     public function setDenyNames($denyNames)
     {
-        if (!is_array($denyNames)) {
-            $denyNames = array($denyNames);
+        if (! is_array($denyNames)) {
+            $denyNames = [$denyNames];
         }
 
         foreach ($denyNames as $n => $v) {
@@ -157,6 +157,7 @@ class Zend_Tool_Project_Profile_Iterator_ContextFilter extends RecursiveFilterIt
         }
 
         $this->_denyNames = $denyNames;
+
         return $this;
     }
 
@@ -171,7 +172,8 @@ class Zend_Tool_Project_Profile_Iterator_ContextFilter extends RecursiveFilterIt
 
         if (in_array(strtolower($currentItem->getName()), $this->_acceptNames)) {
             return true;
-        } elseif (in_array(strtolower($currentItem->getName()), $this->_denyNames)) {
+        }
+        if (in_array(strtolower($currentItem->getName()), $this->_denyNames)) {
             return false;
         }
 
@@ -194,11 +196,12 @@ class Zend_Tool_Project_Profile_Iterator_ContextFilter extends RecursiveFilterIt
      * getChildren()
      *
      * This is here due to a bug/design issue in PHP
+     *
      * @link
      *
      * @return unknown
      */
-    function getChildren()
+    public function getChildren()
     {
 
         if (empty($this->ref)) {
@@ -207,5 +210,4 @@ class Zend_Tool_Project_Profile_Iterator_ContextFilter extends RecursiveFilterIt
 
         return $this->ref->newInstance($this->getInnerIterator()->getChildren(), $this->_rawOptions);
     }
-
 }

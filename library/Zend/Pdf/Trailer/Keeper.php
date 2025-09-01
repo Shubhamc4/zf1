@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,12 +14,12 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Pdf
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /** Zend_Pdf_Trailer */
 require_once 'Zend/Pdf/Trailer.php';
@@ -27,7 +28,6 @@ require_once 'Zend/Pdf/Trailer.php';
  * PDF file trailer.
  * Stores and provides access to the trailer parced from a PDF file
  *
- * @package    Zend_Pdf
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -47,28 +47,21 @@ class Zend_Pdf_Trailer_Keeper extends Zend_Pdf_Trailer
      */
     private $_prev;
 
-
     /**
      * Object constructor
-     *
-     * @param Zend_Pdf_Element_Dictionary $dict
-     * @param Zend_Pdf_Element_Reference_Context $context
-     * @param Zend_Pdf_Trailer $prev
      */
     public function __construct(Zend_Pdf_Element_Dictionary $dict,
-                                Zend_Pdf_Element_Reference_Context $context,
-                                Zend_Pdf_Trailer $prev = null)
+        Zend_Pdf_Element_Reference_Context $context,
+        ?Zend_Pdf_Trailer $prev = null)
     {
         parent::__construct($dict);
 
         $this->_context = $context;
-        $this->_prev    = $prev;
+        $this->_prev = $prev;
     }
 
     /**
      * Setter for $this->_prev
-     *
-     * @param Zend_Pdf_Trailer_Keeper $prev
      */
     public function setPrev(Zend_Pdf_Trailer_Keeper $prev)
     {
@@ -120,8 +113,9 @@ class Zend_Pdf_Trailer_Keeper extends Zend_Pdf_Trailer
      * Get header of free objects list
      * Returns object number of last free object
      *
+     * @return int
+     *
      * @throws Zend_Pdf_Exception
-     * @return integer
      */
     public function getLastFreeObject()
     {

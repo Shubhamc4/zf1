@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http:framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Item.php 22824 2010-08-09 18:59:54Z renanbr $
  */
 
@@ -27,10 +28,10 @@ require_once 'Zend/Service/Ebay/Finding/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http:framework.zend.com/license/new-bsd     New BSD License
+ *
  * @uses       Zend_Service_Ebay_Finding_Abstract
  */
 class Zend_Service_Ebay_Finding_Search_Item extends Zend_Service_Ebay_Finding_Abstract
@@ -46,7 +47,7 @@ class Zend_Service_Ebay_Finding_Search_Item extends Zend_Service_Ebay_Finding_Ab
      * due to bids being placed on the listing), the immediate payment
      * requirement does not apply.
      *
-     * @var boolean
+     * @var bool
      */
     public $autoPay;
 
@@ -54,7 +55,7 @@ class Zend_Service_Ebay_Finding_Search_Item extends Zend_Service_Ebay_Finding_Ab
      * A unique identification number assigned by eBay to registered nonprofit
      * charity organizations.
      *
-     * @var integer
+     * @var int
      */
     public $charityId;
 
@@ -63,7 +64,8 @@ class Zend_Service_Ebay_Finding_Search_Item extends Zend_Service_Ebay_Finding_Ab
      * is located.
      *
      * @link http://www.iso.org/iso/country_codes/iso_3166_code_lists/english_country_names_and_code_elements.htm
-     * @var  string
+     *
+     * @var string
      */
     public $country;
 
@@ -117,7 +119,8 @@ class Zend_Service_Ebay_Finding_Search_Item extends Zend_Service_Ebay_Finding_Ab
      * (such as the Shopping API), this value is know as the site ID.
      *
      * @link http://developer.ebay.com/DevZone/finding/CallRef/Enums/GlobalIdList.html
-     * @var  string
+     *
+     * @var string
      */
     public $globalId;
 
@@ -157,7 +160,8 @@ class Zend_Service_Ebay_Finding_Search_Item extends Zend_Service_Ebay_Finding_Ab
      *  listings or other Classified Ad listing formats.
      *
      * @link http://developer.ebay.com/DevZone/shopping/docs/CallRef/types/BuyerPaymentMethodCodeType.html
-     * @var  string[]
+     *
+     * @var string[]
      */
     public $paymentMethod;
 
@@ -294,30 +298,30 @@ class Zend_Service_Ebay_Finding_Search_Item extends Zend_Service_Ebay_Finding_Ab
         parent::_init();
         $ns = Zend_Service_Ebay_Finding::XMLNS_FINDING;
 
-        $this->autoPay               = $this->_query(".//$ns:autoPay[1]", 'boolean');
-        $this->charityId             = $this->_query(".//$ns:charityId[1]", 'integer');
-        $this->country               = $this->_query(".//$ns:country[1]", 'string');
-        $this->distance              = $this->_query(".//$ns:distance[1]", 'float');
-        $this->galleryPlusPictureURL = $this->_query(".//$ns:galleryPlusPictureURL", 'string', true);
-        $this->galleryURL            = $this->_query(".//$ns:galleryURL[1]", 'string');
-        $this->globalId              = $this->_query(".//$ns:globalId[1]", 'string');
-        $this->itemId                = $this->_query(".//$ns:itemId[1]", 'string');
-        $this->location              = $this->_query(".//$ns:location[1]", 'string');
-        $this->paymentMethod         = $this->_query(".//$ns:paymentMethod", 'string', true);
-        $this->postalCode            = $this->_query(".//$ns:postalCode[1]", 'string');
-        $this->productId             = $this->_query(".//$ns:productId[1]", 'string');
-        $this->subtitle              = $this->_query(".//$ns:subtitle[1]", 'string');
-        $this->title                 = $this->_query(".//$ns:title[1]", 'string');
-        $this->viewItemURL           = $this->_query(".//$ns:viewItemURL[1]", 'string');
+        $this->autoPay = $this->_query(".//{$ns}:autoPay[1]", 'boolean');
+        $this->charityId = $this->_query(".//{$ns}:charityId[1]", 'integer');
+        $this->country = $this->_query(".//{$ns}:country[1]", 'string');
+        $this->distance = $this->_query(".//{$ns}:distance[1]", 'float');
+        $this->galleryPlusPictureURL = $this->_query(".//{$ns}:galleryPlusPictureURL", 'string', true);
+        $this->galleryURL = $this->_query(".//{$ns}:galleryURL[1]", 'string');
+        $this->globalId = $this->_query(".//{$ns}:globalId[1]", 'string');
+        $this->itemId = $this->_query(".//{$ns}:itemId[1]", 'string');
+        $this->location = $this->_query(".//{$ns}:location[1]", 'string');
+        $this->paymentMethod = $this->_query(".//{$ns}:paymentMethod", 'string', true);
+        $this->postalCode = $this->_query(".//{$ns}:postalCode[1]", 'string');
+        $this->productId = $this->_query(".//{$ns}:productId[1]", 'string');
+        $this->subtitle = $this->_query(".//{$ns}:subtitle[1]", 'string');
+        $this->title = $this->_query(".//{$ns}:title[1]", 'string');
+        $this->viewItemURL = $this->_query(".//{$ns}:viewItemURL[1]", 'string');
 
-        $this->_attributes['distance'] = array(
-            'unit' => $this->_query(".//$ns:distance[1]/@unit[1]", 'string')
-        );
-        $this->_attributes['productId'] = array(
-            'type' => $this->_query(".//$ns:productId[1]/@type[1]", 'string')
-        );
+        $this->_attributes['distance'] = [
+            'unit' => $this->_query(".//{$ns}:distance[1]/@unit[1]", 'string'),
+        ];
+        $this->_attributes['productId'] = [
+            'type' => $this->_query(".//{$ns}:productId[1]/@type[1]", 'string'),
+        ];
 
-        $node = $this->_xPath->query(".//$ns:listingInfo[1]", $this->_dom)->item(0);
+        $node = $this->_xPath->query(".//{$ns}:listingInfo[1]", $this->_dom)->item(0);
         if ($node) {
             /**
              * @see Zend_Service_Ebay_Finding_ListingInfo
@@ -326,7 +330,7 @@ class Zend_Service_Ebay_Finding_Search_Item extends Zend_Service_Ebay_Finding_Ab
             $this->listingInfo = new Zend_Service_Ebay_Finding_ListingInfo($node);
         }
 
-        $node = $this->_xPath->query(".//$ns:primaryCategory[1]", $this->_dom)->item(0);
+        $node = $this->_xPath->query(".//{$ns}:primaryCategory[1]", $this->_dom)->item(0);
         if ($node) {
             /**
              * @see Zend_Service_Ebay_Finding_Category
@@ -335,7 +339,7 @@ class Zend_Service_Ebay_Finding_Search_Item extends Zend_Service_Ebay_Finding_Ab
             $this->primaryCategory = new Zend_Service_Ebay_Finding_Category($node);
         }
 
-        $node = $this->_xPath->query(".//$ns:secondaryCategory[1]", $this->_dom)->item(0);
+        $node = $this->_xPath->query(".//{$ns}:secondaryCategory[1]", $this->_dom)->item(0);
         if ($node) {
             /**
              * @see Zend_Service_Ebay_Finding_Category
@@ -344,7 +348,7 @@ class Zend_Service_Ebay_Finding_Search_Item extends Zend_Service_Ebay_Finding_Ab
             $this->secondaryCategory = new Zend_Service_Ebay_Finding_Category($node);
         }
 
-        $node = $this->_xPath->query(".//$ns:sellerInfo[1]", $this->_dom)->item(0);
+        $node = $this->_xPath->query(".//{$ns}:sellerInfo[1]", $this->_dom)->item(0);
         if ($node) {
             /**
              * @see Zend_Service_Ebay_Finding_SellerInfo
@@ -353,7 +357,7 @@ class Zend_Service_Ebay_Finding_Search_Item extends Zend_Service_Ebay_Finding_Ab
             $this->sellerInfo = new Zend_Service_Ebay_Finding_SellerInfo($node);
         }
 
-        $node = $this->_xPath->query(".//$ns:sellingStatus[1]", $this->_dom)->item(0);
+        $node = $this->_xPath->query(".//{$ns}:sellingStatus[1]", $this->_dom)->item(0);
         if ($node) {
             /**
              * @see Zend_Service_Ebay_Finding_SellingStatus
@@ -362,7 +366,7 @@ class Zend_Service_Ebay_Finding_Search_Item extends Zend_Service_Ebay_Finding_Ab
             $this->sellingStatus = new Zend_Service_Ebay_Finding_SellingStatus($node);
         }
 
-        $node = $this->_xPath->query("./$ns:shippingInfo", $this->_dom)->item(0);
+        $node = $this->_xPath->query("./{$ns}:shippingInfo", $this->_dom)->item(0);
         if ($node) {
             /**
              * @see Zend_Service_Ebay_Finding_ShippingInfo
@@ -371,7 +375,7 @@ class Zend_Service_Ebay_Finding_Search_Item extends Zend_Service_Ebay_Finding_Ab
             $this->shippingInfo = new Zend_Service_Ebay_Finding_ShippingInfo($node);
         }
 
-        $node = $this->_xPath->query(".//$ns:storeInfo[1]", $this->_dom)->item(0);
+        $node = $this->_xPath->query(".//{$ns}:storeInfo[1]", $this->_dom)->item(0);
         if ($node) {
             /**
              * @see Zend_Service_Ebay_Finding_Storefront
@@ -382,13 +386,13 @@ class Zend_Service_Ebay_Finding_Search_Item extends Zend_Service_Ebay_Finding_Ab
     }
 
     /**
-     * @param  Zend_Service_Ebay_Finding $proxy
-     * @param  Zend_Config|array         $options
+     * @param  Zend_Config|array  $options
      * @return Zend_Service_Ebay_Finding_Response_Items
      */
     public function findItemsByProduct(Zend_Service_Ebay_Finding $proxy, $options = null)
     {
         $type = $this->attributes('productId', 'type');
+
         return $proxy->findItemsByProduct($this->productId, $type, $options);
     }
 }

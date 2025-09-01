@@ -14,9 +14,9 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage App
+ *
  * @version    $Id$
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -33,14 +33,12 @@ require_once 'Zend/Http/Client/Adapter/Socket.php';
  * they are sent and received/processed, thus an error could prevent logging.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage App
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_App_LoggingHttpClientAdapterSocket extends Zend_Http_Client_Adapter_Socket
 {
-
     /**
      * The file handle for writing logs
      *
@@ -53,7 +51,7 @@ class Zend_Gdata_App_LoggingHttpClientAdapterSocket extends Zend_Http_Client_Ada
      * as the config param 'logfile'.  This method opens the file for
      * writing if necessary.
      *
-     * @param string $message The message to log
+     * @param  string  $message  The message to log
      */
     protected function log($message)
     {
@@ -66,31 +64,33 @@ class Zend_Gdata_App_LoggingHttpClientAdapterSocket extends Zend_Http_Client_Ada
     /**
      * Connect to the remote server
      *
-     * @param string  $host
-     * @param int     $port
-     * @param boolean $secure
-     * @param int     $timeout
+     * @param  string  $host
+     * @param  int  $port
+     * @param  bool  $secure
+     * @param  int  $timeout
      */
     public function connect($host, $port = 80, $secure = false)
     {
-        $this->log("Connecting to: ${host}:${port}");
+        $this->log("Connecting to: $host:$port");
+
         return parent::connect($host, $port, $secure);
     }
 
     /**
      * Send request to the remote server
      *
-     * @param string        $method
-     * @param Zend_Uri_Http $uri
-     * @param string        $http_ver
-     * @param array         $headers
-     * @param string        $body
+     * @param  string  $method
+     * @param  Zend_Uri_Http  $uri
+     * @param  string  $http_ver
+     * @param  array  $headers
+     * @param  string  $body
      * @return string Request as string
      */
-    public function write($method, $uri, $http_ver = '1.1', $headers = array(), $body = '')
+    public function write($method, $uri, $http_ver = '1.1', $headers = [], $body = '')
     {
         $request = parent::write($method, $uri, $http_ver, $headers, $body);
-        $this->log("\n\n" . $request);
+        $this->log("\n\n".$request);
+
         return $request;
     }
 
@@ -102,18 +102,17 @@ class Zend_Gdata_App_LoggingHttpClientAdapterSocket extends Zend_Http_Client_Ada
     public function read()
     {
         $response = parent::read();
-        $this->log("${response}\n\n");
+        $this->log("$response\n\n");
+
         return $response;
     }
 
     /**
      * Close the connection to the server
-     *
      */
     public function close()
     {
         $this->log("Closing socket\n\n");
         parent::close();
     }
-
 }

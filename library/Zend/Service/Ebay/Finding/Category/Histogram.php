@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Histogram.php 22791 2010-08-04 16:11:47Z renanbr $
  */
 
@@ -27,10 +28,10 @@ require_once 'Zend/Service/Ebay/Finding/Category.php';
 
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @uses       Zend_Service_Ebay_Finding_Category
  */
 class Zend_Service_Ebay_Finding_Category_Histogram extends Zend_Service_Ebay_Finding_Category
@@ -51,7 +52,7 @@ class Zend_Service_Ebay_Finding_Category_Histogram extends Zend_Service_Ebay_Fin
      * The total number of items in the associated category that match the
      * search criteria.
      *
-     * @var integer
+     * @var int
      */
     public $count;
 
@@ -63,9 +64,9 @@ class Zend_Service_Ebay_Finding_Category_Histogram extends Zend_Service_Ebay_Fin
         parent::_init();
         $ns = Zend_Service_Ebay_Finding::XMLNS_FINDING;
 
-        $this->count = $this->_query(".//$ns:count[1]", 'integer');
+        $this->count = $this->_query(".//{$ns}:count[1]", 'integer');
 
-        $nodes = $this->_xPath->query(".//$ns:childCategoryHistogram", $this->_dom);
+        $nodes = $this->_xPath->query(".//{$ns}:childCategoryHistogram", $this->_dom);
         if ($nodes->length > 0) {
             /**
              * @see Zend_Service_Ebay_Finding_Category_Histogram_Set

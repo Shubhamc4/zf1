@@ -14,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category  Zend
- * @package   Zend_Uri
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version   $Id$
  */
 
@@ -24,11 +25,10 @@
  * Abstract class for all Zend_Uri handlers
  *
  * @category  Zend
- * @package   Zend_Uri
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Uri
 {
     /**
@@ -43,23 +43,24 @@ abstract class Zend_Uri
      *
      * @var array
      */
-    static protected $_config = array(
-        'allow_unwise' => false
-    );
+    protected static $_config = [
+        'allow_unwise' => false,
+    ];
 
     /**
      * Return a string representation of this URI.
      *
      * @see    getUri()
+     *
      * @return string
      */
-    #[\ReturnTypeWillChange]
     public function __toString()
     {
         try {
             return $this->getUri();
         } catch (Exception $e) {
             trigger_error($e->getMessage(), E_USER_WARNING);
+
             return '';
         }
     }
@@ -69,8 +70,8 @@ abstract class Zend_Uri
      * by validating it but not returning an object.  Returns TRUE if
      * $uri is a well-formed URI, or FALSE otherwise.
      *
-     * @param  string $uri The URI to check
-     * @return boolean
+     * @param  string  $uri  The URI to check
+     * @return bool
      */
     public static function check($uri)
     {
@@ -87,20 +88,22 @@ abstract class Zend_Uri
      * Create a new Zend_Uri object for a URI.  If building a new URI, then $uri should contain
      * only the scheme (http, ftp, etc).  Otherwise, supply $uri with the complete URI.
      *
-     * @param  string $uri       The URI form which a Zend_Uri instance is created
-     * @param  string $className The name of the class to use in order to manipulate URI
+     * @param  string  $uri  The URI form which a Zend_Uri instance is created
+     * @param  string  $className  The name of the class to use in order to manipulate URI
+     * @return Zend_Uri
+     *
      * @throws Zend_Uri_Exception When an empty string was supplied for the scheme
      * @throws Zend_Uri_Exception When an illegal scheme is supplied
      * @throws Zend_Uri_Exception When the scheme is not supported
      * @throws Zend_Uri_Exception When $className doesn't exist or doesn't implements Zend_Uri
-     * @return Zend_Uri
+     *
      * @link   http://www.faqs.org/rfcs/rfc2396.html
      */
     public static function factory($uri = 'http', $className = null)
     {
         // Separate the scheme from the scheme-specific parts
-        $uri            = explode(':', $uri, 2);
-        $scheme         = strtolower($uri[0]);
+        $uri = explode(':', $uri, 2);
+        $scheme = strtolower($uri[0]);
         $schemeSpecific = isset($uri[1]) === true ? $uri[1] : '';
 
         if (strlen($scheme) === 0) {
@@ -130,7 +133,7 @@ abstract class Zend_Uri
                     // TODO
                 default:
                     require_once 'Zend/Uri/Exception.php';
-                    throw new Zend_Uri_Exception("Scheme \"$scheme\" is not supported");
+                    throw new Zend_Uri_Exception("Scheme \"{$scheme}\" is not supported");
                     break;
             }
         }
@@ -140,14 +143,14 @@ abstract class Zend_Uri
             Zend_Loader::loadClass($className);
         } catch (Exception $e) {
             require_once 'Zend/Uri/Exception.php';
-            throw new Zend_Uri_Exception("\"$className\" not found");
+            throw new Zend_Uri_Exception("\"{$className}\" not found");
         }
 
         $schemeHandler = new $className($scheme, $schemeSpecific);
 
         if (! $schemeHandler instanceof Zend_Uri) {
             require_once 'Zend/Uri/Exception.php';
-            throw new Zend_Uri_Exception("\"$className\" is not an instance of Zend_Uri");
+            throw new Zend_Uri_Exception("\"{$className}\" is not an instance of Zend_Uri");
         }
 
         return $schemeHandler;
@@ -162,22 +165,23 @@ abstract class Zend_Uri
     {
         if (empty($this->_scheme) === false) {
             return $this->_scheme;
-        } else {
-            return false;
         }
+
+        return false;
+
     }
 
     /**
      * Set global configuration options
      *
-     * @param Zend_Config|array $config
+     * @param  Zend_Config|array  $config
      */
-    static public function setConfig($config)
+    public static function setConfig($config)
     {
         if ($config instanceof Zend_Config) {
             $config = $config->toArray();
-        } elseif (!is_array($config)) {
-            throw new Zend_Uri_Exception("Config must be an array or an instance of Zend_Config.");
+        } elseif (! is_array($config)) {
+            throw new Zend_Uri_Exception('Config must be an array or an instance of Zend_Config.');
         }
 
         foreach ($config as $k => $v) {
@@ -189,8 +193,8 @@ abstract class Zend_Uri
      * Zend_Uri and its subclasses cannot be instantiated directly.
      * Use Zend_Uri::factory() to return a new Zend_Uri object.
      *
-     * @param string $scheme         The scheme of the URI
-     * @param string $schemeSpecific The scheme-specific part of the URI
+     * @param  string  $scheme  The scheme of the URI
+     * @param  string  $schemeSpecific  The scheme-specific part of the URI
      */
     abstract protected function __construct($scheme, $schemeSpecific = '');
 
@@ -204,7 +208,7 @@ abstract class Zend_Uri
     /**
      * Returns TRUE if this URI is valid, or FALSE otherwise.
      *
-     * @return boolean
+     * @return bool
      */
     abstract public function valid();
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,19 +14,17 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Pdf
- * @subpackage Destination
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /** Internally used classes */
 require_once 'Zend/Pdf/Element/Array.php';
 require_once 'Zend/Pdf/Element/Name.php';
 require_once 'Zend/Pdf/Element/Numeric.php';
-
 
 /** Zend_Pdf_Destination_Explicit */
 require_once 'Zend/Pdf/Destination/Explicit.php';
@@ -40,8 +39,6 @@ require_once 'Zend/Pdf/Destination/Explicit.php';
  * magnified just enough to fit the entire width of its bounding box within the
  * window.
  *
- * @package    Zend_Pdf
- * @subpackage Destination
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -50,18 +47,19 @@ class Zend_Pdf_Destination_FitBoundingBoxHorizontally extends Zend_Pdf_Destinati
     /**
      * Create destination object
      *
-     * @param Zend_Pdf_Page|integer $page  Page object or page number
-     * @param float $top   Top edge of displayed page
+     * @param  Zend_Pdf_Page|int  $page  Page object or page number
+     * @param  float  $top  Top edge of displayed page
      * @return Zend_Pdf_Destination_FitBoundingBoxHorizontally
+     *
      * @throws Zend_Pdf_Exception
      */
     public static function create($page, $top)
     {
-        $destinationArray = new Zend_Pdf_Element_Array();
+        $destinationArray = new Zend_Pdf_Element_Array;
 
         if ($page instanceof Zend_Pdf_Page) {
             $destinationArray->items[] = $page->getPageDictionary();
-        } else if (is_integer($page)) {
+        } elseif (is_int($page)) {
             $destinationArray->items[] = new Zend_Pdf_Element_Numeric($page);
         } else {
             require_once 'Zend/Pdf/Exception.php';
@@ -87,12 +85,13 @@ class Zend_Pdf_Destination_FitBoundingBoxHorizontally extends Zend_Pdf_Destinati
     /**
      * Set top edge of the displayed page
      *
-     * @param float $top
+     * @param  float  $top
      * @return Zend_Pdf_Action_FitBoundingBoxHorizontally
      */
     public function setTopEdge($top)
     {
         $this->_destinationArray->items[2] = new Zend_Pdf_Element_Numeric($top);
+
         return $this;
     }
 }

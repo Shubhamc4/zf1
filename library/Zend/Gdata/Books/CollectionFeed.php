@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Books
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,20 +30,18 @@ require_once 'Zend/Gdata/Feed.php';
  * Describes a Book Search collection feed
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Books
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Books_CollectionFeed extends Zend_Gdata_Feed
 {
-
     /**
      * Constructor for Zend_Gdata_Books_CollectionFeed which
      * Describes a Book Search collection feed
      *
-     * @param DOMElement $element (optional) DOMElement from which this
-     *          object should be constructed.
+     * @param  DOMElement  $element  (optional) DOMElement from which this
+     *                               object should be constructed.
      */
     public function __construct($element = null)
     {
@@ -57,6 +55,4 @@ class Zend_Gdata_Books_CollectionFeed extends Zend_Gdata_Feed
      * @var string
      */
     protected $_entryClassName = 'Zend_Gdata_Books_CollectionEntry';
-
 }
-

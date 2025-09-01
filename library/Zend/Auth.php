@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,16 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Auth
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
-
 /**
  * @category   Zend
- * @package    Zend_Auth
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -47,16 +48,14 @@ class Zend_Auth
      *
      * @return void
      */
-    protected function __construct()
-    {}
+    protected function __construct() {}
 
     /**
      * Singleton pattern implementation makes "clone" unavailable
      *
      * @return void
      */
-    protected function __clone()
-    {}
+    protected function __clone() {}
 
     /**
      * Returns an instance of Zend_Auth
@@ -68,7 +67,7 @@ class Zend_Auth
     public static function getInstance()
     {
         if (null === self::$_instance) {
-            self::$_instance = new self();
+            self::$_instance = new self;
         }
 
         return self::$_instance;
@@ -88,7 +87,7 @@ class Zend_Auth
              * @see Zend_Auth_Storage_Session
              */
             require_once 'Zend/Auth/Storage/Session.php';
-            $this->setStorage(new Zend_Auth_Storage_Session());
+            $this->setStorage(new Zend_Auth_Storage_Session);
         }
 
         return $this->_storage;
@@ -97,19 +96,18 @@ class Zend_Auth
     /**
      * Sets the persistent storage handler
      *
-     * @param  Zend_Auth_Storage_Interface $storage
      * @return Zend_Auth Provides a fluent interface
      */
     public function setStorage(Zend_Auth_Storage_Interface $storage)
     {
         $this->_storage = $storage;
+
         return $this;
     }
 
     /**
      * Authenticates against the supplied adapter
      *
-     * @param  Zend_Auth_Adapter_Interface $adapter
      * @return Zend_Auth_Result
      */
     public function authenticate(Zend_Auth_Adapter_Interface $adapter)
@@ -134,11 +132,11 @@ class Zend_Auth
     /**
      * Returns true if and only if an identity is available from storage
      *
-     * @return boolean
+     * @return bool
      */
     public function hasIdentity()
     {
-        return !$this->getStorage()->isEmpty();
+        return ! $this->getStorage()->isEmpty();
     }
 
     /**
@@ -151,7 +149,7 @@ class Zend_Auth
         $storage = $this->getStorage();
 
         if ($storage->isEmpty()) {
-            return null;
+            return;
         }
 
         return $storage->read();

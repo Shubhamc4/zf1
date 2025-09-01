@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,15 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -81,7 +83,7 @@ interface Zend_Feed_Writer_Renderer_RendererInterface
      * other objects to gracefully choose whether to execute or not, depending
      * on their appropriateness for the current type, e.g. renderers.
      *
-     * @param string $type
+     * @param  string  $type
      */
     public function setType($type);
 
@@ -97,8 +99,6 @@ interface Zend_Feed_Writer_Renderer_RendererInterface
      * helps simplify the appending of namespace declarations, but also ensures
      * namespaces are added to the root element - not scattered across the entire
      * XML file - may assist namespace unsafe parsers and looks pretty ;).
-     *
-     * @param DOMElement $root
      */
     public function setRootElement(DOMElement $root);
 

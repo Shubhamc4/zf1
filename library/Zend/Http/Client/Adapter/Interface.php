@@ -14,9 +14,9 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage Client_Adapter
+ *
  * @version    $Id$
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -28,8 +28,7 @@
  * tasks of connecting, writing, reading and closing connection to the server.
  *
  * @category   Zend
- * @package    Zend_Http
- * @subpackage Client_Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -38,30 +37,30 @@ interface Zend_Http_Client_Adapter_Interface
     /**
      * Set the configuration array for the adapter
      *
-     * @param array $config
+     * @param  array  $config
      */
-    public function setConfig($config = array());
+    public function setConfig($config = []);
 
     /**
      * Connect to the remote server
      *
-     * @param string  $host
-     * @param int     $port
-     * @param boolean $secure
+     * @param  string  $host
+     * @param  int  $port
+     * @param  bool  $secure
      */
     public function connect($host, $port = 80, $secure = false);
 
     /**
      * Send request to the remote server
      *
-     * @param string        $method
-     * @param Zend_Uri_Http $url
-     * @param string        $http_ver
-     * @param array         $headers
-     * @param string        $body
+     * @param  string  $method
+     * @param  Zend_Uri_Http  $url
+     * @param  string  $http_ver
+     * @param  array  $headers
+     * @param  string  $body
      * @return string Request as text
      */
-    public function write($method, $url, $http_ver = '1.1', $headers = array(), $body = '');
+    public function write($method, $url, $http_ver = '1.1', $headers = [], $body = '');
 
     /**
      * Read response from server
@@ -72,7 +71,6 @@ interface Zend_Http_Client_Adapter_Interface
 
     /**
      * Close the connection to the server
-     *
      */
     public function close();
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Schema
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -34,13 +35,11 @@ require_once 'Zend/Ldap/Node/Schema/AttributeType/Interface.php';
  * schema information on an OpenLDAP server.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Schema
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Ldap_Node_Schema_AttributeType_OpenLdap extends Zend_Ldap_Node_Schema_Item
-    implements Zend_Ldap_Node_Schema_AttributeType_Interface
+class Zend_Ldap_Node_Schema_AttributeType_OpenLdap extends Zend_Ldap_Node_Schema_Item implements Zend_Ldap_Node_Schema_AttributeType_Interface
 {
     /**
      * Gets the attribute name
@@ -71,11 +70,15 @@ class Zend_Ldap_Node_Schema_AttributeType_OpenLdap extends Zend_Ldap_Node_Schema
     {
         if ($this->syntax === null) {
             $parent = $this->getParent();
-            if ($parent === null) return null;
-            else return $parent->getSyntax();
-        } else {
-            return $this->syntax;
+            if ($parent === null) {
+                return;
+            }
+
+            return $parent->getSyntax();
         }
+
+        return $this->syntax;
+
     }
 
     /**
@@ -88,17 +91,21 @@ class Zend_Ldap_Node_Schema_AttributeType_OpenLdap extends Zend_Ldap_Node_Schema
         $maxLength = $this->{'max-length'};
         if ($maxLength === null) {
             $parent = $this->getParent();
-            if ($parent === null) return null;
-            else return $parent->getMaxLength();
-        } else {
-            return (int)$maxLength;
+            if ($parent === null) {
+                return;
+            }
+
+            return $parent->getMaxLength();
         }
+
+        return (int) $maxLength;
+
     }
 
     /**
      * Returns if the attribute is single-valued.
      *
-     * @return boolean
+     * @return bool
      */
     public function isSingleValued()
     {

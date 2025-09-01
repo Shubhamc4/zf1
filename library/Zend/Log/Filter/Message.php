@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Log
- * @subpackage Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -25,10 +26,10 @@ require_once 'Zend/Log/Filter/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Log
- * @subpackage Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 class Zend_Log_Filter_Message extends Zend_Log_Filter_Abstract
@@ -41,15 +42,16 @@ class Zend_Log_Filter_Message extends Zend_Log_Filter_Abstract
     /**
      * Filter out any log messages not matching $regexp.
      *
-     * @param  string  $regexp     Regular expression to test the log message
+     * @param  string  $regexp  Regular expression to test the log message
      * @return void
+     *
      * @throws Zend_Log_Exception
      */
     public function __construct($regexp)
     {
         if (@preg_match($regexp, '') === false) {
             require_once 'Zend/Log/Exception.php';
-            throw new Zend_Log_Exception("Invalid regular expression '$regexp'");
+            throw new Zend_Log_Exception("Invalid regular expression '{$regexp}'");
         }
         $this->_regexp = $regexp;
     }
@@ -57,15 +59,15 @@ class Zend_Log_Filter_Message extends Zend_Log_Filter_Abstract
     /**
      * Create a new instance of Zend_Log_Filter_Message
      *
-     * @param  array|Zend_Config $config
+     * @param  array|Zend_Config  $config
      * @return Zend_Log_Filter_Message
      */
-    static public function factory($config)
+    public static function factory($config)
     {
         $config = self::_parseConfig($config);
-        $config = array_merge(array(
-            'regexp' => null
-        ), $config);
+        $config = array_merge([
+            'regexp' => null,
+        ], $config);
 
         return new self(
             $config['regexp']
@@ -75,8 +77,8 @@ class Zend_Log_Filter_Message extends Zend_Log_Filter_Abstract
     /**
      * Returns TRUE to accept the message, FALSE to block it.
      *
-     * @param  array    $event    event data
-     * @return boolean            accepted?
+     * @param  array  $event  event data
+     * @return bool accepted?
      */
     public function accept($event)
     {

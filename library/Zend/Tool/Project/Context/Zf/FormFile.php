@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -32,13 +33,12 @@ require_once 'Zend/Tool/Project/Context/Zf/AbstractClassFile.php';
  * items within a specific project.
  *
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Tool_Project_Context_Zf_FormFile extends Zend_Tool_Project_Context_Zf_AbstractClassFile
 {
-
     /**
      * @var string
      */
@@ -51,12 +51,11 @@ class Zend_Tool_Project_Context_Zf_FormFile extends Zend_Tool_Project_Context_Zf
 
     /**
      * init()
-     *
      */
     public function init()
     {
         $this->_formName = $this->_resource->getAttribute('formName');
-        $this->_filesystemName = ucfirst($this->_formName) . '.php';
+        $this->_filesystemName = ucfirst($this->_formName).'.php';
         parent::init();
     }
 
@@ -67,9 +66,9 @@ class Zend_Tool_Project_Context_Zf_FormFile extends Zend_Tool_Project_Context_Zf
      */
     public function getPersistentAttributes()
     {
-        return array(
-            'formName' => $this->getFormName()
-            );
+        return [
+            'formName' => $this->getFormName(),
+        ];
     }
 
     /**
@@ -92,22 +91,23 @@ class Zend_Tool_Project_Context_Zf_FormFile extends Zend_Tool_Project_Context_Zf
 
         $className = $this->getFullClassName($this->_formName, 'Form');
 
-        $codeGenFile = new Zend_CodeGenerator_Php_File(array(
+        $codeGenFile = new Zend_CodeGenerator_Php_File([
             'fileName' => $this->getPath(),
-            'classes' => array(
-                new Zend_CodeGenerator_Php_Class(array(
+            'classes' => [
+                new Zend_CodeGenerator_Php_Class([
                     'name' => $className,
                     'extendedClass' => 'Zend_Form',
-                    'methods' => array(
-                        new Zend_CodeGenerator_Php_Method(array(
+                    'methods' => [
+                        new Zend_CodeGenerator_Php_Method([
                             'name' => 'init',
                             'body' => '/* Form Elements & Other Definitions Here ... */',
-                            ))
-                        )
+                        ]),
+                    ],
 
-                    ))
-                )
-            ));
+                ]),
+            ],
+        ]);
+
         return $codeGenFile->generate();
     }
 }

@@ -14,24 +14,21 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Amazon
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * @see Zend_Service_Amazon
  */
 require_once 'Zend/Service/Amazon.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Amazon
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -42,7 +39,7 @@ class Zend_Service_Amazon_Query extends Zend_Service_Amazon
      *
      * @var array
      */
-    protected $_search = array();
+    protected $_search = [];
 
     /**
      * Search index
@@ -54,23 +51,25 @@ class Zend_Service_Amazon_Query extends Zend_Service_Amazon
     /**
      * Prepares query parameters
      *
-     * @param  string $method
+     * @param  string  $method
      * @param  array  $args
-     * @throws Zend_Service_Exception
      * @return Zend_Service_Amazon_Query Provides a fluent interface
+     *
+     * @throws Zend_Service_Exception
      */
     public function __call($method, $args)
     {
         if (strtolower($method) === 'asin') {
             $this->_searchIndex = 'asin';
             $this->_search['ItemId'] = $args[0];
+
             return $this;
         }
 
         if (strtolower($method) === 'category') {
             $this->_searchIndex = $args[0];
             $this->_search['SearchIndex'] = $args[0];
-        } else if (isset($this->_search['SearchIndex']) || $this->_searchIndex !== null || $this->_searchIndex === 'asin') {
+        } elseif (isset($this->_search['SearchIndex']) || $this->_searchIndex !== null || $this->_searchIndex === 'asin') {
             $this->_search[$method] = $args[0];
         } else {
             /**
@@ -93,6 +92,7 @@ class Zend_Service_Amazon_Query extends Zend_Service_Amazon
         if ($this->_searchIndex === 'asin') {
             return $this->itemLookup($this->_search['ItemId'], $this->_search);
         }
+
         return $this->itemSearch($this->_search);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,41 +14,42 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service_Amazon
- * @subpackage SimpleDb
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Response.php 17539 2009-08-10 22:51:26Z mikaelkael $
  */
 
 /**
  * @category   Zend
- * @package    Zend_Service_Amazon
- * @subpackage SimpleDb
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Service_Amazon_SimpleDb_Attribute
 {
     protected $_itemName;
+
     protected $_name;
+
     protected $_values;
 
     /**
      * Constructor
      *
-     * @param  string $itemName
-     * @param  string $name
-     * @param  array $values
+     * @param  string  $itemName
+     * @param  string  $name
+     * @param  array  $values
      * @return void
      */
-    function __construct($itemName, $name, $values)
+    public function __construct($itemName, $name, $values)
     {
         $this->_itemName = $itemName;
-        $this->_name     = $name;
+        $this->_name = $name;
 
-        if (!is_array($values)) {
-            $this->_values = array($values);
+        if (! is_array($values)) {
+            $this->_values = [$values];
         } else {
             $this->_values = $values;
         }
@@ -58,7 +60,7 @@ class Zend_Service_Amazon_SimpleDb_Attribute
      *
      * @return string
      */
-    public function getItemName ()
+    public function getItemName()
     {
         return $this->_itemName;
     }
@@ -78,7 +80,7 @@ class Zend_Service_Amazon_SimpleDb_Attribute
      *
      * @return string
      */
-    public function getName ()
+    public function getName()
     {
         return $this->_name;
     }
@@ -86,13 +88,13 @@ class Zend_Service_Amazon_SimpleDb_Attribute
     /**
      * Add value
      *
-     * @param  mixed $value
+     * @param  mixed  $value
      * @return void
      */
     public function addValue($value)
     {
         if (is_array($value)) {
-             $this->_values += $value;
+            $this->_values += $value;
         } else {
             $this->_values[] = $value;
         }
@@ -100,8 +102,8 @@ class Zend_Service_Amazon_SimpleDb_Attribute
 
     public function setValues($values)
     {
-        if (!is_array($values)) {
-            $values = array($values);
+        if (! is_array($values)) {
+            $values = [$values];
         }
         $this->_values = $values;
     }

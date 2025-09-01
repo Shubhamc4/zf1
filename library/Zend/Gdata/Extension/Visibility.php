@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gdata
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,20 +30,20 @@ require_once 'Zend/Gdata/Extension.php';
  * Data model class to represent an entry's visibility
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gdata
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Extension_Visibility extends Zend_Gdata_Extension
 {
-
     protected $_rootElement = 'visibility';
+
     protected $_value = null;
 
     /**
      * Constructs a new Zend_Gdata_Extension_Visibility object.
-     * @param bool $value (optional) Visibility value as URI.
+     *
+     * @param  bool  $value  (optional) Visibility value as URI.
      */
     public function __construct($value = null)
     {
@@ -57,9 +57,9 @@ class Zend_Gdata_Extension_Visibility extends Zend_Gdata_Extension
      * and eventually XML text for sending to the server upon updates, or
      * for application storage/persistence.
      *
-     * @param DOMDocument $doc The DOMDocument used to construct DOMElements
+     * @param  DOMDocument  $doc  The DOMDocument used to construct DOMElements
      * @return DOMElement The DOMElement representing this element and all
-     * child properties.
+     *                    child properties.
      */
     public function getDOM($doc = null, $majorVersion = 1, $minorVersion = null)
     {
@@ -67,6 +67,7 @@ class Zend_Gdata_Extension_Visibility extends Zend_Gdata_Extension
         if ($this->_value !== null) {
             $element->setAttribute('value', $this->_value);
         }
+
         return $element;
     }
 
@@ -75,16 +76,16 @@ class Zend_Gdata_Extension_Visibility extends Zend_Gdata_Extension
      * instance members.  If no mapping is defined, the name and value are
      * stored in an array.
      *
-     * @param DOMNode $attribute The DOMNode attribute needed to be handled
+     * @param  DOMNode  $attribute  The DOMNode attribute needed to be handled
      */
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'value':
-            $this->_value = $attribute->nodeValue;
-            break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            case 'value':
+                $this->_value = $attribute->nodeValue;
+                break;
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 
@@ -101,12 +102,13 @@ class Zend_Gdata_Extension_Visibility extends Zend_Gdata_Extension
     /**
      * Set the value for this element's Value attribute.
      *
-     * @param bool $value The desired value for this attribute.
+     * @param  bool  $value  The desired value for this attribute.
      * @return Zend_Gdata_Extension_Visibility The element being modified.
      */
     public function setValue($value)
     {
         $this->_value = $value;
+
         return $this;
     }
 
@@ -118,6 +120,4 @@ class Zend_Gdata_Extension_Visibility extends Zend_Gdata_Extension
     {
         return $this->getValue();
     }
-
 }
-

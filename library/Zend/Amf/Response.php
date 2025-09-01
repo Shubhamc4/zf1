@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Amf
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -31,7 +33,6 @@ require_once 'Zend/Amf/Parse/Amf0/Serializer.php';
 /**
  * Handles converting the PHP object ready for response back into AMF
  *
- * @package    Zend_Amf
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -44,15 +45,17 @@ class Zend_Amf_Response
 
     /**
      * Array of Zend_Amf_Value_MessageBody objects
+     *
      * @var array
      */
-    protected $_bodies = array();
+    protected $_bodies = [];
 
     /**
      * Array of Zend_Amf_Value_MessageHeader objects
+     *
      * @var array
      */
-    protected $_headers = array();
+    protected $_headers = [];
 
     /**
      * @var Zend_Amf_Parse_OutputStream
@@ -66,8 +69,9 @@ class Zend_Amf_Response
      */
     public function finalize()
     {
-        $this->_outputStream = new Zend_Amf_Parse_OutputStream();
+        $this->_outputStream = new Zend_Amf_Parse_OutputStream;
         $this->writeMessage($this->_outputStream);
+
         return $this;
     }
 
@@ -75,14 +79,13 @@ class Zend_Amf_Response
      * Serialize the PHP data types back into Actionscript and
      * create and AMF stream.
      *
-     * @param  Zend_Amf_Parse_OutputStream $stream
      * @return Zend_Amf_Response
      */
     public function writeMessage(Zend_Amf_Parse_OutputStream $stream)
     {
         $objectEncoding = $this->_objectEncoding;
 
-        //Write encoding to start of stream. Preamble byte is written of two byte Unsigned Short
+        // Write encoding to start of stream. Preamble byte is written of two byte Unsigned Short
         $stream->writeByte(0x00);
         $stream->writeByte($objectEncoding);
 
@@ -150,12 +153,12 @@ class Zend_Amf_Response
     /**
      * Add an AMF body to be sent to the Flash Player
      *
-     * @param  Zend_Amf_Value_MessageBody $body
      * @return Zend_Amf_Response
      */
     public function addAmfBody(Zend_Amf_Value_MessageBody $body)
     {
         $this->_bodies[] = $body;
+
         return $this;
     }
 
@@ -172,12 +175,12 @@ class Zend_Amf_Response
     /**
      * Add an AMF Header to be sent back to the flash player
      *
-     * @param  Zend_Amf_Value_MessageHeader $header
      * @return Zend_Amf_Response
      */
     public function addAmfHeader(Zend_Amf_Value_MessageHeader $header)
     {
         $this->_headers[] = $header;
+
         return $this;
     }
 
@@ -194,12 +197,13 @@ class Zend_Amf_Response
     /**
      * Set the AMF encoding that will be used for serialization
      *
-     * @param  int $encoding
+     * @param  int  $encoding
      * @return Zend_Amf_Response
      */
     public function setObjectEncoding($encoding)
     {
         $this->_objectEncoding = $encoding;
+
         return $this;
     }
 }

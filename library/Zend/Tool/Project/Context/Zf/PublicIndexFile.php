@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -32,13 +33,12 @@ require_once 'Zend/Tool/Project/Context/Filesystem/File.php';
  * items within a specific project.
  *
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Tool_Project_Context_Zf_PublicIndexFile extends Zend_Tool_Project_Context_Filesystem_File
 {
-
     /**
      * @var string
      */
@@ -61,8 +61,8 @@ class Zend_Tool_Project_Context_Zf_PublicIndexFile extends Zend_Tool_Project_Con
      */
     public function getContents()
     {
-        $codeGenerator = new Zend_CodeGenerator_Php_File(array(
-            'body' => <<<EOS
+        $codeGenerator = new Zend_CodeGenerator_Php_File([
+            'body' => <<<'EOS'
 // Define path to application directory
 defined('APPLICATION_PATH')
     || define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));
@@ -81,15 +81,15 @@ set_include_path(implode(PATH_SEPARATOR, array(
 require_once 'Zend/Application.php';
 
 // Create application, bootstrap, and run
-\$application = new Zend_Application(
+$application = new Zend_Application(
     APPLICATION_ENV,
     APPLICATION_PATH . '/configs/application.ini'
 );
-\$application->bootstrap()
+$application->bootstrap()
             ->run();
 EOS
-            ));
+        ]);
+
         return $codeGenerator->generate();
     }
-
 }

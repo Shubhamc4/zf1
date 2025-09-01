@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,8 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Dojo
- * @subpackage Form_Element
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -26,16 +26,17 @@ require_once 'Zend/Dojo/Form/Element/TextBox.php';
  * ValidationTextBox dijit
  *
  * @uses       Zend_Dojo_Form_Element_TextBox
- * @package    Zend_Dojo
- * @subpackage Form_Element
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 class Zend_Dojo_Form_Element_ValidationTextBox extends Zend_Dojo_Form_Element_TextBox
 {
     /**
      * Use ValidationTextBox dijit view helper
+     *
      * @var string
      */
     public $helper = 'ValidationTextBox';
@@ -43,12 +44,13 @@ class Zend_Dojo_Form_Element_ValidationTextBox extends Zend_Dojo_Form_Element_Te
     /**
      * Set invalidMessage
      *
-     * @param  string $message
+     * @param  string  $message
      * @return Zend_Dojo_Form_Element_ValidationTextBox
      */
     public function setInvalidMessage($message)
     {
         $this->setDijitParam('invalidMessage', (string) $message);
+
         return $this;
     }
 
@@ -65,12 +67,13 @@ class Zend_Dojo_Form_Element_ValidationTextBox extends Zend_Dojo_Form_Element_Te
     /**
      * Set promptMessage
      *
-     * @param  string $message
+     * @param  string  $message
      * @return Zend_Dojo_Form_Element_ValidationTextBox
      */
     public function setPromptMessage($message)
     {
         $this->setDijitParam('promptMessage', (string) $message);
+
         return $this;
     }
 
@@ -87,12 +90,13 @@ class Zend_Dojo_Form_Element_ValidationTextBox extends Zend_Dojo_Form_Element_Te
     /**
      * Set regExp
      *
-     * @param  string $regexp
+     * @param  string  $regexp
      * @return Zend_Dojo_Form_Element_ValidationTextBox
      */
     public function setRegExp($regexp)
     {
         $this->setDijitParam('regExp', (string) $regexp);
+
         return $this;
     }
 
@@ -109,8 +113,8 @@ class Zend_Dojo_Form_Element_ValidationTextBox extends Zend_Dojo_Form_Element_Te
     /**
      * Set an individual constraint
      *
-     * @param  string $key
-     * @param  mixed $value
+     * @param  string  $key
+     * @param  mixed  $value
      * @return Zend_Dojo_Form_Element_ValidationTextBox
      */
     public function setConstraint($key, $value)
@@ -118,6 +122,7 @@ class Zend_Dojo_Form_Element_ValidationTextBox extends Zend_Dojo_Form_Element_Te
         $constraints = $this->getConstraints();
         $constraints[(string) $key] = $value;
         $this->setConstraints($constraints);
+
         return $this;
     }
 
@@ -127,42 +132,44 @@ class Zend_Dojo_Form_Element_ValidationTextBox extends Zend_Dojo_Form_Element_Te
      * Refer to Dojo dijit.form.ValidationTextBox documentation for valid
      * structure.
      *
-     * @param  array $constraints
      * @return Zend_Dojo_Form_Element_ValidationTextBox
      */
     public function setConstraints(array $constraints)
     {
         $tmp = $this->getConstraints();
         $constraints = array_merge($tmp, $constraints);
-        array_walk_recursive($constraints, array($this, '_castBoolToString'));
+        array_walk_recursive($constraints, [$this, '_castBoolToString']);
         $this->setDijitParam('constraints', $constraints);
+
         return $this;
     }
 
     /**
      * Is the given constraint set?
      *
-     * @param  string $key
+     * @param  string  $key
      * @return bool
      */
     public function hasConstraint($key)
     {
         $constraints = $this->getConstraints();
-        return array_key_exists((string)$key, $constraints);
+
+        return array_key_exists((string) $key, $constraints);
     }
 
     /**
      * Get an individual constraint
      *
-     * @param  string $key
+     * @param  string  $key
      * @return mixed
      */
     public function getConstraint($key)
     {
         $key = (string) $key;
-        if (!$this->hasConstraint($key)) {
-            return null;
+        if (! $this->hasConstraint($key)) {
+            return;
         }
+
         return $this->dijitParams['constraints'][$key];
     }
 
@@ -176,13 +183,14 @@ class Zend_Dojo_Form_Element_ValidationTextBox extends Zend_Dojo_Form_Element_Te
         if ($this->hasDijitParam('constraints')) {
             return $this->getDijitParam('constraints');
         }
-        return array();
+
+        return [];
     }
 
     /**
      * Remove a single constraint
      *
-     * @param  string $key
+     * @param  string  $key
      * @return Zend_Dojo_Form_Element_ValidationTextBox
      */
     public function removeConstraint($key)
@@ -191,6 +199,7 @@ class Zend_Dojo_Form_Element_ValidationTextBox extends Zend_Dojo_Form_Element_Te
         if ($this->hasConstraint($key)) {
             unset($this->dijitParams['constraints'][$key]);
         }
+
         return $this;
     }
 
@@ -207,8 +216,8 @@ class Zend_Dojo_Form_Element_ValidationTextBox extends Zend_Dojo_Form_Element_Te
     /**
      * Cast a boolean value to a string
      *
-     * @param  mixed $item
-     * @param  string $key
+     * @param  mixed  $item
+     * @param  string  $key
      * @return void
      */
     protected function _castBoolToString(&$item, $key)

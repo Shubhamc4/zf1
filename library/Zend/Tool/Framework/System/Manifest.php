@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -31,32 +32,30 @@ require_once 'Zend/Tool/Framework/System/Action/Delete.php';
 
 /**
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Tool_Framework_System_Manifest
-    implements Zend_Tool_Framework_Manifest_ProviderManifestable, Zend_Tool_Framework_Manifest_ActionManifestable
+class Zend_Tool_Framework_System_Manifest implements Zend_Tool_Framework_Manifest_ActionManifestable, Zend_Tool_Framework_Manifest_ProviderManifestable
 {
-
     public function getProviders()
     {
-        $providers = array(
-            new Zend_Tool_Framework_System_Provider_Version(),
-            new Zend_Tool_Framework_System_Provider_Config(),
-            new Zend_Tool_Framework_System_Provider_Phpinfo(),
-            new Zend_Tool_Framework_System_Provider_Manifest()
-            );
+        $providers = [
+            new Zend_Tool_Framework_System_Provider_Version,
+            new Zend_Tool_Framework_System_Provider_Config,
+            new Zend_Tool_Framework_System_Provider_Phpinfo,
+            new Zend_Tool_Framework_System_Provider_Manifest,
+        ];
 
         return $providers;
     }
 
     public function getActions()
     {
-        $actions = array(
-            new Zend_Tool_Framework_System_Action_Create(),
-            new Zend_Tool_Framework_System_Action_Delete()
-            );
+        $actions = [
+            new Zend_Tool_Framework_System_Action_Create,
+            new Zend_Tool_Framework_System_Action_Delete,
+        ];
 
         return $actions;
     }

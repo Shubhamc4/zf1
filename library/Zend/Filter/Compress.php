@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -28,7 +30,7 @@ require_once 'Zend/Filter/Interface.php';
  * Compresses a given string
  *
  * @category   Zend
- * @package    Zend_Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -42,12 +44,12 @@ class Zend_Filter_Compress implements Zend_Filter_Interface
     /**
      * Compression adapter constructor options
      */
-    protected $_adapterOptions = array();
+    protected $_adapterOptions = [];
 
     /**
      * Class constructor
      *
-     * @param string|array $options (Optional) Options to set
+     * @param  string|array  $options  (Optional) Options to set
      */
     public function __construct($options = null)
     {
@@ -66,7 +68,6 @@ class Zend_Filter_Compress implements Zend_Filter_Interface
     /**
      * Set filter setate
      *
-     * @param  array $options
      * @return Zend_Filter_Compress
      */
     public function setOptions(array $options)
@@ -75,11 +76,12 @@ class Zend_Filter_Compress implements Zend_Filter_Interface
             if ($key == 'options') {
                 $key = 'adapterOptions';
             }
-            $method = 'set' . ucfirst($key);
+            $method = 'set'.ucfirst($key);
             if (method_exists($this, $method)) {
                 $this->$method($value);
             }
         }
+
         return $this;
     }
 
@@ -96,19 +98,20 @@ class Zend_Filter_Compress implements Zend_Filter_Interface
 
         $adapter = $this->_adapter;
         $options = $this->getAdapterOptions();
-        if (!class_exists($adapter)) {
+        if (! class_exists($adapter)) {
             require_once 'Zend/Loader.php';
-            if (Zend_Loader::isReadable('Zend/Filter/Compress/' . ucfirst($adapter) . '.php')) {
-                $adapter = 'Zend_Filter_Compress_' . ucfirst($adapter);
+            if (Zend_Loader::isReadable('Zend/Filter/Compress/'.ucfirst($adapter).'.php')) {
+                $adapter = 'Zend_Filter_Compress_'.ucfirst($adapter);
             }
             Zend_Loader::loadClass($adapter);
         }
 
         $this->_adapter = new $adapter($options);
-        if (!$this->_adapter instanceof Zend_Filter_Compress_CompressInterface) {
+        if (! $this->_adapter instanceof Zend_Filter_Compress_CompressInterface) {
             require_once 'Zend/Filter/Exception.php';
-            throw new Zend_Filter_Exception("Compression adapter '" . $adapter . "' does not implement Zend_Filter_Compress_CompressInterface");
+            throw new Zend_Filter_Exception("Compression adapter '".$adapter."' does not implement Zend_Filter_Compress_CompressInterface");
         }
+
         return $this->_adapter;
     }
 
@@ -125,16 +128,17 @@ class Zend_Filter_Compress implements Zend_Filter_Interface
     /**
      * Sets compression adapter
      *
-     * @param  string|Zend_Filter_Compress_CompressInterface $adapter Adapter to use
+     * @param  string|Zend_Filter_Compress_CompressInterface  $adapter  Adapter to use
      * @return Zend_Filter_Compress
      */
     public function setAdapter($adapter)
     {
         if ($adapter instanceof Zend_Filter_Compress_CompressInterface) {
             $this->_adapter = $adapter;
+
             return $this;
         }
-        if (!is_string($adapter)) {
+        if (! is_string($adapter)) {
             require_once 'Zend/Filter/Exception.php';
             throw new Zend_Filter_Exception('Invalid adapter provided; must be string or instance of Zend_Filter_Compress_CompressInterface');
         }
@@ -156,30 +160,30 @@ class Zend_Filter_Compress implements Zend_Filter_Interface
     /**
      * Set adapter options
      *
-     * @param  array $options
      * @return void
      */
     public function setAdapterOptions(array $options)
     {
         $this->_adapterOptions = $options;
+
         return $this;
     }
 
     /**
      * Calls adapter methods
      *
-     * @param string       $method  Method to call
-     * @param string|array $options Options for this method
+     * @param  string  $method  Method to call
+     * @param  string|array  $options  Options for this method
      */
     public function __call($method, $options)
     {
         $adapter = $this->getAdapter();
-        if (!method_exists($adapter, $method)) {
+        if (! method_exists($adapter, $method)) {
             require_once 'Zend/Filter/Exception.php';
             throw new Zend_Filter_Exception("Unknown method '{$method}'");
         }
 
-        return call_user_func_array(array($adapter, $method), $options);
+        return call_user_func_array([$adapter, $method], $options);
     }
 
     /**
@@ -187,7 +191,7 @@ class Zend_Filter_Compress implements Zend_Filter_Interface
      *
      * Compresses the content $value with the defined settings
      *
-     * @param  string $value Content to compress
+     * @param  string  $value  Content to compress
      * @return string The compressed content
      */
     public function filter($value)

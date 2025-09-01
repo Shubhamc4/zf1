@@ -14,18 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Amazon
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
-
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Amazon
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -84,37 +82,37 @@ class Zend_Service_Amazon_Item
     /**
      * @var Zend_Service_Amazon_CustomerReview[]
      */
-    public $CustomerReviews = array();
+    public $CustomerReviews = [];
 
     /**
      * @var Zend_Service_Amazon_SimilarProducts[]
      */
-    public $SimilarProducts = array();
+    public $SimilarProducts = [];
 
     /**
      * @var Zend_Service_Amazon_Accessories[]
      */
-    public $Accessories = array();
+    public $Accessories = [];
 
     /**
      * @var array
      */
-    public $Tracks = array();
+    public $Tracks = [];
 
     /**
      * @var Zend_Service_Amazon_ListmaniaLists[]
      */
-    public $ListmaniaLists = array();
+    public $ListmaniaLists = [];
 
     protected $_dom;
-
 
     /**
      * Parse the given <Item> element
      *
-     * @param  null|DOMElement $dom
+     * @param  null|DOMElement  $dom
      * @return void
-     * @throws    Zend_Service_Amazon_Exception
+     *
+     * @throws Zend_Service_Amazon_Exception
      *
      * @group ZF-9547
      */
@@ -124,7 +122,7 @@ class Zend_Service_Amazon_Item
             require_once 'Zend/Service/Amazon/Exception.php';
             throw new Zend_Service_Amazon_Exception('Item element is empty');
         }
-        if (!$dom instanceof DOMElement) {
+        if (! $dom instanceof DOMElement) {
             require_once 'Zend/Service/Amazon/Exception.php';
             throw new Zend_Service_Amazon_Exception('Item is not a valid DOM element');
         }
@@ -150,7 +148,7 @@ class Zend_Service_Amazon_Item
                     if (is_array($this->{$v->parentNode->tagName})) {
                         array_push($this->{$v->parentNode->tagName}, (string) $v->data);
                     } else {
-                        $this->{$v->parentNode->tagName} = array($this->{$v->parentNode->tagName}, (string) $v->data);
+                        $this->{$v->parentNode->tagName} = [$this->{$v->parentNode->tagName}, (string) $v->data];
                     }
                 } else {
                     $this->{$v->parentNode->tagName} = (string) $v->data;
@@ -158,8 +156,8 @@ class Zend_Service_Amazon_Item
             }
         }
 
-        foreach (array('SmallImage', 'MediumImage', 'LargeImage') as $im) {
-            $result = $xpath->query("./az:ImageSets/az:ImageSet[position() = 1]/az:$im", $dom);
+        foreach (['SmallImage', 'MediumImage', 'LargeImage'] as $im) {
+            $result = $xpath->query("./az:ImageSets/az:ImageSet[position() = 1]/az:{$im}", $dom);
             if ($result->length == 1) {
                 /**
                  * @see Zend_Service_Amazon_Image
@@ -229,7 +227,7 @@ class Zend_Service_Amazon_Item
                     $this->Tracks[] = (string) $t->data;
                 }
             }
-        } else if ($result->length == 1) {
+        } elseif ($result->length == 1) {
             foreach ($xpath->query('./*/text()', $result->item(0)) as $t) {
                 $this->Tracks[] = (string) $t->data;
             }
@@ -258,7 +256,6 @@ class Zend_Service_Amazon_Item
 
         $this->_dom = $dom;
     }
-
 
     /**
      * Returns the item's original XML

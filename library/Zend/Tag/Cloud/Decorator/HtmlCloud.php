@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tag
- * @subpackage Cloud
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,8 +30,9 @@ require_once 'Zend/Tag/Cloud/Decorator/Cloud.php';
  * Simple HTML decorator for clouds
  *
  * @category  Zend
- * @package   Zend_Tag
+ *
  * @uses      Zend_Tag_Cloud_Decorator_Cloud
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -46,9 +48,9 @@ class Zend_Tag_Cloud_Decorator_HtmlCloud extends Zend_Tag_Cloud_Decorator_Cloud
      *
      * @var array
      */
-    protected $_htmlTags = array(
-        'ul' => array('class' => 'Zend_Tag_Cloud')
-    );
+    protected $_htmlTags = [
+        'ul' => ['class' => 'Zend_Tag_Cloud'],
+    ];
 
     /**
      * Separator for the single tags
@@ -76,18 +78,19 @@ class Zend_Tag_Cloud_Decorator_HtmlCloud extends Zend_Tag_Cloud_Decorator_Cloud
     public function setEncoding($value)
     {
         $this->_encoding = (string) $value;
+
         return $this;
     }
 
     /**
      * Set the HTML tags surrounding all tags
      *
-     * @param  array $htmlTags
      * @return Zend_Tag_Cloud_Decorator_HtmlCloud
      */
     public function setHtmlTags(array $htmlTags)
     {
         $this->_htmlTags = $htmlTags;
+
         return $this;
     }
 
@@ -110,6 +113,7 @@ class Zend_Tag_Cloud_Decorator_HtmlCloud extends Zend_Tag_Cloud_Decorator_Cloud
     public function setSeparator($separator)
     {
         $this->_separator = $separator;
+
         return $this;
     }
 
@@ -126,7 +130,6 @@ class Zend_Tag_Cloud_Decorator_HtmlCloud extends Zend_Tag_Cloud_Decorator_Cloud
     /**
      * Defined by Zend_Tag_Cloud_Decorator_Cloud
      *
-     * @param  array $tags
      * @return string
      */
     public function render(array $tags)
@@ -136,14 +139,14 @@ class Zend_Tag_Cloud_Decorator_HtmlCloud extends Zend_Tag_Cloud_Decorator_Cloud
         $enc = $this->getEncoding();
         foreach ($this->getHtmlTags() as $key => $data) {
             if (is_array($data)) {
-                $htmlTag    = $key;
+                $htmlTag = $key;
                 $attributes = '';
 
                 foreach ($data as $param => $value) {
-                    $attributes .= ' ' . $param . '="' . htmlspecialchars($value, ENT_COMPAT, $enc) . '"';
+                    $attributes .= ' '.$param.'="'.htmlspecialchars($value, ENT_COMPAT, $enc).'"';
                 }
             } else {
-                $htmlTag    = $data;
+                $htmlTag = $data;
                 $attributes = '';
             }
 

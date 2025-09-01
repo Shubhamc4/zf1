@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,19 +14,19 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Config
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * @category   Zend
- * @package    Zend_Config
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Config_Writer
 {
     /**
@@ -33,9 +34,9 @@ abstract class Zend_Config_Writer
      *
      * @var array
      */
-    protected $_skipOptions = array(
-        'options'
-    );
+    protected $_skipOptions = [
+        'options',
+    ];
 
     /**
      * Config object to write
@@ -48,10 +49,8 @@ abstract class Zend_Config_Writer
      * Create a new adapter
      *
      * $options can only be passed as array or be omitted
-     *
-     * @param null|array $options
      */
-    public function __construct(array $options = null)
+    public function __construct(?array $options = null)
     {
         if (is_array($options)) {
             $this->setOptions($options);
@@ -61,7 +60,6 @@ abstract class Zend_Config_Writer
     /**
      * Set options via a Zend_Config instance
      *
-     * @param  Zend_Config $config
      * @return Zend_Config_Writer
      */
     public function setConfig(Zend_Config $config)
@@ -74,7 +72,6 @@ abstract class Zend_Config_Writer
     /**
      * Set options via an array
      *
-     * @param  array $options
      * @return Zend_Config_Writer
      */
     public function setOptions(array $options)
@@ -84,7 +81,7 @@ abstract class Zend_Config_Writer
                 continue;
             }
 
-            $method = 'set' . ucfirst($key);
+            $method = 'set'.ucfirst($key);
             if (method_exists($this, $method)) {
                 $this->$method($value);
             }

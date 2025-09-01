@@ -14,24 +14,21 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Flickr
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * @see Zend_Service_Flickr_Result
  */
 require_once 'Zend/Service/Flickr/Result.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Flickr
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -82,8 +79,6 @@ class Zend_Service_Flickr_ResultSet implements SeekableIterator
     /**
      * Parse the Flickr Result Set
      *
-     * @param  DOMDocument         $dom
-     * @param  Zend_Service_Flickr $flickr
      * @return void
      */
     public function __construct(DOMDocument $dom, Zend_Service_Flickr $flickr)
@@ -94,13 +89,13 @@ class Zend_Service_Flickr_ResultSet implements SeekableIterator
 
         $photos = $xpath->query('//photos')->item(0);
 
-        $page    = $photos->getAttribute('page');
-        $pages   = $photos->getAttribute('pages');
+        $page = $photos->getAttribute('page');
+        $pages = $photos->getAttribute('pages');
         $perPage = $photos->getAttribute('perpage');
-        $total   = $photos->getAttribute('total');
+        $total = $photos->getAttribute('total');
 
-        $this->totalResultsReturned  = ($page == $pages || $pages == 0) ? ($total - ($page - 1) * $perPage) : (int) $perPage;
-        $this->firstResultPosition   = ($page - 1) * $perPage + 1;
+        $this->totalResultsReturned = ($page == $pages || $pages == 0) ? ($total - ($page - 1) * $perPage) : (int) $perPage;
+        $this->firstResultPosition = ($page - 1) * $perPage + 1;
         $this->totalResultsAvailable = (int) $total;
 
         if ($total > 0) {
@@ -123,7 +118,6 @@ class Zend_Service_Flickr_ResultSet implements SeekableIterator
      *
      * @return Zend_Service_Flickr_Result
      */
-    #[\ReturnTypeWillChange]
     public function current()
     {
         return new Zend_Service_Flickr_Result($this->_results->item($this->_currentIndex), $this->_flickr);
@@ -134,7 +128,6 @@ class Zend_Service_Flickr_ResultSet implements SeekableIterator
      *
      * @return int
      */
-    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->_currentIndex;
@@ -145,7 +138,6 @@ class Zend_Service_Flickr_ResultSet implements SeekableIterator
      *
      * @return void
      */
-    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->_currentIndex += 1;
@@ -156,7 +148,6 @@ class Zend_Service_Flickr_ResultSet implements SeekableIterator
      *
      * @return void
      */
-    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->_currentIndex = 0;
@@ -165,9 +156,10 @@ class Zend_Service_Flickr_ResultSet implements SeekableIterator
     /**
      * Implements SeekableIterator::seek()
      *
-     * @param  int $index
-     * @throws OutOfBoundsException
+     * @param  int  $index
      * @return void
+     *
+     * @throws OutOfBoundsException
      */
     public function seek($index)
     {
@@ -175,19 +167,17 @@ class Zend_Service_Flickr_ResultSet implements SeekableIterator
         if ($indexInt >= 0 && (null === $this->_results || $indexInt < $this->_results->length)) {
             $this->_currentIndex = $indexInt;
         } else {
-            throw new OutOfBoundsException("Illegal index '$index'");
+            throw new OutOfBoundsException("Illegal index '{$index}'");
         }
     }
 
     /**
      * Implements SeekableIterator::valid()
      *
-     * @return boolean
+     * @return bool
      */
-    #[\ReturnTypeWillChange]
     public function valid()
     {
         return null !== $this->_results && $this->_currentIndex < $this->_results->length;
     }
 }
-

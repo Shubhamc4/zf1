@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Queue
- * @subpackage Stomp
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -24,8 +25,7 @@
  * This class represents a Stomp Frame Interface
  *
  * @category   Zend
- * @package    Zend_Queue
- * @subpackage Stomp
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,7 +39,7 @@ interface Zend_Queue_Stomp_FrameInterface
      *
      * This is done to make the message sending more reliable.
      *
-     * @return boolean
+     * @return bool
      */
     public function getAutoContentLength();
 
@@ -48,8 +48,9 @@ interface Zend_Queue_Stomp_FrameInterface
      *
      * Set the value on or off.
      *
-     * @param boolean $auto
+     * @param  bool  $auto
      * @return $this;
+     *
      * @throws Zend_Queue_Exception
      */
     public function setAutoContentLength($auto);
@@ -66,8 +67,8 @@ interface Zend_Queue_Stomp_FrameInterface
      *
      * Throws an exception if the array values are not strings.
      *
-     * @param array $headers
      * @return $this
+     *
      * @throws Zend_Queue_Exception
      */
     public function setHeaders(array $headers);
@@ -76,8 +77,9 @@ interface Zend_Queue_Stomp_FrameInterface
      * Returns a value for a header
      * returns false if the header does not exist
      *
-     * @param string $header
+     * @param  string  $header
      * @return $string
+     *
      * @throws Zend_Queue_Exception
      */
     public function getHeader($header);
@@ -86,9 +88,10 @@ interface Zend_Queue_Stomp_FrameInterface
      * Returns a value for a header
      * returns false if the header does not exist
      *
-     * @param string $header
-     * @param string $value
+     * @param  string  $header
+     * @param  string  $value
      * @return $this
+     *
      * @throws Zend_Queue_Exception
      */
     public function setHeader($header, $value);
@@ -107,8 +110,9 @@ interface Zend_Queue_Stomp_FrameInterface
      *
      * Set to null for no body.
      *
-     * @param string|null $body
+     * @param  string|null  $body
      * @return $this
+     *
      * @throws Zend_Queue_Exception
      */
     public function setBody($body);
@@ -126,16 +130,17 @@ interface Zend_Queue_Stomp_FrameInterface
      * returns false if the body does not exist
      *
      * @return $this
+     *
      * @throws Zend_Queue_Exception
      */
     public function setCommand($command);
 
-
     /**
      * Takes the current parameters and returns a Stomp Frame
      *
-     * @throws Zend_Queue_Exception
      * @return string
+     *
+     * @throws Zend_Queue_Exception
      */
     public function toFrame();
 
@@ -147,7 +152,7 @@ interface Zend_Queue_Stomp_FrameInterface
     /**
      * Accepts a frame and deconstructs the frame into its' component parts
      *
-     * @param string $frame - a stomp frame
+     * @param  string  $frame  - a stomp frame
      * @return $this
      */
     public function fromFrame($frame);

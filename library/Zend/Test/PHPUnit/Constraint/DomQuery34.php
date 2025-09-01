@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Test
- * @subpackage PHPUnit
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,9 +28,9 @@ require_once 'Zend/Dom/Query.php';
  * Zend_Dom_Query-based PHPUnit Constraint
  *
  * @uses       PHPUnit_Framework_Constraint
+ *
  * @category   Zend
- * @package    Zend_Test
- * @subpackage PHPUnit
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -38,67 +39,79 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
     /**#@+
      * Assertion type constants
      */
-    const ASSERT_QUERY            = 'assertQuery';
+    const ASSERT_QUERY = 'assertQuery';
+
     const ASSERT_CONTENT_CONTAINS = 'assertQueryContentContains';
-    const ASSERT_CONTENT_REGEX    = 'assertQueryContentRegex';
-    const ASSERT_CONTENT_COUNT    = 'assertQueryCount';
-    const ASSERT_CONTENT_COUNT_MIN= 'assertQueryCountMin';
-    const ASSERT_CONTENT_COUNT_MAX= 'assertQueryCountMax';
+
+    const ASSERT_CONTENT_REGEX = 'assertQueryContentRegex';
+
+    const ASSERT_CONTENT_COUNT = 'assertQueryCount';
+
+    const ASSERT_CONTENT_COUNT_MIN = 'assertQueryCountMin';
+
+    const ASSERT_CONTENT_COUNT_MAX = 'assertQueryCountMax';
     /**#@-*/
 
     /**
      * Current assertion type
+     *
      * @var string
      */
-    protected $_assertType        = null;
+    protected $_assertType = null;
 
     /**
      * Available assertion types
+     *
      * @var array
      */
-    protected $_assertTypes       = array(
+    protected $_assertTypes = [
         self::ASSERT_QUERY,
         self::ASSERT_CONTENT_CONTAINS,
         self::ASSERT_CONTENT_REGEX,
         self::ASSERT_CONTENT_COUNT,
         self::ASSERT_CONTENT_COUNT_MIN,
         self::ASSERT_CONTENT_COUNT_MAX,
-    );
+    ];
 
     /**
      * Content being matched
+     *
      * @var string
      */
-    protected $_content           = null;
+    protected $_content = null;
 
     /**
      * Whether or not assertion is negated
+     *
      * @var bool
      */
-    protected $_negate            = false;
+    protected $_negate = false;
 
     /**
      * CSS selector or XPath path to select against
+     *
      * @var string
      */
-    protected $_path              = null;
+    protected $_path = null;
 
     /**
      * Whether or not to use XPath when querying
+     *
      * @var bool
      */
-    protected $_useXpath          = false;
+    protected $_useXpath = false;
 
     /**
      * XPath namespaces
+     *
      * @var array
      */
-    protected $_xpathNamespaces = array();
+    protected $_xpathNamespaces = [];
 
     /**
      * Constructor; setup constraint state
      *
-     * @param  string $path CSS selector path
+     * @param  string  $path  CSS selector path
      * @return void
      */
     public function __construct($path)
@@ -109,7 +122,7 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
     /**
      * Indicate negative match
      *
-     * @param  bool $flag
+     * @param  bool  $flag
      * @return void
      */
     public function setNegate($flag = true)
@@ -120,19 +133,20 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
     /**
      * Whether or not path is a straight XPath expression
      *
-     * @param  bool $flag
+     * @param  bool  $flag
      * @return Zend_Test_PHPUnit_Constraint_DomQuery
      */
     public function setUseXpath($flag = true)
     {
         $this->_useXpath = (bool) $flag;
+
         return $this;
     }
 
     /**
      * Evaluate an object to see if it fits the constraints
      *
-     * @param  string $other String to examine
+     * @param  string  $other  String to examine
      * @param  null|string Assertion type
      * @return bool
      */
@@ -148,19 +162,19 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
             $assertType = str_replace('Xpath', 'Query', $assertType);
         }
 
-        if (!in_array($assertType, $this->_assertTypes)) {
+        if (! in_array($assertType, $this->_assertTypes)) {
             require_once 'Zend/Test/PHPUnit/Constraint/Exception.php';
             throw new Zend_Test_PHPUnit_Constraint_Exception(sprintf('Invalid assertion type "%s" provided to %s constraint', $assertType, __CLASS__));
         }
 
         $this->_assertType = $assertType;
 
-        $method   = $this->_useXpath ? 'queryXpath' : 'query';
+        $method = $this->_useXpath ? 'queryXpath' : 'query';
         $domQuery = new Zend_Dom_Query($other);
         $domQuery->registerXpathNamespaces($this->_xpathNamespaces);
-        $result   = $domQuery->$method($this->_path);
-        $argv     = func_get_args();
-        $argc     = func_num_args();
+        $result = $domQuery->$method($this->_path);
+        $argv = func_get_args();
+        $argc = func_num_args();
 
         switch ($assertType) {
             case self::ASSERT_CONTENT_CONTAINS:
@@ -169,6 +183,7 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
                     throw new Zend_Test_PHPUnit_Constraint_Exception('No content provided against which to match');
                 }
                 $this->_content = $content = $argv[2];
+
                 return ($this->_negate)
                     ? $this->_notMatchContent($result, $content)
                     : $this->_matchContent($result, $content);
@@ -178,6 +193,7 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
                     throw new Zend_Test_PHPUnit_Constraint_Exception('No pattern provided against which to match');
                 }
                 $this->_content = $content = $argv[2];
+
                 return ($this->_negate)
                     ? $this->_notRegexContent($result, $content)
                     : $this->_regexContent($result, $content);
@@ -189,14 +205,16 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
                     throw new Zend_Test_PHPUnit_Constraint_Exception('No count provided against which to compare');
                 }
                 $this->_content = $content = $argv[2];
+
                 return $this->_countContent($result, $content, $assertType);
             case self::ASSERT_QUERY:
             default:
                 if ($this->_negate) {
-                    return (0 == count($result));
-                } else {
-                    return (0 != count($result));
+                    return 0 == count($result);
                 }
+
+                return 0 != count($result);
+
         }
     }
 
@@ -204,10 +222,12 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
      * Report Failure
      *
      * @see    PHPUnit_Framework_Constraint for implementation details
-     * @param  mixed $other CSS selector path
-     * @param  string $description
-     * @param  bool $not
+     *
+     * @param  mixed  $other  CSS selector path
+     * @param  string  $description
+     * @param  bool  $not
      * @return void
+     *
      * @throws PHPUnit_Framework_ExpectationFailedException
      */
     public function fail($other, $description, $not = false)
@@ -253,8 +273,8 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
                 break;
         }
 
-        if (!empty($description)) {
-            $failure = $description . "\n" . $failure;
+        if (! empty($description)) {
+            $failure = $description."\n".$failure;
         }
 
         throw new Zend_Test_PHPUnit_Constraint_Exception($failure);
@@ -273,8 +293,8 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
     /**
      * Register XPath namespaces
      *
-     * @param   array $xpathNamespaces
-     * @return  void
+     * @param  array  $xpathNamespaces
+     * @return void
      */
     public function registerXpathNamespaces($xpathNamespaces)
     {
@@ -284,8 +304,8 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
     /**
      * Check to see if content is matched in selected nodes
      *
-     * @param  Zend_Dom_Query_Result $result
-     * @param  string $match Content to match
+     * @param  Zend_Dom_Query_Result  $result
+     * @param  string  $match  Content to match
      * @return bool
      */
     protected function _matchContent($result, $match)
@@ -309,8 +329,8 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
     /**
      * Check to see if content is NOT matched in selected nodes
      *
-     * @param  Zend_Dom_Query_Result $result
-     * @param  string $match
+     * @param  Zend_Dom_Query_Result  $result
+     * @param  string  $match
      * @return bool
      */
     protected function _notMatchContent($result, $match)
@@ -332,8 +352,8 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
     /**
      * Check to see if content is matched by regex in selected nodes
      *
-     * @param  Zend_Dom_Query_Result $result
-     * @param  string $pattern
+     * @param  Zend_Dom_Query_Result  $result
+     * @param  string  $pattern
      * @return bool
      */
     protected function _regexContent($result, $pattern)
@@ -355,8 +375,8 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
     /**
      * Check to see if content is NOT matched by regex in selected nodes
      *
-     * @param  Zend_Dom_Query_Result $result
-     * @param  string $pattern
+     * @param  Zend_Dom_Query_Result  $result
+     * @param  string  $pattern
      * @return bool
      */
     protected function _notRegexContent($result, $pattern)
@@ -378,10 +398,10 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
     /**
      * Determine if content count matches criteria
      *
-     * @param  Zend_Dom_Query_Result $result
-     * @param  int $test Value against which to test
-     * @param  string $type assertion type
-     * @return boolean
+     * @param  Zend_Dom_Query_Result  $result
+     * @param  int  $test  Value against which to test
+     * @param  string  $type  assertion type
+     * @return bool
      */
     protected function _countContent($result, $test, $type)
     {
@@ -393,9 +413,9 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
                     ? ($test != $count)
                     : ($test == $count);
             case self::ASSERT_CONTENT_COUNT_MIN:
-                return ($count >= $test);
+                return $count >= $test;
             case self::ASSERT_CONTENT_COUNT_MAX:
-                return ($count <= $test);
+                return $count <= $test;
             default:
                 return false;
         }
@@ -404,19 +424,19 @@ class Zend_Test_PHPUnit_Constraint_DomQuery34 extends PHPUnit_Framework_Constrai
     /**
      * Get node content, minus node markup tags
      *
-     * @param  DOMNode $node
      * @return string
      */
     protected function _getNodeContent(DOMNode $node)
     {
         if ($node instanceof DOMAttr) {
             return $node->value;
-        } else {
-            $doc     = $node->ownerDocument;
-            $content = $doc->saveXML($node);
-            $tag     = $node->nodeName;
-            $regex   = '|</?' . $tag . '[^>]*>|';
-            return preg_replace($regex, '', $content);
         }
+        $doc = $node->ownerDocument;
+        $content = $doc->saveXML($node);
+        $tag = $node->nodeName;
+        $regex = '|</?'.$tag.'[^>]*>|';
+
+        return preg_replace($regex, '', $content);
+
     }
 }

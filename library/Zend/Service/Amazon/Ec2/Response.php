@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service_Amazon
- * @subpackage Ec2
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,12 +31,12 @@ require_once 'Zend/Xml/Security.php';
 
 /**
  * @category   Zend
- * @package    Zend_Service_Amazon
- * @subpackage Ec2
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Service_Amazon_Ec2_Response {
+class Zend_Service_Amazon_Ec2_Response
+{
     /**
      * XML namespace used for EC2 responses.
      */
@@ -67,7 +68,7 @@ class Zend_Service_Amazon_Ec2_Response {
     /**
      * Last error code
      *
-     * @var integer
+     * @var int
      */
     private $_errorCode = 0;
 
@@ -81,7 +82,7 @@ class Zend_Service_Amazon_Ec2_Response {
     /**
      * Creates a new high-level EC2 response object
      *
-     * @param Zend_Http_Response $httpResponse the HTTP response.
+     * @param  Zend_Http_Response  $httpResponse  the HTTP response.
      */
     public function __construct(Zend_Http_Response $httpResponse)
     {
@@ -121,13 +122,13 @@ class Zend_Service_Amazon_Ec2_Response {
         } catch (Zend_Http_Exception $e) {
             $body = false;
         }
-        
+
         if ($this->_document === null) {
             if ($body !== false) {
                 // turn off libxml error handling
                 $errors = libxml_use_internal_errors();
 
-                $this->_document = new DOMDocument();
+                $this->_document = new DOMDocument;
                 $this->_document = Zend_Xml_Security::scan($body, $this->_document);
 
                 // reset libxml error handling
@@ -154,11 +155,10 @@ class Zend_Service_Amazon_Ec2_Response {
     /**
      * Set a new XML Namespace
      *
-     * @param string $namespace
+     * @param  string  $namespace
      */
     public function setNamespace($namespace)
     {
         $this->_xmlNamespace = $namespace;
     }
-
 }

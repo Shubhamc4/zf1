@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,13 +14,12 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Index
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /** Zend_Search_Lucene_Index_FieldInfo */
 require_once 'Zend/Search/Lucene/Index/FieldInfo.php';
@@ -32,12 +32,10 @@ require_once 'Zend/Search/Lucene/Index/TermInfo.php';
 
 /**
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Index
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Search_Lucene_Index_SegmentWriter
 {
     /**
@@ -47,7 +45,7 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
      * slower.  Searching is typically not dominated by dictionary lookup, so
      * tweaking this is rarely useful.
      *
-     * @var integer
+     * @var int
      */
     public static $indexInterval = 128;
 
@@ -62,7 +60,7 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
      *
      * Note: not used in current implementation
      *
-     * @var integer
+     * @var int
      */
     public static $skipInterval = 0x7FFFFFFF;
 
@@ -74,14 +72,14 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
      *
      * Note: not used in current implementation
      *
-     * @var integer
+     * @var int
      */
     public static $maxSkipLevels = 0;
 
     /**
      * Number of docs in a segment
      *
-     * @var integer
+     * @var int
      */
     protected $_docCount = 0;
 
@@ -105,14 +103,14 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
      *
      * @var unknown_type
      */
-    protected $_files = array();
+    protected $_files = [];
 
     /**
      * Segment fields. Array of Zend_Search_Lucene_Index_FieldInfo objects for this segment
      *
      * @var array
      */
-    protected $_fields = array();
+    protected $_fields = [];
 
     /**
      * Normalization factors.
@@ -124,8 +122,7 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
      *
      * @var array
      */
-    protected $_norms = array();
-
+    protected $_norms = [];
 
     /**
      * '.fdx'  file - Stored Fields, the field index.
@@ -141,45 +138,41 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
      */
     protected $_fdtFile = null;
 
-
     /**
      * Object constructor.
      *
-     * @param Zend_Search_Lucene_Storage_Directory $directory
-     * @param string $name
+     * @param  string  $name
      */
     public function __construct(Zend_Search_Lucene_Storage_Directory $directory, $name)
     {
         $this->_directory = $directory;
-        $this->_name      = $name;
+        $this->_name = $name;
     }
-
 
     /**
      * Add field to the segment
      *
      * Returns actual field number
      *
-     * @param Zend_Search_Lucene_Field $field
-     * @return integer
+     * @return int
      */
     public function addField(Zend_Search_Lucene_Field $field)
     {
-        if (!isset($this->_fields[$field->name])) {
+        if (! isset($this->_fields[$field->name])) {
             $fieldNumber = count($this->_fields);
             $this->_fields[$field->name] =
                                 new Zend_Search_Lucene_Index_FieldInfo($field->name,
-                                                                       $field->isIndexed,
-                                                                       $fieldNumber,
-                                                                       $field->storeTermVector);
+                                    $field->isIndexed,
+                                    $fieldNumber,
+                                    $field->storeTermVector);
 
             return $fieldNumber;
-        } else {
-            $this->_fields[$field->name]->isIndexed       |= $field->isIndexed;
-            $this->_fields[$field->name]->storeTermVector |= $field->storeTermVector;
-
-            return $this->_fields[$field->name]->number;
         }
+        $this->_fields[$field->name]->isIndexed |= $field->isIndexed;
+        $this->_fields[$field->name]->storeTermVector |= $field->storeTermVector;
+
+        return $this->_fields[$field->name]->number;
+
     }
 
     /**
@@ -187,26 +180,25 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
      *
      * Returns actual field number
      *
-     * @param Zend_Search_Lucene_Index_FieldInfo $fieldInfo
-     * @return integer
+     * @return int
      */
     public function addFieldInfo(Zend_Search_Lucene_Index_FieldInfo $fieldInfo)
     {
-        if (!isset($this->_fields[$fieldInfo->name])) {
+        if (! isset($this->_fields[$fieldInfo->name])) {
             $fieldNumber = count($this->_fields);
             $this->_fields[$fieldInfo->name] =
                                 new Zend_Search_Lucene_Index_FieldInfo($fieldInfo->name,
-                                                                       $fieldInfo->isIndexed,
-                                                                       $fieldNumber,
-                                                                       $fieldInfo->storeTermVector);
+                                    $fieldInfo->isIndexed,
+                                    $fieldNumber,
+                                    $fieldInfo->storeTermVector);
 
             return $fieldNumber;
-        } else {
-            $this->_fields[$fieldInfo->name]->isIndexed       |= $fieldInfo->isIndexed;
-            $this->_fields[$fieldInfo->name]->storeTermVector |= $fieldInfo->storeTermVector;
-
-            return $this->_fields[$fieldInfo->name]->number;
         }
+        $this->_fields[$fieldInfo->name]->isIndexed |= $fieldInfo->isIndexed;
+        $this->_fields[$fieldInfo->name]->storeTermVector |= $fieldInfo->storeTermVector;
+
+        return $this->_fields[$fieldInfo->name]->number;
+
     }
 
     /**
@@ -222,16 +214,16 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
     /**
      * Add stored fields information
      *
-     * @param array $storedFields array of Zend_Search_Lucene_Field objects
+     * @param  array  $storedFields  array of Zend_Search_Lucene_Field objects
      */
     public function addStoredFields($storedFields)
     {
-        if (!isset($this->_fdxFile)) {
-            $this->_fdxFile = $this->_directory->createFile($this->_name . '.fdx');
-            $this->_fdtFile = $this->_directory->createFile($this->_name . '.fdt');
+        if (! isset($this->_fdxFile)) {
+            $this->_fdxFile = $this->_directory->createFile($this->_name.'.fdx');
+            $this->_fdtFile = $this->_directory->createFile($this->_name.'.fdt');
 
-            $this->_files[] = $this->_name . '.fdx';
-            $this->_files[] = $this->_name . '.fdt';
+            $this->_files[] = $this->_name.'.fdx';
+            $this->_files[] = $this->_name.'.fdt';
         }
 
         $this->_fdxFile->writeLong($this->_fdtFile->tell());
@@ -239,7 +231,7 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
         foreach ($storedFields as $field) {
             $this->_fdtFile->writeVInt($this->_fields[$field->name]->number);
             $fieldBits = ($field->isTokenized ? 0x01 : 0x00) |
-                         ($field->isBinary ?    0x02 : 0x00) |
+                         ($field->isBinary ? 0x02 : 0x00) |
                          0x00; /* 0x04 - third bit, compressed (ZLIB) */
             $this->_fdtFile->writeByte($fieldBits);
             if ($field->isBinary) {
@@ -256,9 +248,8 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
     /**
      * Returns the total number of documents in this segment.
      *
-     * @return integer
+     * @return int
      */
-    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->_docCount;
@@ -279,22 +270,22 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
      */
     protected function _dumpFNM()
     {
-        $fnmFile = $this->_directory->createFile($this->_name . '.fnm');
+        $fnmFile = $this->_directory->createFile($this->_name.'.fnm');
         $fnmFile->writeVInt(count($this->_fields));
 
-        $nrmFile = $this->_directory->createFile($this->_name . '.nrm');
+        $nrmFile = $this->_directory->createFile($this->_name.'.nrm');
         // Write header
         $nrmFile->writeBytes('NRM');
         // Write format specifier
-        $nrmFile->writeByte((int)0xFF);
+        $nrmFile->writeByte((int) 0xFF);
 
         foreach ($this->_fields as $field) {
             $fnmFile->writeString($field->name);
-            $fnmFile->writeByte(($field->isIndexed       ? 0x01 : 0x00) |
+            $fnmFile->writeByte(($field->isIndexed ? 0x01 : 0x00) |
                                 ($field->storeTermVector ? 0x02 : 0x00)
-// not supported yet            0x04 /* term positions are stored with the term vectors */ |
-// not supported yet            0x08 /* term offsets are stored with the term vectors */   |
-                               );
+                // not supported yet            0x04 /* term positions are stored with the term vectors */ |
+                // not supported yet            0x08 /* term offsets are stored with the term vectors */   |
+            );
 
             if ($field->isIndexed) {
                 // pre-2.1 index mode (not used now)
@@ -307,11 +298,9 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
             }
         }
 
-        $this->_files[] = $this->_name . '.fnm';
-        $this->_files[] = $this->_name . '.nrm';
+        $this->_files[] = $this->_name.'.fnm';
+        $this->_files[] = $this->_name.'.nrm';
     }
-
-
 
     /**
      * Term Dictionary file
@@ -344,10 +333,9 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
     /**
      * Number of written terms
      *
-     * @var integer
+     * @var int
      */
     private $_termCount;
-
 
     /**
      * Last saved term
@@ -380,7 +368,7 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
     /**
      * Last term dictionary file position
      *
-     * @var integer
+     * @var int
      */
     private $_lastIndexPosition;
 
@@ -389,15 +377,15 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
      */
     public function initializeDictionaryFiles()
     {
-        $this->_tisFile = $this->_directory->createFile($this->_name . '.tis');
-        $this->_tisFile->writeInt((int)0xFFFFFFFD);
+        $this->_tisFile = $this->_directory->createFile($this->_name.'.tis');
+        $this->_tisFile->writeInt((int) 0xFFFFFFFD);
         $this->_tisFile->writeLong(0 /* dummy data for terms count */);
         $this->_tisFile->writeInt(self::$indexInterval);
         $this->_tisFile->writeInt(self::$skipInterval);
         $this->_tisFile->writeInt(self::$maxSkipLevels);
 
-        $this->_tiiFile = $this->_directory->createFile($this->_name . '.tii');
-        $this->_tiiFile->writeInt((int)0xFFFFFFFD);
+        $this->_tiiFile = $this->_directory->createFile($this->_name.'.tii');
+        $this->_tiiFile->writeInt((int) 0xFFFFFFFD);
         $this->_tiiFile->writeLong(0 /* dummy data for terms count */);
         $this->_tiiFile->writeInt(self::$indexInterval);
         $this->_tiiFile->writeInt(self::$skipInterval);
@@ -406,27 +394,27 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
         /** Dump dictionary header */
         $this->_tiiFile->writeVInt(0);                    // preffix length
         $this->_tiiFile->writeString('');                 // suffix
-        $this->_tiiFile->writeInt((int)0xFFFFFFFF);       // field number
-        $this->_tiiFile->writeByte((int)0x0F);
+        $this->_tiiFile->writeInt((int) 0xFFFFFFFF);       // field number
+        $this->_tiiFile->writeByte((int) 0x0F);
         $this->_tiiFile->writeVInt(0);                    // DocFreq
         $this->_tiiFile->writeVInt(0);                    // FreqDelta
         $this->_tiiFile->writeVInt(0);                    // ProxDelta
         $this->_tiiFile->writeVInt(24);                   // IndexDelta
 
-        $this->_frqFile = $this->_directory->createFile($this->_name . '.frq');
-        $this->_prxFile = $this->_directory->createFile($this->_name . '.prx');
+        $this->_frqFile = $this->_directory->createFile($this->_name.'.frq');
+        $this->_prxFile = $this->_directory->createFile($this->_name.'.prx');
 
-        $this->_files[] = $this->_name . '.tis';
-        $this->_files[] = $this->_name . '.tii';
-        $this->_files[] = $this->_name . '.frq';
-        $this->_files[] = $this->_name . '.prx';
+        $this->_files[] = $this->_name.'.tis';
+        $this->_files[] = $this->_name.'.tii';
+        $this->_files[] = $this->_name.'.frq';
+        $this->_files[] = $this->_name.'.prx';
 
-        $this->_prevTerm          = null;
-        $this->_prevTermInfo      = null;
-        $this->_prevIndexTerm     = null;
+        $this->_prevTerm = null;
+        $this->_prevTermInfo = null;
+        $this->_prevIndexTerm = null;
         $this->_prevIndexTermInfo = null;
         $this->_lastIndexPosition = 24;
-        $this->_termCount         = 0;
+        $this->_termCount = 0;
 
     }
 
@@ -435,8 +423,8 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
      *
      * Term positions is an array( docId => array(pos1, pos2, pos3, ...), ... )
      *
-     * @param Zend_Search_Lucene_Index_Term $termEntry
-     * @param array $termDocs
+     * @param  Zend_Search_Lucene_Index_Term  $termEntry
+     * @param  array  $termDocs
      */
     public function addTerm($termEntry, $termDocs)
     {
@@ -445,7 +433,7 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
 
         $prevDoc = 0;
         foreach ($termDocs as $docId => $termPositions) {
-            $docDelta = ($docId - $prevDoc)*2;
+            $docDelta = ($docId - $prevDoc) * 2;
             $prevDoc = $docId;
             if (count($termPositions) > 1) {
                 $this->_frqFile->writeVInt($docDelta);
@@ -472,9 +460,9 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
         }
 
         $term = new Zend_Search_Lucene_Index_Term($termEntry->text,
-                                                  $this->_fields[$termEntry->field]->number);
+            $this->_fields[$termEntry->field]->number);
         $termInfo = new Zend_Search_Lucene_Index_TermInfo(count($termDocs),
-                                                          $freqPointer, $proxPointer, $skipOffset);
+            $freqPointer, $proxPointer, $skipOffset);
 
         $this->_dumpTermDictEntry($this->_tisFile, $this->_prevTerm, $term, $this->_prevTermInfo, $termInfo);
 
@@ -499,28 +487,24 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
 
         $this->_tiiFile->seek(4);
         // + 1 is used to count an additional special index entry (empty term at the start of the list)
-        $this->_tiiFile->writeLong(($this->_termCount - $this->_termCount % self::$indexInterval)/self::$indexInterval + 1);
+        $this->_tiiFile->writeLong(($this->_termCount - $this->_termCount % self::$indexInterval) / self::$indexInterval + 1);
     }
-
 
     /**
      * Dump Term Dictionary segment file entry.
      * Used to write entry to .tis or .tii files
      *
-     * @param Zend_Search_Lucene_Storage_File $dicFile
-     * @param Zend_Search_Lucene_Index_Term $prevTerm
-     * @param Zend_Search_Lucene_Index_Term $term
-     * @param Zend_Search_Lucene_Index_TermInfo $prevTermInfo
-     * @param Zend_Search_Lucene_Index_TermInfo $termInfo
+     * @param  Zend_Search_Lucene_Index_Term  $prevTerm
+     * @param  Zend_Search_Lucene_Index_TermInfo  $prevTermInfo
      */
     protected function _dumpTermDictEntry(Zend_Search_Lucene_Storage_File $dicFile,
-                                        &$prevTerm,     Zend_Search_Lucene_Index_Term     $term,
-                                        &$prevTermInfo, Zend_Search_Lucene_Index_TermInfo $termInfo)
+        &$prevTerm, Zend_Search_Lucene_Index_Term $term,
+        &$prevTermInfo, Zend_Search_Lucene_Index_TermInfo $termInfo)
     {
         if (isset($prevTerm) && $prevTerm->field == $term->field) {
             $matchedBytes = 0;
             $maxBytes = min(strlen($prevTerm->text), strlen($term->text));
-            while ($matchedBytes < $maxBytes  &&
+            while ($matchedBytes < $maxBytes &&
                    $prevTerm->text[$matchedBytes] == $term->text[$matchedBytes]) {
                 $matchedBytes++;
             }
@@ -532,9 +516,9 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
                 $charBytes = 1;
                 if ((ord($term->text[$prefixBytes]) & 0xC0) == 0xC0) {
                     $charBytes++;
-                    if (ord($term->text[$prefixBytes]) & 0x20 ) {
+                    if (ord($term->text[$prefixBytes]) & 0x20) {
                         $charBytes++;
-                        if (ord($term->text[$prefixBytes]) & 0x10 ) {
+                        if (ord($term->text[$prefixBytes]) & 0x10) {
                             $charBytes++;
                         }
                     }
@@ -567,7 +551,7 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
 
         $prevTerm = $term;
 
-        if (!isset($prevTermInfo)) {
+        if (! isset($prevTermInfo)) {
             // Write FreqDelta
             $dicFile->writeVInt($termInfo->freqPointer);
             // Write ProxDelta
@@ -586,16 +570,15 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
         $prevTermInfo = $termInfo;
     }
 
-
     /**
      * Generate compound index file
      */
     protected function _generateCFS()
     {
-        $cfsFile = $this->_directory->createFile($this->_name . '.cfs');
+        $cfsFile = $this->_directory->createFile($this->_name.'.cfs');
         $cfsFile->writeVInt(count($this->_files));
 
-        $dataOffsetPointers = array();
+        $dataOffsetPointers = [];
         foreach ($this->_files as $fileName) {
             $dataOffsetPointers[$fileName] = $cfsFile->tell();
             $cfsFile->writeLong(0); // write dummy data
@@ -616,7 +599,7 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
 
             $byteCount = $this->_directory->fileLength($fileName);
             while ($byteCount > 0) {
-                $data = $dataFile->readBytes(min($byteCount, 131072 /*128Kb*/));
+                $data = $dataFile->readBytes(min($byteCount, 131072 /* 128Kb */));
                 $byteCount -= strlen($data);
                 $cfsFile->writeBytes($data);
             }
@@ -625,7 +608,6 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
         }
     }
 
-
     /**
      * Close segment, write it to disk and return segment info
      *
@@ -633,4 +615,3 @@ abstract class Zend_Search_Lucene_Index_SegmentWriter
      */
     abstract public function close();
 }
-

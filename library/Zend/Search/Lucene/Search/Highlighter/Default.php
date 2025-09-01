@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Search
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -24,8 +25,7 @@
 require_once 'Zend/Search/Lucene/Search/Highlighter/Interface.php';
 /**
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Search
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -36,18 +36,18 @@ class Zend_Search_Lucene_Search_Highlighter_Default implements Zend_Search_Lucen
      *
      * @var array
      */
-    protected $_highlightColors = array('#66ffff', '#ff66ff', '#ffff66',
-                                        '#ff8888', '#88ff88', '#8888ff',
-                                        '#88dddd', '#dd88dd', '#dddd88',
-                                        '#aaddff', '#aaffdd', '#ddaaff',
-                                        '#ddffaa', '#ffaadd', '#ffddaa');
+    protected $_highlightColors = ['#66ffff', '#ff66ff', '#ffff66',
+        '#ff8888', '#88ff88', '#8888ff',
+        '#88dddd', '#dd88dd', '#dddd88',
+        '#aaddff', '#aaffdd', '#ddaaff',
+        '#ddffaa', '#ffaadd', '#ffddaa'];
 
     /**
      * Index of current color for highlighting
      *
      * Index is increased at each highlight() call, so terms matching different queries are highlighted using different colors.
      *
-     * @var integer
+     * @var int
      */
     protected $_currentColorIndex = 0;
 
@@ -60,8 +60,6 @@ class Zend_Search_Lucene_Search_Highlighter_Default implements Zend_Search_Lucen
 
     /**
      * Set document for highlighting.
-     *
-     * @param Zend_Search_Lucene_Document_Html $document
      */
     public function setDocument(Zend_Search_Lucene_Document_Html $document)
     {
@@ -81,7 +79,7 @@ class Zend_Search_Lucene_Search_Highlighter_Default implements Zend_Search_Lucen
     /**
      * Highlight specified words
      *
-     * @param string|array $words  Words to highlight. They could be organized using the array or string.
+     * @param  string|array  $words  Words to highlight. They could be organized using the array or string.
      */
     public function highlight($words)
     {
@@ -90,5 +88,4 @@ class Zend_Search_Lucene_Search_Highlighter_Default implements Zend_Search_Lucen
 
         $this->_doc->highlight($words, $color);
     }
-
 }

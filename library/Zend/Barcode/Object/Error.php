@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Barcode
- * @subpackage Object
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,7 +28,7 @@ require_once 'Zend/Barcode/Object/ObjectAbstract.php';
  * Class for generate Barcode
  *
  * @category   Zend
- * @package    Zend_Barcode
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -35,8 +36,9 @@ class Zend_Barcode_Object_Error extends Zend_Barcode_Object_ObjectAbstract
 {
     /**
      * All texts are accepted
-     * @param string $value
-     * @return boolean
+     *
+     * @param  string  $value
+     * @return bool
      */
     public function validateText($value)
     {
@@ -46,8 +48,8 @@ class Zend_Barcode_Object_Error extends Zend_Barcode_Object_ObjectAbstract
     /**
      * Height is forced
      *
-     * @param bool $recalculate
-     * @return integer
+     * @param  bool  $recalculate
+     * @return int
      */
     public function getHeight($recalculate = false)
     {
@@ -57,8 +59,8 @@ class Zend_Barcode_Object_Error extends Zend_Barcode_Object_ObjectAbstract
     /**
      * Width is forced
      *
-     * @param bool $recalculate
-     * @return integer
+     * @param  bool  $recalculate
+     * @return int
      */
     public function getWidth($recalculate = false)
     {
@@ -68,37 +70,36 @@ class Zend_Barcode_Object_Error extends Zend_Barcode_Object_ObjectAbstract
     /**
      * Reset precedent instructions
      * and draw the error message
+     *
      * @return array
      */
     public function draw()
     {
-        $this->_instructions = array();
-        $this->_addText('ERROR:', 10, array(5 , 18), $this->_font, 0, 'left');
-        $this->_addText($this->_text, 10, array(5 , 32), $this->_font, 0, 'left');
+        $this->_instructions = [];
+        $this->_addText('ERROR:', 10, [5, 18], $this->_font, 0, 'left');
+        $this->_addText($this->_text, 10, [5, 32], $this->_font, 0, 'left');
+
         return $this->_instructions;
     }
 
     /**
      * For compatibility reason
+     *
      * @return void
      */
-    protected function _prepareBarcode()
-    {
-    }
+    protected function _prepareBarcode() {}
 
     /**
      * For compatibility reason
+     *
      * @return void
      */
-    protected function _checkParams()
-    {
-    }
+    protected function _checkParams() {}
 
     /**
      * For compatibility reason
+     *
      * @return void
      */
-    protected function _calculateBarcodeWidth()
-    {
-    }
+    protected function _calculateBarcodeWidth() {}
 }

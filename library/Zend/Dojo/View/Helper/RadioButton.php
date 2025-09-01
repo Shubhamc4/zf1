@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Dojo
- * @subpackage View
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,21 +28,22 @@ require_once 'Zend/Dojo/View/Helper/Dijit.php';
  * Dojo RadioButton dijit
  *
  * @uses       Zend_Dojo_View_Helper_Dijit
- * @package    Zend_Dojo
- * @subpackage View
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
-  */
+ */
 class Zend_Dojo_View_Helper_RadioButton extends Zend_Dojo_View_Helper_Dijit
 {
     /**
      * Dijit being used
+     *
      * @var string
      */
-    protected $_dijit  = 'dijit.form.RadioButton';
+    protected $_dijit = 'dijit.form.RadioButton';
 
     /**
      * Dojo module to use
+     *
      * @var string
      */
     protected $_module = 'dijit.form.CheckBox';
@@ -49,38 +51,38 @@ class Zend_Dojo_View_Helper_RadioButton extends Zend_Dojo_View_Helper_Dijit
     /**
      * dijit.form.RadioButton
      *
-     * @param  string $id
-     * @param  string $value
-     * @param  array $params  Parameters to use for dijit creation
-     * @param  array $attribs HTML attributes
-     * @param  array $options Array of radio options
-     * @param  string $listsep String with which to separate options
+     * @param  string  $id
+     * @param  string  $value
+     * @param  array  $params  Parameters to use for dijit creation
+     * @param  array  $attribs  HTML attributes
+     * @param  array  $options  Array of radio options
+     * @param  string  $listsep  String with which to separate options
      * @return string
      */
     public function radioButton(
         $id,
         $value = null,
-        array $params = array(),
-        array $attribs = array(),
-        array $options = null,
+        array $params = [],
+        array $attribs = [],
+        ?array $options = null,
         $listsep = "<br />\n"
     ) {
         $attribs['name'] = $id;
-        if (!array_key_exists('id', $attribs)) {
+        if (! array_key_exists('id', $attribs)) {
             $attribs['id'] = $id;
         }
         $attribs = $this->_prepareDijit($attribs, $params, 'element');
 
-        if (is_array($options) && $this->_useProgrammatic() && !$this->_useProgrammaticNoScript()) {
+        if (is_array($options) && $this->_useProgrammatic() && ! $this->_useProgrammaticNoScript()) {
             $baseId = $id;
             if (array_key_exists('id', $attribs)) {
                 $baseId = $attribs['id'];
             }
             require_once 'Zend/Filter/Alnum.php';
-            $filter = new Zend_Filter_Alnum();
+            $filter = new Zend_Filter_Alnum;
             foreach (array_keys($options) as $key) {
-                $optId = $baseId . '-' . $filter->filter($key);
-                $this->_createDijit($this->_dijit, $optId, array());
+                $optId = $baseId.'-'.$filter->filter($key);
+                $this->_createDijit($this->_dijit, $optId, []);
             }
         }
 

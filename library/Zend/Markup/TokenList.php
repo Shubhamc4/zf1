@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Markup
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,26 +28,24 @@ require_once 'Zend/Markup/Token.php';
 
 /**
  * @category   Zend
- * @package    Zend_Markup
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Markup_TokenList implements RecursiveIterator
 {
-
     /**
      * Array of tokens
      *
      * @var array
      */
-    protected $_tokens = array();
+    protected $_tokens = [];
 
     /**
      * Get the current token
      *
      * @return Zend_Markup_Token
      */
-    #[\ReturnTypeWillChange]
     public function current()
     {
         return current($this->_tokens);
@@ -64,7 +64,6 @@ class Zend_Markup_TokenList implements RecursiveIterator
     /**
      * Add a new child token
      *
-     * @param Zend_Markup_Token $child
      *
      * @return void
      */
@@ -88,7 +87,6 @@ class Zend_Markup_TokenList implements RecursiveIterator
      *
      * @return int
      */
-    #[\ReturnTypeWillChange]
     public function key()
     {
         return key($this->_tokens);
@@ -99,7 +97,6 @@ class Zend_Markup_TokenList implements RecursiveIterator
      *
      * @return Zend_Markup_Token
      */
-    #[\ReturnTypeWillChange]
     public function next()
     {
         return next($this->_tokens);
@@ -110,7 +107,6 @@ class Zend_Markup_TokenList implements RecursiveIterator
      *
      * @return void
      */
-    #[\ReturnTypeWillChange]
     public function rewind()
     {
         reset($this->_tokens);
@@ -121,7 +117,6 @@ class Zend_Markup_TokenList implements RecursiveIterator
      *
      * @return void
      */
-    #[\ReturnTypeWillChange]
     public function valid()
     {
         return $this->current() !== false;

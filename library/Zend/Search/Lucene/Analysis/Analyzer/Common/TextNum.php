@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,32 +14,28 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Analysis
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /** Zend_Search_Lucene_Analysis_Analyzer_Common */
 require_once 'Zend/Search/Lucene/Analysis/Analyzer/Common.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Analysis
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-
 class Zend_Search_Lucene_Analysis_Analyzer_Common_TextNum extends Zend_Search_Lucene_Analysis_Analyzer_Common
 {
     /**
      * Current position in a stream
      *
-     * @var integer
+     * @var int
      */
     private $_position;
 
@@ -70,14 +67,14 @@ class Zend_Search_Lucene_Analysis_Analyzer_Common_TextNum extends Zend_Search_Lu
     public function nextToken()
     {
         if ($this->_input === null) {
-            return null;
+            return;
         }
 
         do {
             if (! preg_match('/[a-zA-Z0-9]+/', $this->_input, $match, PREG_OFFSET_CAPTURE, $this->_position)) {
                 // It covers both cases a) there are no matches (preg_match(...) === 0)
                 // b) error occured (preg_match(...) === FALSE)
-                return null;
+                return;
             }
 
             $str = $match[0][0];
@@ -92,4 +89,3 @@ class Zend_Search_Lucene_Analysis_Analyzer_Common_TextNum extends Zend_Search_Lu
         return $token;
     }
 }
-

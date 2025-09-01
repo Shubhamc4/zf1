@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage App
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,8 +30,7 @@ require_once 'Zend/Gdata/App/BaseMediaSource.php';
  * Concrete class to use a file handle as an attachment within a MediaEntry.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage App
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -54,7 +53,7 @@ class Zend_Gdata_App_MediaFileSource extends Zend_Gdata_App_BaseMediaSource
     /**
      * Create a new Zend_Gdata_App_MediaFileSource object.
      *
-     * @param string $filename The name of the file to read from.
+     * @param  string  $filename  The name of the file to read from.
      */
     public function __construct($filename)
     {
@@ -65,6 +64,7 @@ class Zend_Gdata_App_MediaFileSource extends Zend_Gdata_App_BaseMediaSource
      * Return the MIME multipart representation of this MediaEntry.
      *
      * @return string
+     *
      * @throws Zend_Gdata_App_IOException
      */
     public function encode()
@@ -77,16 +77,17 @@ class Zend_Gdata_App_MediaFileSource extends Zend_Gdata_App_BaseMediaSource
             $result = fread($fileHandle, filesize($this->getFilename()));
             if ($result === false) {
                 require_once 'Zend/Gdata/App/IOException.php';
-                throw new Zend_Gdata_App_IOException("Error reading file - " .
-                        $this->getFilename() . '. Read failed.');
+                throw new Zend_Gdata_App_IOException('Error reading file - '.
+                        $this->getFilename().'. Read failed.');
             }
             fclose($fileHandle);
+
             return $result;
-        } else {
-            require_once 'Zend/Gdata/App/IOException.php';
-            throw new Zend_Gdata_App_IOException("Error reading file - " .
-                    $this->getFilename() . '. File is not readable.');
         }
+        require_once 'Zend/Gdata/App/IOException.php';
+        throw new Zend_Gdata_App_IOException('Error reading file - '.
+                $this->getFilename().'. File is not readable.');
+
     }
 
     /**
@@ -102,12 +103,13 @@ class Zend_Gdata_App_MediaFileSource extends Zend_Gdata_App_BaseMediaSource
     /**
      * Set the filename which is to be read.
      *
-     * @param string $value The desired file handle.
+     * @param  string  $value  The desired file handle.
      * @return Zend_Gdata_App_MediaFileSource Provides a fluent interface.
      */
     public function setFilename($value)
     {
         $this->_filename = $value;
+
         return $this;
     }
 
@@ -124,12 +126,13 @@ class Zend_Gdata_App_MediaFileSource extends Zend_Gdata_App_BaseMediaSource
     /**
      * Set the content type for the file attached (example image/png)
      *
-     * @param string $value The content type
+     * @param  string  $value  The content type
      * @return Zend_Gdata_App_MediaFileSource Provides a fluent interface
      */
     public function setContentType($value)
     {
         $this->_contentType = $value;
+
         return $this;
     }
 
@@ -142,5 +145,4 @@ class Zend_Gdata_App_MediaFileSource extends Zend_Gdata_App_BaseMediaSource
     {
         return $this->getFilename();
     }
-
 }

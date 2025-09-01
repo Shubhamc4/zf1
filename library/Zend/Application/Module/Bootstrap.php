@@ -14,10 +14,11 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Application
- * @subpackage Module
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ *
  * @version    $Id$
+ *
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -31,18 +32,17 @@ require_once 'Zend/Application/Bootstrap/Bootstrap.php';
  *
  * @uses       Zend_Loader_Autoloader_Resource
  * @uses       Zend_Application_Bootstrap_Bootstrap
+ *
  * @category   Zend
- * @package    Zend_Application
- * @subpackage Module
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
-abstract class Zend_Application_Module_Bootstrap
-extends Zend_Application_Bootstrap_Bootstrap
+abstract class Zend_Application_Module_Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
     /**
      * Set this explicitly to reduce impact of determining module name
+     *
      * @var string
      */
     protected $_moduleName;
@@ -50,7 +50,7 @@ extends Zend_Application_Bootstrap_Bootstrap
     /**
      * Constructor
      *
-     * @param Zend_Application|Zend_Application_Bootstrap_Bootstrapper $application
+     * @param  Zend_Application|Zend_Application_Bootstrap_Bootstrapper  $application
      */
     public function __construct($application)
     {
@@ -68,14 +68,14 @@ extends Zend_Application_Bootstrap_Bootstrap
         }
 
         if ($application->hasOption('resourceloader')) {
-            $this->setOptions(array(
-                'resourceloader' => $application->getOption('resourceloader')
-            ));
+            $this->setOptions([
+                'resourceloader' => $application->getOption('resourceloader'),
+            ]);
         }
         $this->initResourceLoader();
 
         // ZF-6545: ensure front controller resource is loaded
-        if (!$this->hasPluginResource('FrontController')) {
+        if (! $this->hasPluginResource('FrontController')) {
             $this->registerPluginResource('FrontController');
         }
 
@@ -124,6 +124,7 @@ extends Zend_Application_Bootstrap_Bootstrap
             }
             $this->_moduleName = $prefix;
         }
+
         return $this->_moduleName;
     }
 }

@@ -1,29 +1,26 @@
 <?php
+
 /**
  * @category   Zend
- * @package    Zend_Cloud
- * @subpackage Infrastructure
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-
 
 require_once 'Zend/Cloud/Infrastructure/Image.php';
 
 /**
  * List of images
  *
- * @package    Zend_Cloud
- * @subpackage Infrastructure
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Cloud_Infrastructure_ImageList implements Countable, Iterator, ArrayAccess
+class Zend_Cloud_Infrastructure_ImageList implements ArrayAccess, Countable, Iterator
 {
     /**
      * @var array Array of Zend_Cloud_Infrastructure_Image
      */
-    protected $images = array();
+    protected $images = [];
 
     /**
      * @var int Iterator key
@@ -40,15 +37,15 @@ class Zend_Cloud_Infrastructure_ImageList implements Countable, Iterator, ArrayA
     /**
      * Constructor
      *
-     * @param  array $list
-     * @param  null|object $adapter
-     * @return boolean
+     * @param  array  $list
+     * @param  null|object  $adapter
+     * @return bool
      */
     public function __construct($images, $adapter = null)
     {
-        if (empty($images) || !is_array($images)) {
+        if (empty($images) || ! is_array($images)) {
             require_once 'Zend/Cloud/Infrastructure/Exception.php';
-            throw new Zend_Cloud_Infrastructure_Exception(__CLASS__ . ' expects an array of images');
+            throw new Zend_Cloud_Infrastructure_Exception(__CLASS__.' expects an array of images');
         }
 
         $this->adapter = $adapter;
@@ -58,7 +55,6 @@ class Zend_Cloud_Infrastructure_ImageList implements Countable, Iterator, ArrayA
     /**
      * Transforms the Array to array of Instances
      *
-     * @param  array $list
      * @return void
      */
     protected function constructFromArray(array $list)
@@ -77,6 +73,7 @@ class Zend_Cloud_Infrastructure_ImageList implements Countable, Iterator, ArrayA
     protected function addImage(Zend_Cloud_Infrastructure_Image $image)
     {
         $this->images[] = $image;
+
         return $this;
     }
 
@@ -87,7 +84,6 @@ class Zend_Cloud_Infrastructure_ImageList implements Countable, Iterator, ArrayA
      *
      * @return int
      */
-    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->images);
@@ -100,7 +96,6 @@ class Zend_Cloud_Infrastructure_ImageList implements Countable, Iterator, ArrayA
      *
      * @return Image
      */
-    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->images[$this->iteratorKey];
@@ -113,7 +108,6 @@ class Zend_Cloud_Infrastructure_ImageList implements Countable, Iterator, ArrayA
      *
      * @return int
      */
-    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->iteratorKey;
@@ -126,7 +120,6 @@ class Zend_Cloud_Infrastructure_ImageList implements Countable, Iterator, ArrayA
      *
      * @return void
      */
-    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->iteratorKey++;
@@ -139,7 +132,6 @@ class Zend_Cloud_Infrastructure_ImageList implements Countable, Iterator, ArrayA
      *
      * @return void
      */
-    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->iteratorKey = 0;
@@ -152,13 +144,13 @@ class Zend_Cloud_Infrastructure_ImageList implements Countable, Iterator, ArrayA
      *
      * @return bool
      */
-    #[\ReturnTypeWillChange]
     public function valid()
     {
         $numItems = $this->count();
         if ($numItems > 0 && $this->iteratorKey < $numItems) {
             return true;
         }
+
         return false;
     }
 
@@ -167,13 +159,12 @@ class Zend_Cloud_Infrastructure_ImageList implements Countable, Iterator, ArrayA
      *
      * Implement ArrayAccess::offsetExists()
      *
-     * @param   int     $offset
-     * @return  bool
+     * @param  int  $offset
+     * @return bool
      */
-    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
-        return ($offset < $this->count());
+        return $offset < $this->count();
     }
 
     /**
@@ -181,17 +172,18 @@ class Zend_Cloud_Infrastructure_ImageList implements Countable, Iterator, ArrayA
      *
      * Implement ArrayAccess::offsetGet()
      *
-     * @param   int     $offset
-     * @throws  Zend_Cloud_Infrastructure_Exception
-     * @return  Image
+     * @param  int  $offset
+     * @return Image
+     *
+     * @throws Zend_Cloud_Infrastructure_Exception
      */
-    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
-        if (!$this->offsetExists($offset)) {
+        if (! $this->offsetExists($offset)) {
             require_once 'Zend/Cloud/Infrastructure/Exception.php';
             throw new Zend_Cloud_Infrastructure_Exception('Illegal index');
         }
+
         return $this->images[$offset];
     }
 
@@ -200,11 +192,11 @@ class Zend_Cloud_Infrastructure_ImageList implements Countable, Iterator, ArrayA
      *
      * Implement ArrayAccess::offsetSet()
      *
-     * @param   int     $offset
-     * @param   string  $value
-     * @throws  Zend_Cloud_Infrastructure_Exception
+     * @param  int  $offset
+     * @param  string  $value
+     *
+     * @throws Zend_Cloud_Infrastructure_Exception
      */
-    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         require_once 'Zend/Cloud/Infrastructure/Exception.php';
@@ -216,10 +208,10 @@ class Zend_Cloud_Infrastructure_ImageList implements Countable, Iterator, ArrayA
      *
      * Implement ArrayAccess::offsetUnset()
      *
-     * @param   int     $offset
-     * @throws  Zend_Cloud_Infrastructure_Exception
+     * @param  int  $offset
+     *
+     * @throws Zend_Cloud_Infrastructure_Exception
      */
-    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         require_once 'Zend/Cloud/Infrastructure/Exception.php';

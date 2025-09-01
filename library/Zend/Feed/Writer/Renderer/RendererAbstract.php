@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,7 +29,7 @@ require_once 'Zend/Version.php';
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -35,9 +37,10 @@ class Zend_Feed_Writer_Renderer_RendererAbstract
 {
     /**
      * Extensions
+     *
      * @var array
      */
-    protected $_extensions = array();
+    protected $_extensions = [];
 
     /**
      * @var mixed
@@ -57,7 +60,7 @@ class Zend_Feed_Writer_Renderer_RendererAbstract
     /**
      * @var array
      */
-    protected $_exceptions = array();
+    protected $_exceptions = [];
 
     /**
      * Encoding of all text values
@@ -82,7 +85,7 @@ class Zend_Feed_Writer_Renderer_RendererAbstract
     /**
      * Constructor
      *
-     * @param  mixed $container
+     * @param  mixed  $container
      * @return void
      */
     public function __construct($container)
@@ -135,12 +138,13 @@ class Zend_Feed_Writer_Renderer_RendererAbstract
     /**
      * Set feed encoding
      *
-     * @param  string $enc
+     * @param  string  $enc
      * @return Zend_Feed_Writer_Renderer_RendererAbstract
      */
     public function setEncoding($enc)
     {
         $this->_encoding = $enc;
+
         return $this;
     }
 
@@ -157,16 +161,17 @@ class Zend_Feed_Writer_Renderer_RendererAbstract
     /**
      * Indicate whether or not to ignore exceptions
      *
-     * @param  bool $bool
+     * @param  bool  $bool
      * @return Zend_Feed_Writer_Renderer_RendererAbstract
      */
     public function ignoreExceptions($bool = true)
     {
-        if (!is_bool($bool)) {
+        if (! is_bool($bool)) {
             require_once 'Zend/Feed/Exception.php';
             throw new Zend_Feed_Exception('Invalid parameter: $bool. Should be TRUE or FALSE (defaults to TRUE if null)');
         }
         $this->_ignoreExceptions = $bool;
+
         return $this;
     }
 
@@ -185,7 +190,7 @@ class Zend_Feed_Writer_Renderer_RendererAbstract
      * other objects to gracefully choose whether to execute or not, depending
      * on their appropriateness for the current type, e.g. renderers.
      *
-     * @param string $type
+     * @param  string  $type
      */
     public function setType($type)
     {
@@ -207,8 +212,6 @@ class Zend_Feed_Writer_Renderer_RendererAbstract
      * helps simplify the appending of namespace declarations, but also ensures
      * namespaces are added to the root element - not scattered across the entire
      * XML file - may assist namespace unsafe parsers and looks pretty ;).
-     *
-     * @param DOMElement $root
      */
     public function setRootElement(DOMElement $root)
     {

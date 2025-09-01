@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,16 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Crypt
- * @subpackage Rsa
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * @category   Zend
- * @package    Zend_Crypt
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -38,7 +39,7 @@ class Zend_Crypt_Rsa_Key implements Countable
      *
      * @var array
      */
-    protected $_details = array();
+    protected $_details = [];
 
     /**
      * Key Resource
@@ -59,13 +60,15 @@ class Zend_Crypt_Rsa_Key implements Countable
 
     /**
      * @return string
+     *
      * @throws Zend_Crypt_Exception
      */
     public function toString()
     {
-        if (!empty($this->_pemString)) {
+        if (! empty($this->_pemString)) {
             return $this->_pemString;
-        } elseif (!empty($this->_certificateString)) {
+        }
+        if (! empty($this->_certificateString)) {
             return $this->_certificateString;
         }
         /**
@@ -83,7 +86,6 @@ class Zend_Crypt_Rsa_Key implements Countable
         return $this->toString();
     }
 
-    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->_details['bits'];

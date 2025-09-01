@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,24 +14,23 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_View
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * Abstract master class for extension.
  */
 require_once 'Zend/View/Abstract.php';
 
-
 /**
  * Concrete class for handling view scripts.
  *
  * @category  Zend
- * @package   Zend_View
+ *
  * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  *
@@ -87,12 +87,14 @@ class Zend_View extends Zend_View_Abstract
 {
     /**
      * Whether or not to use streams to mimic short tags
+     *
      * @var bool
      */
     private $_useViewStream = false;
 
     /**
      * Whether or not to use stream wrapper if short_open_tag is false
+     *
      * @var bool
      */
     private $_useStreamWrapper = false;
@@ -102,14 +104,14 @@ class Zend_View extends Zend_View_Abstract
      *
      * Register Zend_View_Stream stream wrapper if short tags are disabled.
      *
-     * @param  array $config
+     * @param  array  $config
      * @return void
      */
-    public function __construct($config = array())
+    public function __construct($config = [])
     {
         $this->_useViewStream = (bool) ini_get('short_open_tag') ? false : true;
         if ($this->_useViewStream) {
-            if (!in_array('zend.view', stream_get_wrappers())) {
+            if (! in_array('zend.view', stream_get_wrappers())) {
                 require_once 'Zend/View/Stream.php';
                 stream_wrapper_register('zend.view', 'Zend_View_Stream');
             }
@@ -125,12 +127,13 @@ class Zend_View extends Zend_View_Abstract
     /**
      * Set flag indicating if stream wrapper should be used if short_open_tag is off
      *
-     * @param  bool $flag
+     * @param  bool  $flag
      * @return Zend_View
      */
     public function setUseStreamWrapper($flag)
     {
         $this->_useStreamWrapper = (bool) $flag;
+
         return $this;
     }
 
@@ -152,7 +155,7 @@ class Zend_View extends Zend_View_Abstract
     protected function _run()
     {
         if ($this->_useViewStream && $this->useStreamWrapper()) {
-            include 'zend.view://' . func_get_arg(0);
+            include 'zend.view://'.func_get_arg(0);
         } else {
             include func_get_arg(0);
         }

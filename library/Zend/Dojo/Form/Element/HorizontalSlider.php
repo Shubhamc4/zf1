@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,8 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Dojo
- * @subpackage Form_Element
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -26,16 +26,17 @@ require_once 'Zend/Dojo/Form/Element/Slider.php';
  * HorizontalSlider dijit
  *
  * @uses       Zend_Dojo_Form_Element_Slider
- * @package    Zend_Dojo
- * @subpackage Form_Element
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 class Zend_Dojo_Form_Element_HorizontalSlider extends Zend_Dojo_Form_Element_Slider
 {
     /**
      * Use HorizontalSlider dijit view helper
+     *
      * @var string
      */
     public $helper = 'HorizontalSlider';
@@ -50,13 +51,14 @@ class Zend_Dojo_Form_Element_HorizontalSlider extends Zend_Dojo_Form_Element_Sli
         if ($this->hasDijitParam('topDecoration')) {
             return $this->getDijitParam('topDecoration');
         }
-        return array();
+
+        return [];
     }
 
     /**
      * Set dijit to use with top decoration
      *
-     * @param mixed $dijit
+     * @param  mixed  $dijit
      * @return Zend_Dojo_Form_Element_HorizontalSlider
      */
     public function setTopDecorationDijit($dijit)
@@ -64,13 +66,14 @@ class Zend_Dojo_Form_Element_HorizontalSlider extends Zend_Dojo_Form_Element_Sli
         $decoration = $this->getTopDecoration();
         $decoration['dijit'] = (string) $dijit;
         $this->setDijitParam('topDecoration', $decoration);
+
         return $this;
     }
 
     /**
      * Set container to use with top decoration
      *
-     * @param mixed $container
+     * @param  mixed  $container
      * @return Zend_Dojo_Form_Element_HorizontalSlider
      */
     public function setTopDecorationContainer($container)
@@ -78,13 +81,13 @@ class Zend_Dojo_Form_Element_HorizontalSlider extends Zend_Dojo_Form_Element_Sli
         $decoration = $this->getTopDecoration();
         $decoration['container'] = (string) $container;
         $this->setDijitParam('topDecoration', $decoration);
+
         return $this;
     }
 
     /**
      * Set labels to use with top decoration
      *
-     * @param  array $labels
      * @return Zend_Dojo_Form_Element_HorizontalSlider
      */
     public function setTopDecorationLabels(array $labels)
@@ -92,13 +95,13 @@ class Zend_Dojo_Form_Element_HorizontalSlider extends Zend_Dojo_Form_Element_Sli
         $decoration = $this->getTopDecoration();
         $decoration['labels'] = array_values($labels);
         $this->setDijitParam('topDecoration', $decoration);
+
         return $this;
     }
 
     /**
      * Set params to use with top decoration
      *
-     * @param  array $params
      * @return Zend_Dojo_Form_Element_HorizontalSlider
      */
     public function setTopDecorationParams(array $params)
@@ -106,13 +109,13 @@ class Zend_Dojo_Form_Element_HorizontalSlider extends Zend_Dojo_Form_Element_Sli
         $decoration = $this->getTopDecoration();
         $decoration['params'] = $params;
         $this->setDijitParam('topDecoration', $decoration);
+
         return $this;
     }
 
     /**
      * Set attribs to use with top decoration
      *
-     * @param  array $attribs
      * @return Zend_Dojo_Form_Element_HorizontalSlider
      */
     public function setTopDecorationAttribs(array $attribs)
@@ -120,6 +123,7 @@ class Zend_Dojo_Form_Element_HorizontalSlider extends Zend_Dojo_Form_Element_Sli
         $decoration = $this->getTopDecoration();
         $decoration['attribs'] = $attribs;
         $this->setDijitParam('topDecoration', $decoration);
+
         return $this;
     }
 
@@ -133,13 +137,14 @@ class Zend_Dojo_Form_Element_HorizontalSlider extends Zend_Dojo_Form_Element_Sli
         if ($this->hasDijitParam('bottomDecoration')) {
             return $this->getDijitParam('bottomDecoration');
         }
-        return array();
+
+        return [];
     }
 
     /**
      * Set dijit to use with bottom decoration
      *
-     * @param mixed $dijit
+     * @param  mixed  $dijit
      * @return Zend_Dojo_Form_Element_HorizontalSlider
      */
     public function setBottomDecorationDijit($dijit)
@@ -147,13 +152,14 @@ class Zend_Dojo_Form_Element_HorizontalSlider extends Zend_Dojo_Form_Element_Sli
         $decoration = $this->getBottomDecoration();
         $decoration['dijit'] = (string) $dijit;
         $this->setDijitParam('bottomDecoration', $decoration);
+
         return $this;
     }
 
     /**
      * Set container to use with bottom decoration
      *
-     * @param mixed $container
+     * @param  mixed  $container
      * @return Zend_Dojo_Form_Element_HorizontalSlider
      */
     public function setBottomDecorationContainer($container)
@@ -161,13 +167,13 @@ class Zend_Dojo_Form_Element_HorizontalSlider extends Zend_Dojo_Form_Element_Sli
         $decoration = $this->getBottomDecoration();
         $decoration['container'] = (string) $container;
         $this->setDijitParam('bottomDecoration', $decoration);
+
         return $this;
     }
 
     /**
      * Set labels to use with bottom decoration
      *
-     * @param  array $labels
      * @return Zend_Dojo_Form_Element_HorizontalSlider
      */
     public function setBottomDecorationLabels(array $labels)
@@ -175,13 +181,13 @@ class Zend_Dojo_Form_Element_HorizontalSlider extends Zend_Dojo_Form_Element_Sli
         $decoration = $this->getBottomDecoration();
         $decoration['labels'] = array_values($labels);
         $this->setDijitParam('bottomDecoration', $decoration);
+
         return $this;
     }
 
     /**
      * Set params to use with bottom decoration
      *
-     * @param  array $params
      * @return Zend_Dojo_Form_Element_HorizontalSlider
      */
     public function setBottomDecorationParams(array $params)
@@ -189,13 +195,13 @@ class Zend_Dojo_Form_Element_HorizontalSlider extends Zend_Dojo_Form_Element_Sli
         $decoration = $this->getBottomDecoration();
         $decoration['params'] = $params;
         $this->setDijitParam('bottomDecoration', $decoration);
+
         return $this;
     }
 
     /**
      * Set attribs to use with bottom decoration
      *
-     * @param  array $attribs
      * @return Zend_Dojo_Form_Element_HorizontalSlider
      */
     public function setBottomDecorationAttribs(array $attribs)
@@ -203,6 +209,7 @@ class Zend_Dojo_Form_Element_HorizontalSlider extends Zend_Dojo_Form_Element_Sli
         $decoration = $this->getBottomDecoration();
         $decoration['attribs'] = $attribs;
         $this->setDijitParam('bottomDecoration', $decoration);
+
         return $this;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Db
- * @subpackage Statement
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -32,30 +33,29 @@ require_once 'Zend/Db/Statement/Pdo.php';
  * are re-thrown as Zend_Db_Statement_Exception.
  *
  * @category   Zend
- * @package    Zend_Db
- * @subpackage Statement
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Db_Statement_Pdo_Oci extends Zend_Db_Statement_Pdo
 {
-
     /**
-    * Returns an array containing all of the result set rows.
-    *
-    * Behaves like parent, but if limit()
-    * is used, the final result removes the extra column
-    * 'zend_db_rownum'
-    *
-    * @param int $style OPTIONAL Fetch mode.
-    * @param int $col   OPTIONAL Column number, if fetch mode is by column.
-    * @return array Collection of rows, each in a format by the fetch mode.
-    * @throws Zend_Db_Statement_Exception
-    */
+     * Returns an array containing all of the result set rows.
+     *
+     * Behaves like parent, but if limit()
+     * is used, the final result removes the extra column
+     * 'zend_db_rownum'
+     *
+     * @param  int  $style  OPTIONAL Fetch mode.
+     * @param  int  $col  OPTIONAL Column number, if fetch mode is by column.
+     * @return array Collection of rows, each in a format by the fetch mode.
+     *
+     * @throws Zend_Db_Statement_Exception
+     */
     public function fetchAll($style = null, $col = null)
     {
         $data = parent::fetchAll($style, $col);
-        $results = array();
+        $results = [];
         $remove = $this->_adapter->foldCase('zend_db_rownum');
 
         foreach ($data as $row) {
@@ -64,17 +64,18 @@ class Zend_Db_Statement_Pdo_Oci extends Zend_Db_Statement_Pdo
             }
             $results[] = $row;
         }
+
         return $results;
     }
-
 
     /**
      * Fetches a row from the result set.
      *
-     * @param int $style  OPTIONAL Fetch mode for this fetch operation.
-     * @param int $cursor OPTIONAL Absolute, relative, or other.
-     * @param int $offset OPTIONAL Number for absolute or relative cursors.
+     * @param  int  $style  OPTIONAL Fetch mode for this fetch operation.
+     * @param  int  $cursor  OPTIONAL Absolute, relative, or other.
+     * @param  int  $offset  OPTIONAL Number for absolute or relative cursors.
      * @return mixed Array, object, or scalar depending on fetch mode.
+     *
      * @throws Zend_Db_Statement_Exception
      */
     public function fetch($style = null, $cursor = null, $offset = null)

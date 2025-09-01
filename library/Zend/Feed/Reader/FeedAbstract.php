@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -31,11 +33,10 @@ require_once 'Zend/Feed/Reader/FeedInterface.php';
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInterface
 {
     /**
@@ -43,7 +44,7 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
      *
      * @var array
      */
-    protected $_data = array();
+    protected $_data = [];
 
     /**
      * Parsed feed data in the shape of a DOMDocument
@@ -57,7 +58,7 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
      *
      * @var array
      */
-    protected $_entries = array();
+    protected $_entries = [];
 
     /**
      * A pointer for the iterator to keep track of the entries array
@@ -78,7 +79,7 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
      *
      * @var array
      */
-    protected $_extensions = array();
+    protected $_extensions = [];
 
     /**
      * Original Source URI (set if imported from a URI)
@@ -91,7 +92,7 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
      * Constructor
      *
      * @param DomDocument The DOM object for the feed's XML
-     * @param string $type Feed type
+     * @param  string  $type  Feed type
      */
     public function __construct(DomDocument $domDocument, $type = null)
     {
@@ -113,7 +114,7 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
      * is returned from getFeedLink() method if the feed does not carry
      * a self-referencing URI.
      *
-     * @param string $uri
+     * @param  string  $uri
      */
     public function setOriginalSourceUri($uri)
     {
@@ -137,7 +138,6 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
      *
      * @return int
      */
-    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->_entries);
@@ -148,7 +148,6 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
      *
      * @return Zend_Feed_Reader_EntryInterface
      */
-    #[\ReturnTypeWillChange]
     public function current()
     {
         if (substr($this->getType(), 0, 3) == 'rss') {
@@ -183,6 +182,7 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
         if (empty($assumed)) {
             $assumed = 'UTF-8';
         }
+
         return $assumed;
     }
 
@@ -193,7 +193,7 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
      */
     public function saveXml()
     {
-          return $this->getDomDocument()->saveXml();
+        return $this->getDomDocument()->saveXml();
     }
 
     /**
@@ -203,7 +203,7 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
      */
     public function getElement()
     {
-          return $this->getDomDocument()->documentElement;
+        return $this->getDomDocument()->documentElement;
     }
 
     /**
@@ -213,7 +213,7 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
      */
     public function getXpath()
     {
-          return $this->_xpath;
+        return $this->_xpath;
     }
 
     /**
@@ -231,7 +231,6 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
      *
      * @return unknown
      */
-    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->_entriesKey;
@@ -239,19 +238,15 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
 
     /**
      * Move the feed pointer forward
-     *
      */
-    #[\ReturnTypeWillChange]
     public function next()
     {
-        ++$this->_entriesKey;
+        $this->_entriesKey++;
     }
 
     /**
      * Reset the pointer in the feed object
-     *
      */
-    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->_entriesKey = 0;
@@ -260,9 +255,8 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
     /**
      * Check to see if the iterator is still valid
      *
-     * @return boolean
+     * @return bool
      */
-    #[\ReturnTypeWillChange]
     public function valid()
     {
         return 0 <= $this->_entriesKey && $this->_entriesKey < $this->count();
@@ -277,26 +271,26 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
     {
         foreach ($this->_extensions as $extension) {
             if (method_exists($extension, $method)) {
-                return call_user_func_array(array($extension, $method), $args);
+                return call_user_func_array([$extension, $method], $args);
             }
         }
         require_once 'Zend/Feed/Exception.php';
-        throw new Zend_Feed_Exception('Method: ' . $method
-        . 'does not exist and could not be located on a registered Extension');
+        throw new Zend_Feed_Exception('Method: '.$method
+        .'does not exist and could not be located on a registered Extension');
     }
 
     /**
      * Return an Extension object with the matching name (postfixed with _Feed)
      *
-     * @param string $name
+     * @param  string  $name
      * @return Zend_Feed_Reader_Extension_FeedAbstract
      */
     public function getExtension($name)
     {
-        if (array_key_exists($name . '_Feed', $this->_extensions)) {
-            return $this->_extensions[$name . '_Feed'];
+        if (array_key_exists($name.'_Feed', $this->_extensions)) {
+            return $this->_extensions[$name.'_Feed'];
         }
-        return null;
+
     }
 
     protected function _loadExtensions()
@@ -316,13 +310,11 @@ abstract class Zend_Feed_Reader_FeedAbstract implements Zend_Feed_Reader_FeedInt
 
     /**
      * Read all entries to the internal entries array
-     *
      */
     abstract protected function _indexEntries();
 
     /**
      * Register the default namespaces for the current feed format
-     *
      */
     abstract protected function _registerNamespaces();
 }

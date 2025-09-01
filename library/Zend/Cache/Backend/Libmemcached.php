@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,13 +14,12 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Cache
- * @subpackage Zend_Cache_Backend
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * @see Zend_Cache_Backend_Interface
@@ -31,10 +31,7 @@ require_once 'Zend/Cache/Backend/ExtendedInterface.php';
  */
 require_once 'Zend/Cache/Backend.php';
 
-
 /**
- * @package    Zend_Cache
- * @subpackage Zend_Cache_Backend
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -44,14 +41,17 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
      * Default Server Values
      */
     const DEFAULT_HOST = '127.0.0.1';
-    const DEFAULT_PORT =  11211;
-    const DEFAULT_WEIGHT  = 1;
+
+    const DEFAULT_PORT = 11211;
+
+    const DEFAULT_WEIGHT = 1;
 
     /**
      * Log message
      */
     const TAGS_UNSUPPORTED_BY_CLEAN_OF_LIBMEMCACHED_BACKEND = 'Zend_Cache_Backend_Libmemcached::clean() : tags are unsupported by the Libmemcached backend';
-    const TAGS_UNSUPPORTED_BY_SAVE_OF_LIBMEMCACHED_BACKEND =  'Zend_Cache_Backend_Libmemcached::save() : tags are unsupported by the Libmemcached backend';
+
+    const TAGS_UNSUPPORTED_BY_SAVE_OF_LIBMEMCACHED_BACKEND = 'Zend_Cache_Backend_Libmemcached::save() : tags are unsupported by the Libmemcached backend';
 
     /**
      * Available options
@@ -65,20 +65,21 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
      *                     weight of all servers.
      * =====> (array) client :
      * an array of memcached client options ; the memcached client is described by an associative array :
+     *
      * @see http://php.net/manual/memcached.constants.php
      * - The option name can be the name of the constant without the prefix 'OPT_'
      *   or the integer value of this option constant
      *
      * @var array available options
      */
-    protected $_options = array(
-        'servers' => array(array(
-            'host'   => self::DEFAULT_HOST,
-            'port'   => self::DEFAULT_PORT,
+    protected $_options = [
+        'servers' => [[
+            'host' => self::DEFAULT_HOST,
+            'port' => self::DEFAULT_PORT,
             'weight' => self::DEFAULT_WEIGHT,
-        )),
-        'client' => array()
-    );
+        ]],
+        'client' => [],
+    ];
 
     /**
      * Memcached object
@@ -90,22 +91,23 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
     /**
      * Constructor
      *
-     * @param array $options associative array of options
-     * @throws Zend_Cache_Exception
+     * @param  array  $options  associative array of options
      * @return void
+     *
+     * @throws Zend_Cache_Exception
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = [])
     {
-        if (!extension_loaded('memcached')) {
+        if (! extension_loaded('memcached')) {
             Zend_Cache::throwException('The memcached extension must be loaded for using this backend !');
         }
 
         // override default client options
-        $this->_options['client'] = array(
-            Memcached::OPT_DISTRIBUTION         => Memcached::DISTRIBUTION_CONSISTENT,
-            Memcached::OPT_HASH                 => Memcached::HASH_MD5,
+        $this->_options['client'] = [
+            Memcached::OPT_DISTRIBUTION => Memcached::DISTRIBUTION_CONSISTENT,
+            Memcached::OPT_HASH => Memcached::HASH_MD5,
             Memcached::OPT_LIBKETAMA_COMPATIBLE => true,
-        );
+        ];
 
         parent::__construct($options);
 
@@ -113,7 +115,7 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
             $value = $this->_options['servers'];
             if (isset($value['host'])) {
                 // in this case, $value seems to be a simple associative array (one server only)
-                $value = array(0 => $value); // let's transform it into a classical array of associative arrays
+                $value = [0 => $value]; // let's transform it into a classical array of associative arrays
             }
             $this->setOption('servers', $value);
         }
@@ -125,7 +127,7 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
             if (is_int($name)) {
                 $optId = $name;
             } else {
-                $optConst = 'Memcached::OPT_' . strtoupper($name);
+                $optConst = 'Memcached::OPT_'.strtoupper($name);
                 if (defined($optConst)) {
                     $optId = constant($optConst);
                 } else {
@@ -133,23 +135,23 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
                 }
             }
             if (null !== $optId) {
-                if (!$this->_memcache->setOption($optId, $value)) {
+                if (! $this->_memcache->setOption($optId, $value)) {
                     $this->_log("Setting memcached client option '{$optId}' failed");
                 }
             }
         }
 
         // setup memcached servers
-        $servers = array();
+        $servers = [];
         foreach ($this->_options['servers'] as $server) {
-            if (!array_key_exists('port', $server)) {
+            if (! array_key_exists('port', $server)) {
                 $server['port'] = self::DEFAULT_PORT;
             }
-            if (!array_key_exists('weight', $server)) {
+            if (! array_key_exists('weight', $server)) {
                 $server['weight'] = self::DEFAULT_WEIGHT;
             }
 
-            $servers[] = array($server['host'], $server['port'], $server['weight']);
+            $servers[] = [$server['host'], $server['port'], $server['weight']];
         }
         $this->_memcache->addServers($servers);
     }
@@ -157,8 +159,8 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
     /**
      * Test if a cache is available for the given id and (if yes) return it (false else)
      *
-     * @param  string  $id                     Cache id
-     * @param  boolean $doNotTestCacheValidity If set to true, the cache validity won't be tested
+     * @param  string  $id  Cache id
+     * @param  bool  $doNotTestCacheValidity  If set to true, the cache validity won't be tested
      * @return string|false cached datas
      */
     public function load($id, $doNotTestCacheValidity = false)
@@ -167,21 +169,23 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
         if (isset($tmp[0])) {
             return $tmp[0];
         }
+
         return false;
     }
 
     /**
      * Test if a cache is available or not (for the given id)
      *
-     * @param  string $id Cache id
+     * @param  string  $id  Cache id
      * @return int|false (a cache is not available) or "last modified" timestamp (int) of the available cache record
      */
     public function test($id)
     {
         $tmp = $this->_memcache->get($id);
         if (isset($tmp[0], $tmp[1])) {
-            return (int)$tmp[1];
+            return (int) $tmp[1];
         }
+
         return false;
     }
 
@@ -191,21 +195,21 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
      * Note : $data is always "string" (serialization is done by the
      * core not by the backend)
      *
-     * @param  string $data             Datas to cache
-     * @param  string $id               Cache id
-     * @param  array  $tags             Array of strings, the cache record will be tagged by each string entry
-     * @param  int    $specificLifetime If != false, set a specific lifetime for this cache record (null => infinite lifetime)
-     * @return boolean True if no problem
+     * @param  string  $data  Datas to cache
+     * @param  string  $id  Cache id
+     * @param  array  $tags  Array of strings, the cache record will be tagged by each string entry
+     * @param  int  $specificLifetime  If != false, set a specific lifetime for this cache record (null => infinite lifetime)
+     * @return bool True if no problem
      */
-    public function save($data, $id, $tags = array(), $specificLifetime = false)
+    public function save($data, $id, $tags = [], $specificLifetime = false)
     {
         $lifetime = $this->getLifetime($specificLifetime);
 
         // ZF-8856: using set because add needs a second request if item already exists
-        $result = @$this->_memcache->set($id, array($data, time(), $lifetime), $lifetime);
+        $result = @$this->_memcache->set($id, [$data, time(), $lifetime], $lifetime);
         if ($result === false) {
             $rsCode = $this->_memcache->getResultCode();
-            $rsMsg  = $this->_memcache->getResultMessage();
+            $rsMsg = $this->_memcache->getResultMessage();
             $this->_log("Memcached::set() failed: [{$rsCode}] {$rsMsg}");
         }
 
@@ -219,8 +223,8 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
     /**
      * Remove a cache record
      *
-     * @param  string $id Cache id
-     * @return boolean True if no problem
+     * @param  string  $id  Cache id
+     * @return bool True if no problem
      */
     public function remove($id)
     {
@@ -237,35 +241,36 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
      * 'notMatchingTag' => unsupported
      * 'matchingAnyTag' => unsupported
      *
-     * @param  string $mode Clean mode
-     * @param  array  $tags Array of tags
+     * @param  string  $mode  Clean mode
+     * @param  array  $tags  Array of tags
+     * @return bool True if no problem
+     *
      * @throws Zend_Cache_Exception
-     * @return boolean True if no problem
      */
-    public function clean($mode = Zend_Cache::CLEANING_MODE_ALL, $tags = array())
+    public function clean($mode = Zend_Cache::CLEANING_MODE_ALL, $tags = [])
     {
         switch ($mode) {
             case Zend_Cache::CLEANING_MODE_ALL:
                 return $this->_memcache->flush();
                 break;
             case Zend_Cache::CLEANING_MODE_OLD:
-                $this->_log("Zend_Cache_Backend_Libmemcached::clean() : CLEANING_MODE_OLD is unsupported by the Libmemcached backend");
+                $this->_log('Zend_Cache_Backend_Libmemcached::clean() : CLEANING_MODE_OLD is unsupported by the Libmemcached backend');
                 break;
             case Zend_Cache::CLEANING_MODE_MATCHING_TAG:
             case Zend_Cache::CLEANING_MODE_NOT_MATCHING_TAG:
             case Zend_Cache::CLEANING_MODE_MATCHING_ANY_TAG:
                 $this->_log(self::TAGS_UNSUPPORTED_BY_CLEAN_OF_LIBMEMCACHED_BACKEND);
                 break;
-               default:
+            default:
                 Zend_Cache::throwException('Invalid mode for clean() method');
-                   break;
+                break;
         }
     }
 
     /**
      * Return true if the automatic cleaning is available for the backend
      *
-     * @return boolean
+     * @return bool
      */
     public function isAutomaticCleaningAvailable()
     {
@@ -275,9 +280,10 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
     /**
      * Set the frontend directives
      *
-     * @param  array $directives Assoc of directives
-     * @throws Zend_Cache_Exception
+     * @param  array  $directives  Assoc of directives
      * @return void
+     *
+     * @throws Zend_Cache_Exception
      */
     public function setDirectives($directives)
     {
@@ -289,7 +295,7 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
         }
         if ($lifetime === null) {
             // #ZF-4614 : we tranform null to zero to get the maximal lifetime
-            parent::setDirectives(array('lifetime' => 0));
+            parent::setDirectives(['lifetime' => 0]);
         }
     }
 
@@ -300,8 +306,9 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
      */
     public function getIds()
     {
-        $this->_log("Zend_Cache_Backend_Libmemcached::save() : getting the list of cache ids is unsupported by the Libmemcached backend");
-        return array();
+        $this->_log('Zend_Cache_Backend_Libmemcached::save() : getting the list of cache ids is unsupported by the Libmemcached backend');
+
+        return [];
     }
 
     /**
@@ -312,7 +319,8 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
     public function getTags()
     {
         $this->_log(self::TAGS_UNSUPPORTED_BY_SAVE_OF_LIBMEMCACHED_BACKEND);
-        return array();
+
+        return [];
     }
 
     /**
@@ -320,13 +328,14 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
      *
      * In case of multiple tags, a logical AND is made between tags
      *
-     * @param array $tags array of tags
+     * @param  array  $tags  array of tags
      * @return array array of matching cache ids (string)
      */
-    public function getIdsMatchingTags($tags = array())
+    public function getIdsMatchingTags($tags = [])
     {
         $this->_log(self::TAGS_UNSUPPORTED_BY_SAVE_OF_LIBMEMCACHED_BACKEND);
-        return array();
+
+        return [];
     }
 
     /**
@@ -334,13 +343,14 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
      *
      * In case of multiple tags, a logical OR is made between tags
      *
-     * @param array $tags array of tags
+     * @param  array  $tags  array of tags
      * @return array array of not matching cache ids (string)
      */
-    public function getIdsNotMatchingTags($tags = array())
+    public function getIdsNotMatchingTags($tags = [])
     {
         $this->_log(self::TAGS_UNSUPPORTED_BY_SAVE_OF_LIBMEMCACHED_BACKEND);
-        return array();
+
+        return [];
     }
 
     /**
@@ -348,20 +358,22 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
      *
      * In case of multiple tags, a logical AND is made between tags
      *
-     * @param array $tags array of tags
+     * @param  array  $tags  array of tags
      * @return array array of any matching cache ids (string)
      */
-    public function getIdsMatchingAnyTags($tags = array())
+    public function getIdsMatchingAnyTags($tags = [])
     {
         $this->_log(self::TAGS_UNSUPPORTED_BY_SAVE_OF_LIBMEMCACHED_BACKEND);
-        return array();
+
+        return [];
     }
 
     /**
      * Return the filling percentage of the backend storage
      *
-     * @throws Zend_Cache_Exception
      * @return int integer between 0 and 100
+     *
+     * @throws Zend_Cache_Exception
      */
     public function getFillingPercentage()
     {
@@ -374,7 +386,8 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
         $memUsed = null;
         foreach ($mems as $key => $mem) {
             if ($mem === false) {
-                $this->_log('can\'t get stat from ' . $key);
+                $this->_log('can\'t get stat from '.$key);
+
                 continue;
             }
 
@@ -392,7 +405,7 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
             Zend_Cache::throwException('Can\'t get filling percentage');
         }
 
-        return ((int) (100. * ($memUsed / $memSize)));
+        return (int) (100. * ($memUsed / $memSize));
     }
 
     /**
@@ -403,21 +416,22 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
      * - tags : a string array of tags
      * - mtime : timestamp of last modification time
      *
-     * @param string $id cache id
+     * @param  string  $id  cache id
      * @return array array of metadatas (false if the cache id is not found)
      */
     public function getMetadatas($id)
     {
         $tmp = $this->_memcache->get($id);
         if (isset($tmp[0], $tmp[1], $tmp[2])) {
-            $data     = $tmp[0];
-            $mtime    = $tmp[1];
+            $data = $tmp[0];
+            $mtime = $tmp[1];
             $lifetime = $tmp[2];
-            return array(
+
+            return [
                 'expire' => $mtime + $lifetime,
-                'tags' => array(),
-                'mtime' => $mtime
-            );
+                'tags' => [],
+                'mtime' => $mtime,
+            ];
         }
 
         return false;
@@ -426,32 +440,34 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
     /**
      * Give (if possible) an extra lifetime to the given cache id
      *
-     * @param string $id cache id
-     * @param int $extraLifetime
-     * @return boolean true if ok
+     * @param  string  $id  cache id
+     * @param  int  $extraLifetime
+     * @return bool true if ok
      */
     public function touch($id, $extraLifetime)
     {
         $tmp = $this->_memcache->get($id);
         if (isset($tmp[0], $tmp[1], $tmp[2])) {
-            $data     = $tmp[0];
-            $mtime    = $tmp[1];
+            $data = $tmp[0];
+            $mtime = $tmp[1];
             $lifetime = $tmp[2];
             $newLifetime = $lifetime - (time() - $mtime) + $extraLifetime;
-            if ($newLifetime <=0) {
+            if ($newLifetime <= 0) {
                 return false;
             }
             // #ZF-5702 : we try replace() first becase set() seems to be slower
-            if (!($result = $this->_memcache->replace($id, array($data, time(), $newLifetime), $newLifetime))) {
-                $result = $this->_memcache->set($id, array($data, time(), $newLifetime), $newLifetime);
+            if (! ($result = $this->_memcache->replace($id, [$data, time(), $newLifetime], $newLifetime))) {
+                $result = $this->_memcache->set($id, [$data, time(), $newLifetime], $newLifetime);
                 if ($result === false) {
                     $rsCode = $this->_memcache->getResultCode();
-                    $rsMsg  = $this->_memcache->getResultMessage();
+                    $rsMsg = $this->_memcache->getResultMessage();
                     $this->_log("Memcached::set() failed: [{$rsCode}] {$rsMsg}");
                 }
             }
+
             return $result;
         }
+
         return false;
     }
 
@@ -471,14 +487,13 @@ class Zend_Cache_Backend_Libmemcached extends Zend_Cache_Backend implements Zend
      */
     public function getCapabilities()
     {
-        return array(
+        return [
             'automatic_cleaning' => false,
             'tags' => false,
             'expired_read' => false,
             'priority' => false,
             'infinite_lifetime' => false,
-            'get_list' => false
-        );
+            'get_list' => false,
+        ];
     }
-
 }

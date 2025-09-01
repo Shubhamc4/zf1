@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Health
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,7 +29,7 @@ require_once 'Zend/Exception.php';
 /**
  * @see Zend_Gdata_Query
  */
-require_once('Zend/Gdata/Query.php');
+require_once 'Zend/Gdata/Query.php';
 
 /**
  * Assists in constructing queries for Google Health
@@ -37,8 +37,7 @@ require_once('Zend/Gdata/Query.php');
  * @link http://code.google.com/apis/health
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Health
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -60,7 +59,7 @@ class Zend_Gdata_Health_Query extends Zend_Gdata_Query
      * Namespace for an item category
      */
     const ITEM_CATEGORY_NS = 'http://schemas.google.com/health/item';
-    
+
     /**
      * Create Gdata_Query object
      */
@@ -68,8 +67,8 @@ class Zend_Gdata_Health_Query extends Zend_Gdata_Query
     {
         throw new Zend_Exception(
             'Google Health API has been discontinued by Google and was removed'
-            . ' from Zend Framework in 1.12.0.  For more information see: '
-            . 'http://googleblog.blogspot.ca/2011/06/update-on-google-health-and-google.html'
+            .' from Zend Framework in 1.12.0.  For more information see: '
+            .'http://googleblog.blogspot.ca/2011/06/update-on-google-health-and-google.html'
         );
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: ActionMethod.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
@@ -37,13 +38,12 @@ require_once 'Zend/Reflection/File.php';
  * items within a specific project.
  *
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Tool_Project_Context_Zf_TestApplicationActionMethod implements Zend_Tool_Project_Context_Interface
 {
-
     /**
      * @var Zend_Tool_Project_Profile_Resource
      */
@@ -75,7 +75,7 @@ class Zend_Tool_Project_Context_Zf_TestApplicationActionMethod implements Zend_T
 
         $this->_resource->setAppendable(false);
         $this->_testApplicationControllerResource = $this->_resource->getParentResource();
-        if (!$this->_testApplicationControllerResource->getContext() instanceof Zend_Tool_Project_Context_Zf_TestApplicationControllerFile) {
+        if (! $this->_testApplicationControllerResource->getContext() instanceof Zend_Tool_Project_Context_Zf_TestApplicationControllerFile) {
             require_once 'Zend/Tool/Project/Context/Exception.php';
             throw new Zend_Tool_Project_Context_Exception('ActionMethod must be a sub resource of a TestApplicationControllerFile');
         }
@@ -94,9 +94,9 @@ class Zend_Tool_Project_Context_Zf_TestApplicationActionMethod implements Zend_T
      */
     public function getPersistentAttributes()
     {
-        return array(
-            'forActionName' => $this->getForActionName()
-            );
+        return [
+            'forActionName' => $this->getForActionName(),
+        ];
     }
 
     /**
@@ -112,12 +112,12 @@ class Zend_Tool_Project_Context_Zf_TestApplicationActionMethod implements Zend_T
     /**
      * setResource()
      *
-     * @param Zend_Tool_Project_Profile_Resource $resource
      * @return Zend_Tool_Project_Context_Zf_ActionMethod
      */
     public function setResource(Zend_Tool_Project_Profile_Resource $resource)
     {
         $this->_resource = $resource;
+
         return $this;
     }
 
@@ -139,19 +139,19 @@ class Zend_Tool_Project_Context_Zf_TestApplicationActionMethod implements Zend_T
     public function create()
     {
         $file = $this->_testApplicationControllerPath;
-        
-        if (!file_exists($file)) {
+
+        if (! file_exists($file)) {
             require_once 'Zend/Tool/Project/Context/Exception.php';
             throw new Zend_Tool_Project_Context_Exception(
-                'Could not create action within test controller ' . $file
-                . ' with action name ' . $this->_forActionName
-                );
+                'Could not create action within test controller '.$file
+                .' with action name '.$this->_forActionName
+            );
         }
-        
+
         $actionParam = $this->getForActionName();
         $controllerParam = $this->_resource->getParentResource()->getForControllerName();
-        //$moduleParam = null;//
-        
+        // $moduleParam = null;//
+
         /* @var $controllerDirectoryResource Zend_Tool_Project_Profile_Resource */
         $controllerDirectoryResource = $this->_resource->getParentResource()->getParentResource();
         if ($controllerDirectoryResource->getParentResource()->getName() == 'TestApplicationModuleDirectory') {
@@ -159,25 +159,23 @@ class Zend_Tool_Project_Context_Zf_TestApplicationActionMethod implements Zend_T
         } else {
             $moduleParam = 'default';
         }
-        
-        
 
         if ($actionParam == 'index' && $controllerParam == 'Index' && $moduleParam == 'default') {
             $assert = '$this->assertQueryContentContains("div#welcome h3", "This is your project\'s main page");';
         } else {
-            $assert = <<<EOS
-\$this->assertQueryContentContains(
+            $assert = <<<'EOS'
+$this->assertQueryContentContains(
     'div#view-content p',
-    'View script for controller <b>' . \$params['controller'] . '</b> and script/action name <b>' . \$params['action'] . '</b>'
+    'View script for controller <b>' . $params['controller'] . '</b> and script/action name <b>' . $params['action'] . '</b>'
     );
 EOS;
         }
-        
+
         $codeGenFile = Zend_CodeGenerator_Php_File::fromReflectedFileName($file, true, true);
-        $codeGenFile->getClass()->setMethod(array(
-            'name' => 'test' . ucfirst($actionParam) . 'Action',
+        $codeGenFile->getClass()->setMethod([
+            'name' => 'test'.ucfirst($actionParam).'Action',
             'body' => <<<EOS
-\$params = array('action' => '$actionParam', 'controller' => '$controllerParam', 'module' => '$moduleParam');
+\$params = array('action' => '{$actionParam}', 'controller' => '{$controllerParam}', 'module' => '{$moduleParam}');
 \$urlParams = \$this->urlizeOptions(\$params);
 \$url = \$this->url(\$urlParams);
 \$this->dispatch(\$url);
@@ -186,13 +184,13 @@ EOS;
 \$this->assertModule(\$urlParams['module']);
 \$this->assertController(\$urlParams['controller']);
 \$this->assertAction(\$urlParams['action']);
-$assert
+{$assert}
 
 EOS
-            ));
+        ]);
 
         file_put_contents($file, $codeGenFile->generate());
-        
+
         return $this;
     }
 
@@ -210,8 +208,8 @@ EOS
     /**
      * hasActionMethod()
      *
-     * @param string $controllerPath
-     * @param string $actionName
+     * @param  string  $controllerPath
+     * @param  string  $actionName
      * @return bool
      */
     /*

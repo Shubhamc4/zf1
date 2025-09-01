@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,22 +14,22 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
-require_once "Zend/Tool/Framework/Client/Response/ContentDecorator/Interface.php";
+require_once 'Zend/Tool/Framework/Client/Response/ContentDecorator/Interface.php';
 
 /**
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Tool_Framework_Client_Console_ResponseDecorator_Indention
-    implements Zend_Tool_Framework_Client_Response_ContentDecorator_Interface
+class Zend_Tool_Framework_Client_Console_ResponseDecorator_Indention implements Zend_Tool_Framework_Client_Response_ContentDecorator_Interface
 {
     public function getName()
     {
@@ -36,21 +37,22 @@ class Zend_Tool_Framework_Client_Console_ResponseDecorator_Indention
     }
 
     /**
-     * @param string $content
-     * @param integer $indention
+     * @param  string  $content
+     * @param  int  $indention
      */
     public function decorate($content, $indention)
     {
-        if(strval(intval($indention)) != $indention) {
+        if (strval(intval($indention)) != $indention) {
             return $content;
         }
 
-        $newContent = "";
+        $newContent = '';
         $lines = preg_split('((\r\n|\r|\n)+)', $content);
         $lineIndention = str_repeat(' ', $indention);
-        foreach($lines AS $line) {
+        foreach ($lines as $line) {
             $newContent .= $lineIndention.$line.PHP_EOL;
         }
+
         return rtrim($newContent);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,20 +14,18 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Index
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * A Zend_Search_Lucene_Index_TermInfo represents a record of information stored for a term.
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Index
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -35,28 +34,28 @@ class Zend_Search_Lucene_Index_TermInfo
     /**
      * The number of documents which contain the term.
      *
-     * @var integer
+     * @var int
      */
     public $docFreq;
 
     /**
      * Data offset in a Frequencies file.
      *
-     * @var integer
+     * @var int
      */
     public $freqPointer;
 
     /**
      * Data offset in a Positions file.
      *
-     * @var integer
+     * @var int
      */
     public $proxPointer;
 
     /**
      * ScipData offset in a Frequencies file.
      *
-     * @var integer
+     * @var int
      */
     public $skipOffset;
 
@@ -64,17 +63,16 @@ class Zend_Search_Lucene_Index_TermInfo
      * Term offset of the _next_ term in a TermDictionary file.
      * Used only for Term Index
      *
-     * @var integer
+     * @var int
      */
     public $indexPointer;
 
     public function __construct($docFreq, $freqPointer, $proxPointer, $skipOffset, $indexPointer = null)
     {
-        $this->docFreq      = $docFreq;
-        $this->freqPointer  = $freqPointer;
-        $this->proxPointer  = $proxPointer;
-        $this->skipOffset   = $skipOffset;
+        $this->docFreq = $docFreq;
+        $this->freqPointer = $freqPointer;
+        $this->proxPointer = $proxPointer;
+        $this->skipOffset = $skipOffset;
         $this->indexPointer = $indexPointer;
     }
 }
-

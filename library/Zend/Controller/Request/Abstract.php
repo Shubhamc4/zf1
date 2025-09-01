@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,68 +14,76 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Controller
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * @category   Zend
- * @package    Zend_Controller
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Controller_Request_Abstract
 {
     /**
      * Has the action been dispatched?
-     * @var boolean
+     *
+     * @var bool
      */
     protected $_dispatched = false;
 
     /**
      * Module
+     *
      * @var string
      */
     protected $_module;
 
     /**
      * Module key for retrieving module from params
+     *
      * @var string
      */
     protected $_moduleKey = 'module';
 
     /**
      * Controller
+     *
      * @var string
      */
     protected $_controller;
 
     /**
      * Controller key for retrieving controller from params
+     *
      * @var string
      */
     protected $_controllerKey = 'controller';
 
     /**
      * Action
+     *
      * @var string
      */
     protected $_action;
 
     /**
      * Action key for retrieving action from params
+     *
      * @var string
      */
     protected $_actionKey = 'action';
 
     /**
      * Request parameters
+     *
      * @var array
      */
-    protected $_params = array();
+    protected $_params = [];
 
     /**
      * Retrieve the module name
@@ -93,12 +102,13 @@ abstract class Zend_Controller_Request_Abstract
     /**
      * Set the module name to use
      *
-     * @param string $value
+     * @param  string  $value
      * @return Zend_Controller_Request_Abstract
      */
     public function setModuleName($value)
     {
         $this->_module = $value;
+
         return $this;
     }
 
@@ -119,12 +129,13 @@ abstract class Zend_Controller_Request_Abstract
     /**
      * Set the controller name to use
      *
-     * @param string $value
+     * @param  string  $value
      * @return Zend_Controller_Request_Abstract
      */
     public function setControllerName($value)
     {
         $this->_controller = $value;
+
         return $this;
     }
 
@@ -145,7 +156,7 @@ abstract class Zend_Controller_Request_Abstract
     /**
      * Set the action name
      *
-     * @param string $value
+     * @param  string  $value
      * @return Zend_Controller_Request_Abstract
      */
     public function setActionName($value)
@@ -157,6 +168,7 @@ abstract class Zend_Controller_Request_Abstract
         if (null === $value) {
             $this->setParam($this->getActionKey(), $value);
         }
+
         return $this;
     }
 
@@ -173,12 +185,13 @@ abstract class Zend_Controller_Request_Abstract
     /**
      * Set the module key
      *
-     * @param string $key
+     * @param  string  $key
      * @return Zend_Controller_Request_Abstract
      */
     public function setModuleKey($key)
     {
         $this->_moduleKey = (string) $key;
+
         return $this;
     }
 
@@ -195,12 +208,13 @@ abstract class Zend_Controller_Request_Abstract
     /**
      * Set the controller key
      *
-     * @param string $key
+     * @param  string  $key
      * @return Zend_Controller_Request_Abstract
      */
     public function setControllerKey($key)
     {
         $this->_controllerKey = (string) $key;
+
         return $this;
     }
 
@@ -217,20 +231,21 @@ abstract class Zend_Controller_Request_Abstract
     /**
      * Set the action key
      *
-     * @param string $key
+     * @param  string  $key
      * @return Zend_Controller_Request_Abstract
      */
     public function setActionKey($key)
     {
         $this->_actionKey = (string) $key;
+
         return $this;
     }
 
     /**
      * Get an action parameter
      *
-     * @param string $key
-     * @param mixed $default Default value to use if key not found
+     * @param  string  $key
+     * @param  mixed  $default  Default value to use if key not found
      * @return mixed
      */
     public function getParam($key, $default = null)
@@ -256,8 +271,8 @@ abstract class Zend_Controller_Request_Abstract
     /**
      * Retrieve a single user param (i.e, a param specific to the object and not the environment)
      *
-     * @param string $key
-     * @param string $default Default value to use if key not found
+     * @param  string  $key
+     * @param  string  $default  Default value to use if key not found
      * @return mixed
      */
     public function getUserParam($key, $default = null)
@@ -274,8 +289,8 @@ abstract class Zend_Controller_Request_Abstract
      *
      * A $value of null will unset the $key if it exists
      *
-     * @param string $key
-     * @param mixed $value
+     * @param  string  $key
+     * @param  mixed  $value
      * @return Zend_Controller_Request_Abstract
      */
     public function setParam($key, $value)
@@ -296,17 +311,16 @@ abstract class Zend_Controller_Request_Abstract
      *
      * @return array
      */
-     public function getParams()
-     {
-         return $this->_params;
-     }
+    public function getParams()
+    {
+        return $this->_params;
+    }
 
     /**
      * Set action parameters en masse; does not overwrite
      *
      * Null values will unset the associated key.
      *
-     * @param array $array
      * @return Zend_Controller_Request_Abstract
      */
     public function setParams(array $array)
@@ -329,26 +343,28 @@ abstract class Zend_Controller_Request_Abstract
      */
     public function clearParams()
     {
-        $this->_params = array();
+        $this->_params = [];
+
         return $this;
     }
 
     /**
      * Set flag indicating whether or not request has been dispatched
      *
-     * @param boolean $flag
+     * @param  bool  $flag
      * @return Zend_Controller_Request_Abstract
      */
     public function setDispatched($flag = true)
     {
         $this->_dispatched = $flag ? true : false;
+
         return $this;
     }
 
     /**
      * Determine if the request has been dispatched
      *
-     * @return boolean
+     * @return bool
      */
     public function isDispatched()
     {

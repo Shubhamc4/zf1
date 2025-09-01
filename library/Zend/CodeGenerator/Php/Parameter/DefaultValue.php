@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_CodeGenerator
- * @subpackage Php
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -24,8 +25,7 @@
  * A value-holder object for non-expressable parameter default values, such as null, booleans and empty array()
  *
  * @category   Zend
- * @package    Zend_CodeGenerator
- * @subpackage Php
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -37,17 +37,17 @@ class Zend_CodeGenerator_Php_Parameter_DefaultValue
     protected $_defaultValue = null;
 
     /**
+     * @param  string  $defaultValue
      *
-     * @param string $defaultValue
      * @throws Zend_CodeGenerator_Php_Exception
      */
     public function __construct($defaultValue)
     {
-        if(!is_string($defaultValue)) {
-            require_once "Zend/CodeGenerator/Php/Exception.php";
+        if (! is_string($defaultValue)) {
+            require_once 'Zend/CodeGenerator/Php/Exception.php';
             throw new Zend_CodeGenerator_Php_Exception(
-                "Can only set a string as default value representation, ".
-                "but ".gettype($defaultValue)." was given."
+                'Can only set a string as default value representation, '.
+                'but '.gettype($defaultValue).' was given.'
             );
         }
         $this->_defaultValue = $defaultValue;

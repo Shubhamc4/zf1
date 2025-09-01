@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -28,15 +30,15 @@ require_once 'Zend/Date.php';
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Feed_Reader_Extension_Syndication_Feed
-    extends Zend_Feed_Reader_Extension_FeedAbstract
+class Zend_Feed_Reader_Extension_Syndication_Feed extends Zend_Feed_Reader_Extension_FeedAbstract
 {
     /**
      * Get update period
+     *
      * @return string
      */
     public function getUpdatePeriod()
@@ -46,25 +48,26 @@ class Zend_Feed_Reader_Extension_Syndication_Feed
 
         if ($period === null) {
             $this->_data[$name] = 'daily';
-            return 'daily'; //Default specified by spec
+
+            return 'daily'; // Default specified by spec
         }
 
-        switch ($period)
-        {
+        switch ($period) {
             case 'hourly':
             case 'daily':
             case 'weekly':
             case 'yearly':
                 return $period;
             default:
-                throw new Zend_Feed_Exception("Feed specified invalid update period: '$period'."
-                    .  " Must be one of hourly, daily, weekly or yearly"
+                throw new Zend_Feed_Exception("Feed specified invalid update period: '{$period}'."
+                    .' Must be one of hourly, daily, weekly or yearly'
                 );
         }
     }
 
     /**
      * Get update frequency
+     *
      * @return int
      */
     public function getUpdateFrequency()
@@ -72,8 +75,9 @@ class Zend_Feed_Reader_Extension_Syndication_Feed
         $name = 'updateFrequency';
         $freq = $this->_getData($name, 'number');
 
-        if (!$freq || $freq < 1) {
+        if (! $freq || $freq < 1) {
             $this->_data[$name] = 1;
+
             return 1;
         }
 
@@ -82,6 +86,7 @@ class Zend_Feed_Reader_Extension_Syndication_Feed
 
     /**
      * Get update frequency as ticks
+     *
      * @return int
      */
     public function getUpdateFrequencyAsTicks()
@@ -89,7 +94,7 @@ class Zend_Feed_Reader_Extension_Syndication_Feed
         $name = 'updateFrequency';
         $freq = $this->_getData($name, 'number');
 
-        if (!$freq || $freq < 1) {
+        if (! $freq || $freq < 1) {
             $this->_data[$name] = 1;
             $freq = 1;
         }
@@ -97,11 +102,10 @@ class Zend_Feed_Reader_Extension_Syndication_Feed
         $period = $this->getUpdatePeriod();
         $ticks = 1;
 
-        switch ($period)
-        {
-            //intentional fall through
+        switch ($period) {
+            // intentional fall through
             case 'yearly':
-                $ticks *= 52; //TODO: fix generalisation, how?
+                $ticks *= 52; // TODO: fix generalisation, how?
             case 'weekly':
                 $ticks *= 7;
             case 'daily':
@@ -109,7 +113,7 @@ class Zend_Feed_Reader_Extension_Syndication_Feed
             case 'hourly':
                 $ticks *= 3600;
                 break;
-            default: //Never arrive here, exception thrown in getPeriod()
+            default: // Never arrive here, exception thrown in getPeriod()
                 break;
         }
 
@@ -129,14 +133,15 @@ class Zend_Feed_Reader_Extension_Syndication_Feed
             $date = new Zend_Date;
             $date->set($updateBase, Zend_Date::W3C);
         }
+
         return $date;
     }
 
     /**
      * Get the entry data specified by name
      *
-     * @param string $name
-     * @param string $type
+     * @param  string  $name
+     * @param  string  $type
      * @return mixed|null
      */
     private function _getData($name, $type = 'string')
@@ -145,9 +150,9 @@ class Zend_Feed_Reader_Extension_Syndication_Feed
             return $this->_data[$name];
         }
 
-        $data = $this->_xpath->evaluate($type . '(' . $this->getXpathPrefix() . '/syn10:' . $name . ')');
+        $data = $this->_xpath->evaluate($type.'('.$this->getXpathPrefix().'/syn10:'.$name.')');
 
-        if (!$data) {
+        if (! $data) {
             $data = null;
         }
 

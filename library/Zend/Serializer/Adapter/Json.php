@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Serializer
- * @subpackage Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -28,8 +29,7 @@ require_once 'Zend/Json.php';
 
 /**
  * @category   Zend
- * @package    Zend_Serializer
- * @subpackage Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -38,25 +38,25 @@ class Zend_Serializer_Adapter_Json extends Zend_Serializer_Adapter_AdapterAbstra
     /**
      * @var array Default options
      */
-    protected $_options = array(
-        'cycleCheck'           => false,
+    protected $_options = [
+        'cycleCheck' => false,
         'enableJsonExprFinder' => false,
-        'objectDecodeType'     => Zend_Json::TYPE_ARRAY,
-    );
+        'objectDecodeType' => Zend_Json::TYPE_ARRAY,
+    ];
 
     /**
      * Serialize PHP value to JSON
      *
-     * @param  mixed $value
-     * @param  array $opts
+     * @param  mixed  $value
      * @return string
+     *
      * @throws Zend_Serializer_Exception on JSON encoding exception
      */
-    public function serialize($value, array $opts = array())
+    public function serialize($value, array $opts = [])
     {
         $opts = $opts + $this->_options;
 
-        try  {
+        try {
             return Zend_Json::encode($value, $opts['cycleCheck'], $opts);
         } catch (Exception $e) {
             require_once 'Zend/Serializer/Exception.php';
@@ -67,11 +67,10 @@ class Zend_Serializer_Adapter_Json extends Zend_Serializer_Adapter_AdapterAbstra
     /**
      * Deserialize JSON to PHP value
      *
-     * @param  string $json
-     * @param  array $opts
+     * @param  string  $json
      * @return mixed
      */
-    public function unserialize($json, array $opts = array())
+    public function unserialize($json, array $opts = [])
     {
         $opts = $opts + $this->_options;
 

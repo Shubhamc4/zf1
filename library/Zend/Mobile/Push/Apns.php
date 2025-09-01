@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Mobile
- * @subpackage Zend_Mobile_Push
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,21 +31,23 @@ require_once 'Zend/Mobile/Push/Message/Apns.php';
  * APNS Push
  *
  * @category   Zend
- * @package    Zend_Mobile
- * @subpackage Zend_Mobile_Push
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 class Zend_Mobile_Push_Apns extends Zend_Mobile_Push_Abstract
 {
-
     /**
      * @const int apple server uri constants
      */
     const SERVER_SANDBOX_URI = 0;
+
     const SERVER_PRODUCTION_URI = 1;
+
     const SERVER_FEEDBACK_SANDBOX_URI = 2;
+
     const SERVER_FEEDBACK_PRODUCTION_URI = 3;
 
     /**
@@ -52,12 +55,12 @@ class Zend_Mobile_Push_Apns extends Zend_Mobile_Push_Abstract
      *
      * @var array
      */
-    protected $_serverUriList = array(
+    protected $_serverUriList = [
         'ssl://gateway.sandbox.push.apple.com:2195',
         'ssl://gateway.push.apple.com:2195',
         'ssl://feedback.sandbox.push.apple.com:2196',
-        'ssl://feedback.push.apple.com:2196'
-    );
+        'ssl://feedback.push.apple.com:2196',
+    ];
 
     /**
      * Current Environment
@@ -100,19 +103,21 @@ class Zend_Mobile_Push_Apns extends Zend_Mobile_Push_Abstract
     /**
      * Set Certificate
      *
-     * @param  string $cert
+     * @param  string  $cert
      * @return Zend_Mobile_Push_Apns
+     *
      * @throws Zend_Mobile_Push_Exception
      */
     public function setCertificate($cert)
     {
-        if (!is_string($cert)) {
+        if (! is_string($cert)) {
             throw new Zend_Mobile_Push_Exception('$cert must be a string');
         }
-        if (!file_exists($cert)) {
+        if (! file_exists($cert)) {
             throw new Zend_Mobile_Push_Exception('$cert must be a valid path to the certificate');
         }
         $this->_certificate = $cert;
+
         return $this;
     }
 
@@ -129,31 +134,34 @@ class Zend_Mobile_Push_Apns extends Zend_Mobile_Push_Abstract
     /**
      * Set Certificate Passphrase
      *
-     * @param  string $passphrase
+     * @param  string  $passphrase
      * @return Zend_Mobile_Push_Apns
+     *
      * @throws Zend_Mobile_Push_Exception
      */
     public function setCertificatePassphrase($passphrase)
     {
-        if (!is_string($passphrase)) {
+        if (! is_string($passphrase)) {
             throw new Zend_Mobile_Push_Exception('$passphrase must be a string');
         }
         $this->_certificatePassphrase = $passphrase;
+
         return $this;
     }
 
     /**
      * Connect to Socket
      *
-     * @param  string $uri
+     * @param  string  $uri
      * @return bool
+     *
      * @throws Zend_Mobile_Push_Exception_ServerUnavailable
      */
     protected function _connect($uri)
     {
-        $ssl = array(
+        $ssl = [
             'local_cert' => $this->_certificate,
-        );
+        ];
         if ($this->_certificatePassphrase) {
             $ssl['passphrase'] = $this->_certificatePassphrase;
         }
@@ -163,12 +171,12 @@ class Zend_Mobile_Push_Apns extends Zend_Mobile_Push_Abstract
             $errstr,
             ini_get('default_socket_timeout'),
             STREAM_CLIENT_CONNECT,
-            stream_context_create(array(
+            stream_context_create([
                 'ssl' => $ssl,
-            ))
+            ])
         );
 
-        if (!is_resource($this->_socket)) {
+        if (! is_resource($this->_socket)) {
             require_once 'Zend/Mobile/Push/Exception/ServerUnavailable.php';
             throw new Zend_Mobile_Push_Exception_ServerUnavailable(sprintf('Unable to connect: %s: %d (%s)',
                 $uri,
@@ -179,40 +187,45 @@ class Zend_Mobile_Push_Apns extends Zend_Mobile_Push_Abstract
 
         stream_set_blocking($this->_socket, 0);
         stream_set_write_buffer($this->_socket, 0);
+
         return true;
     }
 
     /**
-    * Read from the Socket Server
-    * 
-    * @param int $length
-    * @return string
-    */
-    protected function _read($length) {
+     * Read from the Socket Server
+     * 
+     * @param  int  $length
+     * @return string
+     */
+    protected function _read($length)
+    {
         $data = false;
-        if (!feof($this->_socket)) {
+        if (! feof($this->_socket)) {
             $data = fread($this->_socket, $length);
         }
+
         return $data;
     }
 
     /**
-    * Write to the Socket Server
-    * 
-    * @param string $payload
-    * @return int
-    */
-    protected function _write($payload) {
+     * Write to the Socket Server
+     * 
+     * @param  string  $payload
+     * @return int
+     */
+    protected function _write($payload)
+    {
         return @fwrite($this->_socket, $payload);
     }
 
     /**
      * Connect to the Push Server
      *
-     * @param  int|string $env
+     * @param  int|string  $env
+     * @return Zend_Mobile_Push_Abstract
+     *
      * @throws Zend_Mobile_Push_Exception
      * @throws Zend_Mobile_Push_Exception_ServerUnavailable
-     * @return Zend_Mobile_Push_Abstract
      */
     public function connect($env = self::SERVER_PRODUCTION_URI)
     {
@@ -223,11 +236,11 @@ class Zend_Mobile_Push_Apns extends Zend_Mobile_Push_Abstract
             $this->close();
         }
 
-        if (!isset($this->_serverUriList[$env])) {
+        if (! isset($this->_serverUriList[$env])) {
             throw new Zend_Mobile_Push_Exception('$env is not a valid environment');
         }
 
-        if (!$this->_certificate) {
+        if (! $this->_certificate) {
             throw new Zend_Mobile_Push_Exception('A certificate must be set prior to calling ::connect');
         }
 
@@ -235,63 +248,64 @@ class Zend_Mobile_Push_Apns extends Zend_Mobile_Push_Abstract
 
         $this->_currentEnv = $env;
         $this->_isConnected = true;
+
         return $this;
     }
-
-
 
     /**
      * Feedback
      *
      * @return array array w/ key = token and value = time
+     *
      * @throws Zend_Mobile_Push_Exception
      * @throws Zend_Mobile_Push_Exception_ServerUnavailable
      */
     public function feedback()
     {
-        if (!$this->_isConnected ||
-            !in_array($this->_currentEnv,
-                array(self::SERVER_FEEDBACK_SANDBOX_URI, self::SERVER_FEEDBACK_PRODUCTION_URI))) {
+        if (! $this->_isConnected ||
+            ! in_array($this->_currentEnv,
+                [self::SERVER_FEEDBACK_SANDBOX_URI, self::SERVER_FEEDBACK_PRODUCTION_URI])) {
             $this->connect(self::SERVER_FEEDBACK_PRODUCTION_URI);
         }
 
-        $tokens = array();
+        $tokens = [];
         while ($token = $this->_read(38)) {
             if (strlen($token) < 38) {
                 continue;
             }
             $token = unpack('Ntime/ntokenLength/H*token', $token);
-            if (!isset($tokens[$token['token']]) || $tokens[$token['token']] < $token['time']) {
+            if (! isset($tokens[$token['token']]) || $tokens[$token['token']] < $token['time']) {
                 $tokens[$token['token']] = $token['time'];
             }
         }
+
         return $tokens;
     }
 
     /**
      * Send Message
      *
-     * @param  Zend_Mobile_Push_Message_Abstract $message
+     * @return bool
+     *
      * @throws Zend_Mobile_Push_Exception
      * @throws Zend_Mobile_Push_Exception_InvalidPayload
      * @throws Zend_Mobile_Push_Exception_InvalidToken
      * @throws Zend_Mobile_Push_Exception_InvalidTopic
      * @throws Zend_Mobile_Push_Exception_ServerUnavailable
-     * @return bool
      */
     public function send(Zend_Mobile_Push_Message_Abstract $message)
     {
-        if (!$message->validate()) {
+        if (! $message->validate()) {
             throw new Zend_Mobile_Push_Exception('The message is not valid.');
         }
 
-        if (!$this->_isConnected || !in_array($this->_currentEnv, array(
+        if (! $this->_isConnected || ! in_array($this->_currentEnv, [
             self::SERVER_SANDBOX_URI,
-            self::SERVER_PRODUCTION_URI))) {
+            self::SERVER_PRODUCTION_URI])) {
             $this->connect(self::SERVER_PRODUCTION_URI);
         }
 
-        $payload = array('aps' => array());
+        $payload = ['aps' => []];
 
         $alert = $message->getAlert();
         foreach ($alert as $k => $v) {
@@ -299,21 +313,21 @@ class Zend_Mobile_Push_Apns extends Zend_Mobile_Push_Abstract
                 unset($alert[$k]);
             }
         }
-        if (!empty($alert)) {
+        if (! empty($alert)) {
             $payload['aps']['alert'] = $alert;
         }
-        if (!is_null($message->getBadge())) {
+        if (! is_null($message->getBadge())) {
             $payload['aps']['badge'] = $message->getBadge();
         }
         $sound = $message->getSound();
-        if (!empty($sound)) {
+        if (! empty($sound)) {
             $payload['aps']['sound'] = $sound;
         }
 
-        foreach($message->getCustomData() as $k => $v) {
+        foreach ($message->getCustomData() as $k => $v) {
             $payload[$k] = $v;
         }
-        
+
         if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
             $payload = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         } else {
@@ -330,8 +344,8 @@ class Zend_Mobile_Push_Apns extends Zend_Mobile_Push_Abstract
         }
 
         $payload = pack('CNNnH*', 1, $id, $expire, 32, $message->getToken())
-            . pack('n', strlen($payload))
-            . $payload;
+            .pack('n', strlen($payload))
+            .$payload;
         $ret = $this->_write($payload);
         if ($ret === false) {
             require_once 'Zend/Mobile/Push/Exception/ServerUnavailable.php';
@@ -381,6 +395,7 @@ class Zend_Mobile_Push_Apns extends Zend_Mobile_Push_Abstract
                     break;
             }
         }
+
         return true;
     }
 

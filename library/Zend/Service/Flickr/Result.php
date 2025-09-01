@@ -14,18 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Flickr
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
-
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Flickr
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -174,8 +172,7 @@ class Zend_Service_Flickr_Result
     /**
      * Parse the Flickr Result
      *
-     * @param  DOMElement          $image
-     * @param  Zend_Service_Flickr $flickr Original Zend_Service_Flickr object with which the request was made
+     * @param  Zend_Service_Flickr  $flickr  Original Zend_Service_Flickr object with which the request was made
      * @return void
      */
     public function __construct(DOMElement $image, Zend_Service_Flickr $flickr)

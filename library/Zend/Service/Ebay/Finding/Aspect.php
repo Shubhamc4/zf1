@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Aspect.php 22791 2010-08-04 16:11:47Z renanbr $
  */
 
@@ -27,10 +28,10 @@ require_once 'Zend/Service/Ebay/Finding/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @uses       Zend_Service_Ebay_Finding_Abstract
  */
 class Zend_Service_Ebay_Finding_Aspect extends Zend_Service_Ebay_Finding_Abstract
@@ -52,11 +53,11 @@ class Zend_Service_Ebay_Finding_Aspect extends Zend_Service_Ebay_Finding_Abstrac
         parent::_init();
         $ns = Zend_Service_Ebay_Finding::XMLNS_FINDING;
 
-        $this->_attributes['valueHistogram'] = array(
-            'valueName' => $this->_query(".//$ns:valueHistogram/@valueName", 'string', true)
-        );
+        $this->_attributes['valueHistogram'] = [
+            'valueName' => $this->_query(".//{$ns}:valueHistogram/@valueName", 'string', true),
+        ];
 
-        $nodes = $this->_xPath->query(".//$ns:valueHistogram", $this->_dom);
+        $nodes = $this->_xPath->query(".//{$ns}:valueHistogram", $this->_dom);
         if ($nodes->length > 0) {
             /**
              * @see Zend_Service_Ebay_Finding_Aspect_Histogram_Value_Set

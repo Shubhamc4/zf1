@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Analytics
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,14 +28,14 @@ require_once 'Zend/Gdata/Analytics/Extension/Metric.php';
 
 /**
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Analytics
  */
-class Zend_Gdata_Analytics_Extension_Dimension 
-    extends Zend_Gdata_Analytics_Extension_Metric
+class Zend_Gdata_Analytics_Extension_Dimension extends Zend_Gdata_Analytics_Extension_Metric
 {
     protected $_rootNamespace = 'ga';
+
     protected $_rootElement = 'dimension';
+
     protected $_value = null;
+
     protected $_name = null;
 }

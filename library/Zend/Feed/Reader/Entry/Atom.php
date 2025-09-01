@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -41,7 +43,7 @@ require_once 'Zend/Feed/Reader/Extension/Atom/Entry.php';
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -57,9 +59,8 @@ class Zend_Feed_Reader_Entry_Atom extends Zend_Feed_Reader_EntryAbstract impleme
     /**
      * Constructor
      *
-     * @param  DOMElement $entry
-     * @param  int $entryKey
-     * @param  string $type
+     * @param  int  $entryKey
+     * @param  string  $type
      * @return void
      */
     public function __construct(DOMElement $entry, $entryKey, $type = null)
@@ -67,7 +68,7 @@ class Zend_Feed_Reader_Entry_Atom extends Zend_Feed_Reader_EntryAbstract impleme
         parent::__construct($entry, $entryKey, $type);
 
         // Everyone by now should know XPath indices start from 1 not 0
-        $this->_xpathQuery = '//atom:entry[' . ($this->_entryKey + 1) . ']';
+        $this->_xpathQuery = '//atom:entry['.($this->_entryKey + 1).']';
 
         $atomClass = Zend_Feed_Reader::getPluginLoader()->getClassName('Atom_Entry');
         $this->_extensions['Atom_Entry'] = new $atomClass($entry, $entryKey, $type);
@@ -82,7 +83,7 @@ class Zend_Feed_Reader_Entry_Atom extends Zend_Feed_Reader_EntryAbstract impleme
     /**
      * Get the specified author
      *
-     * @param  int $index
+     * @param  int  $index
      * @return string|null
      */
     public function getAuthor($index = 0)
@@ -93,7 +94,6 @@ class Zend_Feed_Reader_Entry_Atom extends Zend_Feed_Reader_EntryAbstract impleme
             return $authors[$index];
         }
 
-        return null;
     }
 
     /**
@@ -225,12 +225,12 @@ class Zend_Feed_Reader_Entry_Atom extends Zend_Feed_Reader_EntryAbstract impleme
     /**
      * Get a specific link
      *
-     * @param  int $index
+     * @param  int  $index
      * @return string
      */
     public function getLink($index = 0)
     {
-        if (!array_key_exists('links', $this->_data)) {
+        if (! array_key_exists('links', $this->_data)) {
             $this->getLinks();
         }
 
@@ -238,7 +238,6 @@ class Zend_Feed_Reader_Entry_Atom extends Zend_Feed_Reader_EntryAbstract impleme
             return $this->_data['links'][$index];
         }
 
-        return null;
     }
 
     /**
@@ -290,7 +289,7 @@ class Zend_Feed_Reader_Entry_Atom extends Zend_Feed_Reader_EntryAbstract impleme
     /**
      * Get the number of comments/replies for current entry
      *
-     * @return integer
+     * @return int
      */
     public function getCommentCount()
     {
@@ -300,7 +299,7 @@ class Zend_Feed_Reader_Entry_Atom extends Zend_Feed_Reader_EntryAbstract impleme
 
         $commentcount = $this->getExtension('Thread')->getCommentCount();
 
-        if (!$commentcount) {
+        if (! $commentcount) {
             $commentcount = $this->getExtension('Atom')->getCommentCount();
         }
 
@@ -387,8 +386,6 @@ class Zend_Feed_Reader_Entry_Atom extends Zend_Feed_Reader_EntryAbstract impleme
 
     /**
      * Set the XPath query (incl. on all Extensions)
-     *
-     * @param DOMXPath $xpath
      */
     public function setXpath(DOMXPath $xpath)
     {

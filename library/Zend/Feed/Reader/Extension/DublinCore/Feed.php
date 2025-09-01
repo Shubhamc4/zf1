@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -36,17 +38,16 @@ require_once 'Zend/Feed/Reader/Collection/Author.php';
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Feed_Reader_Extension_DublinCore_Feed
-    extends Zend_Feed_Reader_Extension_FeedAbstract
+class Zend_Feed_Reader_Extension_DublinCore_Feed extends Zend_Feed_Reader_Extension_FeedAbstract
 {
     /**
      * Get a single author
      *
-     * @param  int $index
+     * @param  int  $index
      * @return string|null
      */
     public function getAuthor($index = 0)
@@ -57,7 +58,6 @@ class Zend_Feed_Reader_Extension_DublinCore_Feed
             return $authors[$index];
         }
 
-        return null;
     }
 
     /**
@@ -71,25 +71,25 @@ class Zend_Feed_Reader_Extension_DublinCore_Feed
             return $this->_data['authors'];
         }
 
-        $authors = array();
-        $list    = $this->_xpath->query('//dc11:creator');
+        $authors = [];
+        $list = $this->_xpath->query('//dc11:creator');
 
-        if (!$list->length) {
+        if (! $list->length) {
             $list = $this->_xpath->query('//dc10:creator');
         }
-        if (!$list->length) {
+        if (! $list->length) {
             $list = $this->_xpath->query('//dc11:publisher');
 
-            if (!$list->length) {
+            if (! $list->length) {
                 $list = $this->_xpath->query('//dc10:publisher');
             }
         }
 
         if ($list->length) {
             foreach ($list as $author) {
-                $authors[] = array(
-                    'name' => $author->nodeValue
-                );
+                $authors[] = [
+                    'name' => $author->nodeValue,
+                ];
             }
             $authors = new Zend_Feed_Reader_Collection_Author(
                 Zend_Feed_Reader::arrayUnique($authors)
@@ -115,13 +115,13 @@ class Zend_Feed_Reader_Extension_DublinCore_Feed
         }
 
         $copyright = null;
-        $copyright = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/dc11:rights)');
+        $copyright = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/dc11:rights)');
 
-        if (!$copyright) {
-            $copyright = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/dc10:rights)');
+        if (! $copyright) {
+            $copyright = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/dc10:rights)');
         }
 
-        if (!$copyright) {
+        if (! $copyright) {
             $copyright = null;
         }
 
@@ -142,13 +142,13 @@ class Zend_Feed_Reader_Extension_DublinCore_Feed
         }
 
         $description = null;
-        $description = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/dc11:description)');
+        $description = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/dc11:description)');
 
-        if (!$description) {
-            $description = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/dc10:description)');
+        if (! $description) {
+            $description = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/dc10:description)');
         }
 
-        if (!$description) {
+        if (! $description) {
             $description = null;
         }
 
@@ -169,10 +169,10 @@ class Zend_Feed_Reader_Extension_DublinCore_Feed
         }
 
         $id = null;
-        $id = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/dc11:identifier)');
+        $id = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/dc11:identifier)');
 
-        if (!$id) {
-            $id = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/dc10:identifier)');
+        if (! $id) {
+            $id = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/dc10:identifier)');
         }
 
         $this->_data['id'] = $id;
@@ -192,13 +192,13 @@ class Zend_Feed_Reader_Extension_DublinCore_Feed
         }
 
         $language = null;
-        $language = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/dc11:language)');
+        $language = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/dc11:language)');
 
-        if (!$language) {
-            $language = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/dc10:language)');
+        if (! $language) {
+            $language = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/dc10:language)');
         }
 
-        if (!$language) {
+        if (! $language) {
             $language = null;
         }
 
@@ -219,13 +219,13 @@ class Zend_Feed_Reader_Extension_DublinCore_Feed
         }
 
         $title = null;
-        $title = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/dc11:title)');
+        $title = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/dc11:title)');
 
-        if (!$title) {
-            $title = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/dc10:title)');
+        if (! $title) {
+            $title = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/dc10:title)');
         }
 
-        if (!$title) {
+        if (! $title) {
             $title = null;
         }
 
@@ -235,8 +235,6 @@ class Zend_Feed_Reader_Extension_DublinCore_Feed
     }
 
     /**
-     *
-     *
      * @return Zend_Date|null
      */
     public function getDate()
@@ -246,10 +244,10 @@ class Zend_Feed_Reader_Extension_DublinCore_Feed
         }
 
         $d = null;
-        $date = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/dc11:date)');
+        $date = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/dc11:date)');
 
-        if (!$date) {
-            $date = $this->_xpath->evaluate('string(' . $this->getXpathPrefix() . '/dc10:date)');
+        if (! $date) {
+            $date = $this->_xpath->evaluate('string('.$this->getXpathPrefix().'/dc10:date)');
         }
 
         if ($date) {
@@ -273,26 +271,27 @@ class Zend_Feed_Reader_Extension_DublinCore_Feed
             return $this->_data['categories'];
         }
 
-        $list = $this->_xpath->evaluate($this->getXpathPrefix() . '//dc11:subject');
+        $list = $this->_xpath->evaluate($this->getXpathPrefix().'//dc11:subject');
 
-        if (!$list->length) {
-            $list = $this->_xpath->evaluate($this->getXpathPrefix() . '//dc10:subject');
+        if (! $list->length) {
+            $list = $this->_xpath->evaluate($this->getXpathPrefix().'//dc10:subject');
         }
 
         if ($list->length) {
             $categoryCollection = new Zend_Feed_Reader_Collection_Category;
             foreach ($list as $category) {
-                $categoryCollection[] = array(
+                $categoryCollection[] = [
                     'term' => $category->nodeValue,
                     'scheme' => null,
                     'label' => $category->nodeValue,
-                );
+                ];
             }
         } else {
             $categoryCollection = new Zend_Feed_Reader_Collection_Category;
         }
 
         $this->_data['categories'] = $categoryCollection;
+
         return $this->_data['categories'];
     }
 

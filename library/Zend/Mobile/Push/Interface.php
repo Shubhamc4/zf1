@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Mobile
- * @subpackage Zend_Mobile_Push
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -24,10 +25,10 @@
  * Push Interface
  *
  * @category   Zend
- * @package    Zend_Mobile
- * @subpackage Zend_Mobile_Push
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 interface Zend_Mobile_Push_Interface
@@ -42,8 +43,7 @@ interface Zend_Mobile_Push_Interface
     /**
      * Send a Push Message
      *
-     * @param  Zend_Mobile_Push_Message_Abstract $message
-     * @return boolean
+     * @return bool
      */
     public function send(Zend_Mobile_Push_Message_Abstract $message);
 
@@ -57,7 +57,6 @@ interface Zend_Mobile_Push_Interface
     /**
      * Set Options
      *
-     * @param array $options
      * @return Zend_Mobile_Push_Abstract
      */
     public function setOptions(array $options);

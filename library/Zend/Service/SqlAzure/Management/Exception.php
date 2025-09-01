@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,23 +14,19 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service_WindowsAzure
- * @subpackage Management
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
- require_once 'Zend/Service/SqlAzure/Exception.php';
+require_once 'Zend/Service/SqlAzure/Exception.php';
 
 /**
  * @category   Zend
- * @package    Zend_Service_SqlAzure
- * @subpackage Management
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Service_SqlAzure_Management_Exception
-	extends Zend_Service_SqlAzure_Exception
-{
-}
+class Zend_Service_SqlAzure_Management_Exception extends Zend_Service_SqlAzure_Exception {}

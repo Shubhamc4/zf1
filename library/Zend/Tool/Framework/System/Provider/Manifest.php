@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -32,14 +33,12 @@ require_once 'Zend/Tool/Framework/Provider/Interface.php';
 
 /**
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Tool_Framework_System_Provider_Manifest
-    implements Zend_Tool_Framework_Provider_Interface, Zend_Tool_Framework_Registry_EnabledInterface
+class Zend_Tool_Framework_System_Provider_Manifest implements Zend_Tool_Framework_Provider_Interface, Zend_Tool_Framework_Registry_EnabledInterface
 {
-
     public function setRegistry(Zend_Tool_Framework_Registry_Interface $registry)
     {
         $this->_registry = $registry;
@@ -54,34 +53,34 @@ class Zend_Tool_Framework_System_Provider_Manifest
     {
 
         $manifestRepository = $this->_registry->getManifestRepository();
-        $response           = $this->_registry->getResponse();
+        $response = $this->_registry->getResponse();
 
-        $metadataTree = array();
+        $metadataTree = [];
 
         $longestAttrNameLen = 50;
 
         foreach ($manifestRepository as $metadata) {
 
-            $metadataType  = $metadata->getType();
-            $metadataName  = $metadata->getName();
+            $metadataType = $metadata->getType();
+            $metadataName = $metadata->getName();
             $metadataAttrs = $metadata->getAttributes('attributesParent');
 
-            if (!$metadataAttrs) {
+            if (! $metadataAttrs) {
                 $metadataAttrs = '(None)';
             } else {
                 $metadataAttrs = urldecode(http_build_query($metadataAttrs, null, ', '));
             }
 
-            if (!array_key_exists($metadataType, $metadataTree)) {
-                $metadataTree[$metadataType] = array();
+            if (! array_key_exists($metadataType, $metadataTree)) {
+                $metadataTree[$metadataType] = [];
             }
 
-            if (!array_key_exists($metadataName, $metadataTree[$metadataType])) {
-                $metadataTree[$metadataType][$metadataName] = array();
+            if (! array_key_exists($metadataName, $metadataTree[$metadataType])) {
+                $metadataTree[$metadataType][$metadataName] = [];
             }
 
-            if (!array_key_exists($metadataAttrs, $metadataTree[$metadataType][$metadataName])) {
-                $metadataTree[$metadataType][$metadataName][$metadataAttrs] = array();
+            if (! array_key_exists($metadataAttrs, $metadataTree[$metadataType][$metadataName])) {
+                $metadataTree[$metadataType][$metadataName][$metadataAttrs] = [];
             }
 
             $longestAttrNameLen = (strlen($metadataAttrs) > $longestAttrNameLen) ? strlen($metadataAttrs) : $longestAttrNameLen;
@@ -99,11 +98,11 @@ class Zend_Tool_Framework_System_Provider_Manifest
         foreach ($metadataTree as $metadataType => $metadatasByName) {
             $response->appendContent($metadataType);
             foreach ($metadatasByName as $metadataName => $metadatasByAttributes) {
-                $response->appendContent("   " . $metadataName);
+                $response->appendContent('   '.$metadataName);
                 foreach ($metadatasByAttributes as $metadataAttributeName => $metadataValues) {
                     foreach ($metadataValues as $metadataValue) {
                         $string = sprintf("      %-{$longestAttrNameLen}.{$longestAttrNameLen}s : ", $metadataAttributeName)
-                            . $metadataValue;
+                            .$metadataValue;
                         $response->appendContent($string);
                     }
                 }

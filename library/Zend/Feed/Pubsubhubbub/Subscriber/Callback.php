@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Pubsubhubbub
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -36,12 +38,11 @@ require_once 'Zend/Feed/Reader.php';
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Pubsubhubbub
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Feed_Pubsubhubbub_Subscriber_Callback
-    extends Zend_Feed_Pubsubhubbub_CallbackAbstract
+class Zend_Feed_Pubsubhubbub_Subscriber_Callback extends Zend_Feed_Pubsubhubbub_CallbackAbstract
 {
     /**
      * Contains the content of any feeds sent as updates to the Callback URL
@@ -71,12 +72,13 @@ class Zend_Feed_Pubsubhubbub_Subscriber_Callback
      * Set a subscription key to use for the current callback request manually.
      * Required if usePathParameter is enabled for the Subscriber.
      *
-     * @param  string $key
+     * @param  string  $key
      * @return Zend_Feed_Pubsubhubbub_Subscriber_Callback
      */
     public function setSubscriptionKey($key)
     {
         $this->_subscriptionKey = $key;
+
         return $this;
     }
 
@@ -85,11 +87,11 @@ class Zend_Feed_Pubsubhubbub_Subscriber_Callback
      * unsubscription request. This should be the Hub Server confirming the
      * the request prior to taking action on it.
      *
-     * @param  array $httpGetData GET data if available and not in $_GET
-     * @param  bool $sendResponseNow Whether to send response now or when asked
+     * @param  array  $httpGetData  GET data if available and not in $_GET
+     * @param  bool  $sendResponseNow  Whether to send response now or when asked
      * @return void
      */
-    public function handle(array $httpGetData = null, $sendResponseNow = false)
+    public function handle(?array $httpGetData = null, $sendResponseNow = false)
     {
         if ($httpGetData === null) {
             $httpGetData = $_GET;
@@ -113,10 +115,10 @@ class Zend_Feed_Pubsubhubbub_Subscriber_Callback
         ) {
             $this->setFeedUpdate($this->_getRawBody());
             $this->getHttpResponse()
-                 ->setHeader('X-Hub-On-Behalf-Of', $this->getSubscriberCount());
-        /**
-         * Handle any (un)subscribe confirmation requests
-         */
+                ->setHeader('X-Hub-On-Behalf-Of', $this->getSubscriberCount());
+            /**
+             * Handle any (un)subscribe confirmation requests
+             */
         } elseif ($this->isValidHubVerification($httpGetData)) {
             $data = $this->_currentSubscriptionData;
             $this->getHttpResponse()->setBody($httpGetData['hub_challenge']);
@@ -125,9 +127,9 @@ class Zend_Feed_Pubsubhubbub_Subscriber_Callback
                 $data['lease_seconds'] = $httpGetData['hub_lease_seconds'];
             }
             $this->getStorage()->setSubscription($data);
-        /**
-         * Hey, C'mon! We tried everything else!
-         */
+            /**
+             * Hey, C'mon! We tried everything else!
+             */
         } else {
             $this->getHttpResponse()->setHttpResponseCode(404);
         }
@@ -140,7 +142,6 @@ class Zend_Feed_Pubsubhubbub_Subscriber_Callback
      * Checks validity of the request simply by making a quick pass and
      * confirming the presence of all REQUIRED parameters.
      *
-     * @param  array $httpGetData
      * @return bool
      */
     public function isValidHubVerification(array $httpGetData)
@@ -154,14 +155,14 @@ class Zend_Feed_Pubsubhubbub_Subscriber_Callback
         if (strtolower($_SERVER['REQUEST_METHOD']) !== 'get') {
             return false;
         }
-        $required = array(
+        $required = [
             'hub_mode',
             'hub_topic',
             'hub_challenge',
             'hub_verify_token',
-        );
+        ];
         foreach ($required as $key) {
-            if (!array_key_exists($key, $httpGetData)) {
+            if (! array_key_exists($key, $httpGetData)) {
                 return false;
             }
         }
@@ -171,11 +172,11 @@ class Zend_Feed_Pubsubhubbub_Subscriber_Callback
             return false;
         }
         if ($httpGetData['hub_mode'] == 'subscribe'
-            && !array_key_exists('hub_lease_seconds', $httpGetData)
+            && ! array_key_exists('hub_lease_seconds', $httpGetData)
         ) {
             return false;
         }
-        if (!Zend_Uri::check($httpGetData['hub_topic'])) {
+        if (! Zend_Uri::check($httpGetData['hub_topic'])) {
             return false;
         }
 
@@ -183,9 +184,10 @@ class Zend_Feed_Pubsubhubbub_Subscriber_Callback
          * Attempt to retrieve any Verification Token Key attached to Callback
          * URL's path by our Subscriber implementation
          */
-        if (!$this->_hasValidVerifyToken($httpGetData)) {
+        if (! $this->_hasValidVerifyToken($httpGetData)) {
             return false;
         }
+
         return true;
     }
 
@@ -193,12 +195,13 @@ class Zend_Feed_Pubsubhubbub_Subscriber_Callback
      * Sets a newly received feed (Atom/RSS) sent by a Hub as an update to a
      * Topic we've subscribed to.
      *
-     * @param  string $feed
+     * @param  string  $feed
      * @return Zend_Feed_Pubsubhubbub_Subscriber_Callback
      */
     public function setFeedUpdate($feed)
     {
         $this->_feedUpdate = $feed;
+
         return $this;
     }
 
@@ -212,6 +215,7 @@ class Zend_Feed_Pubsubhubbub_Subscriber_Callback
         if ($this->_feedUpdate === null) {
             return false;
         }
+
         return true;
     }
 
@@ -230,18 +234,17 @@ class Zend_Feed_Pubsubhubbub_Subscriber_Callback
      * Check for a valid verify_token. By default attempts to compare values
      * with that sent from Hub, otherwise merely ascertains its existence.
      *
-     * @param  array $httpGetData
-     * @param  bool $checkValue
+     * @param  bool  $checkValue
      * @return bool
      */
-    protected function _hasValidVerifyToken(array $httpGetData = null, $checkValue = true)
+    protected function _hasValidVerifyToken(?array $httpGetData = null, $checkValue = true)
     {
         $verifyTokenKey = $this->_detectVerifyTokenKey($httpGetData);
         if (empty($verifyTokenKey)) {
             return false;
         }
         $verifyTokenExists = $this->getStorage()->hasSubscription($verifyTokenKey);
-        if (!$verifyTokenExists) {
+        if (! $verifyTokenExists) {
             return false;
         }
         if ($checkValue) {
@@ -251,8 +254,10 @@ class Zend_Feed_Pubsubhubbub_Subscriber_Callback
                 return false;
             }
             $this->_currentSubscriptionData = $data;
+
             return true;
         }
+
         return true;
     }
 
@@ -261,10 +266,9 @@ class Zend_Feed_Pubsubhubbub_Subscriber_Callback
      * the Callback URL (which we are handling with this class!) as a URI
      * path part (the last part by convention).
      *
-     * @param  null|array $httpGetData
      * @return false|string
      */
-    protected function _detectVerifyTokenKey(array $httpGetData = null)
+    protected function _detectVerifyTokenKey(?array $httpGetData = null)
     {
         /**
          * Available when sub keys encoding in Callback URL path
@@ -302,29 +306,30 @@ class Zend_Feed_Pubsubhubbub_Subscriber_Callback
      */
     protected function _parseQueryString()
     {
-        $params      = array();
+        $params = [];
         $queryString = '';
         if (isset($_SERVER['QUERY_STRING'])) {
             $queryString = $_SERVER['QUERY_STRING'];
         }
         if (empty($queryString)) {
-            return array();
+            return [];
         }
         $parts = explode('&', $queryString);
         foreach ($parts as $kvpair) {
-            $pair  = explode('=', $kvpair);
-            $key   = rawurldecode($pair[0]);
+            $pair = explode('=', $kvpair);
+            $key = rawurldecode($pair[0]);
             $value = rawurldecode($pair[1]);
             if (isset($params[$key])) {
                 if (is_array($params[$key])) {
                     $params[$key][] = $value;
                 } else {
-                    $params[$key] = array($params[$key], $value);
+                    $params[$key] = [$params[$key], $value];
                 }
             } else {
                 $params[$key] = $value;
             }
         }
+
         return $params;
     }
 }

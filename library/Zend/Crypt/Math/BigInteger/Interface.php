@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Crypt
- * @subpackage Math
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,25 +28,35 @@
  * precision maths.
  *
  * @category   Zend
- * @package    Zend_Crypt
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 interface Zend_Crypt_Math_BigInteger_Interface
 {
-
     public function init($operand, $base = 10);
-    public function add($left_operand, $right_operand);
-    public function subtract($left_operand, $right_operand);
-    public function compare($left_operand, $right_operand);
-    public function divide($left_operand, $right_operand);
-    public function modulus($left_operand, $modulus);
-    public function multiply($left_operand, $right_operand);
-    public function pow($left_operand, $right_operand);
-    public function powmod($left_operand, $right_operand, $modulus);
-    public function sqrt($operand);
-    public function binaryToInteger($operand);
-    public function integerToBinary($operand);
-    public function hexToDecimal($operand);
 
+    public function add($left_operand, $right_operand);
+
+    public function subtract($left_operand, $right_operand);
+
+    public function compare($left_operand, $right_operand);
+
+    public function divide($left_operand, $right_operand);
+
+    public function modulus($left_operand, $modulus);
+
+    public function multiply($left_operand, $right_operand);
+
+    public function pow($left_operand, $right_operand);
+
+    public function powmod($left_operand, $right_operand, $modulus);
+
+    public function sqrt($operand);
+
+    public function binaryToInteger($operand);
+
+    public function integerToBinary($operand);
+
+    public function hexToDecimal($operand);
 }

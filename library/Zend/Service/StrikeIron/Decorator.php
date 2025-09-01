@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage StrikeIron
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -25,8 +26,7 @@
  * to provide more a PHP-like interface.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage StrikeIron
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -34,12 +34,14 @@ class Zend_Service_StrikeIron_Decorator
 {
     /**
      * Name of the decorated object
+     *
      * @var null|string
      */
     protected $_name = null;
 
     /**
      * Object to decorate
+     *
      * @var object
      */
     protected $_object = null;
@@ -47,13 +49,13 @@ class Zend_Service_StrikeIron_Decorator
     /**
      * Class constructor
      *
-     * @param object       $object  Object to decorate
-     * @param null|string  $name    Name of the object
+     * @param  object  $object  Object to decorate
+     * @param  null|string  $name  Name of the object
      */
     public function __construct($object, $name = null)
     {
         $this->_object = $object;
-        $this->_name   = $name;
+        $this->_name = $name;
     }
 
     /**
@@ -62,8 +64,8 @@ class Zend_Service_StrikeIron_Decorator
      * If the property is not found in the decorated object, return
      * NULL as a convenience feature to avoid notices.
      *
-     * @param  string $property  Property name to retrieve
-     * @return mixed             Value of property or NULL
+     * @param  string  $property  Property name to retrieve
+     * @return mixed Value of property or NULL
      */
     public function __get($property)
     {
@@ -77,6 +79,7 @@ class Zend_Service_StrikeIron_Decorator
             $result = $this->_object->$property;
             $result = $this->_decorate($result);
         }
+
         return $result;
     }
 
@@ -85,12 +88,12 @@ class Zend_Service_StrikeIron_Decorator
      * be used when the SOAPClient returns a custom PHP object via
      * its classmap option so no inflection is done.
      *
-     * @param string  $method  Name of method called
-     * @param array   $args    Arguments for method
+     * @param  string  $method  Name of method called
+     * @param  array  $args  Arguments for method
      */
     public function __call($method, $args)
     {
-        return call_user_func_array(array($this->_object, $method), $args);
+        return call_user_func_array([$this->_object, $method], $args);
     }
 
     /**
@@ -98,8 +101,8 @@ class Zend_Service_StrikeIron_Decorator
      * style.  The default implementation here only inflects the case
      * of the first letter, e.g. from "fooBar" to "FooBar".
      *
-     * @param  string $property  Property name to inflect
-     * @return string            Inflected property name
+     * @param  string  $property  Property name to inflect
+     * @return string Inflected property name
      */
     protected function _inflect($property)
     {
@@ -111,13 +114,14 @@ class Zend_Service_StrikeIron_Decorator
      * implementation here only decorates child objects.
      *
      * @param  mixed  $result  Value to decorate
-     * @return mixed           Decorated result
+     * @return mixed Decorated result
      */
     protected function _decorate($result)
     {
         if (is_object($result)) {
             $result = new self($result);
         }
+
         return $result;
     }
 

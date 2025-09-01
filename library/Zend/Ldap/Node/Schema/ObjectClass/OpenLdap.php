@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Schema
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -34,13 +35,11 @@ require_once 'Zend/Ldap/Node/Schema/ObjectClass/Interface.php';
  * schema information on an OpenLDAP server.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Schema
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Ldap_Node_Schema_ObjectClass_OpenLdap extends Zend_Ldap_Node_Schema_Item
-    implements Zend_Ldap_Node_Schema_ObjectClass_Interface
+class Zend_Ldap_Node_Schema_ObjectClass_OpenLdap extends Zend_Ldap_Node_Schema_Item implements Zend_Ldap_Node_Schema_ObjectClass_Interface
 {
     /**
      * All inherited "MUST" attributes
@@ -48,13 +47,13 @@ class Zend_Ldap_Node_Schema_ObjectClass_OpenLdap extends Zend_Ldap_Node_Schema_I
      * @var array
      */
     protected $_inheritedMust = null;
+
     /**
      * All inherited "MAY" attributes
      *
      * @var array
      */
     protected $_inheritedMay = null;
-
 
     /**
      * Gets the objectClass name
@@ -86,6 +85,7 @@ class Zend_Ldap_Node_Schema_ObjectClass_OpenLdap extends Zend_Ldap_Node_Schema_I
         if ($this->_inheritedMust === null) {
             $this->_resolveInheritance();
         }
+
         return $this->_inheritedMust;
     }
 
@@ -99,6 +99,7 @@ class Zend_Ldap_Node_Schema_ObjectClass_OpenLdap extends Zend_Ldap_Node_Schema_I
         if ($this->_inheritedMay === null) {
             $this->_resolveInheritance();
         }
+
         return $this->_inheritedMay;
     }
 
@@ -137,19 +138,22 @@ class Zend_Ldap_Node_Schema_ObjectClass_OpenLdap extends Zend_Ldap_Node_Schema_I
     /**
      * Gets the objectClass type
      *
-     * @return integer
+     * @return int
      */
     public function getType()
     {
         if ($this->structural) {
             return Zend_Ldap_Node_Schema::OBJECTCLASS_TYPE_STRUCTURAL;
-        } else if ($this->abstract) {
-            return Zend_Ldap_Node_Schema::OBJECTCLASS_TYPE_ABSTRACT;
-        } else if ($this->auxiliary) {
-            return Zend_Ldap_Node_Schema::OBJECTCLASS_TYPE_AUXILIARY;
-        } else {
-            return Zend_Ldap_Node_Schema::OBJECTCLASS_TYPE_UNKNOWN;
         }
+        if ($this->abstract) {
+            return Zend_Ldap_Node_Schema::OBJECTCLASS_TYPE_ABSTRACT;
+        }
+        if ($this->auxiliary) {
+            return Zend_Ldap_Node_Schema::OBJECTCLASS_TYPE_AUXILIARY;
+        }
+
+        return Zend_Ldap_Node_Schema::OBJECTCLASS_TYPE_UNKNOWN;
+
     }
 
     /**

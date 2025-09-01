@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_InfoCard
- * @subpackage Zend_InfoCard_Xml_Security
+ *
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: EnvelopedSignature.php 24593 2012-01-05 20:35:02Z matthew $
  */
 
@@ -29,28 +30,27 @@ require_once 'Zend/InfoCard/Xml/Security/Transform/Interface.php';
  * A object implementing the EnvelopedSignature XML Transform
  *
  * @category   Zend
- * @package    Zend_InfoCard
- * @subpackage Zend_InfoCard_Xml_Security
+ *
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_InfoCard_Xml_Security_Transform_EnvelopedSignature
-    implements Zend_InfoCard_Xml_Security_Transform_Interface
+class Zend_InfoCard_Xml_Security_Transform_EnvelopedSignature implements Zend_InfoCard_Xml_Security_Transform_Interface
 {
     /**
      * Transforms the XML Document according to the EnvelopedSignature Transform
      *
-     * @throws Zend_InfoCard_Xml_Security_Transform_Exception
-     * @param string $strXMLData The input XML data
+     * @param  string  $strXMLData  The input XML data
      * @return string the transformed XML data
+     *
+     * @throws Zend_InfoCard_Xml_Security_Transform_Exception
      */
     public function transform($strXMLData)
     {
         $sxe = simplexml_load_string($strXMLData);
 
-        if(!$sxe->Signature) {
+        if (! $sxe->Signature) {
             require_once 'Zend/InfoCard/Xml/Security/Transform/Exception.php';
-            throw new Zend_InfoCard_Xml_Security_Transform_Exception("Unable to locate Signature Block for EnvelopedSignature Transform");
+            throw new Zend_InfoCard_Xml_Security_Transform_Exception('Unable to locate Signature Block for EnvelopedSignature Transform');
         }
 
         unset($sxe->Signature);

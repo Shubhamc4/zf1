@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Exif
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -40,14 +40,12 @@ require_once 'Zend/Gdata/Exif/Entry.php';
  * Feed for Gdata EXIF data entries.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Exif
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Exif_Feed extends Zend_Gdata_Feed
 {
-
     /**
      * The classname for individual feed elements.
      *
@@ -58,13 +56,12 @@ class Zend_Gdata_Exif_Feed extends Zend_Gdata_Feed
     /**
      * Create a new instance.
      *
-     * @param DOMElement $element (optional) DOMElement from which this
-     *          object should be constructed.
+     * @param  DOMElement  $element  (optional) DOMElement from which this
+     *                               object should be constructed.
      */
     public function __construct($element = null)
     {
         $this->registerAllNamespaces(Zend_Gdata_Exif::$namespaces);
         parent::__construct($element);
     }
-
 }

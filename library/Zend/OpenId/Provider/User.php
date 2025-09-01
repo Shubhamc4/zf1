@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_OpenId
- * @subpackage Zend_OpenId_Provider
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -25,19 +25,16 @@
  * Abstract class to get/store information about logged in user in Web Browser
  *
  * @category   Zend
- * @package    Zend_OpenId
- * @subpackage Zend_OpenId_Provider
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_OpenId_Provider_User
 {
-
     /**
      * Stores information about logged in user
      *
-     * @param string $id user identity URL
+     * @param  string  $id  user identity URL
      * @return bool
      */
     abstract public function setLoggedInUser($id);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,15 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -34,8 +36,9 @@ interface Zend_Validate_Interface
      * getMessages() will return an array of messages that explain why the
      * validation failed.
      *
-     * @param  mixed $value
-     * @return boolean
+     * @param  mixed  $value
+     * @return bool
+     *
      * @throws Zend_Validate_Exception If validation of $value is impossible
      */
     public function isValid($value);

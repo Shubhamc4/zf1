@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,18 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Amf
- * @subpackage Value
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * Zend_Amf_Value_TraitsInfo
  *
- * @package    Zend_Amf
- * @subpackage Value
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -53,24 +52,24 @@ class Zend_Amf_Value_TraitsInfo
     /**
      * Used to keep track of all class traits of an AMF3 object
      *
-     * @param  string $className
-     * @param  boolean $dynamic
-     * @param  boolean $externalizable
-     * @param  boolean $properties
+     * @param  string  $className
+     * @param  bool  $dynamic
+     * @param  bool  $externalizable
+     * @param  bool  $properties
      * @return void
      */
-    public function __construct($className, $dynamic=false, $externalizable=false, $properties=null)
+    public function __construct($className, $dynamic = false, $externalizable = false, $properties = null)
     {
-        $this->_className      = $className;
-        $this->_dynamic        = $dynamic;
+        $this->_className = $className;
+        $this->_dynamic = $dynamic;
         $this->_externalizable = $externalizable;
-        $this->_properties     = $properties;
+        $this->_properties = $properties;
     }
 
     /**
      * Test if the class is a dynamic class
      *
-     * @return boolean
+     * @return bool
      */
     public function isDynamic()
     {
@@ -80,7 +79,7 @@ class Zend_Amf_Value_TraitsInfo
     /**
      * Test if class is externalizable
      *
-     * @return boolean
+     * @return bool
      */
     public function isExternalizable()
     {
@@ -110,31 +109,32 @@ class Zend_Amf_Value_TraitsInfo
     /**
      * Add an additional property
      *
-     * @param  string $name
+     * @param  string  $name
      * @return Zend_Amf_Value_TraitsInfo
      */
     public function addProperty($name)
     {
         $this->_properties[] = $name;
+
         return $this;
     }
 
     /**
      * Add all properties of the class.
      *
-     * @param  array $props
      * @return Zend_Amf_Value_TraitsInfo
      */
     public function addAllProperties(array $props)
     {
         $this->_properties = $props;
+
         return $this;
     }
 
     /**
      * Get the property at a given index
      *
-     * @param  int $index
+     * @param  int  $index
      * @return string
      */
     public function getProperty($index)

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,28 +14,27 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
 /**
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 interface Zend_Tool_Framework_Manifest_Interface
 {
-
     /**
      * The following methods are completely optional, and any combination of them
      * can be used as part of a manifest.  The manifest repository will process
      * the return values of these actions as specfied in the following method docblocks.
      *
      * Since these actions are
-     *
      */
 
     /**
@@ -50,8 +50,6 @@ interface Zend_Tool_Framework_Manifest_Interface
 
      **/
 
-
-
     /**
      * getActions()
      *
@@ -65,8 +63,6 @@ interface Zend_Tool_Framework_Manifest_Interface
 
      **/
 
-
-
     /**
      * getProviders()
      *
@@ -78,5 +74,4 @@ interface Zend_Tool_Framework_Manifest_Interface
     public function getProviders();
 
      **/
-
 }

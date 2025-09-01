@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gdata
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,15 +30,14 @@ require_once 'Zend/Gdata/Extension.php';
  * Represents the gd:eventStatus element
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gdata
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Extension_EventStatus extends Zend_Gdata_Extension
 {
-
     protected $_rootElement = 'eventStatus';
+
     protected $_value = null;
 
     public function __construct($value = null)
@@ -53,17 +52,18 @@ class Zend_Gdata_Extension_EventStatus extends Zend_Gdata_Extension
         if ($this->_value !== null) {
             $element->setAttribute('value', $this->_value);
         }
+
         return $element;
     }
 
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'value':
-            $this->_value = $attribute->nodeValue;
-            break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            case 'value':
+                $this->_value = $attribute->nodeValue;
+                break;
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 
@@ -80,12 +80,13 @@ class Zend_Gdata_Extension_EventStatus extends Zend_Gdata_Extension
     /**
      * Set the value for this element's Value attribute.
      *
-     * @param string $value The desired value for this attribute.
+     * @param  string  $value  The desired value for this attribute.
      * @return Zend_Gdata_Extension_Visibility The element being modified.
      */
     public function setValue($value)
     {
         $this->_value = $value;
+
         return $this;
     }
 
@@ -97,5 +98,4 @@ class Zend_Gdata_Extension_EventStatus extends Zend_Gdata_Extension
     {
         return $this->getValue();
     }
-
 }

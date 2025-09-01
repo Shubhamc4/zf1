@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,22 +14,19 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Search
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /** Zend_Search_Lucene_Search_Weight */
 require_once 'Zend/Search/Lucene/Search/Weight.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Search_Lucene
- * @subpackage Search
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -69,24 +67,18 @@ class Zend_Search_Lucene_Search_Weight_Term extends Zend_Search_Lucene_Search_We
      */
     private $_queryWeight;
 
-
     /**
      * Zend_Search_Lucene_Search_Weight_Term constructor
      * reader - index reader
-     *
-     * @param Zend_Search_Lucene_Index_Term   $term
-     * @param Zend_Search_Lucene_Search_Query $query
-     * @param Zend_Search_Lucene_Interface    $reader
      */
-    public function __construct(Zend_Search_Lucene_Index_Term   $term,
-                                Zend_Search_Lucene_Search_Query $query,
-                                Zend_Search_Lucene_Interface    $reader)
+    public function __construct(Zend_Search_Lucene_Index_Term $term,
+        Zend_Search_Lucene_Search_Query $query,
+        Zend_Search_Lucene_Interface $reader)
     {
-        $this->_term   = $term;
-        $this->_query  = $query;
+        $this->_term = $term;
+        $this->_query = $query;
         $this->_reader = $reader;
     }
-
 
     /**
      * The sum of squared weights of contained query clauses.
@@ -105,11 +97,10 @@ class Zend_Search_Lucene_Search_Weight_Term extends Zend_Search_Lucene_Search_We
         return $this->_queryWeight * $this->_queryWeight;
     }
 
-
     /**
      * Assigns the query normalization factor to this.
      *
-     * @param float $queryNorm
+     * @param  float  $queryNorm
      */
     public function normalize($queryNorm)
     {
@@ -122,4 +113,3 @@ class Zend_Search_Lucene_Search_Weight_Term extends Zend_Search_Lucene_Search_We
         $this->_value = $this->_queryWeight * $this->_idf;
     }
 }
-

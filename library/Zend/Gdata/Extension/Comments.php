@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gdata
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -35,16 +35,16 @@ require_once 'Zend/Gdata/Extension/FeedLink.php';
  * Represents the gd:comments element
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gdata
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Extension_Comments extends Zend_Gdata_Extension
 {
-
     protected $_rootElement = 'comments';
+
     protected $_rel = null;
+
     protected $_feedLink = null;
 
     public function __construct($rel = null, $feedLink = null)
@@ -63,15 +63,16 @@ class Zend_Gdata_Extension_Comments extends Zend_Gdata_Extension
         if ($this->_feedLink !== null) {
             $element->appendChild($this->_feedLink->getDOM($element->ownerDocument));
         }
+
         return $element;
     }
 
     protected function takeChildFromDOM($child)
     {
-        $absoluteNodeName = $child->namespaceURI . ':' . $child->localName;
+        $absoluteNodeName = $child->namespaceURI.':'.$child->localName;
         switch ($absoluteNodeName) {
-            case $this->lookupNamespace('gd') . ':' . 'feedLink';
-                $feedLink = new Zend_Gdata_Extension_FeedLink();
+            case $this->lookupNamespace('gd').':'.'feedLink':
+                $feedLink = new Zend_Gdata_Extension_FeedLink;
                 $feedLink->transferFromDOM($child);
                 $this->_feedLink = $feedLink;
                 break;
@@ -84,11 +85,11 @@ class Zend_Gdata_Extension_Comments extends Zend_Gdata_Extension
     protected function takeAttributeFromDOM($attribute)
     {
         switch ($attribute->localName) {
-        case 'rel':
-            $this->_rel = $attribute->nodeValue;
-            break;
-        default:
-            parent::takeAttributeFromDOM($attribute);
+            case 'rel':
+                $this->_rel = $attribute->nodeValue;
+                break;
+            default:
+                parent::takeAttributeFromDOM($attribute);
         }
     }
 
@@ -100,6 +101,7 @@ class Zend_Gdata_Extension_Comments extends Zend_Gdata_Extension
     public function setRel($value)
     {
         $this->_rel = $value;
+
         return $this;
     }
 
@@ -111,7 +113,7 @@ class Zend_Gdata_Extension_Comments extends Zend_Gdata_Extension
     public function setFeedLink($value)
     {
         $this->_feedLink = $value;
+
         return $this;
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,11 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_View
- * @subpackage Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ *
  * @version    $Id$
+ *
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -26,8 +28,6 @@ require_once 'Zend/View/Helper/Abstract.php';
 /**
  * Helper for retrieving the BaseUrl
  *
- * @package    Zend_View
- * @subpackage Helper
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -45,7 +45,7 @@ class Zend_View_Helper_BaseUrl extends Zend_View_Helper_Abstract
      *
      * $file is appended to the base url for simplicity
      *
-     * @param  string|null $file
+     * @param  string|null  $file
      * @return string
      */
     public function baseUrl($file = null)
@@ -55,21 +55,22 @@ class Zend_View_Helper_BaseUrl extends Zend_View_Helper_Abstract
 
         // Remove trailing slashes
         if (null !== $file) {
-            $file = '/' . ltrim($file, '/\\');
+            $file = '/'.ltrim($file, '/\\');
         }
 
-        return $baseUrl . $file;
+        return $baseUrl.$file;
     }
 
     /**
      * Set BaseUrl
      *
-     * @param  string $base
+     * @param  string  $base
      * @return Zend_View_Helper_BaseUrl
      */
     public function setBaseUrl($base)
     {
         $this->_baseUrl = rtrim($base, '/\\');
+
         return $this;
     }
 
@@ -97,12 +98,12 @@ class Zend_View_Helper_BaseUrl extends Zend_View_Helper_Abstract
     /**
      * Remove Script filename from baseurl
      *
-     * @param  string $url
+     * @param  string  $url
      * @return string
      */
     protected function _removeScriptName($url)
     {
-        if (!isset($_SERVER['SCRIPT_NAME'])) {
+        if (! isset($_SERVER['SCRIPT_NAME'])) {
             // We can't do much now can we? (Well, we could parse out by ".")
             return $url;
         }

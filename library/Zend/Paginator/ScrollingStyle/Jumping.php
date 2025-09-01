@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Paginator
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,7 +32,7 @@ require_once 'Zend/Paginator/ScrollingStyle/Interface.php';
  * the cursor moves back to the beginning of the range.
  *
  * @category   Zend
- * @package    Zend_Paginator
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,13 +41,12 @@ class Zend_Paginator_ScrollingStyle_Jumping implements Zend_Paginator_ScrollingS
     /**
      * Returns an array of "local" pages given a page number and range.
      *
-     * @param  Zend_Paginator $paginator
-     * @param  integer $pageRange Unused
+     * @param  int  $pageRange  Unused
      * @return array
      */
     public function getPages(Zend_Paginator $paginator, $pageRange = null)
     {
-        $pageRange  = $paginator->getPageRange();
+        $pageRange = $paginator->getPageRange();
         $pageNumber = $paginator->getCurrentPageNumber();
 
         $delta = $pageNumber % $pageRange;
@@ -54,7 +55,7 @@ class Zend_Paginator_ScrollingStyle_Jumping implements Zend_Paginator_ScrollingS
             $delta = $pageRange;
         }
 
-        $offset     = $pageNumber - $delta;
+        $offset = $pageNumber - $delta;
         $lowerBound = $offset + 1;
         $upperBound = $offset + $pageRange;
 

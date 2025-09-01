@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,14 +28,12 @@ require_once 'Zend/Tool/Framework/Registry/EnabledInterface.php';
 
 /**
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Tool_Framework_Action_Repository
-    implements Zend_Tool_Framework_Registry_EnabledInterface, IteratorAggregate, Countable
+class Zend_Tool_Framework_Action_Repository implements Countable, IteratorAggregate, Zend_Tool_Framework_Registry_EnabledInterface
 {
-
     /**
      * @var Zend_Tool_Framework_Registry_Interface
      */
@@ -43,12 +42,10 @@ class Zend_Tool_Framework_Action_Repository
     /**
      * @var array
      */
-    protected $_actions = array();
+    protected $_actions = [];
 
     /**
      * setRegistry()
-     *
-     * @param Zend_Tool_Framework_Registry_Interface $registry
      */
     public function setRegistry(Zend_Tool_Framework_Registry_Interface $registry)
     {
@@ -58,7 +55,6 @@ class Zend_Tool_Framework_Action_Repository
     /**
      * addAction()
      *
-     * @param Zend_Tool_Framework_Action_Interface $action
      * @return Zend_Tool_Framework_Action_Repository
      */
     public function addAction(Zend_Tool_Framework_Action_Interface $action, $overrideExistingAction = false)
@@ -70,13 +66,14 @@ class Zend_Tool_Framework_Action_Repository
             throw new Zend_Tool_Framework_Action_Exception('An action name for the provided action could not be determined.');
         }
 
-        if (!$overrideExistingAction && array_key_exists(strtolower($actionName), $this->_actions)) {
+        if (! $overrideExistingAction && array_key_exists(strtolower($actionName), $this->_actions)) {
             require_once 'Zend/Tool/Framework/Action/Exception.php';
-            throw new Zend_Tool_Framework_Action_Exception('An action by the name ' . $actionName
-                . ' is already registered and $overrideExistingAction is set to false.');
+            throw new Zend_Tool_Framework_Action_Exception('An action by the name '.$actionName
+                .' is already registered and $overrideExistingAction is set to false.');
         }
 
         $this->_actions[strtolower($actionName)] = $action;
+
         return $this;
     }
 
@@ -85,10 +82,7 @@ class Zend_Tool_Framework_Action_Repository
      *
      * @return unknown
      */
-    public function process()
-    {
-        return null;
-    }
+    public function process() {}
 
     /**
      * getActions() - get all actions in the repository
@@ -103,13 +97,13 @@ class Zend_Tool_Framework_Action_Repository
     /**
      * getAction() - get an action by a specific name
      *
-     * @param string $actionName
+     * @param  string  $actionName
      * @return Zend_Tool_Framework_Action_Interface
      */
     public function getAction($actionName)
     {
-        if (!array_key_exists(strtolower($actionName), $this->_actions)) {
-            return null;
+        if (! array_key_exists(strtolower($actionName), $this->_actions)) {
+            return;
         }
 
         return $this->_actions[strtolower($actionName)];
@@ -120,7 +114,6 @@ class Zend_Tool_Framework_Action_Repository
      *
      * @return int
      */
-    #[\ReturnTypeWillChange]
     public function count()
     {
         return count($this->_actions);
@@ -131,10 +124,8 @@ class Zend_Tool_Framework_Action_Repository
      *
      * @return array
      */
-    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->_actions);
     }
-
 }

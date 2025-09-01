@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_InfoCard
- * @subpackage Zend_InfoCard_Cipher
+ *
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Abstract.php 24593 2012-01-05 20:35:02Z matthew $
  */
 
@@ -27,13 +28,8 @@ require_once 'Zend/InfoCard/Cipher/Symmetric/Interface.php';
 
 /**
  * @category   Zend
- * @package    Zend_InfoCard
- * @subpackage Zend_InfoCard_Cipher
+ *
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
-abstract class Zend_InfoCard_Cipher_Symmetric_Adapter_Abstract
-    implements Zend_InfoCard_Cipher_Symmetric_Interface
-{
-}
+abstract class Zend_InfoCard_Cipher_Symmetric_Adapter_Abstract implements Zend_InfoCard_Cipher_Symmetric_Interface {}

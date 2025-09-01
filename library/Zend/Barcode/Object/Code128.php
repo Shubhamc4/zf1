@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Barcode
- * @subpackage Object
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Code25.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
@@ -34,7 +35,7 @@ require_once 'Zend/Validate/Barcode.php';
  * Class for generate Code128 barcode
  *
  * @category   Zend
- * @package    Zend_Barcode
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -43,60 +44,62 @@ class Zend_Barcode_Object_Code128 extends Zend_Barcode_Object_ObjectAbstract
     /**
      * Drawing of checksum
      * (even if it's sometime optional, most of time it's required)
-     * @var boolean
+     *
+     * @var bool
      */
     protected $_withChecksum = true;
 
     /**
      * @var array
      */
-    protected $_convertedText = array();
+    protected $_convertedText = [];
 
-    protected $_codingMap = array(
-                 0 => "11011001100",   1 => "11001101100",   2 => "11001100110",
-                 3 => "10010011000",   4 => "10010001100",   5 => "10001001100",
-                 6 => "10011001000",   7 => "10011000100",   8 => "10001100100",
-                 9 => "11001001000",  10 => "11001000100",  11 => "11000100100",
-                12 => "10110011100",  13 => "10011011100",  14 => "10011001110",
-                15 => "10111001100",  16 => "10011101100",  17 => "10011100110",
-                18 => "11001110010",  19 => "11001011100",  20 => "11001001110",
-                21 => "11011100100",  22 => "11001110100",  23 => "11101101110",
-                24 => "11101001100",  25 => "11100101100",  26 => "11100100110",
-                27 => "11101100100",  28 => "11100110100",  29 => "11100110010",
-                30 => "11011011000",  31 => "11011000110",  32 => "11000110110",
-                33 => "10100011000",  34 => "10001011000",  35 => "10001000110",
-                36 => "10110001000",  37 => "10001101000",  38 => "10001100010",
-                39 => "11010001000",  40 => "11000101000",  41 => "11000100010",
-                42 => "10110111000",  43 => "10110001110",  44 => "10001101110",
-                45 => "10111011000",  46 => "10111000110",  47 => "10001110110",
-                48 => "11101110110",  49 => "11010001110",  50 => "11000101110",
-                51 => "11011101000",  52 => "11011100010",  53 => "11011101110",
-                54 => "11101011000",  55 => "11101000110",  56 => "11100010110",
-                57 => "11101101000",  58 => "11101100010",  59 => "11100011010",
-                60 => "11101111010",  61 => "11001000010",  62 => "11110001010",
-                63 => "10100110000",  64 => "10100001100",  65 => "10010110000",
-                66 => "10010000110",  67 => "10000101100",  68 => "10000100110",
-                69 => "10110010000",  70 => "10110000100",  71 => "10011010000",
-                72 => "10011000010",  73 => "10000110100",  74 => "10000110010",
-                75 => "11000010010",  76 => "11001010000",  77 => "11110111010",
-                78 => "11000010100",  79 => "10001111010",  80 => "10100111100",
-                81 => "10010111100",  82 => "10010011110",  83 => "10111100100",
-                84 => "10011110100",  85 => "10011110010",  86 => "11110100100",
-                87 => "11110010100",  88 => "11110010010",  89 => "11011011110",
-                90 => "11011110110",  91 => "11110110110",  92 => "10101111000",
-                93 => "10100011110",  94 => "10001011110",  95 => "10111101000",
-                96 => "10111100010",  97 => "11110101000",  98 => "11110100010",
-                99 => "10111011110", 100 => "10111101110", 101 => "11101011110",
-               102 => "11110101110",
-               103 => "11010000100", 104 => "11010010000", 105 => "11010011100",
-               106 => "1100011101011");
+    protected $_codingMap = [
+        0 => '11011001100',   1 => '11001101100',   2 => '11001100110',
+        3 => '10010011000',   4 => '10010001100',   5 => '10001001100',
+        6 => '10011001000',   7 => '10011000100',   8 => '10001100100',
+        9 => '11001001000',  10 => '11001000100',  11 => '11000100100',
+        12 => '10110011100',  13 => '10011011100',  14 => '10011001110',
+        15 => '10111001100',  16 => '10011101100',  17 => '10011100110',
+        18 => '11001110010',  19 => '11001011100',  20 => '11001001110',
+        21 => '11011100100',  22 => '11001110100',  23 => '11101101110',
+        24 => '11101001100',  25 => '11100101100',  26 => '11100100110',
+        27 => '11101100100',  28 => '11100110100',  29 => '11100110010',
+        30 => '11011011000',  31 => '11011000110',  32 => '11000110110',
+        33 => '10100011000',  34 => '10001011000',  35 => '10001000110',
+        36 => '10110001000',  37 => '10001101000',  38 => '10001100010',
+        39 => '11010001000',  40 => '11000101000',  41 => '11000100010',
+        42 => '10110111000',  43 => '10110001110',  44 => '10001101110',
+        45 => '10111011000',  46 => '10111000110',  47 => '10001110110',
+        48 => '11101110110',  49 => '11010001110',  50 => '11000101110',
+        51 => '11011101000',  52 => '11011100010',  53 => '11011101110',
+        54 => '11101011000',  55 => '11101000110',  56 => '11100010110',
+        57 => '11101101000',  58 => '11101100010',  59 => '11100011010',
+        60 => '11101111010',  61 => '11001000010',  62 => '11110001010',
+        63 => '10100110000',  64 => '10100001100',  65 => '10010110000',
+        66 => '10010000110',  67 => '10000101100',  68 => '10000100110',
+        69 => '10110010000',  70 => '10110000100',  71 => '10011010000',
+        72 => '10011000010',  73 => '10000110100',  74 => '10000110010',
+        75 => '11000010010',  76 => '11001010000',  77 => '11110111010',
+        78 => '11000010100',  79 => '10001111010',  80 => '10100111100',
+        81 => '10010111100',  82 => '10010011110',  83 => '10111100100',
+        84 => '10011110100',  85 => '10011110010',  86 => '11110100100',
+        87 => '11110010100',  88 => '11110010010',  89 => '11011011110',
+        90 => '11011110110',  91 => '11110110110',  92 => '10101111000',
+        93 => '10100011110',  94 => '10001011110',  95 => '10111101000',
+        96 => '10111100010',  97 => '11110101000',  98 => '11110100010',
+        99 => '10111011110', 100 => '10111101110', 101 => '11101011110',
+        102 => '11110101110',
+        103 => '11010000100', 104 => '11010010000', 105 => '11010011100',
+        106 => '1100011101011'];
 
     /**
-    * Character sets ABC
-    * @var array
-    */
-    protected $_charSets = array(
-        'A' => array(
+     * Character sets ABC
+     *
+     * @var array
+     */
+    protected $_charSets = [
+        'A' => [
             ' ', '!', '"', '#', '$', '%', '&', "'",
             '(', ')', '*', '+', ',', '-', '.', '/',
             '0', '1', '2', '3', '4', '5', '6', '7',
@@ -110,8 +113,8 @@ class Zend_Barcode_Object_Code128 extends Zend_Barcode_Object_ObjectAbstract
             0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
             0x18, 0x19, 0x1A, 0x1B, 0x1C, 0x1D, 0x1E, 0x1F,
             'FNC3', 'FNC2', 'SHIFT', 'Code C', 'Code B', 'FNC4', 'FNC1',
-            'START A', 'START B', 'START C', 'STOP'),
-        'B' => array(
+            'START A', 'START B', 'START C', 'STOP'],
+        'B' => [
             ' ', '!', '"', '#', '$', '%', '&', "'",
             '(', ')', '*', '+', ',', '-', '.', '/',
             '0', '1', '2', '3', '4', '5', '6', '7',
@@ -125,8 +128,8 @@ class Zend_Barcode_Object_Code128 extends Zend_Barcode_Object_ObjectAbstract
             'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
             'x', 'y', 'z', '{', '|', '}', '~', 0x7F,
             'FNC3', 'FNC2', 'SHIFT', 'Code C', 'FNC4', 'Code A', 'FNC1',
-            'START A', 'START B', 'START C', 'STOP',),
-        'C' => array(
+            'START A', 'START B', 'START C', 'STOP', ],
+        'C' => [
             '00', '01', '02', '03', '04', '05', '06', '07', '08', '09',
             '10', '11', '12', '13', '14', '15', '16', '17', '18', '19',
             '20', '21', '22', '23', '24', '25', '26', '27', '28', '29',
@@ -137,7 +140,7 @@ class Zend_Barcode_Object_Code128 extends Zend_Barcode_Object_ObjectAbstract
             '70', '71', '72', '73', '74', '75', '76', '77', '78', '79',
             '80', '81', '82', '83', '84', '85', '86', '87', '88', '89',
             '90', '91', '92', '93', '94', '95', '96', '97', '98', '99',
-            'Code B', 'Code A', 'FNC1', 'START A', 'START B', 'START C', 'STOP'));
+            'Code B', 'Code A', 'FNC1', 'START A', 'START B', 'START C', 'STOP']];
     /*'A' => array(
       ' '=>0, '!'=>1, '"'=>2, '#'=>3, '$'=>4, '%'=>5, '&'=>6, "'"=>7,
       '('=>8, ')'=>9, '*'=>10, '+'=>11, ','=>12, '-'=>13, '.'=>14, '/'=>15,
@@ -183,7 +186,8 @@ class Zend_Barcode_Object_Code128 extends Zend_Barcode_Object_ObjectAbstract
 
     /**
      * Width of the barcode (in pixels)
-     * @return integer
+     *
+     * @return int
      */
     protected function _calculateBarcodeWidth()
     {
@@ -198,24 +202,25 @@ class Zend_Barcode_Object_Code128 extends Zend_Barcode_Object_ObjectAbstract
         // ...except the STOP character (13)
         $encodedData += $characterLength + 2 * $this->_barThinWidth * $this->_factor;
         $width = $quietZone + $encodedData + $quietZone;
+
         return $width;
     }
 
     /**
      * Partial check of code128 barcode
+     *
      * @return void
      */
-    protected function _checkParams()
-    {
-    }
+    protected function _checkParams() {}
 
     /**
      * Prepare array to draw barcode
+     *
      * @return array
      */
     protected function _prepareBarcode()
     {
-        $barcodeTable = array();
+        $barcodeTable = [];
 
         $convertedChars = $this->_convertToBarcodeChars($this->getText());
 
@@ -229,45 +234,47 @@ class Zend_Barcode_Object_Code128 extends Zend_Barcode_Object_ObjectAbstract
         foreach ($convertedChars as $barcodeChar) {
             $barcodePattern = $this->_codingMap[$barcodeChar];
             foreach (str_split($barcodePattern) as $c) {
-                $barcodeTable[] = array($c, $this->_barThinWidth, 0, 1);
+                $barcodeTable[] = [$c, $this->_barThinWidth, 0, 1];
             }
         }
+
         return $barcodeTable;
     }
 
     /**
      * Checks if the next $length chars of $string starting at $pos are numeric.
      * Returns false if the end of the string is reached.
-     * @param string $string String to search
-     * @param int    $pos Starting position
-     * @param int    $length Length to search
+     *
+     * @param  string  $string  String to search
+     * @param  int  $pos  Starting position
+     * @param  int  $length  Length to search
      * @return bool
      */
     protected static function _isDigit($string, $pos, $length = 2)
     {
         if ($pos + $length > strlen($string)) {
-           return false;
+            return false;
         }
 
         for ($i = $pos; $i < $pos + $length; $i++) {
-              if (!is_numeric($string[$i])) {
-                  return false;
-              }
+            if (! is_numeric($string[$i])) {
+                return false;
+            }
         }
+
         return true;
     }
 
     /**
      * Convert string to barcode string
      *
-     * @param $string
      * @return array
      */
     protected function _convertToBarcodeChars($string)
     {
         $string = (string) $string;
-        if (!strlen($string)) {
-            return array();
+        if (! strlen($string)) {
+            return [];
         }
 
         if (isset($this->_convertedText[md5($string)])) {
@@ -277,7 +284,7 @@ class Zend_Barcode_Object_Code128 extends Zend_Barcode_Object_ObjectAbstract
         $currentCharset = null;
         $sum = 0;
         $fak = 0;
-        $result = array();
+        $result = [];
 
         for ($pos = 0; $pos < strlen($string); $pos++) {
             $char = $string[$pos];
@@ -291,34 +298,34 @@ class Zend_Barcode_Object_Code128 extends Zend_Barcode_Object_ObjectAbstract
                  */
                 if ($currentCharset != 'C') {
                     if ($pos == 0) {
-                        $code = array_search("START C", $this->_charSets['C']);
+                        $code = array_search('START C', $this->_charSets['C']);
                     } else {
-                        $code = array_search("Code C", $this->_charSets[$currentCharset]);
+                        $code = array_search('Code C', $this->_charSets[$currentCharset]);
                     }
                     $result[] = $code;
                     $currentCharset = 'C';
                 }
-            } else if (in_array($char, $this->_charSets['B']) && $currentCharset != 'B'
-                  && !(in_array($char, $this->_charSets['A']) && $currentCharset == 'A')) {
+            } elseif (in_array($char, $this->_charSets['B']) && $currentCharset != 'B'
+                  && ! (in_array($char, $this->_charSets['A']) && $currentCharset == 'A')) {
                 /**
                  * Switch to B as B contains the char and B is not the current charset.
                  */
                 if ($pos == 0) {
-                    $code = array_search("START B", $this->_charSets['B']);
+                    $code = array_search('START B', $this->_charSets['B']);
                 } else {
-                    $code = array_search("Code B", $this->_charSets[$currentCharset]);
+                    $code = array_search('Code B', $this->_charSets[$currentCharset]);
                 }
                 $result[] = $code;
                 $currentCharset = 'B';
-            } else if (array_key_exists($char, $this->_charSets['A']) && $currentCharset != 'A'
-                  && !(array_key_exists($char, $this->_charSets['B']) && $currentCharset == 'B')) {
+            } elseif (array_key_exists($char, $this->_charSets['A']) && $currentCharset != 'A'
+                  && ! (array_key_exists($char, $this->_charSets['B']) && $currentCharset == 'B')) {
                 /**
                  * Switch to C as C contains the char and C is not the current charset.
                  */
                 if ($pos == 0) {
-                    $code = array_search("START A", $this->_charSets['A']);
+                    $code = array_search('START A', $this->_charSets['A']);
                 } else {
-                    $code =array_search("Code A", $this->_charSets[$currentCharset]);
+                    $code = array_search('Code A', $this->_charSets[$currentCharset]);
                 }
                 $result[] = $code;
                 $currentCharset = 'A';
@@ -326,7 +333,7 @@ class Zend_Barcode_Object_Code128 extends Zend_Barcode_Object_ObjectAbstract
 
             if ($currentCharset == 'C') {
                 $code = array_search(substr($string, $pos, 2), $this->_charSets['C']);
-                $pos++; //Two chars from input
+                $pos++; // Two chars from input
             } else {
                 $code = array_search($string[$pos], $this->_charSets[$currentCharset]);
             }
@@ -334,22 +341,26 @@ class Zend_Barcode_Object_Code128 extends Zend_Barcode_Object_ObjectAbstract
         }
 
         $this->_convertedText[md5($string)] = $result;
+
         return $result;
     }
 
     /**
      * Set text to encode
-     * @param string $value
+     *
+     * @param  string  $value
      * @return Zend_Barcode_Object
      */
     public function setText($value)
     {
         $this->_text = $value;
+
         return $this;
     }
 
     /**
      * Retrieve text to encode
+     *
      * @return string
      */
     public function getText()
@@ -360,7 +371,7 @@ class Zend_Barcode_Object_Code128 extends Zend_Barcode_Object_ObjectAbstract
     /**
      * Get barcode checksum
      *
-     * @param  string $text
+     * @param  string  $text
      * @return int
      */
     public function getChecksum($text)
@@ -383,11 +394,11 @@ class Zend_Barcode_Object_Code128 extends Zend_Barcode_Object_ObjectAbstract
     /**
      * Standard validation for most of barcode objects
      *
-     * @param string $value
-     * @param array  $options
+     * @param  string  $value
+     * @param  array  $options
      * @return bool
      */
-    protected function _validateText($value, $options = array())
+    protected function _validateText($value, $options = [])
     {
         // @TODO: add code128 validator
         return true;

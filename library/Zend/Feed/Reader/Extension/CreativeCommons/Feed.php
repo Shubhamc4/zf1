@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,12 +28,11 @@ require_once 'Zend/Feed/Reader/Extension/FeedAbstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Feed_Reader_Extension_CreativeCommons_Feed
-    extends Zend_Feed_Reader_Extension_FeedAbstract
+class Zend_Feed_Reader_Extension_CreativeCommons_Feed extends Zend_Feed_Reader_Extension_FeedAbstract
 {
     /**
      * Get the entry license
@@ -46,7 +47,6 @@ class Zend_Feed_Reader_Extension_CreativeCommons_Feed
             return $licenses[$index];
         }
 
-        return null;
     }
 
     /**
@@ -61,7 +61,7 @@ class Zend_Feed_Reader_Extension_CreativeCommons_Feed
             return $this->_data[$name];
         }
 
-        $licenses = array();
+        $licenses = [];
         $list = $this->_xpath->evaluate('channel/cc:license');
 
         if ($list->length) {

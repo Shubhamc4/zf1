@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service_WindowsAzure
- * @subpackage Storage
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -32,19 +33,16 @@ require_once 'Zend/Service/WindowsAzure/Storage/DynamicTableEntity.php';
 
 /**
  * @category   Zend
- * @package    Zend_Service_WindowsAzure
- * @subpackage Log
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Service_WindowsAzure_Log_Formatter_WindowsAzure
-    implements Zend_Log_Formatter_Interface
+class Zend_Service_WindowsAzure_Log_Formatter_WindowsAzure implements Zend_Log_Formatter_Interface
 {
     /**
      * Write a message to the table storage
      *
-     * @param  array $event
-     *
+     * @param  array  $event
      * @return Zend_Service_WindowsAzure_Storage_DynamicTableEntity
      */
     public function format($event)
@@ -60,7 +58,7 @@ class Zend_Service_WindowsAzure_Log_Formatter_WindowsAzure
         unset($event['timestamp']);
 
         foreach ($event as $key => $value) {
-            if ((is_object($value) && !method_exists($value, '__toString'))
+            if ((is_object($value) && ! method_exists($value, '__toString'))
                 || is_array($value)
             ) {
                 $value = gettype($value);

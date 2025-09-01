@@ -14,30 +14,26 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Yahoo
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * @see Zend_Service_Yahoo_ResultSet
  */
 require_once 'Zend/Service/Yahoo/ResultSet.php';
 
-
 /**
  * @see Zend_Service_Yahoo_VideoResult
  */
 require_once 'Zend/Service/Yahoo/VideoResult.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Yahoo
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -50,13 +46,11 @@ class Zend_Service_Yahoo_VideoResultSet extends Zend_Service_Yahoo_ResultSet
      */
     protected $_namespace = 'urn:yahoo:srchmv';
 
-
     /**
      * Overrides Zend_Service_Yahoo_ResultSet::current()
      *
      * @return Zend_Service_Yahoo_VideoResult
      */
-    #[\ReturnTypeWillChange]
     public function current()
     {
         return new Zend_Service_Yahoo_VideoResult($this->_results->item($this->_currentIndex));

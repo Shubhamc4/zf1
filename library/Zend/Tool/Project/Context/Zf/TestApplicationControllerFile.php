@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -32,13 +33,12 @@ require_once 'Zend/Tool/Project/Context/Filesystem/File.php';
  * items within a specific project.
  *
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Tool_Project_Context_Zf_TestApplicationControllerFile extends Zend_Tool_Project_Context_Filesystem_File
 {
-
     /**
      * @var string
      */
@@ -62,8 +62,9 @@ class Zend_Tool_Project_Context_Zf_TestApplicationControllerFile extends Zend_To
     public function init()
     {
         $this->_forControllerName = $this->_resource->getAttribute('forControllerName');
-        $this->_filesystemName = ucfirst($this->_forControllerName) . 'ControllerTest.php';
+        $this->_filesystemName = ucfirst($this->_forControllerName).'ControllerTest.php';
         parent::init();
+
         return $this;
     }
 
@@ -74,7 +75,7 @@ class Zend_Tool_Project_Context_Zf_TestApplicationControllerFile extends Zend_To
      */
     public function getPersistentAttributes()
     {
-        $attributes = array();
+        $attributes = [];
 
         if ($this->_forControllerName) {
             $attributes['forControllerName'] = $this->getForControllerName();
@@ -82,12 +83,12 @@ class Zend_Tool_Project_Context_Zf_TestApplicationControllerFile extends Zend_To
 
         return $attributes;
     }
-    
+
     public function getForControllerName()
     {
         return $this->_forControllerName;
     }
-    
+
     /**
      * getContents()
      *
@@ -96,36 +97,35 @@ class Zend_Tool_Project_Context_Zf_TestApplicationControllerFile extends Zend_To
     public function getContents()
     {
 
-        $filter = new Zend_Filter_Word_DashToCamelCase();
+        $filter = new Zend_Filter_Word_DashToCamelCase;
 
-        $className = $filter->filter($this->_forControllerName) . 'ControllerTest';
-        
+        $className = $filter->filter($this->_forControllerName).'ControllerTest';
+
         /* @var $controllerDirectoryResource Zend_Tool_Project_Profile_Resource */
         $controllerDirectoryResource = $this->_resource->getParentResource();
         if ($controllerDirectoryResource->getParentResource()->getName() == 'TestApplicationModuleDirectory') {
             $className = $filter->filter(ucfirst($controllerDirectoryResource->getParentResource()->getForModuleName()))
-                . '_' . $className;
-        }        
-        
-        $codeGenFile = new Zend_CodeGenerator_Php_File(array(
-            'classes' => array(
-                new Zend_CodeGenerator_Php_Class(array(
+                .'_'.$className;
+        }
+
+        $codeGenFile = new Zend_CodeGenerator_Php_File([
+            'classes' => [
+                new Zend_CodeGenerator_Php_Class([
                     'name' => $className,
                     'extendedClass' => 'Zend_Test_PHPUnit_ControllerTestCase',
-                    'methods' => array(
-                        new Zend_CodeGenerator_Php_Method(array(
+                    'methods' => [
+                        new Zend_CodeGenerator_Php_Method([
                             'name' => 'setUp',
-                            'body' => <<<EOS
-\$this->bootstrap = new Zend_Application(APPLICATION_ENV, APPLICATION_PATH . '/configs/application.ini');
+                            'body' => <<<'EOS'
+$this->bootstrap = new Zend_Application(APPLICATION_ENV, APPLICATION_PATH . '/configs/application.ini');
 parent::setUp();
 EOS
-                            ))
-                        )
-                    ))
-                )
-            ));
+                        ]),
+                    ],
+                ]),
+            ],
+        ]);
 
         return $codeGenFile->generate();
     }
-
 }

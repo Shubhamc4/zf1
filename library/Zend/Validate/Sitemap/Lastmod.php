@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Validate
- * @subpackage Sitemap
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -31,8 +32,7 @@ require_once 'Zend/Validate/Abstract.php';
  * @link       http://www.sitemaps.org/protocol.php Sitemaps XML format
  *
  * @category   Zend
- * @package    Zend_Validate
- * @subpackage Sitemap
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -40,26 +40,25 @@ class Zend_Validate_Sitemap_Lastmod extends Zend_Validate_Abstract
 {
     /**
      * Regular expression to use when validating
-     *
      */
     const LASTMOD_REGEX = '/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])(T([0-1][0-9]|2[0-3])(:[0-5][0-9])(:[0-5][0-9])?(\\+|-)([0-1][0-9]|2[0-3]):[0-5][0-9])?$/';
 
     /**
      * Validation key for not valid
-     *
      */
     const NOT_VALID = 'sitemapLastmodNotValid';
-    const INVALID   = 'sitemapLastmodInvalid';
+
+    const INVALID = 'sitemapLastmodInvalid';
 
     /**
      * Validation failure message template definitions
      *
      * @var array
      */
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::NOT_VALID => "'%value%' is not a valid sitemap lastmod",
-        self::INVALID   => "Invalid type given. String expected",
-    );
+        self::INVALID => 'Invalid type given. String expected',
+    ];
 
     /**
      * Validates if a string is valid as a sitemap lastmod
@@ -67,12 +66,13 @@ class Zend_Validate_Sitemap_Lastmod extends Zend_Validate_Abstract
      * @link http://www.sitemaps.org/protocol.php#lastmoddef <lastmod>
      *
      * @param  string  $value  value to validate
-     * @return boolean
+     * @return bool
      */
     public function isValid($value)
     {
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             $this->_error(self::INVALID);
+
             return false;
         }
 
@@ -80,6 +80,7 @@ class Zend_Validate_Sitemap_Lastmod extends Zend_Validate_Abstract
         $result = @preg_match(self::LASTMOD_REGEX, $value);
         if ($result != 1) {
             $this->_error(self::NOT_VALID);
+
             return false;
         }
 

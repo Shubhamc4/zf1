@@ -14,12 +14,12 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * @see Zend_Feed_Abstract
@@ -30,7 +30,6 @@ require_once 'Zend/Feed/Abstract.php';
  * @see Zend_Feed_Entry_Atom
  */
 require_once 'Zend/Feed/Entry/Atom.php';
-
 
 /**
  * Atom feed class
@@ -43,13 +42,12 @@ require_once 'Zend/Feed/Entry/Atom.php';
  * what kind of feed object they have been passed.
  *
  * @category   Zend
- * @package    Zend_Feed
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Feed_Atom extends Zend_Feed_Abstract
 {
-
     /**
      * The classname for individual feed elements.
      *
@@ -72,11 +70,11 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
      */
     protected $_defaultNamespace = 'atom';
 
-
     /**
      * Override Zend_Feed_Abstract to set up the $_element and $_entries aliases.
      *
      * @return void
+     *
      * @throws Zend_Feed_Exception
      */
     public function __wakeup()
@@ -85,20 +83,20 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
 
         // Find the base feed element and create an alias to it.
         $element = $this->_element->getElementsByTagName('feed')->item(0);
-        if (!$element) {
+        if (! $element) {
             // Try to find a single <entry> instead.
             $element = $this->_element->getElementsByTagName($this->_entryElementName)->item(0);
-            if (!$element) {
+            if (! $element) {
                 /**
                  * @see Zend_Feed_Exception
                  */
                 require_once 'Zend/Feed/Exception.php';
-                throw new Zend_Feed_Exception('No root <feed> or <' . $this->_entryElementName
-                                              . '> element found, cannot parse feed.');
+                throw new Zend_Feed_Exception('No root <feed> or <'.$this->_entryElementName
+                                              .'> element found, cannot parse feed.');
             }
 
             $doc = new DOMDocument($this->_element->version,
-                                   $this->_element->actualEncoding);
+                $this->_element->actualEncoding);
             $feed = $doc->appendChild($doc->createElement('feed'));
             $feed->appendChild($doc->importNode($element, true));
             $element = $feed;
@@ -110,7 +108,6 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
         // simplicity.
         $this->_buildEntryCache();
     }
-
 
     /**
      * Easy access to <link> tags keyed by "rel" attributes.
@@ -124,7 +121,7 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
      * $elt->link(): returns the value of the link tag.
      * $elt->link('self'): returns the href from the first <link rel="self"> in the entry.
      *
-     * @param  string $rel The "rel" attribute to look for.
+     * @param  string  $rel  The "rel" attribute to look for.
      * @return mixed
      */
     public function link($rel = null)
@@ -135,9 +132,9 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
 
         // index link tags by their "rel" attribute.
         $links = parent::__get('link');
-        if (!is_array($links)) {
+        if (! is_array($links)) {
             if ($links instanceof Zend_Feed_Element) {
-                $links = array($links);
+                $links = [$links];
             } else {
                 return $links;
             }
@@ -152,9 +149,7 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
             }
         }
 
-        return null;
     }
-
 
     /**
      * Make accessing some individual elements of the feed easier.
@@ -164,7 +159,7 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
      * using foreach ($feed->entries as $entry) or foreach
      * ($feed->entry as $entry).
      *
-     * @param  string $var The property to access.
+     * @param  string  $var  The property to access.
      * @return mixed
      */
     public function __get($var)
@@ -183,7 +178,7 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
     /**
      * Generate the header of the feed when working in write mode
      *
-     * @param  array $array the data to use
+     * @param  array  $array  the data to use
      * @return DOMElement root node
      */
     protected function _mapFeedHeaders($array)
@@ -209,7 +204,7 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
             $feed->appendChild($author);
         }
 
-        $updated = isset($array->lastUpdate) ? $array->lastUpdate : time();
+        $updated = $array->lastUpdate ?? time();
         $updated = $this->_element->createElement('updated', date(DATE_ATOM, $updated));
         $feed->appendChild($updated);
 
@@ -242,7 +237,7 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
             $feed->appendChild($image);
         }
 
-        $generator = !empty($array->generator) ? $array->generator : 'Zend_Feed';
+        $generator = ! empty($array->generator) ? $array->generator : 'Zend_Feed';
         $generator = $this->_element->createElement('generator', $generator);
         $feed->appendChild($generator);
 
@@ -262,8 +257,8 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
      *    <content>long version, can contain html</content>
      * </entry>
      *
-     * @param  array      $array the data to use
-     * @param  DOMElement $root  the root node to use
+     * @param  array  $array  the data to use
+     * @param  DOMElement  $root  the root node to use
      * @return void
      */
     protected function _mapFeedEntries(DOMElement $root, $array)
@@ -271,14 +266,14 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
         foreach ($array as $dataentry) {
             $entry = $this->_element->createElement('entry');
 
-            $id = $this->_element->createElement('id', isset($dataentry->guid) ? $dataentry->guid : $dataentry->link);
+            $id = $this->_element->createElement('id', $dataentry->guid ?? $dataentry->link);
             $entry->appendChild($id);
 
             $title = $this->_element->createElement('title');
             $title->appendChild($this->_element->createCDATASection($dataentry->title));
             $entry->appendChild($title);
 
-            $updated = isset($dataentry->lastUpdate) ? $dataentry->lastUpdate : time();
+            $updated = $dataentry->lastUpdate ?? time();
             $updated = $this->_element->createElement('updated', date(DATE_ATOM, $updated));
             $entry->appendChild($updated);
 
@@ -336,14 +331,14 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
 
             if (isset($dataentry->comments)) {
                 $comments = $this->_element->createElementNS('http://wellformedweb.org/CommentAPI/',
-                                                             'wfw:comment',
-                                                             $dataentry->comments);
+                    'wfw:comment',
+                    $dataentry->comments);
                 $entry->appendChild($comments);
             }
             if (isset($dataentry->commentRss)) {
                 $comments = $this->_element->createElementNS('http://wellformedweb.org/CommentAPI/',
-                                                             'wfw:commentRss',
-                                                             $dataentry->commentRss);
+                    'wfw:commentRss',
+                    $dataentry->commentRss);
                 $entry->appendChild($comments);
             }
 
@@ -360,7 +355,7 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
     {
         // Return a complete document including XML prologue.
         $doc = new DOMDocument($this->_element->ownerDocument->version,
-                               $this->_element->ownerDocument->actualEncoding);
+            $this->_element->ownerDocument->actualEncoding);
         $doc->appendChild($doc->importNode($this->_element, true));
         $doc->formatOutput = true;
 
@@ -371,6 +366,7 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
      * Send feed to a http client with the correct header
      *
      * @return void
+     *
      * @throws Zend_Feed_Exception if headers have already been sent
      */
     public function send()
@@ -383,7 +379,7 @@ class Zend_Feed_Atom extends Zend_Feed_Abstract
             throw new Zend_Feed_Exception('Cannot send ATOM because headers have already been sent.');
         }
 
-        header('Content-Type: application/atom+xml; charset=' . $this->_element->ownerDocument->actualEncoding);
+        header('Content-Type: application/atom+xml; charset='.$this->_element->ownerDocument->actualEncoding);
 
         echo $this->saveXML();
     }

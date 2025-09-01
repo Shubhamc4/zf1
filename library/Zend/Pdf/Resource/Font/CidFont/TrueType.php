@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,13 +14,12 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Pdf
- * @subpackage Fonts
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /** Internally used classes */
 
@@ -27,7 +27,6 @@ require_once 'Zend/Pdf/Element/Name.php';
 
 /** Zend_Pdf_Resource_Font_FontDescriptor */
 require_once 'Zend/Pdf/Resource/Font/FontDescriptor.php';
-
 
 /** Zend_Pdf_Resource_Font_CidFont */
 require_once 'Zend/Pdf/Resource/Font/CidFont.php';
@@ -42,8 +41,6 @@ require_once 'Zend/Pdf/Resource/Font/CidFont.php';
  * contains a 'cmap' table that provides mappings directly from character codes to
  * glyph indices for one or more predefined encodings.
  *
- * @package    Zend_Pdf
- * @subpackage Fonts
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -54,9 +51,10 @@ class Zend_Pdf_Resource_Font_CidFont_TrueType extends Zend_Pdf_Resource_Font_Cid
      *
      * @todo Joing this class with Zend_Pdf_Resource_Font_Simple_Parsed_TrueType
      *
-     * @param Zend_Pdf_FileParser_Font_OpenType_TrueType $fontParser Font parser
-     *   object containing parsed TrueType file.
-     * @param integer $embeddingOptions Options for font embedding.
+     * @param  Zend_Pdf_FileParser_Font_OpenType_TrueType  $fontParser  Font parser
+     *                                                                  object containing parsed TrueType file.
+     * @param  int  $embeddingOptions  Options for font embedding.
+     *
      * @throws Zend_Pdf_Exception
      */
     public function __construct(Zend_Pdf_FileParser_Font_OpenType_TrueType $fontParser, $embeddingOptions)
@@ -65,7 +63,7 @@ class Zend_Pdf_Resource_Font_CidFont_TrueType extends Zend_Pdf_Resource_Font_Cid
 
         $this->_fontType = Zend_Pdf_Font::TYPE_CIDFONT_TYPE_2;
 
-        $this->_resource->Subtype  = new Zend_Pdf_Element_Name('CIDFontType2');
+        $this->_resource->Subtype = new Zend_Pdf_Element_Name('CIDFontType2');
 
         $fontDescriptor = Zend_Pdf_Resource_Font_FontDescriptor::factory($this, $fontParser, $embeddingOptions);
         $this->_resource->FontDescriptor = $this->_objectFactory->newObject($fontDescriptor);
@@ -76,13 +74,12 @@ class Zend_Pdf_Resource_Font_CidFont_TrueType extends Zend_Pdf_Resource_Font_Cid
         // Fill the index
         $charGlyphs = $this->_cmap->getCoveredCharactersGlyphs();
         foreach ($charGlyphs as $charCode => $glyph) {
-            $cidToGidMapData[$charCode*2    ] = chr($glyph >> 8);
-            $cidToGidMapData[$charCode*2 + 1] = chr($glyph & 0xFF);
+            $cidToGidMapData[$charCode * 2] = chr($glyph >> 8);
+            $cidToGidMapData[$charCode * 2 + 1] = chr($glyph & 0xFF);
         }
         // Store CIDToGIDMap within compressed stream object
         $cidToGidMap = $this->_objectFactory->newStreamObject($cidToGidMapData);
         $cidToGidMap->dictionary->Filter = new Zend_Pdf_Element_Name('FlateDecode');
         $this->_resource->CIDToGIDMap = $cidToGidMap;
     }
-
 }

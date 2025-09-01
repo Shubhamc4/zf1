@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Result.php 22804 2010-08-08 05:08:05Z renanbr $
  */
 
@@ -27,10 +28,10 @@ require_once 'Zend/Service/Ebay/Finding/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @uses       Zend_Service_Ebay_Finding_Abstract
  */
 class Zend_Service_Ebay_Finding_Search_Result extends Zend_Service_Ebay_Finding_Abstract
@@ -50,8 +51,7 @@ class Zend_Service_Ebay_Finding_Search_Result extends Zend_Service_Ebay_Finding_
         parent::_init();
         $ns = Zend_Service_Ebay_Finding::XMLNS_FINDING;
 
-
-        $nodes = $this->_xPath->query(".//$ns:item", $this->_dom);
+        $nodes = $this->_xPath->query(".//{$ns}:item", $this->_dom);
         if ($nodes) {
             /**
              * @see Zend_Service_Ebay_Finding_Search_Item_Set

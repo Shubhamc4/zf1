@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Markup
- * @subpackage Renderer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -37,24 +38,24 @@ require_once 'Zend/Markup/Renderer/TokenConverterInterface.php';
  * Defines the basic rendering functionality
  *
  * @category   Zend
- * @package    Zend_Markup
- * @subpackage Renderer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Markup_Renderer_RendererAbstract
 {
     const TYPE_CALLBACK = 4;
-    const TYPE_REPLACE  = 8;
-    const TYPE_ALIAS    = 16;
+
+    const TYPE_REPLACE = 8;
+
+    const TYPE_ALIAS = 16;
 
     /**
      * Tag info
      *
      * @var array
      */
-    protected $_markups = array();
+    protected $_markups = [];
 
     /**
      * Parser
@@ -89,7 +90,7 @@ abstract class Zend_Markup_Renderer_RendererAbstract
      *
      * @var array
      */
-    protected $_groups = array();
+    protected $_groups = [];
 
     /**
      * Plugin loader for tags
@@ -112,15 +113,13 @@ abstract class Zend_Markup_Renderer_RendererAbstract
      */
     protected static $_encoding = 'UTF-8';
 
-
     /**
      * Constructor
      *
-     * @param array|Zend_Config $options
-     *
+     * @param  array|Zend_Config  $options
      * @return void
      */
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         if ($options instanceof Zend_Config) {
             $options = $options->toArray();
@@ -132,7 +131,7 @@ abstract class Zend_Markup_Renderer_RendererAbstract
         if (isset($options['parser'])) {
             $this->setParser($options['parser']);
         }
-        if (!isset($options['useDefaultFilters']) || ($options['useDefaultFilters'] === true)) {
+        if (! isset($options['useDefaultFilters']) || ($options['useDefaultFilters'] === true)) {
             $this->addDefaultFilters();
         }
         if (isset($options['defaultFilter'])) {
@@ -143,12 +142,12 @@ abstract class Zend_Markup_Renderer_RendererAbstract
     /**
      * Set the parser
      *
-     * @param  Zend_Markup_Parser_ParserInterface $parser
      * @return Zend_Markup_Renderer_RendererAbstract
      */
     public function setParser(Zend_Markup_Parser_ParserInterface $parser)
     {
         $this->_parser = $parser;
+
         return $this;
     }
 
@@ -175,8 +174,7 @@ abstract class Zend_Markup_Renderer_RendererAbstract
     /**
      * Set the renderer's encoding
      *
-     * @param string $encoding
-     *
+     * @param  string  $encoding
      * @return void
      */
     public static function setEncoding($encoding)
@@ -197,17 +195,15 @@ abstract class Zend_Markup_Renderer_RendererAbstract
     /**
      * Add a new markup
      *
-     * @param string $name
-     * @param string $type
-     * @param array $options
-     *
+     * @param  string  $name
+     * @param  string  $type
      * @return Zend_Markup_Renderer_RendererAbstract
      */
     public function addMarkup($name, $type, array $options)
     {
-        if (!isset($options['group']) && ($type ^ self::TYPE_ALIAS)) {
+        if (! isset($options['group']) && ($type ^ self::TYPE_ALIAS)) {
             require_once 'Zend/Markup/Renderer/Exception.php';
-            throw new Zend_Markup_Renderer_Exception("There is no render group defined.");
+            throw new Zend_Markup_Renderer_Exception('There is no render group defined.');
         }
 
         // add the filter
@@ -227,9 +223,9 @@ abstract class Zend_Markup_Renderer_RendererAbstract
         if ($type & self::TYPE_CALLBACK) {
             // add a callback tag
             if (isset($options['callback'])) {
-                if (!($options['callback'] instanceof Zend_Markup_Renderer_TokenConverterInterface)) {
+                if (! ($options['callback'] instanceof Zend_Markup_Renderer_TokenConverterInterface)) {
                     require_once 'Zend/Markup/Renderer/Exception.php';
-                    throw new Zend_Markup_Renderer_Exception("Not a valid tag callback.");
+                    throw new Zend_Markup_Renderer_Exception('Not a valid tag callback.');
                 }
                 if (method_exists($options['callback'], 'setRenderer')) {
                     $options['callback']->setRenderer($this);
@@ -247,36 +243,36 @@ abstract class Zend_Markup_Renderer_RendererAbstract
             if (empty($options['name'])) {
                 require_once 'Zend/Markup/Renderer/Exception.php';
                 throw new Zend_Markup_Renderer_Exception(
-                        'No alias was provided but tag was defined as such');
+                    'No alias was provided but tag was defined as such');
             }
 
-            $this->_markups[$name] = array(
+            $this->_markups[$name] = [
                 'type' => self::TYPE_ALIAS,
-                'name' => $options['name']
-            );
+                'name' => $options['name'],
+            ];
         } else {
             if ($type && array_key_exists('empty', $options) && $options['empty']) {
                 // add a single replace markup
-                $options['type']   = $type;
+                $options['type'] = $type;
                 $options['filter'] = $filter;
 
                 $this->_markups[$name] = $options;
             } else {
                 // add a replace markup
-                $options['type']   = $type;
+                $options['type'] = $type;
                 $options['filter'] = $filter;
 
                 $this->_markups[$name] = $options;
             }
         }
+
         return $this;
     }
 
     /**
      * Remove a markup
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return void
      */
     public function removeMarkup($name)
@@ -291,13 +287,13 @@ abstract class Zend_Markup_Renderer_RendererAbstract
      */
     public function clearMarkups()
     {
-        $this->_markups = array();
+        $this->_markups = [];
     }
 
     /**
      * Render function
      *
-     * @param  Zend_Markup_TokenList|string $tokenList
+     * @param  Zend_Markup_TokenList|string  $tokenList
      * @return string
      */
     public function render($value)
@@ -318,12 +314,11 @@ abstract class Zend_Markup_Renderer_RendererAbstract
     /**
      * Render a single token
      *
-     * @param  Zend_Markup_Token $token
      * @return string
      */
     protected function _render(Zend_Markup_Token $token)
     {
-        $return    = '';
+        $return = '';
 
         $this->_token = $token;
 
@@ -340,12 +335,11 @@ abstract class Zend_Markup_Renderer_RendererAbstract
     /**
      * Get the group of a token
      *
-     * @param  Zend_Markup_Token $token
      * @return string|bool
      */
     protected function _getGroup(Zend_Markup_Token $token)
     {
-        if (!isset($this->_markups[$token->getName()])) {
+        if (! isset($this->_markups[$token->getName()])) {
             return false;
         }
 
@@ -356,13 +350,12 @@ abstract class Zend_Markup_Renderer_RendererAbstract
             $tag = $this->_markups[$tag['name']];
         }
 
-        return isset($tag['group']) ? $tag['group'] : false;
+        return $tag['group'] ?? false;
     }
 
     /**
      * Execute the token
      *
-     * @param  Zend_Markup_Token $token
      * @return string
      */
     protected function _execute(Zend_Markup_Token $token)
@@ -373,39 +366,41 @@ abstract class Zend_Markup_Renderer_RendererAbstract
         }
 
         // if the token doesn't have a notation, return the plain text
-        if (!isset($this->_markups[$token->getName()])) {
-            $oldToken  = $this->_token;
-            $return = $this->_filter($token->getTag()) . $this->_render($token) . $token->getStopper();
+        if (! isset($this->_markups[$token->getName()])) {
+            $oldToken = $this->_token;
+            $return = $this->_filter($token->getTag()).$this->_render($token).$token->getStopper();
             $this->_token = $oldToken;
+
             return $return;
         }
 
-        $name   = $this->_getMarkupName($token);
-        $markup = (!$name) ? false : $this->_markups[$name];
-        $empty  = (is_array($markup) && array_key_exists('empty', $markup) && $markup['empty']);
+        $name = $this->_getMarkupName($token);
+        $markup = (! $name) ? false : $this->_markups[$name];
+        $empty = (is_array($markup) && array_key_exists('empty', $markup) && $markup['empty']);
 
         // check if the tag has content
-        if (!$empty && !$token->hasChildren()) {
+        if (! $empty && ! $token->hasChildren()) {
             return '';
         }
 
         // check for the context
-        if (is_array($markup) && !in_array($markup['group'], $this->_groups[$this->_group])) {
+        if (is_array($markup) && ! in_array($markup['group'], $this->_groups[$this->_group])) {
             $oldToken = $this->_token;
-            $return   = $this->_filter($token->getTag()) . $this->_render($token) . $token->getStopper();
+            $return = $this->_filter($token->getTag()).$this->_render($token).$token->getStopper();
             $this->_token = $oldToken;
+
             return $return;
         }
 
         // check for the filter
-        if (!isset($markup['filter'])
-            || (!($markup['filter'] instanceof Zend_Filter_Interface) && ($markup['filter'] !== false))) {
+        if (! isset($markup['filter'])
+            || (! ($markup['filter'] instanceof Zend_Filter_Interface) && ($markup['filter'] !== false))) {
             $this->_markups[$name]['filter'] = $this->getDefaultFilter();
         }
 
         // save old values to reset them after the work is done
         $oldFilter = $this->_filter;
-        $oldGroup  = $this->_group;
+        $oldGroup = $this->_group;
 
         $return = '';
 
@@ -419,28 +414,28 @@ abstract class Zend_Markup_Renderer_RendererAbstract
         // callback
         if (is_array($markup) && ($markup['type'] & self::TYPE_CALLBACK)) {
             // load the callback if the tag doesn't exist
-            if (!($markup['callback'] instanceof Zend_Markup_Renderer_TokenConverterInterface)) {
+            if (! ($markup['callback'] instanceof Zend_Markup_Renderer_TokenConverterInterface)) {
                 $class = $this->getPluginLoader()->load($name);
 
                 $markup['callback'] = new $class;
 
-                if (!($markup['callback'] instanceof Zend_Markup_Renderer_TokenConverterInterface)) {
+                if (! ($markup['callback'] instanceof Zend_Markup_Renderer_TokenConverterInterface)) {
                     require_once 'Zend/Markup/Renderer/Exception.php';
-                    throw new Zend_Markup_Renderer_Exception("Callback for tag '$name' found, but it isn't valid.");
+                    throw new Zend_Markup_Renderer_Exception("Callback for tag '{$name}' found, but it isn't valid.");
                 }
 
                 if (method_exists($markup['callback'], 'setRenderer')) {
                     $markup['callback']->setRenderer($this);
                 }
             }
-            if ($markup['type'] && !$empty) {
+            if ($markup['type'] && ! $empty) {
                 $return = $markup['callback']->convert($token, $this->_render($token));
             } else {
                 $return = $markup['callback']->convert($token, null);
             }
         } else {
             // replace
-            if ($markup['type'] && !$empty) {
+            if ($markup['type'] && ! $empty) {
                 $return = $this->_executeReplace($token, $markup);
             } else {
                 $return = $this->_executeSingleReplace($token, $markup);
@@ -449,7 +444,7 @@ abstract class Zend_Markup_Renderer_RendererAbstract
 
         // reset to the old values
         $this->_filter = $oldFilter;
-        $this->_group  = $oldGroup;
+        $this->_group = $oldGroup;
 
         return $return;
     }
@@ -457,8 +452,7 @@ abstract class Zend_Markup_Renderer_RendererAbstract
     /**
      * Filter method
      *
-     * @param string $value
-     *
+     * @param  string  $value
      * @return string
      */
     protected function _filter($value)
@@ -466,6 +460,7 @@ abstract class Zend_Markup_Renderer_RendererAbstract
         if ($this->_filter instanceof Zend_Filter_Interface) {
             return $this->_filter->filter($value);
         }
+
         return $value;
     }
 
@@ -473,7 +468,6 @@ abstract class Zend_Markup_Renderer_RendererAbstract
      * Get the markup name
      *
      * @param Zend_Markup_Token
-     *
      * @return string
      */
     protected function _getMarkupName(Zend_Markup_Token $token)
@@ -489,8 +483,7 @@ abstract class Zend_Markup_Renderer_RendererAbstract
     /**
      * Resolve aliases for a markup name
      *
-     * @param string $name
-     *
+     * @param  string  $name
      * @return string
      */
     protected function _resolveMarkupName($name)
@@ -507,37 +500,36 @@ abstract class Zend_Markup_Renderer_RendererAbstract
     /**
      * Retrieve markup type
      *
-     * @param  string $name
+     * @param  string  $name
      * @return false|int
      */
     protected function _getMarkupType($name)
     {
-        if (!isset($this->_markups[$name])) {
+        if (! isset($this->_markups[$name])) {
             return false;
         }
-        if (!isset($this->_markups[$name]['type'])) {
+        if (! isset($this->_markups[$name]['type'])) {
             return false;
         }
+
         return $this->_markups[$name]['type'];
     }
 
     /**
      * Execute a replace token
      *
-     * @param  Zend_Markup_Token $token
-     * @param  array $tag
+     * @param  array  $tag
      * @return string
      */
     protected function _executeReplace(Zend_Markup_Token $token, $tag)
     {
-        return $tag['start'] . $this->_render($token) . $tag['end'];
+        return $tag['start'].$this->_render($token).$tag['end'];
     }
 
     /**
      * Execute a single replace token
      *
-     * @param  Zend_Markup_Token $token
-     * @param  array $tag
+     * @param  array  $tag
      * @return string
      */
     protected function _executeSingleReplace(Zend_Markup_Token $token, $tag)
@@ -562,14 +554,13 @@ abstract class Zend_Markup_Renderer_RendererAbstract
     /**
      * Add a default filter
      *
-     * @param string $filter
-     *
+     * @param  string  $filter
      * @return void
      */
     public function addDefaultFilter(Zend_Filter_Interface $filter, $placement = Zend_Filter::CHAIN_APPEND)
     {
-        if (!($this->_defaultFilter instanceof Zend_Filter)) {
-            $defaultFilter = new Zend_Filter();
+        if (! ($this->_defaultFilter instanceof Zend_Filter)) {
+            $defaultFilter = new Zend_Filter;
             $defaultFilter->addFilter($filter);
             $this->_defaultFilter = $defaultFilter;
         }
@@ -580,7 +571,6 @@ abstract class Zend_Markup_Renderer_RendererAbstract
     /**
      * Set the default filter
      *
-     * @param Zend_Filter_Interface $filter
      *
      * @return void
      */
@@ -592,16 +582,15 @@ abstract class Zend_Markup_Renderer_RendererAbstract
     /**
      * Get the filter for an existing markup
      *
-     * @param string $markup
-     *
+     * @param  string  $markup
      * @return Zend_Filter_Interface
      */
     public function getFilter($markup)
     {
         $markup = $this->_resolveMarkupName($markup);
 
-        if (!isset($this->_markups[$markup]['filter'])
-            || !($this->_markups[$markup]['filter'] instanceof Zend_Filter_Interface)
+        if (! isset($this->_markups[$markup]['filter'])
+            || ! ($this->_markups[$markup]['filter'] instanceof Zend_Filter_Interface)
         ) {
             if (isset($this->_markups[$markup]['filter']) && $this->_markups[$markup]['filter']) {
                 $this->_markups[$markup]['filter'] = $this->getDefaultFilter();
@@ -616,10 +605,8 @@ abstract class Zend_Markup_Renderer_RendererAbstract
     /**
      * Add a filter for an existing markup
      *
-     * @param Zend_Filter_Interface $filter
-     * @param string $markup
-     * @param string $placement
-     *
+     * @param  string  $markup
+     * @param  string  $placement
      * @return Zend_Markup_Renderer_RendererAbstract
      */
     public function addFilter(Zend_Filter_Interface $filter, $markup, $placement = Zend_Filter::CHAIN_APPEND)
@@ -633,8 +620,8 @@ abstract class Zend_Markup_Renderer_RendererAbstract
             $oldFilter = clone $oldFilter;
         }
 
-        if (!($oldFilter instanceof Zend_Filter)) {
-            $this->_markups[$markup]['filter'] = new Zend_Filter();
+        if (! ($oldFilter instanceof Zend_Filter)) {
+            $this->_markups[$markup]['filter'] = new Zend_Filter;
 
             if ($oldFilter instanceof Zend_Filter_Interface) {
                 $this->_markups[$markup]['filter']->addFilter($oldFilter);
@@ -651,9 +638,7 @@ abstract class Zend_Markup_Renderer_RendererAbstract
     /**
      * Set the filter for an existing
      *
-     * @param Zend_Filter_Interface $filter
-     * @param string $markup
-     *
+     * @param  string  $markup
      * @return Zend_Markup_Renderer_RendererAbstract
      */
     public function setFilter(Zend_Filter_Interface $filter, $markup)
@@ -668,13 +653,10 @@ abstract class Zend_Markup_Renderer_RendererAbstract
     /**
      * Add a render group
      *
-     * @param string $name
-     * @param array $allowedInside
-     * @param array $allowsInside
-     *
+     * @param  string  $name
      * @return void
      */
-    public function addGroup($name, array $allowedInside = array(), array $allowsInside = array())
+    public function addGroup($name, array $allowedInside = [], array $allowsInside = [])
     {
         $this->_groups[$name] = $allowsInside;
 
@@ -699,5 +681,4 @@ abstract class Zend_Markup_Renderer_RendererAbstract
      * @return void
      */
     abstract public function addDefaultFilters();
-
 }

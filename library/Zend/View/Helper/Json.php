@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,11 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_View
- * @subpackage Helper
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ *
  * @version    $Id$
+ *
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -32,8 +34,6 @@ require_once 'Zend/View/Helper/Abstract.php';
 /**
  * Helper for simplifying JSON responses
  *
- * @package    Zend_View
- * @subpackage Helper
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -45,18 +45,18 @@ class Zend_View_Helper_Json extends Zend_View_Helper_Abstract
      * If $keepLayouts is true, does not disable layouts.
      * If $encodeJson is false, does not JSON-encode $data
      *
-     * @param  mixed $data
-     * @param  bool $keepLayouts
-     * NOTE:   if boolean, establish $keepLayouts to true|false
-     *         if array, admit params for Zend_Json::encode as enableJsonExprFinder=>true|false
-     *         this array can contains a 'keepLayout'=>true|false and/or 'encodeData'=>true|false
-     *         that will not be passed to Zend_Json::encode method but will be used here
-     * @param  bool $encodeData
+     * @param  mixed  $data
+     * @param  bool  $keepLayouts
+     *                             NOTE:   if boolean, establish $keepLayouts to true|false
+     *                             if array, admit params for Zend_Json::encode as enableJsonExprFinder=>true|false
+     *                             this array can contains a 'keepLayout'=>true|false and/or 'encodeData'=>true|false
+     *                             that will not be passed to Zend_Json::encode method but will be used here
+     * @param  bool  $encodeData
      * @return string|void
      */
     public function json($data, $keepLayouts = false, $encodeData = true)
     {
-        $options = array();
+        $options = [];
         if (is_array($keepLayouts)) {
             $options = $keepLayouts;
 
@@ -75,7 +75,7 @@ class Zend_View_Helper_Json extends Zend_View_Helper_Abstract
         if ($encodeData) {
             $data = Zend_Json::encode($data, null, $options);
         }
-        if (!$keepLayouts) {
+        if (! $keepLayouts) {
             require_once 'Zend/Layout.php';
             $layout = Zend_Layout::getMvcInstance();
             if ($layout instanceof Zend_Layout) {
@@ -85,6 +85,7 @@ class Zend_View_Helper_Json extends Zend_View_Helper_Abstract
 
         $response = Zend_Controller_Front::getInstance()->getResponse();
         $response->setHeader('Content-Type', 'application/json', true);
+
         return $data;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Pdf
- * @subpackage FileParser
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -31,15 +32,12 @@
  * This allows the same parser code to work with many different data sources:
  * in-memory objects, filesystem files, etc.
  *
- * @package    Zend_Pdf
- * @subpackage FileParser
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Pdf_FileParser
 {
-  /**** Class Constants ****/
+    /**** Class Constants ****/
 
     /**
      * Little-endian byte order (0x04 0x03 0x02 0x01).
@@ -49,37 +47,34 @@ abstract class Zend_Pdf_FileParser
     /**
      * Big-endian byte order (0x01 0x02 0x03 0x04).
      */
-    const BYTE_ORDER_BIG_ENDIAN    = 1;
+    const BYTE_ORDER_BIG_ENDIAN = 1;
 
-
-
-  /**** Instance Variables ****/
-
+    /**** Instance Variables ****/
 
     /**
      * Flag indicating that the file has passed a cursory validation check.
-     * @var boolean
+     *
+     * @var bool
      */
     protected $_isScreened = false;
 
     /**
      * Flag indicating that the file has been sucessfully parsed.
-     * @var boolean
+     *
+     * @var bool
      */
     protected $_isParsed = false;
 
     /**
      * Object representing the data source to be parsed.
+     *
      * @var Zend_Pdf_FileParserDataSource
      */
     protected $_dataSource = null;
 
+    /**** Public Interface ****/
 
-
-  /**** Public Interface ****/
-
-
-  /* Abstract Methods */
+    /* Abstract Methods */
 
     /**
      * Performs a cursory check to verify that the binary file is in the expected
@@ -100,15 +95,13 @@ abstract class Zend_Pdf_FileParser
      */
     abstract public function parse();
 
-
-  /* Object Lifecycle */
+    /* Object Lifecycle */
 
     /**
      * Object constructor.
      *
      * Verifies that the data source has been properly initialized.
      *
-     * @param Zend_Pdf_FileParserDataSource $dataSource
      * @throws Zend_Pdf_Exception
      */
     public function __construct(Zend_Pdf_FileParserDataSource $dataSource)
@@ -116,7 +109,7 @@ abstract class Zend_Pdf_FileParser
         if ($dataSource->getSize() == 0) {
             require_once 'Zend/Pdf/Exception.php';
             throw new Zend_Pdf_Exception('The data source has not been properly initialized',
-                                         Zend_Pdf_Exception::BAD_DATA_SOURCE);
+                Zend_Pdf_Exception::BAD_DATA_SOURCE);
         }
         $this->_dataSource = $dataSource;
     }
@@ -131,13 +124,12 @@ abstract class Zend_Pdf_FileParser
         $this->_dataSource = null;
     }
 
-
-  /* Accessors */
+    /* Accessors */
 
     /**
      * Returns true if the file has passed a cursory validation check.
      *
-     * @return boolean
+     * @return bool
      */
     public function isScreened()
     {
@@ -147,7 +139,7 @@ abstract class Zend_Pdf_FileParser
     /**
      * Returns true if the file has been successfully parsed.
      *
-     * @return boolean
+     * @return bool
      */
     public function isParsed()
     {
@@ -164,13 +156,13 @@ abstract class Zend_Pdf_FileParser
         return $this->_dataSource;
     }
 
-
-  /* Primitive Methods */
+    /* Primitive Methods */
 
     /**
      * Convenience wrapper for the data source object's moveToOffset() method.
      *
-     * @param integer $offset Destination byte offset.
+     * @param  int  $offset  Destination byte offset.
+     *
      * @throws Zend_Pdf_Exception
      */
     public function moveToOffset($offset)
@@ -178,19 +170,22 @@ abstract class Zend_Pdf_FileParser
         $this->_dataSource->moveToOffset($offset);
     }
 
-    public function getOffset() {
-       return $this->_dataSource->getOffset();
+    public function getOffset()
+    {
+        return $this->_dataSource->getOffset();
     }
 
-    public function getSize() {
-       return $this->_dataSource->getSize();
+    public function getSize()
+    {
+        return $this->_dataSource->getSize();
     }
 
     /**
      * Convenience wrapper for the data source object's readBytes() method.
      *
-     * @param integer $byteCount Number of bytes to read.
+     * @param  int  $byteCount  Number of bytes to read.
      * @return string
+     *
      * @throws Zend_Pdf_Exception
      */
     public function readBytes($byteCount)
@@ -201,7 +196,8 @@ abstract class Zend_Pdf_FileParser
     /**
      * Convenience wrapper for the data source object's skipBytes() method.
      *
-     * @param integer $byteCount Number of bytes to skip.
+     * @param  int  $byteCount  Number of bytes to skip.
+     *
      * @throws Zend_Pdf_Exception
      */
     public function skipBytes($byteCount)
@@ -209,8 +205,7 @@ abstract class Zend_Pdf_FileParser
         $this->_dataSource->skipBytes($byteCount);
     }
 
-
-  /* Parser Methods */
+    /* Parser Methods */
 
     /**
      * Reads the signed integer value from the binary file at the current byte
@@ -219,19 +214,20 @@ abstract class Zend_Pdf_FileParser
      * Advances the offset by the number of bytes read. Throws an exception if
      * an error occurs.
      *
-     * @param integer $size Size of integer in bytes: 1-4
-     * @param integer $byteOrder (optional) Big- or little-endian byte order.
-     *   Use the BYTE_ORDER_ constants defined in {@link Zend_Pdf_FileParser}.
-     *   If omitted, uses big-endian.
-     * @return integer
+     * @param  int  $size  Size of integer in bytes: 1-4
+     * @param  int  $byteOrder  (optional) Big- or little-endian byte order.
+     *                          Use the BYTE_ORDER_ constants defined in {@link Zend_Pdf_FileParser}.
+     *                          If omitted, uses big-endian.
+     * @return int
+     *
      * @throws Zend_Pdf_Exception
      */
     public function readInt($size, $byteOrder = Zend_Pdf_FileParser::BYTE_ORDER_BIG_ENDIAN)
     {
         if (($size < 1) || ($size > 4)) {
             require_once 'Zend/Pdf/Exception.php';
-            throw new Zend_Pdf_Exception("Invalid signed integer size: $size",
-                                         Zend_Pdf_Exception::INVALID_INTEGER_SIZE);
+            throw new Zend_Pdf_Exception("Invalid signed integer size: {$size}",
+                Zend_Pdf_Exception::INVALID_INTEGER_SIZE);
         }
         $bytes = $this->_dataSource->readBytes($size);
         /* unpack() will not work for this method because it always works in
@@ -243,9 +239,9 @@ abstract class Zend_Pdf_FileParser
             if (($number & 0x80) == 0x80) {
                 /* This number is negative. Extract the positive equivalent.
                  */
-                $number = (~ $number) & 0xff;
+                $number = (~$number) & 0xFF;
                 for ($i = 1; $i < $size; $i++) {
-                    $number = ($number << 8) | ((~ ord($bytes[$i])) & 0xff);
+                    $number = ($number << 8) | ((~ord($bytes[$i])) & 0xFF);
                 }
                 /* Now turn this back into a negative number by taking the
                  * two's complement (we didn't add one above so won't
@@ -258,14 +254,14 @@ abstract class Zend_Pdf_FileParser
                     $number = ($number << 8) | ord($bytes[$i]);
                 }
             }
-        } else if ($byteOrder == Zend_Pdf_FileParser::BYTE_ORDER_LITTLE_ENDIAN) {
+        } elseif ($byteOrder == Zend_Pdf_FileParser::BYTE_ORDER_LITTLE_ENDIAN) {
             $number = ord($bytes[$size - 1]);
             if (($number & 0x80) == 0x80) {
                 /* Negative number. See discussion above.
                  */
                 $number = 0;
                 for ($i = --$size; $i >= 0; $i--) {
-                    $number |= ((~ ord($bytes[$i])) & 0xff) << ($i * 8);
+                    $number |= ((~ord($bytes[$i])) & 0xFF) << ($i * 8);
                 }
                 $number = ~$number;
             } else {
@@ -276,9 +272,10 @@ abstract class Zend_Pdf_FileParser
             }
         } else {
             require_once 'Zend/Pdf/Exception.php';
-            throw new Zend_Pdf_Exception("Invalid byte order: $byteOrder",
-                                         Zend_Pdf_Exception::INVALID_BYTE_ORDER);
+            throw new Zend_Pdf_Exception("Invalid byte order: {$byteOrder}",
+                Zend_Pdf_Exception::INVALID_BYTE_ORDER);
         }
+
         return $number;
     }
 
@@ -294,19 +291,20 @@ abstract class Zend_Pdf_FileParser
      * for everything. To guarantee portability, be sure to use bitwise operators
      * operators on large unsigned integers!
      *
-     * @param integer $size Size of integer in bytes: 1-4
-     * @param integer $byteOrder (optional) Big- or little-endian byte order.
-     *   Use the BYTE_ORDER_ constants defined in {@link Zend_Pdf_FileParser}.
-     *   If omitted, uses big-endian.
-     * @return integer
+     * @param  int  $size  Size of integer in bytes: 1-4
+     * @param  int  $byteOrder  (optional) Big- or little-endian byte order.
+     *                          Use the BYTE_ORDER_ constants defined in {@link Zend_Pdf_FileParser}.
+     *                          If omitted, uses big-endian.
+     * @return int
+     *
      * @throws Zend_Pdf_Exception
      */
     public function readUInt($size, $byteOrder = Zend_Pdf_FileParser::BYTE_ORDER_BIG_ENDIAN)
     {
         if (($size < 1) || ($size > 4)) {
             require_once 'Zend/Pdf/Exception.php';
-            throw new Zend_Pdf_Exception("Invalid unsigned integer size: $size",
-                                         Zend_Pdf_Exception::INVALID_INTEGER_SIZE);
+            throw new Zend_Pdf_Exception("Invalid unsigned integer size: {$size}",
+                Zend_Pdf_Exception::INVALID_INTEGER_SIZE);
         }
         $bytes = $this->_dataSource->readBytes($size);
         /* unpack() is a bit heavyweight for this simple conversion. Just
@@ -317,30 +315,32 @@ abstract class Zend_Pdf_FileParser
             for ($i = 1; $i < $size; $i++) {
                 $number = ($number << 8) | ord($bytes[$i]);
             }
-        } else if ($byteOrder == Zend_Pdf_FileParser::BYTE_ORDER_LITTLE_ENDIAN) {
+        } elseif ($byteOrder == Zend_Pdf_FileParser::BYTE_ORDER_LITTLE_ENDIAN) {
             $number = 0;
             for ($i = --$size; $i >= 0; $i--) {
                 $number |= ord($bytes[$i]) << ($i * 8);
             }
         } else {
             require_once 'Zend/Pdf/Exception.php';
-            throw new Zend_Pdf_Exception("Invalid byte order: $byteOrder",
-                                         Zend_Pdf_Exception::INVALID_BYTE_ORDER);
+            throw new Zend_Pdf_Exception("Invalid byte order: {$byteOrder}",
+                Zend_Pdf_Exception::INVALID_BYTE_ORDER);
         }
+
         return $number;
     }
 
     /**
      * Returns true if the specified bit is set in the integer bitfield.
      *
-     * @param integer $bit Bit number to test (i.e. - 0-31)
-     * @param integer $bitField
-     * @return boolean
+     * @param  int  $bit  Bit number to test (i.e. - 0-31)
+     * @param  int  $bitField
+     * @return bool
      */
     public function isBitSet($bit, $bitField)
     {
         $bitMask = 1 << $bit;
         $isSet = (($bitField & $bitMask) == $bitMask);
+
         return $isSet;
     }
 
@@ -353,24 +353,26 @@ abstract class Zend_Pdf_FileParser
      * Advances the offset by the number of bytes read. Throws an exception if
      * an error occurs.
      *
-     * @param integer $mantissaBits Number of bits in the mantissa
-     * @param integer $fractionBits Number of bits in the fraction
-     * @param integer $byteOrder (optional) Big- or little-endian byte order.
-     *   Use the BYTE_ORDER_ constants defined in {@link Zend_Pdf_FileParser}.
-     *   If omitted, uses big-endian.
+     * @param  int  $mantissaBits  Number of bits in the mantissa
+     * @param  int  $fractionBits  Number of bits in the fraction
+     * @param  int  $byteOrder  (optional) Big- or little-endian byte order.
+     *                          Use the BYTE_ORDER_ constants defined in {@link Zend_Pdf_FileParser}.
+     *                          If omitted, uses big-endian.
      * @return float
+     *
      * @throws Zend_Pdf_Exception
      */
     public function readFixed($mantissaBits, $fractionBits,
-                              $byteOrder = Zend_Pdf_FileParser::BYTE_ORDER_BIG_ENDIAN)
+        $byteOrder = Zend_Pdf_FileParser::BYTE_ORDER_BIG_ENDIAN)
     {
         $bitsToRead = $mantissaBits + $fractionBits;
         if (($bitsToRead % 8) !== 0) {
             require_once 'Zend/Pdf/Exception.php';
             throw new Zend_Pdf_Exception('Fixed-point numbers are whole bytes',
-                                         Zend_Pdf_Exception::BAD_FIXED_POINT_SIZE);
+                Zend_Pdf_Exception::BAD_FIXED_POINT_SIZE);
         }
         $number = $this->readInt(($bitsToRead >> 3), $byteOrder) / (1 << $fractionBits);
+
         return $number;
     }
 
@@ -389,19 +391,20 @@ abstract class Zend_Pdf_FileParser
      * @todo Make $byteOrder optional if there is a byte-order mark (BOM) in the
      *   string being extracted.
      *
-     * @param integer $byteCount Number of bytes (characters * 2) to return.
-     * @param integer $byteOrder (optional) Big- or little-endian byte order.
-     *   Use the BYTE_ORDER_ constants defined in {@link Zend_Pdf_FileParser}.
-     *   If omitted, uses big-endian.
-     * @param string $characterSet (optional) Desired resulting character set.
-     *   You may use any character set supported by {@link iconv()}. If omitted,
-     *   uses 'current locale'.
+     * @param  int  $byteCount  Number of bytes (characters * 2) to return.
+     * @param  int  $byteOrder  (optional) Big- or little-endian byte order.
+     *                          Use the BYTE_ORDER_ constants defined in {@link Zend_Pdf_FileParser}.
+     *                          If omitted, uses big-endian.
+     * @param  string  $characterSet  (optional) Desired resulting character set.
+     *                                You may use any character set supported by {@link iconv()}. If omitted,
+     *                                uses 'current locale'.
      * @return string
+     *
      * @throws Zend_Pdf_Exception
      */
     public function readStringUTF16($byteCount,
-                                    $byteOrder = Zend_Pdf_FileParser::BYTE_ORDER_BIG_ENDIAN,
-                                    $characterSet = '')
+        $byteOrder = Zend_Pdf_FileParser::BYTE_ORDER_BIG_ENDIAN,
+        $characterSet = '')
     {
         if ($byteCount == 0) {
             return '';
@@ -411,17 +414,20 @@ abstract class Zend_Pdf_FileParser
             if ($characterSet == 'UTF-16BE') {
                 return $bytes;
             }
+
             return iconv('UTF-16BE', $characterSet, $bytes);
-        } else if ($byteOrder == Zend_Pdf_FileParser::BYTE_ORDER_LITTLE_ENDIAN) {
+        }
+        if ($byteOrder == Zend_Pdf_FileParser::BYTE_ORDER_LITTLE_ENDIAN) {
             if ($characterSet == 'UTF-16LE') {
                 return $bytes;
             }
+
             return iconv('UTF-16LE', $characterSet, $bytes);
-        } else {
-            require_once 'Zend/Pdf/Exception.php';
-            throw new Zend_Pdf_Exception("Invalid byte order: $byteOrder",
-                                         Zend_Pdf_Exception::INVALID_BYTE_ORDER);
         }
+        require_once 'Zend/Pdf/Exception.php';
+        throw new Zend_Pdf_Exception("Invalid byte order: {$byteOrder}",
+            Zend_Pdf_Exception::INVALID_BYTE_ORDER);
+
     }
 
     /**
@@ -433,11 +439,12 @@ abstract class Zend_Pdf_FileParser
      * Advances the offset by the number of bytes read. Throws an exception if
      * an error occurs.
      *
-     * @param integer $byteCount Number of bytes (characters) to return.
-     * @param string $characterSet (optional) Desired resulting character set.
-     *   You may use any character set supported by {@link iconv()}. If omitted,
-     *   uses 'current locale'.
+     * @param  int  $byteCount  Number of bytes (characters) to return.
+     * @param  string  $characterSet  (optional) Desired resulting character set.
+     *                                You may use any character set supported by {@link iconv()}. If omitted,
+     *                                uses 'current locale'.
      * @return string
+     *
      * @throws Zend_Pdf_Exception
      */
     public function readStringMacRoman($byteCount, $characterSet = '')
@@ -449,6 +456,7 @@ abstract class Zend_Pdf_FileParser
         if ($characterSet == 'MacRoman') {
             return $bytes;
         }
+
         return iconv('MacRoman', $characterSet, $bytes);
     }
 
@@ -462,12 +470,13 @@ abstract class Zend_Pdf_FileParser
      * Advances the offset by the number of bytes read. Throws an exception if
      * an error occurs.
      *
-     * @param string $characterSet (optional) Desired resulting character set.
-     *   You may use any character set supported by {@link iconv()}. If omitted,
-     *   uses 'current locale'.
-     * @param integer $lengthBytes (optional) Number of bytes that make up the
-     *   length. Default is 1.
+     * @param  string  $characterSet  (optional) Desired resulting character set.
+     *                                You may use any character set supported by {@link iconv()}. If omitted,
+     *                                uses 'current locale'.
+     * @param  int  $lengthBytes  (optional) Number of bytes that make up the
+     *                            length. Default is 1.
      * @return string
+     *
      * @throws Zend_Pdf_Exception
      */
     public function readStringPascal($characterSet = '', $lengthBytes = 1)
@@ -480,7 +489,7 @@ abstract class Zend_Pdf_FileParser
         if ($characterSet == 'ASCII') {
             return $bytes;
         }
+
         return iconv('ASCII', $characterSet, $bytes);
     }
-
 }

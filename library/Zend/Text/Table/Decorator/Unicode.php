@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category  Zend
- * @package   Zend_Text_Table
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version   $Id$
  */
 
@@ -28,8 +30,9 @@ require_once 'Zend/Text/Table/Decorator/Interface.php';
  * Unicode Decorator for Zend_Text_Table
  *
  * @category  Zend
- * @package   Zend_Text_Table
+ *
  * @uses      Zend_Text_Table_Decorator_Interface
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -148,25 +151,25 @@ class Zend_Text_Table_Decorator_Unicode implements Zend_Text_Table_Decorator_Int
     /**
      * Convert am unicode character code to a character
      *
-     * @param  integer $code
+     * @param  int  $code
      * @return string|false
      */
     protected function _uniChar($code)
     {
         if ($code <= 0x7F) {
             $char = chr($code);
-        } else if ($code <= 0x7FF) {
+        } elseif ($code <= 0x7FF) {
             $char = chr(0xC0 | $code >> 6)
-                  . chr(0x80 | $code & 0x3F);
-        } else if ($code <= 0xFFFF) {
-            $char =  chr(0xE0 | $code >> 12)
-                  . chr(0x80 | $code >> 6 & 0x3F)
-                  . chr(0x80 | $code & 0x3F);
-        } else if ($code <= 0x10FFFF) {
-            $char =  chr(0xF0 | $code >> 18)
-                  . chr(0x80 | $code >> 12 & 0x3F)
-                  . chr(0x80 | $code >> 6 & 0x3F)
-                  . chr(0x80 | $code & 0x3F);
+                  .chr(0x80 | $code & 0x3F);
+        } elseif ($code <= 0xFFFF) {
+            $char = chr(0xE0 | $code >> 12)
+                  .chr(0x80 | $code >> 6 & 0x3F)
+                  .chr(0x80 | $code & 0x3F);
+        } elseif ($code <= 0x10FFFF) {
+            $char = chr(0xF0 | $code >> 18)
+                  .chr(0x80 | $code >> 12 & 0x3F)
+                  .chr(0x80 | $code >> 6 & 0x3F)
+                  .chr(0x80 | $code & 0x3F);
         } else {
             return false;
         }

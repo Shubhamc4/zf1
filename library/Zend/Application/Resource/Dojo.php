@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Application
- * @subpackage Resource
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -25,19 +26,17 @@
  */
 require_once 'Zend/Application/Resource/ResourceAbstract.php';
 
-
 /**
  * Resource for settings Dojo options
  *
  * @uses       Zend_Application_Resource_ResourceAbstract
+ *
  * @category   Zend
- * @package    Zend_Application
- * @subpackage Resource
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Application_Resource_Dojo
-    extends Zend_Application_Resource_ResourceAbstract
+class Zend_Application_Resource_Dojo extends Zend_Application_Resource_ResourceAbstract
 {
     /**
      * @var Zend_Dojo_View_Helper_Dojo_Container

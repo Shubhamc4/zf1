@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Json
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,7 +28,7 @@ require_once 'Zend/Json/Server/Request.php';
 
 /**
  * @category   Zend
- * @package    Zend_Json
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -34,6 +36,7 @@ class Zend_Json_Server_Request_Http extends Zend_Json_Server_Request
 {
     /**
      * Raw JSON pulled from POST body
+     *
      * @var string
      */
     protected $_rawJson;
@@ -49,7 +52,7 @@ class Zend_Json_Server_Request_Http extends Zend_Json_Server_Request
     {
         $json = file_get_contents('php://input');
         $this->_rawJson = $json;
-        if (!empty($json)) {
+        if (! empty($json)) {
             $this->loadJson($json);
         }
     }

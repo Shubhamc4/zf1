@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LICENSE
  *
@@ -11,8 +12,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Cloud
- * @subpackage QueueService
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -29,8 +29,7 @@
  * support in future versions of the interface.
  *
  * @category   Zend
- * @package    Zend_Cloud
- * @subpackage QueueService
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -53,7 +52,7 @@ interface Zend_Cloud_QueueService_Adapter
      * Name constraints: Maximum 80 characters
      *                      Only alphanumeric characters, hyphens (-), and underscores (_)
      *
-     * @param  string $name
+     * @param  string  $name
      * @param  array  $options
      * @return string Queue ID (typically URL)
      */
@@ -62,16 +61,16 @@ interface Zend_Cloud_QueueService_Adapter
     /**
      * Delete a queue. All messages in the queue will also be deleted.
      *
-     * @param  string $queueId
+     * @param  string  $queueId
      * @param  array  $options
-     * @return boolean true if successful, false otherwise
+     * @return bool true if successful, false otherwise
      */
     public function deleteQueue($queueId, $options = null);
 
     /**
      * List all queues.
      *
-     * @param  array $options
+     * @param  array  $options
      * @return array Queue IDs
      */
     public function listQueues($options = null);
@@ -79,7 +78,7 @@ interface Zend_Cloud_QueueService_Adapter
     /**
      * Get a key/value array of metadata for the given queue.
      *
-     * @param  string $queueId
+     * @param  string  $queueId
      * @param  array  $options
      * @return array
      */
@@ -90,29 +89,29 @@ interface Zend_Cloud_QueueService_Adapter
      * WARNING: This operation overwrites any metadata that is located at
      * $destinationPath. Some adapters may not support this method.
      *
-     * @param  string $queueId
+     * @param  string  $queueId
      * @param  array  $metadata
      * @param  array  $options
      * @return void
      */
-    public function storeQueueMetadata($queueId, $metadata,  $options = null);
+    public function storeQueueMetadata($queueId, $metadata, $options = null);
 
     /**
      * Send a message to the specified queue.
      *
-     * @param  string $queueId
-     * @param  string $message
+     * @param  string  $queueId
+     * @param  string  $message
      * @param  array  $options
      * @return string Message ID
      */
-    public function sendMessage($queueId, $message,  $options = null);
+    public function sendMessage($queueId, $message, $options = null);
 
     /**
      * Recieve at most $max messages from the specified queue and return the
      * message IDs for messages recieved.
      *
-     * @param  string $queueId
-     * @param  int    $max
+     * @param  string  $queueId
+     * @param  int  $max
      * @param  array  $options
      * @return array[Zend_Cloud_QueueService_Message]  Array of messages
      */
@@ -121,8 +120,8 @@ interface Zend_Cloud_QueueService_Adapter
     /**
      * Peek at the messages from the specified queue without removing them.
      *
-     * @param  string $queueId
-     * @param  int $num How many messages
+     * @param  string  $queueId
+     * @param  int  $num  How many messages
      * @param  array  $options
      * @return array[Zend_Cloud_QueueService_Message]
      */
@@ -131,13 +130,12 @@ interface Zend_Cloud_QueueService_Adapter
     /**
      * Delete the specified message from the specified queue.
      *
-     * @param  string $queueId
-     * @param  Zend_Cloud_QueueService_Message $message Message to delete
+     * @param  string  $queueId
+     * @param  Zend_Cloud_QueueService_Message  $message  Message to delete
      * @param  array  $options
      * @return void
-     *
      */
-    public function deleteMessage($queueId, $message,  $options = null);
+    public function deleteMessage($queueId, $message, $options = null);
 
     /**
      * Get the concrete adapter.

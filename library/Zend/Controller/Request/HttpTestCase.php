@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Controller
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,34 +32,36 @@ require_once 'Zend/Controller/Request/Http.php';
  * HTTP request object for use with Zend_Controller family.
  *
  * @uses Zend_Controller_Request_Http
- * @package Zend_Controller
- * @subpackage Request
  */
 class Zend_Controller_Request_HttpTestCase extends Zend_Controller_Request_Http
 {
     /**
      * Request headers
+     *
      * @var array
      */
-    protected $_headers = array();
+    protected $_headers = [];
 
     /**
      * Request method
+     *
      * @var string
      */
     protected $_method = 'GET';
 
     /**
      * Raw POST body
+     *
      * @var string|null
      */
     protected $_rawBody;
 
     /**
      * Valid request method types
+     *
      * @var array
      */
-    protected $_validMethodTypes = array(
+    protected $_validMethodTypes = [
         'DELETE',
         'GET',
         'HEAD',
@@ -65,7 +69,7 @@ class Zend_Controller_Request_HttpTestCase extends Zend_Controller_Request_Http
         'PATCH',
         'POST',
         'PUT',
-    );
+    ];
 
     /**
      * Clear GET values
@@ -74,7 +78,8 @@ class Zend_Controller_Request_HttpTestCase extends Zend_Controller_Request_Http
      */
     public function clearQuery()
     {
-        $_GET = array();
+        $_GET = [];
+
         return $this;
     }
 
@@ -85,19 +90,21 @@ class Zend_Controller_Request_HttpTestCase extends Zend_Controller_Request_Http
      */
     public function clearPost()
     {
-        $_POST = array();
+        $_POST = [];
+
         return $this;
     }
 
     /**
      * Set raw POST body
      *
-     * @param  string $content
+     * @param  string  $content
      * @return Zend_Controller_Request_HttpTestCase
      */
     public function setRawBody($content)
     {
         $this->_rawBody = (string) $content;
+
         return $this;
     }
 
@@ -119,26 +126,27 @@ class Zend_Controller_Request_HttpTestCase extends Zend_Controller_Request_Http
     public function clearRawBody()
     {
         $this->_rawBody = null;
+
         return $this;
     }
 
     /**
      * Set a cookie
      *
-     * @param  string $key
-     * @param  mixed $value
+     * @param  string  $key
+     * @param  mixed  $value
      * @return Zend_Controller_Request_HttpTestCase
      */
     public function setCookie($key, $value)
     {
         $_COOKIE[(string) $key] = $value;
+
         return $this;
     }
 
     /**
      * Set multiple cookies at once
      *
-     * @param array $cookies
      * @return void
      */
     public function setCookies(array $cookies)
@@ -146,6 +154,7 @@ class Zend_Controller_Request_HttpTestCase extends Zend_Controller_Request_Http
         foreach ($cookies as $key => $value) {
             $_COOKIE[$key] = $value;
         }
+
         return $this;
     }
 
@@ -156,24 +165,26 @@ class Zend_Controller_Request_HttpTestCase extends Zend_Controller_Request_Http
      */
     public function clearCookies()
     {
-        $_COOKIE = array();
+        $_COOKIE = [];
+
         return $this;
     }
 
     /**
      * Set request method
      *
-     * @param  string $type
+     * @param  string  $type
      * @return Zend_Controller_Request_HttpTestCase
      */
     public function setMethod($type)
     {
         $type = strtoupper(trim((string) $type));
-        if (!in_array($type, $this->_validMethodTypes)) {
+        if (! in_array($type, $this->_validMethodTypes)) {
             require_once 'Zend/Controller/Exception.php';
             throw new Zend_Controller_Exception('Invalid request method specified');
         }
         $this->_method = $type;
+
         return $this;
     }
 
@@ -190,21 +201,21 @@ class Zend_Controller_Request_HttpTestCase extends Zend_Controller_Request_Http
     /**
      * Set a request header
      *
-     * @param  string $key
-     * @param  string $value
+     * @param  string  $key
+     * @param  string  $value
      * @return Zend_Controller_Request_HttpTestCase
      */
     public function setHeader($key, $value)
     {
         $key = $this->_normalizeHeaderName($key);
         $this->_headers[$key] = (string) $value;
+
         return $this;
     }
 
     /**
      * Set request headers
      *
-     * @param  array $headers
      * @return Zend_Controller_Request_HttpTestCase
      */
     public function setHeaders(array $headers)
@@ -212,14 +223,15 @@ class Zend_Controller_Request_HttpTestCase extends Zend_Controller_Request_Http
         foreach ($headers as $key => $value) {
             $this->setHeader($key, $value);
         }
+
         return $this;
     }
 
     /**
      * Get request header
      *
-     * @param  string $header
-     * @param  mixed $default
+     * @param  string  $header
+     * @param  mixed  $default
      * @return string|null
      */
     public function getHeader($header, $default = null)
@@ -228,6 +240,7 @@ class Zend_Controller_Request_HttpTestCase extends Zend_Controller_Request_Http
         if (array_key_exists($header, $this->_headers)) {
             return $this->_headers[$header];
         }
+
         return $default;
     }
 
@@ -248,7 +261,8 @@ class Zend_Controller_Request_HttpTestCase extends Zend_Controller_Request_Http
      */
     public function clearHeaders()
     {
-        $this->_headers = array();
+        $this->_headers = [];
+
         return $this;
     }
 
@@ -265,13 +279,14 @@ class Zend_Controller_Request_HttpTestCase extends Zend_Controller_Request_Http
     /**
      * Normalize a header name for setting and retrieval
      *
-     * @param  string $name
+     * @param  string  $name
      * @return string
      */
     protected function _normalizeHeaderName($name)
     {
         $name = strtoupper((string) $name);
         $name = str_replace('-', '_', $name);
+
         return $name;
     }
 }

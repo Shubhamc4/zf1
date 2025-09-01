@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_InfoCard
- * @subpackage Zend_InfoCard_Xml_Security
+ *
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Interface.php 24593 2012-01-05 20:35:02Z matthew $
  */
 
@@ -24,8 +25,7 @@
  * Interface for XML Security Transforms
  *
  * @category   Zend
- * @package    Zend_InfoCard
- * @subpackage Zend_InfoCard_Xml_Security
+ *
  * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -35,9 +35,10 @@ interface Zend_InfoCard_Xml_Security_Transform_Interface
      * Transform the given XML string according to the transform rules
      * implemented by the object using this interface
      *
-     * @throws Zend_InfoCard_Xml_Security_Transform_Exception
-     * @param string $strXmlData the input XML
+     * @param  string  $strXmlData  the input XML
      * @return string the output XML
+     *
+     * @throws Zend_InfoCard_Xml_Security_Transform_Exception
      */
     public function transform($strXmlData);
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,7 +28,7 @@ require_once 'Zend/Validate/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -35,7 +37,7 @@ class Zend_Validate_Between extends Zend_Validate_Abstract
     /**
      * Validation failure message key for when the value is not between the min and max, inclusively
      */
-    const NOT_BETWEEN        = 'notBetween';
+    const NOT_BETWEEN = 'notBetween';
 
     /**
      * Validation failure message key for when the value is not strictly between the min and max
@@ -47,20 +49,20 @@ class Zend_Validate_Between extends Zend_Validate_Abstract
      *
      * @var array
      */
-    protected $_messageTemplates = array(
-        self::NOT_BETWEEN        => "'%value%' is not between '%min%' and '%max%', inclusively",
-        self::NOT_BETWEEN_STRICT => "'%value%' is not strictly between '%min%' and '%max%'"
-    );
+    protected $_messageTemplates = [
+        self::NOT_BETWEEN => "'%value%' is not between '%min%' and '%max%', inclusively",
+        self::NOT_BETWEEN_STRICT => "'%value%' is not strictly between '%min%' and '%max%'",
+    ];
 
     /**
      * Additional variables available for validation failure messages
      *
      * @var array
      */
-    protected $_messageVariables = array(
+    protected $_messageVariables = [
         'min' => '_min',
-        'max' => '_max'
-    );
+        'max' => '_max',
+    ];
 
     /**
      * Minimum value
@@ -82,7 +84,7 @@ class Zend_Validate_Between extends Zend_Validate_Abstract
      * If false, then strict comparisons are done, and the value may equal neither
      * the min nor max options
      *
-     * @var boolean
+     * @var bool
      */
     protected $_inclusive;
 
@@ -93,39 +95,40 @@ class Zend_Validate_Between extends Zend_Validate_Abstract
      *   'max' => scalar, maximum border
      *   'inclusive' => boolean, inclusive border values
      *
-     * @param  array|Zend_Config $options
+     * @param  array|Zend_Config  $options
+     *
      * @throws Zend_Validate_Exception
      */
     public function __construct($options)
     {
         if ($options instanceof Zend_Config) {
             $options = $options->toArray();
-        } else if (!is_array($options)) {
+        } elseif (! is_array($options)) {
             $options = func_get_args();
             $temp['min'] = array_shift($options);
-            if (!empty($options)) {
+            if (! empty($options)) {
                 $temp['max'] = array_shift($options);
             }
 
-            if (!empty($options)) {
+            if (! empty($options)) {
                 $temp['inclusive'] = array_shift($options);
             }
 
             $options = $temp;
         }
 
-        if (!array_key_exists('min', $options) || !array_key_exists('max', $options)) {
+        if (! array_key_exists('min', $options) || ! array_key_exists('max', $options)) {
             require_once 'Zend/Validate/Exception.php';
             throw new Zend_Validate_Exception("Missing option. 'min' and 'max' has to be given");
         }
 
-        if (!array_key_exists('inclusive', $options)) {
+        if (! array_key_exists('inclusive', $options)) {
             $options['inclusive'] = true;
         }
 
         $this->setMin($options['min'])
-             ->setMax($options['max'])
-             ->setInclusive($options['inclusive']);
+            ->setMax($options['max'])
+            ->setInclusive($options['inclusive']);
     }
 
     /**
@@ -141,12 +144,13 @@ class Zend_Validate_Between extends Zend_Validate_Abstract
     /**
      * Sets the min option
      *
-     * @param  mixed $min
+     * @param  mixed  $min
      * @return Zend_Validate_Between Provides a fluent interface
      */
     public function setMin($min)
     {
         $this->_min = $min;
+
         return $this;
     }
 
@@ -163,19 +167,20 @@ class Zend_Validate_Between extends Zend_Validate_Abstract
     /**
      * Sets the max option
      *
-     * @param  mixed $max
+     * @param  mixed  $max
      * @return Zend_Validate_Between Provides a fluent interface
      */
     public function setMax($max)
     {
         $this->_max = $max;
+
         return $this;
     }
 
     /**
      * Returns the inclusive option
      *
-     * @return boolean
+     * @return bool
      */
     public function getInclusive()
     {
@@ -185,12 +190,13 @@ class Zend_Validate_Between extends Zend_Validate_Abstract
     /**
      * Sets the inclusive option
      *
-     * @param  boolean $inclusive
+     * @param  bool  $inclusive
      * @return Zend_Validate_Between Provides a fluent interface
      */
     public function setInclusive($inclusive)
     {
         $this->_inclusive = $inclusive;
+
         return $this;
     }
 
@@ -200,8 +206,8 @@ class Zend_Validate_Between extends Zend_Validate_Abstract
      * Returns true if and only if $value is between min and max options, inclusively
      * if inclusive option is true.
      *
-     * @param  mixed $value
-     * @return boolean
+     * @param  mixed  $value
+     * @return bool
      */
     public function isValid($value)
     {
@@ -210,15 +216,17 @@ class Zend_Validate_Between extends Zend_Validate_Abstract
         if ($this->_inclusive) {
             if ($this->_min > $value || $value > $this->_max) {
                 $this->_error(self::NOT_BETWEEN);
+
                 return false;
             }
         } else {
             if ($this->_min >= $value || $value >= $this->_max) {
                 $this->_error(self::NOT_BETWEEN_STRICT);
+
                 return false;
             }
         }
+
         return true;
     }
-
 }

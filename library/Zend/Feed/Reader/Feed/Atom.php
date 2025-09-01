@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -31,18 +33,16 @@ require_once 'Zend/Feed/Reader/Extension/Atom/Feed.php';
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Reader
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Feed_Reader_Feed_Atom extends Zend_Feed_Reader_FeedAbstract
 {
-
     /**
      * Constructor
      *
-     * @param  DOMDocument $dom
-     * @param  string $type
+     * @param  string  $type
      */
     public function __construct(DOMDocument $dom, $type = null)
     {
@@ -59,7 +59,7 @@ class Zend_Feed_Reader_Feed_Atom extends Zend_Feed_Reader_FeedAbstract
     /**
      * Get a single author
      *
-     * @param  int $index
+     * @param  int  $index
      * @return string|null
      */
     public function getAuthor($index = 0)
@@ -70,7 +70,6 @@ class Zend_Feed_Reader_Feed_Atom extends Zend_Feed_Reader_FeedAbstract
             return $authors[$index];
         }
 
-        return null;
     }
 
     /**
@@ -104,7 +103,7 @@ class Zend_Feed_Reader_Feed_Atom extends Zend_Feed_Reader_FeedAbstract
 
         $copyright = $this->getExtension('Atom')->getCopyright();
 
-        if (!$copyright) {
+        if (! $copyright) {
             $copyright = null;
         }
 
@@ -126,7 +125,7 @@ class Zend_Feed_Reader_Feed_Atom extends Zend_Feed_Reader_FeedAbstract
 
         $dateCreated = $this->getExtension('Atom')->getDateCreated();
 
-        if (!$dateCreated) {
+        if (! $dateCreated) {
             $dateCreated = null;
         }
 
@@ -148,7 +147,7 @@ class Zend_Feed_Reader_Feed_Atom extends Zend_Feed_Reader_FeedAbstract
 
         $dateModified = $this->getExtension('Atom')->getDateModified();
 
-        if (!$dateModified) {
+        if (! $dateModified) {
             $dateModified = null;
         }
 
@@ -162,10 +161,7 @@ class Zend_Feed_Reader_Feed_Atom extends Zend_Feed_Reader_FeedAbstract
      *
      * @return string|null
      */
-    public function getLastBuildDate()
-    {
-        return null;
-    }
+    public function getLastBuildDate() {}
 
     /**
      * Get the feed description
@@ -180,7 +176,7 @@ class Zend_Feed_Reader_Feed_Atom extends Zend_Feed_Reader_FeedAbstract
 
         $description = $this->getExtension('Atom')->getDescription();
 
-        if (!$description) {
+        if (! $description) {
             $description = null;
         }
 
@@ -238,11 +234,11 @@ class Zend_Feed_Reader_Feed_Atom extends Zend_Feed_Reader_FeedAbstract
 
         $language = $this->getExtension('Atom')->getLanguage();
 
-        if (!$language) {
+        if (! $language) {
             $language = $this->_xpath->evaluate('string(//@xml:lang[1])');
         }
 
-        if (!$language) {
+        if (! $language) {
             $language = null;
         }
 
@@ -394,10 +390,10 @@ class Zend_Feed_Reader_Feed_Atom extends Zend_Feed_Reader_FeedAbstract
     {
         if ($this->getType() == Zend_Feed_Reader::TYPE_ATOM_10 ||
             $this->getType() == Zend_Feed_Reader::TYPE_ATOM_03) {
-            $entries = array();
+            $entries = [];
             $entries = $this->_xpath->evaluate('//atom:entry');
 
-            foreach($entries as $index=>$entry) {
+            foreach ($entries as $index => $entry) {
                 $this->_entries[$index] = $entry;
             }
         }
@@ -405,7 +401,6 @@ class Zend_Feed_Reader_Feed_Atom extends Zend_Feed_Reader_FeedAbstract
 
     /**
      * Register the default namespaces for the current feed format
-     *
      */
     protected function _registerNamespaces()
     {

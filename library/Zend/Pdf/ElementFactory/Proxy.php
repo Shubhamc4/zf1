@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Pdf
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,7 +28,6 @@ require_once 'Zend/Pdf/ElementFactory/Interface.php';
  * PDF element factory interface.
  * Responsibility is to log PDF changes
  *
- * @package    Zend_Pdf
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,11 +40,8 @@ class Zend_Pdf_ElementFactory_Proxy implements Zend_Pdf_ElementFactory_Interface
      */
     private $_factory;
 
-
     /**
      * Object constructor
-     *
-     * @param Zend_Pdf_ElementFactory_Interface $factory
      */
     public function __construct(Zend_Pdf_ElementFactory_Interface $factory)
     {
@@ -89,7 +87,7 @@ class Zend_Pdf_ElementFactory_Proxy implements Zend_Pdf_ElementFactory_Interface
     /**
      * Get factory ID
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -99,7 +97,7 @@ class Zend_Pdf_ElementFactory_Proxy implements Zend_Pdf_ElementFactory_Interface
     /**
      * Set object counter
      *
-     * @param integer $objCount
+     * @param  int  $objCount
      */
     public function setObjectCount($objCount)
     {
@@ -109,7 +107,7 @@ class Zend_Pdf_ElementFactory_Proxy implements Zend_Pdf_ElementFactory_Interface
     /**
      * Get object counter
      *
-     * @return integer
+     * @return int
      */
     public function getObjectCount()
     {
@@ -118,8 +116,6 @@ class Zend_Pdf_ElementFactory_Proxy implements Zend_Pdf_ElementFactory_Interface
 
     /**
      * Attach factory to the current;
-     *
-     * @param Zend_Pdf_ElementFactory_Interface $factory
      */
     public function attach(Zend_Pdf_ElementFactory_Interface $factory)
     {
@@ -130,8 +126,8 @@ class Zend_Pdf_ElementFactory_Proxy implements Zend_Pdf_ElementFactory_Interface
      * Calculate object enumeration shift.
      *
      * @internal
-     * @param Zend_Pdf_ElementFactory_Interface $factory
-     * @return integer
+     *
+     * @return int
      */
     public function calculateShift(Zend_Pdf_ElementFactory_Interface $factory)
     {
@@ -142,8 +138,8 @@ class Zend_Pdf_ElementFactory_Proxy implements Zend_Pdf_ElementFactory_Interface
      * Clean enumeration shift cache.
      * Has to be used after PDF render operation to let followed updates be correct.
      *
-     * @param Zend_Pdf_ElementFactory_Interface $factory
-     * @return integer
+     * @param  Zend_Pdf_ElementFactory_Interface  $factory
+     * @return int
      */
     public function cleanEnumerationShiftCache()
     {
@@ -153,8 +149,8 @@ class Zend_Pdf_ElementFactory_Proxy implements Zend_Pdf_ElementFactory_Interface
     /**
      * Retrive object enumeration shift.
      *
-     * @param Zend_Pdf_ElementFactory_Interface $factory
-     * @return integer
+     * @return int
+     *
      * @throws Zend_Pdf_Exception
      */
     public function getEnumerationShift(Zend_Pdf_ElementFactory_Interface $factory)
@@ -165,7 +161,6 @@ class Zend_Pdf_ElementFactory_Proxy implements Zend_Pdf_ElementFactory_Interface
     /**
      * Mark object as modified in context of current factory.
      *
-     * @param Zend_Pdf_Element_Object $obj
      * @throws Zend_Pdf_Exception
      */
     public function markAsModified(Zend_Pdf_Element_Object $obj)
@@ -176,7 +171,6 @@ class Zend_Pdf_ElementFactory_Proxy implements Zend_Pdf_ElementFactory_Interface
     /**
      * Remove object in context of current factory.
      *
-     * @param Zend_Pdf_Element_Object $obj
      * @throws Zend_Pdf_Exception
      */
     public function remove(Zend_Pdf_Element_Object $obj)
@@ -189,7 +183,6 @@ class Zend_Pdf_ElementFactory_Proxy implements Zend_Pdf_ElementFactory_Interface
      *
      * @todo Reusage of the freed object. It's not a support of new feature, but only improvement.
      *
-     * @param Zend_Pdf_Element $objectValue
      * @return Zend_Pdf_Element_Object
      */
     public function newObject(Zend_Pdf_Element $objectValue)
@@ -202,7 +195,7 @@ class Zend_Pdf_ElementFactory_Proxy implements Zend_Pdf_ElementFactory_Interface
      *
      * @todo Reusage of the freed object. It's not a support of new feature, but only improvement.
      *
-     * @param mixed $objectValue
+     * @param  mixed  $objectValue
      * @return Zend_Pdf_Element_Object_Stream
      */
     public function newStreamObject($streamValue)
@@ -214,7 +207,7 @@ class Zend_Pdf_ElementFactory_Proxy implements Zend_Pdf_ElementFactory_Interface
      * Enumerate modified objects.
      * Returns array of Zend_Pdf_UpdateInfoContainer
      *
-     * @param Zend_Pdf_ElementFactory $rootFactory
+     * @param  Zend_Pdf_ElementFactory  $rootFactory
      * @return array
      */
     public function listModifiedObjects($rootFactory = null)
@@ -225,7 +218,7 @@ class Zend_Pdf_ElementFactory_Proxy implements Zend_Pdf_ElementFactory_Interface
     /**
      * Check if PDF file was modified
      *
-     * @return boolean
+     * @return bool
      */
     public function isModified()
     {

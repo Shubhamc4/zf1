@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -37,13 +38,12 @@ require_once 'Zend/CodeGenerator/Php/File.php';
  * items within a specific project.
  *
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Tool_Project_Context_Zf_ProjectProviderFile extends Zend_Tool_Project_Context_Filesystem_File
 {
-
     /**
      * @var string
      */
@@ -52,7 +52,7 @@ class Zend_Tool_Project_Context_Zf_ProjectProviderFile extends Zend_Tool_Project
     /**
      * @var array
      */
-    protected $_actionNames = array();
+    protected $_actionNames = [];
 
     /**
      * init()
@@ -64,15 +64,16 @@ class Zend_Tool_Project_Context_Zf_ProjectProviderFile extends Zend_Tool_Project
 
         $this->_projectProviderName = $this->_resource->getAttribute('projectProviderName');
         $this->_actionNames = $this->_resource->getAttribute('actionNames');
-        $this->_filesystemName = ucfirst($this->_projectProviderName) . 'Provider.php';
+        $this->_filesystemName = ucfirst($this->_projectProviderName).'Provider.php';
 
         if (strpos($this->_actionNames, ',')) {
             $this->_actionNames = explode(',', $this->_actionNames);
         } else {
-            $this->_actionNames = ($this->_actionNames) ? array($this->_actionNames) : array();
+            $this->_actionNames = ($this->_actionNames) ? [$this->_actionNames] : [];
         }
 
         parent::init();
+
         return $this;
     }
 
@@ -83,10 +84,10 @@ class Zend_Tool_Project_Context_Zf_ProjectProviderFile extends Zend_Tool_Project
      */
     public function getPersistentAttributes()
     {
-        return array(
+        return [
             'projectProviderName' => $this->getProjectProviderName(),
-            'actionNames' => implode(',', $this->_actionNames)
-            );
+            'actionNames' => implode(',', $this->_actionNames),
+        ];
     }
 
     /**
@@ -117,36 +118,35 @@ class Zend_Tool_Project_Context_Zf_ProjectProviderFile extends Zend_Tool_Project
     public function getContents()
     {
 
-        $filter = new Zend_Filter_Word_DashToCamelCase();
+        $filter = new Zend_Filter_Word_DashToCamelCase;
 
-        $className = $filter->filter($this->_projectProviderName) . 'Provider';
+        $className = $filter->filter($this->_projectProviderName).'Provider';
 
-        $class = new Zend_CodeGenerator_Php_Class(array(
+        $class = new Zend_CodeGenerator_Php_Class([
             'name' => $className,
-            'extendedClass' => 'Zend_Tool_Project_Provider_Abstract'
-            ));
+            'extendedClass' => 'Zend_Tool_Project_Provider_Abstract',
+        ]);
 
-        $methods = array();
+        $methods = [];
         foreach ($this->_actionNames as $actionName) {
-            $methods[] = new Zend_CodeGenerator_Php_Method(array(
+            $methods[] = new Zend_CodeGenerator_Php_Method([
                 'name' => $actionName,
-                'body' => '        /** @todo Implementation */'
-                ));
+                'body' => '        /** @todo Implementation */',
+            ]);
         }
 
         if ($methods) {
             $class->setMethods($methods);
         }
 
-        $codeGenFile = new Zend_CodeGenerator_Php_File(array(
-            'requiredFiles' => array(
+        $codeGenFile = new Zend_CodeGenerator_Php_File([
+            'requiredFiles' => [
                 'Zend/Tool/Project/Provider/Abstract.php',
-                'Zend/Tool/Project/Provider/Exception.php'
-                ),
-            'classes' => array($class)
-            ));
+                'Zend/Tool/Project/Provider/Exception.php',
+            ],
+            'classes' => [$class],
+        ]);
 
         return $codeGenFile->generate();
     }
-
 }

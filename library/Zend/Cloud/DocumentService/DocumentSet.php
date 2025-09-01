@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LICENSE
  *
@@ -11,8 +12,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Cloud
- * @subpackage DocumentService
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -21,8 +21,7 @@
  * Class encapsulating a set of documents
  *
  * @category   Zend
- * @package    Zend_Cloud
- * @subpackage DocumentService
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -37,13 +36,12 @@ class Zend_Cloud_DocumentService_DocumentSet implements Countable, IteratorAggre
     /**
      * Constructor
      *
-     * @param  array $documents
      * @return void
      */
     public function __construct(array $documents)
     {
         $this->_documentCount = count($documents);
-        $this->_documents     = new ArrayIterator($documents);
+        $this->_documents = new ArrayIterator($documents);
     }
 
     /**
@@ -51,7 +49,6 @@ class Zend_Cloud_DocumentService_DocumentSet implements Countable, IteratorAggre
      *
      * @return int
      */
-    #[\ReturnTypeWillChange]
     public function count()
     {
         return $this->_documentCount;
@@ -62,7 +59,6 @@ class Zend_Cloud_DocumentService_DocumentSet implements Countable, IteratorAggre
      *
      * @return Traversable
      */
-    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return $this->_documents;

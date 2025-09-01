@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,16 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Auth
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
-
 /**
  * @category   Zend
- * @package    Zend_Auth
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -31,32 +32,32 @@ class Zend_Auth_Result
     /**
      * General Failure
      */
-    const FAILURE                        =  0;
+    const FAILURE = 0;
 
     /**
      * Failure due to identity not being found.
      */
-    const FAILURE_IDENTITY_NOT_FOUND     = -1;
+    const FAILURE_IDENTITY_NOT_FOUND = -1;
 
     /**
      * Failure due to identity being ambiguous.
      */
-    const FAILURE_IDENTITY_AMBIGUOUS     = -2;
+    const FAILURE_IDENTITY_AMBIGUOUS = -2;
 
     /**
      * Failure due to invalid credential being supplied.
      */
-    const FAILURE_CREDENTIAL_INVALID     = -3;
+    const FAILURE_CREDENTIAL_INVALID = -3;
 
     /**
      * Failure due to uncategorized reasons.
      */
-    const FAILURE_UNCATEGORIZED          = -4;
+    const FAILURE_UNCATEGORIZED = -4;
 
     /**
      * Authentication success.
      */
-    const SUCCESS                        =  1;
+    const SUCCESS = 1;
 
     /**
      * Authentication result code
@@ -84,21 +85,20 @@ class Zend_Auth_Result
     /**
      * Sets the result code, identity, and failure messages
      *
-     * @param int   $code
-     * @param mixed $identity
-     * @param array $messages
+     * @param  int  $code
+     * @param  mixed  $identity
      */
-    public function __construct($code, $identity, array $messages = array())
+    public function __construct($code, $identity, array $messages = [])
     {
         $code = (int) $code;
 
         if ($code < self::FAILURE_UNCATEGORIZED) {
             $code = self::FAILURE;
-        } elseif ($code > self::SUCCESS ) {
+        } elseif ($code > self::SUCCESS) {
             $code = 1;
         }
 
-        $this->_code     = $code;
+        $this->_code = $code;
         $this->_identity = $identity;
         $this->_messages = $messages;
     }
@@ -106,7 +106,7 @@ class Zend_Auth_Result
     /**
      * Returns whether the result represents a successful authentication attempt
      *
-     * @return boolean
+     * @return bool
      */
     public function isValid()
     {

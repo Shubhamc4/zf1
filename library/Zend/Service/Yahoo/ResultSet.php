@@ -14,18 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Yahoo
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
-
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Yahoo
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -80,11 +78,10 @@ class Zend_Service_Yahoo_ResultSet implements SeekableIterator
      */
     protected $_currentIndex = 0;
 
-
     /**
      * Parse the search response and retrieve the results for iteration
      *
-     * @param  DOMDocument $dom the REST fragment for this object
+     * @param  DOMDocument  $dom  the REST fragment for this object
      * @return void
      */
     public function __construct(DOMDocument $dom)
@@ -101,7 +98,6 @@ class Zend_Service_Yahoo_ResultSet implements SeekableIterator
         $this->_results = $this->_xpath->query('//yh:Result');
     }
 
-
     /**
      * Total Number of results returned
      *
@@ -112,16 +108,15 @@ class Zend_Service_Yahoo_ResultSet implements SeekableIterator
         return $this->totalResultsReturned;
     }
 
-
     /**
      * Implement SeekableIterator::current()
      *
      * Must be implemented by child classes
      *
-     * @throws Zend_Service_Exception
      * @return Zend_Service_Yahoo_Result
+     *
+     * @throws Zend_Service_Exception
      */
-    #[\ReturnTypeWillChange]
     public function current()
     {
         /**
@@ -129,51 +124,45 @@ class Zend_Service_Yahoo_ResultSet implements SeekableIterator
          */
         require_once 'Zend/Service/Exception.php';
         throw new Zend_Service_Exception('Zend_Service_Yahoo_ResultSet::current() must be implemented by child '
-                                       . 'classes');
+                                       .'classes');
     }
-
 
     /**
      * Implement SeekableIterator::key()
      *
      * @return int
      */
-    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->_currentIndex;
     }
-
 
     /**
      * Implement SeekableIterator::next()
      *
      * @return void
      */
-    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->_currentIndex += 1;
     }
-
 
     /**
      * Implement SeekableIterator::rewind()
      *
      * @return void
      */
-    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->_currentIndex = 0;
     }
 
-
     /**
      * Implement SeekableIterator::seek()
      *
-     * @param  int $index
+     * @param  int  $index
      * @return void
+     *
      * @throws OutOfBoundsException
      */
     public function seek($index)
@@ -182,17 +171,15 @@ class Zend_Service_Yahoo_ResultSet implements SeekableIterator
         if ($indexInt >= 0 && $indexInt < $this->_results->length) {
             $this->_currentIndex = $indexInt;
         } else {
-            throw new OutOfBoundsException("Illegal index '$index'");
+            throw new OutOfBoundsException("Illegal index '{$index}'");
         }
     }
-
 
     /**
      * Implement SeekableIterator::valid()
      *
-     * @return boolean
+     * @return bool
      */
-    #[\ReturnTypeWillChange]
     public function valid()
     {
         return $this->_currentIndex < $this->_results->length;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category  Zend
- * @package   Zend_Navigation
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -28,7 +30,7 @@ require_once 'Zend/Navigation/Container.php';
  * A simple container class for {@link Zend_Navigation_Page} pages
  *
  * @category  Zend
- * @package   Zend_Navigation
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -37,8 +39,9 @@ class Zend_Navigation extends Zend_Navigation_Container
     /**
      * Creates a new navigation container
      *
-     * @param array|Zend_Config $pages    [optional] pages to add
-     * @throws Zend_Navigation_Exception  if $pages is invalid
+     * @param  array|Zend_Config  $pages  [optional] pages to add
+     *
+     * @throws Zend_Navigation_Exception if $pages is invalid
      */
     public function __construct($pages = null)
     {
@@ -47,8 +50,8 @@ class Zend_Navigation extends Zend_Navigation_Container
         } elseif (null !== $pages) {
             require_once 'Zend/Navigation/Exception.php';
             throw new Zend_Navigation_Exception(
-                    'Invalid argument: $pages must be an array, an ' .
-                    'instance of Zend_Config, or null');
+                'Invalid argument: $pages must be an array, an '.
+                'instance of Zend_Config, or null');
         }
     }
 }

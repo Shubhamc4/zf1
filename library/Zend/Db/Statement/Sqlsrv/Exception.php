@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Db
- * @subpackage Statement
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,8 +27,6 @@
 require_once 'Zend/Db/Statement/Exception.php';
 
 /**
- * @package    Zend_Db
- * @subpackage Statement
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -40,22 +39,21 @@ class Zend_Db_Statement_Sqlsrv_Exception extends Zend_Db_Statement_Exception
      * sqlsrv_errors() was provided. If so, it then retrieves the most recent
      * error from that stack, and sets the message and code based on it.
      *
-     * @param null|array|string $message
-     * @param null|int $code
+     * @param  null|array|string  $message
+     * @param  null|int  $code
      */
     public function __construct($message = null, $code = 0)
     {
-       if (is_array($message)) {
+        if (is_array($message)) {
             // Error should be array of errors
             // We only need first one (?)
             if (isset($message[0])) {
                 $message = $message[0];
             }
 
-            $code    = (int)    $message['code'];
+            $code = (int) $message['code'];
             $message = (string) $message['message'];
-       }
-       parent::__construct($message, $code);
-   }
+        }
+        parent::__construct($message, $code);
+    }
 }
-

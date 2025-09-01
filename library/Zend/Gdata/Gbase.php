@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gbase
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -37,14 +37,12 @@ require_once 'Zend/Gdata.php';
  * @link http://code.google.com/apis/base
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage Gbase
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Gdata_Gbase extends Zend_Gdata
 {
-
     /**
      * Path to the customer items feeds on the Google Base server.
      */
@@ -63,16 +61,16 @@ class Zend_Gdata_Gbase extends Zend_Gdata
     /**
      * Create Zend_Gdata_Gbase object
      *
-     * @param Zend_Http_Client $client (optional) The HTTP client to use when
-     *          when communicating with the Google Apps servers.
-     * @param string $applicationId The identity of the app in the form of Company-AppName-Version
+     * @param  Zend_Http_Client  $client  (optional) The HTTP client to use when
+     *                                    when communicating with the Google Apps servers.
+     * @param  string  $applicationId  The identity of the app in the form of Company-AppName-Version
      */
     public function __construct($client = null, $applicationId = 'MyCompany-MyApp-1.0')
     {
         throw new Zend_Exception(
             'Google Base API has been discontinued by Google and was removed'
-            . ' from Zend Framework in 1.12.0.  For more information see: '
-            . 'http://googlemerchantblog.blogspot.ca/2010/12/new-shopping-apis-and-deprecation-of.html'
+            .' from Zend Framework in 1.12.0.  For more information see: '
+            .'http://googlemerchantblog.blogspot.ca/2010/12/new-shopping-apis-and-deprecation-of.html'
         );
     }
 }

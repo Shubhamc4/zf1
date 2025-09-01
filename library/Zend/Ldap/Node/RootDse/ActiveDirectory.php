@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage RootDSE
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -30,8 +31,7 @@ require_once 'Zend/Ldap/Node/RootDse.php';
  * an Active Directory server.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage RootDSE
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -190,8 +190,8 @@ class Zend_Ldap_Node_RootDse_ActiveDirectory extends Zend_Ldap_Node_RootDse
     /**
      * Determines if the capability is supported
      *
-     * @param string|string|array $oids capability(s) to check
-     * @return boolean
+     * @param  string|string|array  $oids  capability(s) to check
+     * @return bool
      */
     public function supportsCapability($oids)
     {
@@ -201,8 +201,8 @@ class Zend_Ldap_Node_RootDse_ActiveDirectory extends Zend_Ldap_Node_RootDse
     /**
      * Determines if the control is supported
      *
-     * @param string|array $oids control oid(s) to check
-     * @return boolean
+     * @param  string|array  $oids  control oid(s) to check
+     * @return bool
      */
     public function supportsControl($oids)
     {
@@ -212,8 +212,8 @@ class Zend_Ldap_Node_RootDse_ActiveDirectory extends Zend_Ldap_Node_RootDse
     /**
      * Determines if the version is supported
      *
-     * @param string|array $policies policy(s) to check
-     * @return boolean
+     * @param  string|array  $policies  policy(s) to check
+     * @return bool
      */
     public function supportsPolicy($policies)
     {
@@ -242,6 +242,7 @@ class Zend_Ldap_Node_RootDse_ActiveDirectory extends Zend_Ldap_Node_RootDse
          * @see Zend_Ldap_Dn
          */
         require_once 'Zend/Ldap/Dn.php';
+
         return Zend_Ldap_Dn::fromString($schemaDn);
     }
 }

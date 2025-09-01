@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Controller
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -37,8 +39,6 @@ require_once 'Zend/Uri.php';
  * REQUEST_URI.
  *
  * @uses       Zend_Controller_Request_Http
- * @package    Zend_Controller
- * @subpackage Request
  */
 class Zend_Controller_Request_Apache404 extends Zend_Controller_Request_Http
 {
@@ -57,13 +57,13 @@ class Zend_Controller_Request_Apache404 extends Zend_Controller_Request_Http
                 $requestUri = $_SERVER['REQUEST_URI'];
             } elseif (isset($_SERVER['ORIG_PATH_INFO'])) { // IIS 5.0, PHP as CGI
                 $requestUri = $_SERVER['ORIG_PATH_INFO'];
-                if (!empty($_SERVER['QUERY_STRING'])) {
-                    $requestUri .= '?' . $_SERVER['QUERY_STRING'];
+                if (! empty($_SERVER['QUERY_STRING'])) {
+                    $requestUri .= '?'.$_SERVER['QUERY_STRING'];
                 }
             } else {
                 return $this;
             }
-        } elseif (!is_string($requestUri)) {
+        } elseif (! is_string($requestUri)) {
             return $this;
         } else {
             if (false !== ($pos = strpos($requestUri, '?'))) {
@@ -77,6 +77,7 @@ class Zend_Controller_Request_Apache404 extends Zend_Controller_Request_Http
         }
 
         $this->_requestUri = $requestUri;
+
         return $this;
     }
 }

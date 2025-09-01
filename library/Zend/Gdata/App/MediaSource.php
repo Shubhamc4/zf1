@@ -14,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage App
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -25,8 +25,7 @@
  * Interface for defining data that can be encoded and sent over the network.
  *
  * @category   Zend
- * @package    Zend_Gdata
- * @subpackage App
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -42,7 +41,7 @@ interface Zend_Gdata_App_MediaSource
     /**
      * Set the content type for the file attached (example image/png)
      *
-     * @param string $value The content type
+     * @param  string  $value  The content type
      * @return Zend_Gdata_App_MediaFileSource Provides a fluent interface
      */
     public function setContentType($value);
@@ -59,6 +58,7 @@ interface Zend_Gdata_App_MediaSource
      * title for the uploaded file.  A null value indicates no slug header.
      *
      * @var string The slug value
+     *
      * @return Zend_Gdata_App_MediaSource Provides a fluent interface
      */
     public function setSlug($value);

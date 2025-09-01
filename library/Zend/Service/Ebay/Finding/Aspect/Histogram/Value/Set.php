@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id: Set.php 20166 2010-01-09 19:00:17Z bkarwin $
  */
 
@@ -27,10 +28,10 @@ require_once 'Zend/Service/Ebay/Finding/Set/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Service
- * @subpackage Ebay
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @uses       Zend_Service_Ebay_Finding_Set_Abstract
  */
 class Zend_Service_Ebay_Finding_Aspect_Histogram_Value_Set extends Zend_Service_Ebay_Finding_Set_Abstract
@@ -40,19 +41,19 @@ class Zend_Service_Ebay_Finding_Aspect_Histogram_Value_Set extends Zend_Service_
      *
      * @return Zend_Service_Ebay_Finding_Aspect_Histogram_Value
      */
-    #[\ReturnTypeWillChange]
     public function current()
     {
         // check node
         $node = $this->_nodes->item($this->_key);
-        if (!$node) {
-            return null;
+        if (! $node) {
+            return;
         }
 
         /**
          * @see Zend_Service_Ebay_Finding_Aspect_Histogram_Value
          */
         require_once 'Zend/Service/Ebay/Finding/Aspect/Histogram/Value.php';
+
         return new Zend_Service_Ebay_Finding_Aspect_Histogram_Value($node);
     }
 }

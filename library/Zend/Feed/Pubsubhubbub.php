@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Pubsubhubbub
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -46,7 +48,7 @@ require_once 'Zend/Feed/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Pubsubhubbub
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -55,15 +57,18 @@ class Zend_Feed_Pubsubhubbub
     /**
      * Verification Modes
      */
-    const VERIFICATION_MODE_SYNC  = 'sync';
+    const VERIFICATION_MODE_SYNC = 'sync';
+
     const VERIFICATION_MODE_ASYNC = 'async';
 
     /**
      * Subscription States
      */
-    const SUBSCRIPTION_VERIFIED    = 'verified';
+    const SUBSCRIPTION_VERIFIED = 'verified';
+
     const SUBSCRIPTION_NOTVERIFIED = 'not_verified';
-    const SUBSCRIPTION_TODELETE    = 'to_delete';
+
+    const SUBSCRIPTION_TODELETE = 'to_delete';
 
     /**
      * Singleton instance if required of the HTTP client
@@ -78,7 +83,7 @@ class Zend_Feed_Pubsubhubbub
      * best if directly given an instance of Zend_Feed_Reader_Atom|Rss
      * to leverage off.
      *
-     * @param  Zend_Feed_Reader_FeedAbstract|Zend_Feed_Abstract|string $source
+     * @param  Zend_Feed_Reader_FeedAbstract|Zend_Feed_Abstract|string  $source
      * @return array
      */
     public static function detectHubs($source)
@@ -92,9 +97,10 @@ class Zend_Feed_Pubsubhubbub
         } else {
             require_once 'Zend/Feed/Pubsubhubbub/Exception.php';
             throw new Zend_Feed_Pubsubhubbub_Exception('The source parameter was'
-            . ' invalid, i.e. not a URL string or an instance of type'
-            . ' Zend_Feed_Reader_FeedAbstract or Zend_Feed_Abstract');
+            .' invalid, i.e. not a URL string or an instance of type'
+            .' Zend_Feed_Reader_FeedAbstract or Zend_Feed_Abstract');
         }
+
         return $feed->getHubs();
     }
 
@@ -102,7 +108,6 @@ class Zend_Feed_Pubsubhubbub
      * Allows the external environment to make Zend_Oauth use a specific
      * Client instance.
      *
-     * @param  Zend_Http_Client $httpClient
      * @return void
      */
     public static function setHttpClient(Zend_Http_Client $httpClient)
@@ -119,11 +124,12 @@ class Zend_Feed_Pubsubhubbub
      */
     public static function getHttpClient()
     {
-        if (!isset(self::$httpClient)):
+        if (! isset(self::$httpClient)) {
             self::$httpClient = new Zend_Http_Client;
-        else:
+        } else {
             self::$httpClient->resetParameters();
-        endif;
+        }
+
         return self::$httpClient;
     }
 
@@ -141,13 +147,14 @@ class Zend_Feed_Pubsubhubbub
     /**
      * RFC 3986 safe url encoding method
      *
-     * @param  string $string
+     * @param  string  $string
      * @return string
      */
     public static function urlencode($string)
     {
         $rawencoded = rawurlencode($string);
         $rfcencoded = str_replace('%7E', '~', $rawencoded);
+
         return $rfcencoded;
     }
 }

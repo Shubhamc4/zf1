@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,56 +28,61 @@ require_once 'Zend/Filter/Interface.php';
 
 /**
  * @category   Zend
- * @package    Zend_Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Filter_Null implements Zend_Filter_Interface
 {
-    const BOOLEAN      = 1;
-    const INTEGER      = 2;
-    const EMPTY_ARRAY  = 4;
-    const STRING       = 8;
-    const ZERO         = 16;
-    const ALL          = 31;
+    const BOOLEAN = 1;
 
-    protected $_constants = array(
-        self::BOOLEAN     => 'boolean',
-        self::INTEGER     => 'integer',
+    const INTEGER = 2;
+
+    const EMPTY_ARRAY = 4;
+
+    const STRING = 8;
+
+    const ZERO = 16;
+
+    const ALL = 31;
+
+    protected $_constants = [
+        self::BOOLEAN => 'boolean',
+        self::INTEGER => 'integer',
         self::EMPTY_ARRAY => 'array',
-        self::STRING      => 'string',
-        self::ZERO        => 'zero',
-        self::ALL         => 'all'
-    );
+        self::STRING => 'string',
+        self::ZERO => 'zero',
+        self::ALL => 'all',
+    ];
 
     /**
      * Internal type to detect
      *
-     * @var integer
+     * @var int
      */
     protected $_type = self::ALL;
 
     /**
      * Constructor
      *
-     * @param string|array|Zend_Config $options OPTIONAL
+     * @param  string|array|Zend_Config  $options  OPTIONAL
      */
     public function __construct($options = null)
     {
         if ($options instanceof Zend_Config) {
             $options = $options->toArray();
-        } else if (!is_array($options)) {
+        } elseif (! is_array($options)) {
             $options = func_get_args();
-            $temp    = array();
-            if (!empty($options)) {
+            $temp = [];
+            if (! empty($options)) {
                 $temp = array_shift($options);
             }
             $options = $temp;
-        } else if (is_array($options) && array_key_exists('type', $options)) {
+        } elseif (is_array($options) && array_key_exists('type', $options)) {
             $options = $options['type'];
         }
 
-        if (!empty($options)) {
+        if (! empty($options)) {
             $this->setType($options);
         }
     }
@@ -93,35 +100,37 @@ class Zend_Filter_Null implements Zend_Filter_Interface
     /**
      * Set the null types
      *
-     * @param  integer|array $type
-     * @throws Zend_Filter_Exception
+     * @param  int|array  $type
      * @return Zend_Filter_Null
+     *
+     * @throws Zend_Filter_Exception
      */
     public function setType($type = null)
     {
         if (is_array($type)) {
             $detected = 0;
-            foreach($type as $value) {
+            foreach ($type as $value) {
                 if (is_int($value)) {
                     $detected += $value;
-                } else if (in_array($value, $this->_constants)) {
+                } elseif (in_array($value, $this->_constants)) {
                     $detected += array_search($value, $this->_constants);
                 }
             }
 
             $type = $detected;
-        } else if (is_string($type)) {
+        } elseif (is_string($type)) {
             if (in_array($type, $this->_constants)) {
                 $type = array_search($type, $this->_constants);
             }
         }
 
-        if (!is_int($type) || ($type < 0) || ($type > self::ALL)) {
+        if (! is_int($type) || ($type < 0) || ($type > self::ALL)) {
             require_once 'Zend/Filter/Exception.php';
             throw new Zend_Filter_Exception('Unknown type');
         }
 
         $this->_type = $type;
+
         return $this;
     }
 
@@ -131,7 +140,7 @@ class Zend_Filter_Null implements Zend_Filter_Interface
      * Returns null representation of $value, if value is empty and matches
      * types that should be considered null.
      *
-     * @param  string $value
+     * @param  string  $value
      * @return string
      */
     public function filter($value)
@@ -142,7 +151,7 @@ class Zend_Filter_Null implements Zend_Filter_Interface
         if ($type >= self::ZERO) {
             $type -= self::ZERO;
             if (is_string($value) && ($value == '0')) {
-                return null;
+                return;
             }
         }
 
@@ -150,15 +159,15 @@ class Zend_Filter_Null implements Zend_Filter_Interface
         if ($type >= self::STRING) {
             $type -= self::STRING;
             if (is_string($value) && ($value == '')) {
-                return null;
+                return;
             }
         }
 
         // EMPTY_ARRAY (array())
         if ($type >= self::EMPTY_ARRAY) {
             $type -= self::EMPTY_ARRAY;
-            if (is_array($value) && ($value == array())) {
-                return null;
+            if (is_array($value) && ($value == [])) {
+                return;
             }
         }
 
@@ -166,7 +175,7 @@ class Zend_Filter_Null implements Zend_Filter_Interface
         if ($type >= self::INTEGER) {
             $type -= self::INTEGER;
             if (is_int($value) && ($value == 0)) {
-                return null;
+                return;
             }
         }
 
@@ -174,7 +183,7 @@ class Zend_Filter_Null implements Zend_Filter_Interface
         if ($type >= self::BOOLEAN) {
             $type -= self::BOOLEAN;
             if (is_bool($value) && ($value == false)) {
-                return null;
+                return;
             }
         }
 

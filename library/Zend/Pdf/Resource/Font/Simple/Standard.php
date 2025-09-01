@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,17 +14,15 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Pdf
- * @subpackage Fonts
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
-
 /** Internally used classes */
 require_once 'Zend/Pdf/Element/Name.php';
-
 
 /** Zend_Pdf_Resource_Font_Simple */
 require_once 'Zend/Pdf/Resource/Font/Simple.php';
@@ -57,18 +56,14 @@ require_once 'Zend/Pdf/Resource/Font/Simple.php';
  * Font objects should be normally be obtained from the factory methods
  * {@link Zend_Pdf_Font::fontWithName} and {@link Zend_Pdf_Font::fontWithPath}.
  *
- * @package    Zend_Pdf
- * @subpackage Fonts
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
 abstract class Zend_Pdf_Resource_Font_Simple_Standard extends Zend_Pdf_Resource_Font_Simple
 {
-  /**** Public Interface ****/
+    /**** Public Interface ****/
 
-
-  /* Object Lifecycle */
+    /* Object Lifecycle */
 
     /**
      * Object constructor
@@ -78,6 +73,6 @@ abstract class Zend_Pdf_Resource_Font_Simple_Standard extends Zend_Pdf_Resource_
         $this->_fontType = Zend_Pdf_Font::TYPE_STANDARD;
 
         parent::__construct();
-        $this->_resource->Subtype  = new Zend_Pdf_Element_Name('Type1');
+        $this->_resource->Subtype = new Zend_Pdf_Element_Name('Type1');
     }
 }

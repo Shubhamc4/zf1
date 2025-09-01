@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Queue
- * @subpackage Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,8 +30,7 @@ require_once 'Zend/Queue/Adapter/AdapterAbstract.php';
  * Class testing.  No supported functions.  Also used to disable a Zend_Queue.
  *
  * @category   Zend
- * @package    Zend_Queue
- * @subpackage Adapter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -39,11 +39,10 @@ class Zend_Queue_Adapter_Null extends Zend_Queue_Adapter_AdapterAbstract
     /**
      * Constructor
      *
-     * @param  array|Zend_Config $options
-     * @param  null|Zend_Queue $queue
+     * @param  array|Zend_Config  $options
      * @return void
      */
-    public function __construct($options, Zend_Queue $queue = null)
+    public function __construct($options, ?Zend_Queue $queue = null)
     {
         parent::__construct($options, $queue);
     }
@@ -60,19 +59,18 @@ class Zend_Queue_Adapter_Null extends Zend_Queue_Adapter_AdapterAbstract
     public function isExists($name)
     {
         require_once 'Zend/Queue/Exception.php';
-        throw new Zend_Queue_Exception(__FUNCTION__ . '() is not supported by ' . get_class($this));
+        throw new Zend_Queue_Exception(__FUNCTION__.'() is not supported by '.get_class($this));
     }
-
 
     /**
      * Create a new queue
      *
      * @throws Zend_Queue_Exception - not supported.
      */
-    public function create($name, $timeout=null)
+    public function create($name, $timeout = null)
     {
         require_once 'Zend/Queue/Exception.php';
-        throw new Zend_Queue_Exception(__FUNCTION__ . '() is not supported by ' . get_class($this));
+        throw new Zend_Queue_Exception(__FUNCTION__.'() is not supported by '.get_class($this));
     }
 
     /**
@@ -83,7 +81,7 @@ class Zend_Queue_Adapter_Null extends Zend_Queue_Adapter_AdapterAbstract
     public function delete($name)
     {
         require_once 'Zend/Queue/Exception.php';
-        throw new Zend_Queue_Exception(__FUNCTION__ . '() is not supported by ' . get_class($this));
+        throw new Zend_Queue_Exception(__FUNCTION__.'() is not supported by '.get_class($this));
     }
 
     /**
@@ -94,7 +92,7 @@ class Zend_Queue_Adapter_Null extends Zend_Queue_Adapter_AdapterAbstract
     public function getQueues()
     {
         require_once 'Zend/Queue/Exception.php';
-        throw new Zend_Queue_Exception(__FUNCTION__ . '() is not supported by ' . get_class($this));
+        throw new Zend_Queue_Exception(__FUNCTION__.'() is not supported by '.get_class($this));
     }
 
     /**
@@ -102,11 +100,10 @@ class Zend_Queue_Adapter_Null extends Zend_Queue_Adapter_AdapterAbstract
      *
      * @throws Zend_Queue_Exception - not supported.
      */
-    #[\ReturnTypeWillChange]
-    public function count(Zend_Queue $queue=null)
+    public function count(?Zend_Queue $queue = null)
     {
         require_once 'Zend/Queue/Exception.php';
-        throw new Zend_Queue_Exception(__FUNCTION__ . '() is not supported by ' . get_class($this));
+        throw new Zend_Queue_Exception(__FUNCTION__.'() is not supported by '.get_class($this));
     }
 
     /********************************************************************
@@ -118,10 +115,10 @@ class Zend_Queue_Adapter_Null extends Zend_Queue_Adapter_AdapterAbstract
      *
      * @throws Zend_Queue_Exception - not supported.
      */
-    public function send($message, Zend_Queue $queue=null)
+    public function send($message, ?Zend_Queue $queue = null)
     {
         require_once 'Zend/Queue/Exception.php';
-        throw new Zend_Queue_Exception(__FUNCTION__ . '() is not supported by ' . get_class($this));
+        throw new Zend_Queue_Exception(__FUNCTION__.'() is not supported by '.get_class($this));
     }
 
     /**
@@ -129,10 +126,10 @@ class Zend_Queue_Adapter_Null extends Zend_Queue_Adapter_AdapterAbstract
      *
      * @throws Zend_Queue_Exception - not supported.
      */
-    public function receive($maxMessages=null, $timeout=null, Zend_Queue $queue=null)
+    public function receive($maxMessages = null, $timeout = null, ?Zend_Queue $queue = null)
     {
         require_once 'Zend/Queue/Exception.php';
-        throw new Zend_Queue_Exception(__FUNCTION__ . '() is not supported by ' . get_class($this));
+        throw new Zend_Queue_Exception(__FUNCTION__.'() is not supported by '.get_class($this));
     }
 
     /**
@@ -143,7 +140,7 @@ class Zend_Queue_Adapter_Null extends Zend_Queue_Adapter_AdapterAbstract
     public function deleteMessage(Zend_Queue_Message $message)
     {
         require_once 'Zend/Queue/Exception.php';
-        throw new Zend_Queue_Exception(__FUNCTION__ . '() is not supported by ' . get_class($this));
+        throw new Zend_Queue_Exception(__FUNCTION__.'() is not supported by '.get_class($this));
     }
 
     /********************************************************************
@@ -156,20 +153,20 @@ class Zend_Queue_Adapter_Null extends Zend_Queue_Adapter_AdapterAbstract
      * $array['function name'] = true or false
      * true is supported, false is not supported.
      *
-     * @param  string $name
+     * @param  string  $name
      * @return array
      */
     public function getCapabilities()
     {
-        return array(
-            'create'        => false,
-            'delete'        => false,
-            'send'          => false,
-            'receive'       => false,
+        return [
+            'create' => false,
+            'delete' => false,
+            'send' => false,
+            'receive' => false,
             'deleteMessage' => false,
-            'getQueues'     => false,
-            'count'         => false,
-            'isExists'      => false,
-        );
+            'getQueues' => false,
+            'count' => false,
+            'isExists' => false,
+        ];
     }
 }

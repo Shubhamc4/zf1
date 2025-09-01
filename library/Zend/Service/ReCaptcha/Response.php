@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,8 +14,7 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage ReCaptcha
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -23,10 +23,10 @@
  * Zend_Service_ReCaptcha_Response
  *
  * @category   Zend
- * @package    Zend_Service
- * @subpackage ReCaptcha
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 class Zend_Service_ReCaptcha_Response
@@ -36,7 +36,7 @@ class Zend_Service_ReCaptcha_Response
      *
      * true if the response is valid or false otherwise
      *
-     * @var boolean
+     * @var bool
      */
     protected $_status = null;
 
@@ -53,11 +53,11 @@ class Zend_Service_ReCaptcha_Response
     /**
      * Class constructor used to construct a response
      *
-     * @param string $status
-     * @param string $errorCode
-     * @param Zend_Http_Response $httpResponse If this is set the content will override $status and $errorCode
+     * @param  string  $status
+     * @param  string  $errorCode
+     * @param  Zend_Http_Response  $httpResponse  If this is set the content will override $status and $errorCode
      */
-    public function __construct($status = null, $errorCode = null, Zend_Http_Response $httpResponse = null)
+    public function __construct($status = null, $errorCode = null, ?Zend_Http_Response $httpResponse = null)
     {
         if ($status !== null) {
             $this->setStatus($status);
@@ -75,7 +75,7 @@ class Zend_Service_ReCaptcha_Response
     /**
      * Set the status
      *
-     * @param string $status
+     * @param  string  $status
      * @return Zend_Service_ReCaptcha_Response
      */
     public function setStatus($status)
@@ -92,7 +92,7 @@ class Zend_Service_ReCaptcha_Response
     /**
      * Get the status
      *
-     * @return boolean
+     * @return bool
      */
     public function getStatus()
     {
@@ -102,7 +102,7 @@ class Zend_Service_ReCaptcha_Response
     /**
      * Alias for getStatus()
      *
-     * @return boolean
+     * @return bool
      */
     public function isValid()
     {
@@ -112,7 +112,7 @@ class Zend_Service_ReCaptcha_Response
     /**
      * Set the error code
      *
-     * @param string $errorCode
+     * @param  string  $errorCode
      * @return Zend_Service_ReCaptcha_Response
      */
     public function setErrorCode($errorCode)
@@ -135,7 +135,6 @@ class Zend_Service_ReCaptcha_Response
     /**
      * Populate this instance based on a Zend_Http_Response object
      *
-     * @param Zend_Http_Response $response
      * @return Zend_Service_ReCaptcha_Response
      */
     public function setFromHttpResponse(Zend_Http_Response $response)
@@ -152,7 +151,7 @@ class Zend_Service_ReCaptcha_Response
             $status = 'true';
         }
 
-        if (!empty($parts[1])) {
+        if (! empty($parts[1])) {
             $errorCode = $parts[1];
         }
 

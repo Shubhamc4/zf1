@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -41,21 +43,18 @@ require_once 'Zend/Feed/Writer/Renderer/Feed/Atom/AtomAbstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Feed_Writer
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Feed_Writer_Renderer_Feed_Atom
-    extends Zend_Feed_Writer_Renderer_Feed_Atom_AtomAbstract
-    implements Zend_Feed_Writer_Renderer_RendererInterface
+class Zend_Feed_Writer_Renderer_Feed_Atom extends Zend_Feed_Writer_Renderer_Feed_Atom_AtomAbstract implements Zend_Feed_Writer_Renderer_RendererInterface
 {
     /**
      * Constructor
      *
-     * @param  Zend_Feed_Writer_Feed $container
      * @return void
      */
-    public function __construct (Zend_Feed_Writer_Feed $container)
+    public function __construct(Zend_Feed_Writer_Feed $container)
     {
         parent::__construct($container);
     }
@@ -67,7 +66,7 @@ class Zend_Feed_Writer_Renderer_Feed_Atom
      */
     public function render()
     {
-        if (!$this->_container->getEncoding()) {
+        if (! $this->_container->getEncoding()) {
             $this->_container->setEncoding('UTF-8');
         }
         $this->_dom = new DOMDocument('1.0', $this->_container->getEncoding());
@@ -108,7 +107,7 @@ class Zend_Feed_Writer_Renderer_Feed_Atom
             if ($entry instanceof Zend_Feed_Writer_Entry) {
                 $renderer = new Zend_Feed_Writer_Renderer_Entry_Atom($entry);
             } else {
-                if (!$this->_dom->documentElement->hasAttribute('xmlns:at')) {
+                if (! $this->_dom->documentElement->hasAttribute('xmlns:at')) {
                     $this->_dom->documentElement->setAttribute(
                         'xmlns:at', 'http://purl.org/atompub/tombstones/1.0'
                     );
@@ -125,7 +124,7 @@ class Zend_Feed_Writer_Renderer_Feed_Atom
             $imported = $this->_dom->importNode($element, true);
             $root->appendChild($imported);
         }
+
         return $this;
     }
-
 }

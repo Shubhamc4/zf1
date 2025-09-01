@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,17 +28,17 @@ require_once 'Zend/Filter/Word/Separator/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Filter
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Filter_Word_DashToSeparator extends Zend_Filter_Word_Separator_Abstract
 {
-
     public function filter($value)
     {
         $this->setMatchPattern('#-#');
         $this->setReplacement($this->_separator);
+
         return parent::filter($value);
     }
 }

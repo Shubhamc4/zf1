@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,23 +28,21 @@ require_once 'Zend/Tool/Project/Provider/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Tool_Project_Provider_Project
-    extends Zend_Tool_Project_Provider_Abstract
-    //implements Zend_Tool_Framework_Provider_DocblockManifestInterface
+class Zend_Tool_Project_Provider_Project extends Zend_Tool_Project_Provider_Abstract
+    // implements Zend_Tool_Framework_Provider_DocblockManifestInterface
 {
-
-    protected $_specialties = array('Info');
+    protected $_specialties = ['Info'];
 
     /**
      * create()
      *
-     * @param string $path
-     * @param string $nameOfProfile shortName=n
-     * @param string $fileOfProfile shortName=f
+     * @param  string  $path
+     * @param  string  $nameOfProfile  shortName=n
+     * @param  string  $fileOfProfile  shortName=f
      */
     public function create($path, $nameOfProfile = null, $fileOfProfile = null)
     {
@@ -51,11 +50,11 @@ class Zend_Tool_Project_Provider_Project
             $path = getcwd();
         } else {
             $path = trim($path);
-            if (!file_exists($path)) {
+            if (! file_exists($path)) {
                 $created = mkdir($path);
-                if (!$created) {
+                if (! $created) {
                     require_once 'Zend/Tool/Framework/Client/Exception.php';
-                    throw new Zend_Tool_Framework_Client_Exception('Could not create requested project directory \'' . $path . '\'');
+                    throw new Zend_Tool_Framework_Client_Exception('Could not create requested project directory \''.$path.'\'');
                 }
             }
             $path = str_replace('\\', '/', realpath($path));
@@ -76,33 +75,33 @@ class Zend_Tool_Project_Provider_Project
 
         $storage = $this->_registry->getStorage();
         if ($profileData == '' && $nameOfProfile != null && $storage->isEnabled()) {
-            $profileData = $storage->get('project/profiles/' . $nameOfProfile . '.xml');
+            $profileData = $storage->get('project/profiles/'.$nameOfProfile.'.xml');
         }
 
         if ($profileData == '') {
             $profileData = $this->_getDefaultProfile();
         }
 
-        $newProfile = new Zend_Tool_Project_Profile(array(
+        $newProfile = new Zend_Tool_Project_Profile([
             'projectDirectory' => $path,
-            'profileData' => $profileData
-            ));
+            'profileData' => $profileData,
+        ]);
 
         $newProfile->loadFromData();
 
         $response = $this->_registry->getResponse();
 
-        $response->appendContent('Creating project at ' . $path);
-        $response->appendContent('Note: ', array('separator' => false, 'color' => 'yellow'));
+        $response->appendContent('Creating project at '.$path);
+        $response->appendContent('Note: ', ['separator' => false, 'color' => 'yellow']);
         $response->appendContent(
             'This command created a web project, '
-            . 'for more information setting up your VHOST, please see docs/README');
+            .'for more information setting up your VHOST, please see docs/README');
 
-        if (!Zend_Tool_Project_Provider_Test::isPHPUnitAvailable()) {
-            $response->appendContent('Testing Note: ', array('separator' => false, 'color' => 'yellow'));
+        if (! Zend_Tool_Project_Provider_Test::isPHPUnitAvailable()) {
+            $response->appendContent('Testing Note: ', ['separator' => false, 'color' => 'yellow']);
             $response->appendContent('PHPUnit was not found in your include_path, therefore no testing actions will be created.');
         }
-            
+
         foreach ($newProfile->getIterator() as $resource) {
             $resource->create();
         }
@@ -110,16 +109,16 @@ class Zend_Tool_Project_Provider_Project
 
     public function show()
     {
-        $this->_registry->getResponse()->appendContent('You probably meant to run "show project.info".', array('color' => 'yellow'));
+        $this->_registry->getResponse()->appendContent('You probably meant to run "show project.info".', ['color' => 'yellow']);
     }
 
     public function showInfo()
     {
         $profile = $this->_loadProfile(self::NO_PROFILE_RETURN_FALSE);
-        if (!$profile) {
+        if (! $profile) {
             $this->_registry->getResponse()->appendContent('No project found.');
         } else {
-            $this->_registry->getResponse()->appendContent('Working with project located at: ' . $profile->getAttribute('projectDirectory'));
+            $this->_registry->getResponse()->appendContent('Working with project located at: '.$profile->getAttribute('projectDirectory'));
         }
     }
 
@@ -129,12 +128,12 @@ class Zend_Tool_Project_Provider_Project
         if (Zend_Tool_Project_Provider_Test::isPHPUnitAvailable()) {
             $testAction = '                    	<testApplicationActionMethod forActionName="index" />';
         }
-        
+
         $version = Zend_Version::VERSION;
 
         $data = <<<EOS
 <?xml version="1.0" encoding="UTF-8"?>
-<projectProfile type="default" version="$version">
+<projectProfile type="default" version="{$version}">
     <projectDirectory>
         <projectProfileFile />
         <applicationDirectory>
@@ -195,7 +194,7 @@ class Zend_Tool_Project_Provider_Project
             <testApplicationDirectory>
                 <testApplicationControllerDirectory>
                     <testApplicationControllerFile filesystemName="IndexControllerTest.php" forControllerName="Index">
-$testAction
+{$testAction}
                     </testApplicationControllerFile>
                 </testApplicationControllerDirectory>
       	    </testApplicationDirectory>
@@ -204,6 +203,7 @@ $testAction
     </projectDirectory>
 </projectProfile>
 EOS;
+
         return $data;
     }
 
@@ -212,7 +212,7 @@ EOS;
         $projectDirResource = $caller->getResource()->getProfile()->search('projectDirectory');
         if ($projectDirResource) {
             $name = ltrim(strrchr($projectDirResource->getPath(), DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
-            $path = $projectDirResource->getPath() . '/public';
+            $path = $projectDirResource->getPath().'/public';
         } else {
             $path = '/path/to/public';
         }
@@ -234,13 +234,13 @@ Setting Up Your VHOST
 The following is a sample VHOST you might want to consider for your project.
 
 <VirtualHost *:80>
-   DocumentRoot "$path"
-   ServerName $name.local
+   DocumentRoot "{$path}"
+   ServerName {$name}.local
 
    # This should be omitted in the production environment
    SetEnv APPLICATION_ENV development
 
-   <Directory "$path">
+   <Directory "{$path}">
        Options Indexes MultiViews FollowSymLinks
        AllowOverride All
        Order allow,deny

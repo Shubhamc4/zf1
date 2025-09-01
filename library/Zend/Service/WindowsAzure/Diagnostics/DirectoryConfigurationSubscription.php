@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,18 +14,16 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Service_WindowsAzure
- * @subpackage Diagnostics
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
-
 /**
  * @category   Zend
- * @package    Zend_Service_WindowsAzure
- * @subpackage Diagnostics
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  *
@@ -32,22 +31,21 @@
  * @property	string	Container				Container
  * @property	int		DirectoryQuotaInMB		Directory quota in MB
  */
-class Zend_Service_WindowsAzure_Diagnostics_DirectoryConfigurationSubscription
-	extends Zend_Service_WindowsAzure_Diagnostics_ConfigurationObjectBaseAbstract
+class Zend_Service_WindowsAzure_Diagnostics_DirectoryConfigurationSubscription extends Zend_Service_WindowsAzure_Diagnostics_ConfigurationObjectBaseAbstract
 {
     /**
      * Constructor
      * 
-	 * @param	string	$path					Path
-	 * @param	string	$container				Container
-	 * @param	int		$directoryQuotaInMB		Directory quota in MB
-	 */
-    public function __construct($path, $container, $directoryQuotaInMB = 1024) 
-    {	        
-        $this->_data = array(
-            'path'      			=> $path,
-            'container' 			=> $container,
-        	'directoryquotainmb' 	=> $directoryQuotaInMB
-        );
+     * @param  string  $path  Path
+     * @param  string  $container  Container
+     * @param  int  $directoryQuotaInMB  Directory quota in MB
+     */
+    public function __construct($path, $container, $directoryQuotaInMB = 1024)
+    {
+        $this->_data = [
+            'path' => $path,
+            'container' => $container,
+            'directoryquotainmb' => $directoryQuotaInMB,
+        ];
     }
 }

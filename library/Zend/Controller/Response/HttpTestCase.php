@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Controller
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -28,8 +30,6 @@ require_once 'Zend/Controller/Response/Http.php';
  * Zend_Controller_Response_HttpTestCase
  *
  * @uses Zend_Controller_Response_Http
- * @package Zend_Controller
- * @subpackage Response
  */
 class Zend_Controller_Response_HttpTestCase extends Zend_Controller_Response_Http
 {
@@ -40,28 +40,29 @@ class Zend_Controller_Response_HttpTestCase extends Zend_Controller_Response_Htt
      */
     public function sendHeaders()
     {
-        $headers = array();
+        $headers = [];
         foreach ($this->_headersRaw as $header) {
             $headers[] = $header;
         }
         foreach ($this->_headers as $header) {
             $name = $header['name'];
-            $key  = strtolower($name);
+            $key = strtolower($name);
             if (array_key_exists($name, $headers)) {
                 if ($header['replace']) {
-                    $headers[$key] = $header['name'] . ': ' . $header['value'];
+                    $headers[$key] = $header['name'].': '.$header['value'];
                 }
             } else {
-                $headers[$key] = $header['name'] . ': ' . $header['value'];
+                $headers[$key] = $header['name'].': '.$header['value'];
             }
         }
+
         return $headers;
     }
 
     /**
      * Can we send headers?
      *
-     * @param  bool $throw
+     * @param  bool  $throw
      * @return void
      */
     public function canSendHeaders($throw = false)
@@ -80,26 +81,28 @@ class Zend_Controller_Response_HttpTestCase extends Zend_Controller_Response_Htt
         foreach ($this->_body as $content) {
             $fullContent .= $content;
         }
+
         return $fullContent;
     }
 
     /**
      * Get body and/or body segments
      *
-     * @param  bool|string $spec
+     * @param  bool|string  $spec
      * @return string|array|null
      */
     public function getBody($spec = false)
     {
         if (false === $spec) {
             return $this->outputBody();
-        } elseif (true === $spec) {
+        }
+        if (true === $spec) {
             return $this->_body;
-        } elseif (is_string($spec) && isset($this->_body[$spec])) {
+        }
+        if (is_string($spec) && isset($this->_body[$spec])) {
             return $this->_body[$spec];
         }
 
-        return null;
     }
 
     /**
@@ -113,12 +116,12 @@ class Zend_Controller_Response_HttpTestCase extends Zend_Controller_Response_Htt
     public function sendResponse()
     {
         $headers = $this->sendHeaders();
-        $content = implode("\n", $headers) . "\n\n";
+        $content = implode("\n", $headers)."\n\n";
 
         if ($this->isException() && $this->renderExceptions()) {
             $exceptions = '';
             foreach ($this->getException() as $e) {
-                $exceptions .= $e->__toString() . "\n";
+                $exceptions .= $e->__toString()."\n";
             }
             $content .= $exceptions;
         } else {

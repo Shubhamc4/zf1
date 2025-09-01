@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Schema
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -34,13 +35,11 @@ require_once 'Zend/Ldap/Node/Schema/ObjectClass/Interface.php';
  * schema information on an Active Directory server.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Schema
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Ldap_Node_Schema_ObjectClass_ActiveDirectory extends Zend_Ldap_Node_Schema_Item
-    implements Zend_Ldap_Node_Schema_ObjectClass_Interface
+class Zend_Ldap_Node_Schema_ObjectClass_ActiveDirectory extends Zend_Ldap_Node_Schema_Item implements Zend_Ldap_Node_Schema_ObjectClass_Interface
 {
     /**
      * Gets the objectClass name
@@ -57,50 +56,35 @@ class Zend_Ldap_Node_Schema_ObjectClass_ActiveDirectory extends Zend_Ldap_Node_S
      *
      * @return string
      */
-    public function getOid()
-    {
-
-    }
+    public function getOid() {}
 
     /**
      * Gets the attributes that this objectClass must contain
      *
      * @return array
      */
-    public function getMustContain()
-    {
-
-    }
+    public function getMustContain() {}
 
     /**
      * Gets the attributes that this objectClass may contain
      *
      * @return array
      */
-    public function getMayContain()
-    {
-
-    }
+    public function getMayContain() {}
 
     /**
      * Gets the objectClass description
      *
      * @return string
      */
-    public function getDescription()
-    {
-
-    }
+    public function getDescription() {}
 
     /**
      * Gets the objectClass type
      *
-     * @return integer
+     * @return int
      */
-    public function getType()
-    {
-
-    }
+    public function getType() {}
 
     /**
      * Returns the parent objectClasses of this class.
@@ -108,8 +92,5 @@ class Zend_Ldap_Node_Schema_ObjectClass_ActiveDirectory extends Zend_Ldap_Node_S
      *
      * @return array
      */
-    public function getParentClasses()
-    {
-
-    }
+    public function getParentClasses() {}
 }

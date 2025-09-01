@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,49 +14,50 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Mail
- * @subpackage Storage
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
-
 /**
  * @category   Zend
- * @package    Zend_Mail
- * @subpackage Storage
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
-abstract class Zend_Mail_Storage_Abstract implements Countable, ArrayAccess, SeekableIterator
+abstract class Zend_Mail_Storage_Abstract implements ArrayAccess, Countable, SeekableIterator
 {
     /**
      * class capabilities with default values
+     *
      * @var array
      */
-    protected $_has = array('uniqueid'  => true,
-                            'delete'    => false,
-                            'create'    => false,
-                            'top'       => false,
-                            'fetchPart' => true,
-                            'flags'     => false);
+    protected $_has = ['uniqueid' => true,
+        'delete' => false,
+        'create' => false,
+        'top' => false,
+        'fetchPart' => true,
+        'flags' => false];
 
     /**
      * current iteration position
+     *
      * @var int
      */
     protected $_iterationPos = 0;
 
     /**
      * maximum iteration position (= message count)
+     *
      * @var null|int
      */
     protected $_iterationMax = null;
 
     /**
      * used message class, change it in an extened class to extend the returned message class
+     *
      * @var string
      */
     protected $_messageClass = 'Zend_Mail_Message';
@@ -69,24 +71,25 @@ abstract class Zend_Mail_Storage_Abstract implements Countable, ArrayAccess, See
      *   - false if a feature is not supported
      *   - null is it's not yet known or it can't be know if a feature is supported
      *
-     * @param  string $var  property name
-     * @return bool         supported or not
+     * @param  string  $var  property name
+     * @return bool supported or not
+     *
      * @throws Zend_Mail_Storage_Exception
      */
     public function __get($var)
     {
         if (strpos($var, 'has') === 0) {
             $var = strtolower(substr($var, 3));
-            return isset($this->_has[$var]) ? $this->_has[$var] : null;
+
+            return $this->_has[$var] ?? null;
         }
 
         /**
          * @see Zend_Mail_Storage_Exception
          */
         require_once 'Zend/Mail/Storage/Exception.php';
-        throw new Zend_Mail_Storage_Exception($var . ' not found');
+        throw new Zend_Mail_Storage_Exception($var.' not found');
     }
-
 
     /**
      * Get a full list of features supported by the specific mail lib and the server
@@ -98,40 +101,37 @@ abstract class Zend_Mail_Storage_Abstract implements Countable, ArrayAccess, See
         return $this->_has;
     }
 
-
     /**
      * Count messages messages in current box/folder
      *
      * @return int number of messages
+     *
      * @throws Zend_Mail_Storage_Exception
      */
     abstract public function countMessages();
 
-
     /**
      * Get a list of messages with number and size
      *
-     * @param  int $id  number of message
+     * @param  int  $id  number of message
      * @return int|array size of given message of list with all messages as array(num => size)
      */
     abstract public function getSize($id = 0);
 
-
     /**
      * Get a message with headers and body
      *
-     * @param int $id number of message
+     * @param  int  $id  number of message
      * @return Zend_Mail_Message
      */
     abstract public function getMessage($id);
 
-
     /**
      * Get raw header of message or part
      *
-     * @param  int               $id       number of message
-     * @param  null|array|string $part     path to part or null for messsage header
-     * @param  int               $topLines include this many lines with header (after an empty line)
+     * @param  int  $id  number of message
+     * @param  null|array|string  $part  path to part or null for messsage header
+     * @param  int  $topLines  include this many lines with header (after an empty line)
      * @return string raw header
      */
     abstract public function getRawHeader($id, $part = null, $topLines = 0);
@@ -139,8 +139,8 @@ abstract class Zend_Mail_Storage_Abstract implements Countable, ArrayAccess, See
     /**
      * Get raw content of message or part
      *
-     * @param  int               $id   number of message
-     * @param  null|array|string $part path to part or null for messsage content
+     * @param  int  $id  number of message
+     * @param  null|array|string  $part  path to part or null for messsage content
      * @return string raw content
      */
     abstract public function getRawContent($id, $part = null);
@@ -148,11 +148,11 @@ abstract class Zend_Mail_Storage_Abstract implements Countable, ArrayAccess, See
     /**
      * Create instance with parameters
      *
-     * @param  array $params mail reader specific parameters
+     * @param  array  $params  mail reader specific parameters
+     *
      * @throws Zend_Mail_Storage_Exception
      */
     abstract public function __construct($params);
-
 
     /**
      * Destructor calls close() and therefore closes the resource.
@@ -162,7 +162,6 @@ abstract class Zend_Mail_Storage_Abstract implements Countable, ArrayAccess, See
         $this->close();
     }
 
-
     /**
      * Close resource for mail lib. If you need to control, when the resource
      * is closed. Otherwise the destructor would call this.
@@ -170,7 +169,6 @@ abstract class Zend_Mail_Storage_Abstract implements Countable, ArrayAccess, See
      * @return null
      */
     abstract public function close();
-
 
     /**
      * Keep the resource alive.
@@ -191,8 +189,9 @@ abstract class Zend_Mail_Storage_Abstract implements Countable, ArrayAccess, See
      *
      * if storage does not support unique ids it's the same as the message number
      *
-     * @param int|null $id message number
+     * @param  int|null  $id  message number
      * @return array|string message number for given message or all messages as array
+     *
      * @throws Zend_Mail_Storage_Exception
      */
     abstract public function getUniqueId($id = null);
@@ -203,8 +202,9 @@ abstract class Zend_Mail_Storage_Abstract implements Countable, ArrayAccess, See
      * I.e. if you have a webmailer that supports deleting messages you should use unique ids
      * as parameter and use this method to translate it to message number right before calling removeMessage()
      *
-     * @param string $id unique id
+     * @param  string  $id  unique id
      * @return int message number
+     *
      * @throws Zend_Mail_Storage_Exception
      */
     abstract public function getNumberByUniqueId($id);
@@ -214,164 +214,147 @@ abstract class Zend_Mail_Storage_Abstract implements Countable, ArrayAccess, See
     /**
      * Countable::count()
      *
-     * @return   int
+     * @return int
      */
-     #[\ReturnTypeWillChange]
     public function count()
-     {
+    {
         return $this->countMessages();
-     }
+    }
 
-
-     /**
-      * ArrayAccess::offsetExists()
-      *
-      * @param    int     $id
-      * @return   boolean
-      */
-     #[\ReturnTypeWillChange]
+    /**
+     * ArrayAccess::offsetExists()
+     *
+     * @param  int  $id
+     * @return bool
+     */
     public function offsetExists($id)
-     {
+    {
         try {
             if ($this->getMessage($id)) {
                 return true;
             }
-        } catch(Zend_Mail_Storage_Exception $e) {}
+        } catch (Zend_Mail_Storage_Exception $e) {
+        }
 
         return false;
-     }
+    }
 
-
-     /**
-      * ArrayAccess::offsetGet()
-      *
-      * @param    int $id
-      * @return   Zend_Mail_Message message object
-      */
-     #[\ReturnTypeWillChange]
+    /**
+     * ArrayAccess::offsetGet()
+     *
+     * @param  int  $id
+     * @return Zend_Mail_Message message object
+     */
     public function offsetGet($id)
-     {
+    {
         return $this->getMessage($id);
-     }
+    }
 
-
-     /**
-      * ArrayAccess::offsetSet()
-      *
-      * @param    id     $id
-      * @param    mixed  $value
-      * @throws   Zend_Mail_Storage_Exception
-      * @return   void
-      */
-     #[\ReturnTypeWillChange]
+    /**
+     * ArrayAccess::offsetSet()
+     *
+     * @param  id  $id
+     * @param  mixed  $value
+     * @return void
+     *
+     * @throws Zend_Mail_Storage_Exception
+     */
     public function offsetSet($id, $value)
-     {
+    {
         /**
          * @see Zend_Mail_Storage_Exception
          */
         require_once 'Zend/Mail/Storage/Exception.php';
         throw new Zend_Mail_Storage_Exception('cannot write mail messages via array access');
-     }
+    }
 
-
-     /**
-      * ArrayAccess::offsetUnset()
-      *
-      * @param    int   $id
-      * @return   boolean success
-      */
-     #[\ReturnTypeWillChange]
+    /**
+     * ArrayAccess::offsetUnset()
+     *
+     * @param  int  $id
+     * @return bool success
+     */
     public function offsetUnset($id)
-     {
+    {
         return $this->removeMessage($id);
-     }
+    }
 
-
-     /**
-      * Iterator::rewind()
-      *
-      * Rewind always gets the new count from the storage. Thus if you use
-      * the interfaces and your scripts take long you should use reset()
-      * from time to time.
-      *
-      * @return   void
-      */
-     #[\ReturnTypeWillChange]
+    /**
+     * Iterator::rewind()
+     *
+     * Rewind always gets the new count from the storage. Thus if you use
+     * the interfaces and your scripts take long you should use reset()
+     * from time to time.
+     *
+     * @return void
+     */
     public function rewind()
-     {
+    {
         $this->_iterationMax = $this->countMessages();
         $this->_iterationPos = 1;
-     }
+    }
 
-
-     /**
-      * Iterator::current()
-      *
-      * @return   Zend_Mail_Message current message
-      */
-     #[\ReturnTypeWillChange]
+    /**
+     * Iterator::current()
+     *
+     * @return Zend_Mail_Message current message
+     */
     public function current()
-     {
+    {
         return $this->getMessage($this->_iterationPos);
-     }
+    }
 
-
-     /**
-      * Iterator::key()
-      *
-      * @return   int id of current position
-      */
-     #[\ReturnTypeWillChange]
+    /**
+     * Iterator::key()
+     *
+     * @return int id of current position
+     */
     public function key()
-     {
+    {
         return $this->_iterationPos;
-     }
+    }
 
-
-     /**
-      * Iterator::next()
-      *
-      * @return   void
-      */
-     #[\ReturnTypeWillChange]
+    /**
+     * Iterator::next()
+     *
+     * @return void
+     */
     public function next()
-     {
-        ++$this->_iterationPos;
-     }
+    {
+        $this->_iterationPos++;
+    }
 
-
-     /**
-      * Iterator::valid()
-      *
-      * @return   boolean
-      */
-     #[\ReturnTypeWillChange]
+    /**
+     * Iterator::valid()
+     *
+     * @return bool
+     */
     public function valid()
-     {
+    {
         if ($this->_iterationMax === null) {
-          $this->_iterationMax = $this->countMessages();
+            $this->_iterationMax = $this->countMessages();
         }
+
         return $this->_iterationPos && $this->_iterationPos <= $this->_iterationMax;
-     }
+    }
 
-
-     /**
-      * SeekableIterator::seek()
-      *
-      * @param  int $pos
-      * @return void
-      * @throws OutOfBoundsException
-      */
-     public function seek($pos)
-     {
+    /**
+     * SeekableIterator::seek()
+     *
+     * @param  int  $pos
+     * @return void
+     *
+     * @throws OutOfBoundsException
+     */
+    public function seek($pos)
+    {
         if ($this->_iterationMax === null) {
-          $this->_iterationMax = $this->countMessages();
+            $this->_iterationMax = $this->countMessages();
         }
 
         if ($pos > $this->_iterationMax) {
             throw new OutOfBoundsException('this position does not exist');
         }
         $this->_iterationPos = $pos;
-     }
-
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Dojo
- * @subpackage Form_Element
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -27,9 +28,9 @@ require_once 'Zend/Dojo/Form/Element/Dijit.php';
  * Editor dijit
  *
  * @uses       Zend_Dojo_Form_Element_Dijit
+ *
  * @category   Zend
- * @package    Zend_Dojo
- * @subpackage Form_Element
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -43,7 +44,7 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
     /**
      * Add a single event to connect to the editing area
      *
-     * @param  string $event
+     * @param  string  $event
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function addCaptureEvent($event)
@@ -56,13 +57,13 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
 
         $captureEvents[] = (string) $event;
         $this->setDijitParam('captureEvents', $captureEvents);
+
         return $this;
     }
 
     /**
      * Add multiple capture events
      *
-     * @param  array $events
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function addCaptureEvents(array $events)
@@ -70,19 +71,20 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
         foreach ($events as $event) {
             $this->addCaptureEvent($event);
         }
+
         return $this;
     }
 
     /**
      * Overwrite many capture events at once
      *
-     * @param  array $events
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function setCaptureEvents(array $events)
     {
         $this->clearCaptureEvents();
         $this->addCaptureEvents($events);
+
         return $this;
     }
 
@@ -93,28 +95,30 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
      */
     public function getCaptureEvents()
     {
-        if (!$this->hasDijitParam('captureEvents')) {
-            return array();
+        if (! $this->hasDijitParam('captureEvents')) {
+            return [];
         }
+
         return $this->getDijitParam('captureEvents');
     }
 
     /**
      * Is a given capture event registered?
      *
-     * @param  string $event
+     * @param  string  $event
      * @return bool
      */
     public function hasCaptureEvent($event)
     {
         $captureEvents = $this->getCaptureEvents();
+
         return in_array((string) $event, $captureEvents);
     }
 
     /**
      * Remove a given capture event
      *
-     * @param  string $event
+     * @param  string  $event
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function removeCaptureEvent($event)
@@ -126,6 +130,7 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
         }
         unset($captureEvents[$index]);
         $this->setDijitParam('captureEvents', $captureEvents);
+
         return $this;
     }
 
@@ -142,7 +147,7 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
     /**
      * Add a single event to the dijit
      *
-     * @param  string $event
+     * @param  string  $event
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function addEvent($event)
@@ -155,13 +160,13 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
 
         $events[] = (string) $event;
         $this->setDijitParam('events', $events);
+
         return $this;
     }
 
     /**
      * Add multiple events
      *
-     * @param  array $events
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function addEvents(array $events)
@@ -169,19 +174,20 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
         foreach ($events as $event) {
             $this->addEvent($event);
         }
+
         return $this;
     }
 
     /**
      * Overwrite many events at once
      *
-     * @param  array $events
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function setEvents(array $events)
     {
         $this->clearEvents();
         $this->addEvents($events);
+
         return $this;
     }
 
@@ -192,28 +198,30 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
      */
     public function getEvents()
     {
-        if (!$this->hasDijitParam('events')) {
-            return array();
+        if (! $this->hasDijitParam('events')) {
+            return [];
         }
+
         return $this->getDijitParam('events');
     }
 
     /**
      * Is a given event registered?
      *
-     * @param  string $event
+     * @param  string  $event
      * @return bool
      */
     public function hasEvent($event)
     {
         $events = $this->getEvents();
+
         return in_array((string) $event, $events);
     }
 
     /**
      * Remove a given event
      *
-     * @param  string $event
+     * @param  string  $event
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function removeEvent($event)
@@ -224,6 +232,7 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
         }
         unset($events[$index]);
         $this->setDijitParam('events', $events);
+
         return $this;
     }
 
@@ -240,7 +249,7 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
     /**
      * Add a single editor plugin
      *
-     * @param  string $plugin
+     * @param  string  $plugin
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function addPlugin($plugin)
@@ -253,13 +262,13 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
 
         $plugins[] = (string) $plugin;
         $this->setDijitParam('plugins', $plugins);
+
         return $this;
     }
 
     /**
      * Add multiple plugins
      *
-     * @param  array $plugins
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function addPlugins(array $plugins)
@@ -267,19 +276,20 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
         foreach ($plugins as $plugin) {
             $this->addPlugin($plugin);
         }
+
         return $this;
     }
 
     /**
      * Overwrite many plugins at once
      *
-     * @param  array $plugins
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function setPlugins(array $plugins)
     {
         $this->clearPlugins();
         $this->addPlugins($plugins);
+
         return $this;
     }
 
@@ -290,28 +300,30 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
      */
     public function getPlugins()
     {
-        if (!$this->hasDijitParam('plugins')) {
-            return array();
+        if (! $this->hasDijitParam('plugins')) {
+            return [];
         }
+
         return $this->getDijitParam('plugins');
     }
 
     /**
      * Is a given plugin registered?
      *
-     * @param  string $plugin
+     * @param  string  $plugin
      * @return bool
      */
     public function hasPlugin($plugin)
     {
         $plugins = $this->getPlugins();
+
         return in_array((string) $plugin, $plugins);
     }
 
     /**
      * Remove a given plugin
      *
-     * @param  string $plugin
+     * @param  string  $plugin
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function removePlugin($plugin)
@@ -322,6 +334,7 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
         }
         unset($plugins[$index]);
         $this->setDijitParam('plugins', $plugins);
+
         return $this;
     }
 
@@ -338,7 +351,7 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
     /**
      * Set edit action interval
      *
-     * @param  int $interval
+     * @param  int  $interval
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function setEditActionInterval($interval)
@@ -353,16 +366,17 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
      */
     public function getEditActionInterval()
     {
-        if (!$this->hasDijitParam('editActionInterval')) {
+        if (! $this->hasDijitParam('editActionInterval')) {
             $this->setEditActionInterval(3);
         }
+
         return $this->getDijitParam('editActionInterval');
     }
 
     /**
      * Set focus on load flag
      *
-     * @param  bool $flag
+     * @param  bool  $flag
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function setFocusOnLoad($flag)
@@ -377,27 +391,29 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
      */
     public function getFocusOnLoad()
     {
-        if (!$this->hasDijitParam('focusOnLoad')) {
-             return false;
+        if (! $this->hasDijitParam('focusOnLoad')) {
+            return false;
         }
+
         return $this->getDijitParam('focusOnLoad');
     }
 
     /**
      * Set editor height
      *
-     * @param  string|int $height
+     * @param  string|int  $height
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function setHeight($height)
     {
-        if (!preg_match('/^\d+(em|px|%)?$/i', $height)) {
+        if (! preg_match('/^\d+(em|px|%)?$/i', $height)) {
             require_once 'Zend/Form/Element/Exception.php';
             throw new Zend_Form_Element_Exception('Invalid height provided; must be integer or CSS measurement');
         }
-        if (!preg_match('/(em|px|%)$/', $height)) {
+        if (! preg_match('/(em|px|%)$/', $height)) {
             $height .= 'px';
         }
+
         return $this->setDijitParam('height', $height);
     }
 
@@ -408,16 +424,17 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
      */
     public function getHeight()
     {
-        if (!$this->hasDijitParam('height')) {
+        if (! $this->hasDijitParam('height')) {
             return '300px';
         }
+
         return $this->getDijitParam('height');
     }
 
     /**
      * Set whether or not to inherit parent's width
      *
-     * @param  bool $flag
+     * @param  bool  $flag
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function setInheritWidth($flag)
@@ -432,27 +449,29 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
      */
     public function getInheritWidth()
     {
-        if (!$this->hasDijitParam('inheritWidth')) {
+        if (! $this->hasDijitParam('inheritWidth')) {
             return false;
         }
+
         return $this->getDijitParam('inheritWidth');
     }
 
     /**
      * Set minimum height of editor
      *
-     * @param  string|int $minHeight
+     * @param  string|int  $minHeight
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function setMinHeight($minHeight)
     {
-        if (!preg_match('/^\d+(em|px|%)?$/i', $minHeight)) {
+        if (! preg_match('/^\d+(em|px|%)?$/i', $minHeight)) {
             require_once 'Zend/Form/Element/Exception.php';
             throw new Zend_Form_Element_Exception('Invalid minHeight provided; must be integer or CSS measurement');
         }
-        if (!preg_match('/(em|px|%)$/', $minHeight)) {
+        if (! preg_match('/(em|px|%)$/', $minHeight)) {
             $minHeight .= 'em';
         }
+
         return $this->setDijitParam('minHeight', $minHeight);
     }
 
@@ -463,16 +482,17 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
      */
     public function getMinHeight()
     {
-        if (!$this->hasDijitParam('minHeight')) {
+        if (! $this->hasDijitParam('minHeight')) {
             return '1em';
         }
+
         return $this->getDijitParam('minHeight');
     }
 
     /**
      * Add a custom stylesheet
      *
-     * @param  string $styleSheet
+     * @param  string  $styleSheet
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function addStyleSheet($styleSheet)
@@ -480,21 +500,21 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
         $stylesheets = $this->getStyleSheets();
         if (strstr($stylesheets, ';')) {
             $stylesheets = explode(';', $stylesheets);
-        } elseif (!empty($stylesheets)) {
+        } elseif (! empty($stylesheets)) {
             $stylesheets = (array) $stylesheets;
         } else {
-            $stylesheets = array();
+            $stylesheets = [];
         }
-        if (!in_array($styleSheet, $stylesheets)) {
+        if (! in_array($styleSheet, $stylesheets)) {
             $stylesheets[] = (string) $styleSheet;
         }
+
         return $this->setDijitParam('styleSheets', implode(';', $stylesheets));
     }
 
     /**
      * Add multiple custom stylesheets
      *
-     * @param  array $styleSheets
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function addStyleSheets(array $styleSheets)
@@ -502,18 +522,19 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
         foreach ($styleSheets as $styleSheet) {
             $this->addStyleSheet($styleSheet);
         }
+
         return $this;
     }
 
     /**
      * Overwrite all stylesheets
      *
-     * @param  array $styleSheets
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function setStyleSheets(array $styleSheets)
     {
         $this->clearStyleSheets();
+
         return $this->addStyleSheets($styleSheets);
     }
 
@@ -524,29 +545,31 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
      */
     public function getStyleSheets()
     {
-        if (!$this->hasDijitParam('styleSheets')) {
+        if (! $this->hasDijitParam('styleSheets')) {
             return '';
         }
+
         return $this->getDijitParam('styleSheets');
     }
 
     /**
      * Is a given stylesheet registered?
      *
-     * @param  string $styleSheet
+     * @param  string  $styleSheet
      * @return bool
      */
     public function hasStyleSheet($styleSheet)
     {
         $styleSheets = $this->getStyleSheets();
         $styleSheets = explode(';', $styleSheets);
+
         return in_array($styleSheet, $styleSheets);
     }
 
     /**
      * Remove a single stylesheet
      *
-     * @param  string $styleSheet
+     * @param  string  $styleSheet
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function removeStyleSheet($styleSheet)
@@ -557,6 +580,7 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
             unset($styleSheets[$index]);
             $this->setDijitParam('styleSheets', implode(';', $styleSheets));
         }
+
         return $this;
     }
 
@@ -570,13 +594,14 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
         if ($this->hasDijitParam('styleSheets')) {
             $this->removeDijitParam('styleSheets');
         }
+
         return $this;
     }
 
     /**
      * Set update interval
      *
-     * @param  int $interval
+     * @param  int  $interval
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function setUpdateInterval($interval)
@@ -591,16 +616,17 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
      */
     public function getUpdateInterval()
     {
-        if (!$this->hasDijitParam('updateInterval')) {
-             return 200;
+        if (! $this->hasDijitParam('updateInterval')) {
+            return 200;
         }
+
         return $this->getDijitParam('updateInterval');
     }
 
     /**
      * Add a single editor extra plugin.
      *
-     * @param  string $plugin
+     * @param  string  $plugin
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function addExtraPlugin($plugin)
@@ -610,16 +636,17 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
         if (in_array($plugin, $extraPlugins)) {
             return $this;
         }
-    
+
         $extraPlugins[] = (string) $plugin;
         $this->setDijitParam('extraPlugins', $extraPlugins);
+
         return $this;
     }
-    
+
     /**
      * Add multiple extra plugins.
      *
-     * @param  array $extraPlugins
+     * @param  array  $extraPlugins
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function addExtraPlugins(array $plugins)
@@ -627,22 +654,23 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
         foreach ($plugins as $plugin) {
             $this->addExtraPlugin($plugin);
         }
+
         return $this;
     }
-    
+
     /**
      * Overwrite many extra plugins at once.
      *
-     * @param  array $plugins
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function setExtraPlugins(array $plugins)
     {
         $this->clearExtraPlugins();
         $this->addExtraPlugins($plugins);
+
         return $this;
     }
-    
+
     /**
      * Get all extra plugins.
      *
@@ -650,28 +678,30 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
      */
     public function getExtraPlugins()
     {
-        if (!$this->hasDijitParam('extraPlugins')) {
-            return array();
+        if (! $this->hasDijitParam('extraPlugins')) {
+            return [];
         }
+
         return $this->getDijitParam('extraPlugins');
     }
-    
+
     /**
      * Is a given extra plugin registered?
      *
-     * @param  string $plugin
+     * @param  string  $plugin
      * @return bool
      */
     public function hasExtraPlugin($plugin)
     {
         $extraPlugins = $this->getExtraPlugins();
+
         return in_array((string) $plugin, $extraPlugins);
     }
-    
+
     /**
      * Remove a given extra plugin.
      *
-     * @param  string $plugin
+     * @param  string  $plugin
      * @return Zend_Dojo_Form_Element_Editor
      */
     public function removeExtraPlugin($plugin)
@@ -682,9 +712,10 @@ class Zend_Dojo_Form_Element_Editor extends Zend_Dojo_Form_Element_Dijit
         }
         unset($extraPlugins[$index]);
         $this->setDijitParam('extraPlugins', $extraPlugins);
+
         return $this;
     }
-    
+
     /**
      * Clear all extra plugins.
      *

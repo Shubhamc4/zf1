@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -29,16 +30,13 @@ require_once 'Zend/Tool/Framework/Loader/Interface.php';
 require_once 'Zend/Tool/Framework/Manifest/Interface.php';
 require_once 'Zend/Tool/Framework/Provider/Interface.php';
 
-
 /**
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-#[AllowDynamicProperties]
-abstract class Zend_Tool_Framework_Loader_Abstract
-    implements Zend_Tool_Framework_Loader_Interface, Zend_Tool_Framework_Registry_EnabledInterface
+abstract class Zend_Tool_Framework_Loader_Abstract implements Zend_Tool_Framework_Loader_Interface, Zend_Tool_Framework_Registry_EnabledInterface
 {
     /**
      * @var Zend_Tool_Framework_Repository_Interface
@@ -48,12 +46,12 @@ abstract class Zend_Tool_Framework_Loader_Abstract
     /**
      * @var array
      */
-    private $_retrievedFiles = array();
+    private $_retrievedFiles = [];
 
     /**
      * @var array
      */
-    private $_loadedClasses  = array();
+    private $_loadedClasses = [];
 
     /**
      * _getFiles
@@ -66,32 +64,31 @@ abstract class Zend_Tool_Framework_Loader_Abstract
      * setRegistry() - required by the enabled interface to get an instance of
      * the registry
      *
-     * @param Zend_Tool_Framework_Registry_Interface $registry
      * @return Zend_Tool_Framework_Loader_Abstract
      */
     public function setRegistry(Zend_Tool_Framework_Registry_Interface $registry)
     {
         $this->_registry = $registry;
+
         return $this;
     }
 
     /**
      * load() - called by the client initialize routine to load files
-     *
      */
     public function load()
     {
         $this->_retrievedFiles = $this->getRetrievedFiles();
-        $this->_loadedClasses  = array();
+        $this->_loadedClasses = [];
 
         $manifestRepository = $this->_registry->getManifestRepository();
         $providerRepository = $this->_registry->getProviderRepository();
 
-        $loadedClasses = array();
+        $loadedClasses = [];
 
         // loop through files and find the classes declared by loading the file
         foreach ($this->_retrievedFiles as $file) {
-            if(is_dir($file)) {
+            if (is_dir($file)) {
                 continue;
             }
 
@@ -110,16 +107,14 @@ abstract class Zend_Tool_Framework_Loader_Abstract
             // reflect class to see if its something we want to load
             $reflectionClass = new ReflectionClass($loadedClass);
             if ($reflectionClass->implementsInterface('Zend_Tool_Framework_Manifest_Interface')
-                && !$reflectionClass->isAbstract())
-            {
+                && ! $reflectionClass->isAbstract()) {
                 $manifestRepository->addManifest($reflectionClass->newInstance());
                 $this->_loadedClasses[] = $loadedClass;
             }
 
             if ($reflectionClass->implementsInterface('Zend_Tool_Framework_Provider_Interface')
-                && !$reflectionClass->isAbstract()
-                && !$providerRepository->hasProvider($reflectionClass->getName(), false))
-            {
+                && ! $reflectionClass->isAbstract()
+                && ! $providerRepository->hasProvider($reflectionClass->getName(), false)) {
                 $providerRepository->addProvider($reflectionClass->newInstance());
                 $this->_loadedClasses[] = $loadedClass;
             }
@@ -152,6 +147,4 @@ abstract class Zend_Tool_Framework_Loader_Abstract
     {
         return $this->_loadedClasses;
     }
-
-
 }

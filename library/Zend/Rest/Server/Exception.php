@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,29 +14,22 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Rest
- * @subpackage Server
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
-
 
 /**
  * Zend_Rest_Exception
  */
 require_once 'Zend/Rest/Exception.php';
 
-
 /**
  * Zend_Rest_Server_Exception
  *
- * @package    Zend_Rest
- * @subpackage Server
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Rest_Server_Exception extends Zend_Rest_Exception
-{
-}
-
+class Zend_Rest_Server_Exception extends Zend_Rest_Exception {}

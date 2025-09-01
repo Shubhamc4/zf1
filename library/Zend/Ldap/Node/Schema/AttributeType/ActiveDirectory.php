@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Schema
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -34,13 +35,11 @@ require_once 'Zend/Ldap/Node/Schema/AttributeType/Interface.php';
  * schema information on an Active Directory server.
  *
  * @category   Zend
- * @package    Zend_Ldap
- * @subpackage Schema
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Ldap_Node_Schema_AttributeType_ActiveDirectory extends Zend_Ldap_Node_Schema_Item
-    implements Zend_Ldap_Node_Schema_AttributeType_Interface
+class Zend_Ldap_Node_Schema_AttributeType_ActiveDirectory extends Zend_Ldap_Node_Schema_Item implements Zend_Ldap_Node_Schema_AttributeType_Interface
 {
     /**
      * Gets the attribute name
@@ -57,48 +56,33 @@ class Zend_Ldap_Node_Schema_AttributeType_ActiveDirectory extends Zend_Ldap_Node
      *
      * @return string
      */
-    public function getOid()
-    {
-
-    }
+    public function getOid() {}
 
     /**
      * Gets the attribute syntax
      *
      * @return string
      */
-    public function getSyntax()
-    {
-
-    }
+    public function getSyntax() {}
 
     /**
      * Gets the attribute maximum length
      *
      * @return int|null
      */
-    public function getMaxLength()
-    {
-
-    }
+    public function getMaxLength() {}
 
     /**
      * Returns if the attribute is single-valued.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isSingleValued()
-    {
-
-    }
+    public function isSingleValued() {}
 
     /**
      * Gets the attribute description
      *
      * @return string
      */
-    public function getDescription()
-    {
-
-    }
+    public function getDescription() {}
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,9 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -26,31 +28,33 @@ require_once 'Zend/Validate/Abstract.php';
 
 /**
  * @category   Zend
- * @package    Zend_Validate
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Validate_Regex extends Zend_Validate_Abstract
 {
-    const INVALID   = 'regexInvalid';
+    const INVALID = 'regexInvalid';
+
     const NOT_MATCH = 'regexNotMatch';
-    const ERROROUS  = 'regexErrorous';
+
+    const ERROROUS = 'regexErrorous';
 
     /**
      * @var array
      */
-    protected $_messageTemplates = array(
-        self::INVALID   => "Invalid type given. String, integer or float expected",
+    protected $_messageTemplates = [
+        self::INVALID => 'Invalid type given. String, integer or float expected',
         self::NOT_MATCH => "'%value%' does not match against pattern '%pattern%'",
-        self::ERROROUS  => "There was an internal error while using the pattern '%pattern%'",
-    );
+        self::ERROROUS => "There was an internal error while using the pattern '%pattern%'",
+    ];
 
     /**
      * @var array
      */
-    protected $_messageVariables = array(
-        'pattern' => '_pattern'
-    );
+    protected $_messageVariables = [
+        'pattern' => '_pattern',
+    ];
 
     /**
      * Regular expression pattern
@@ -62,7 +66,8 @@ class Zend_Validate_Regex extends Zend_Validate_Abstract
     /**
      * Sets validator options
      *
-     * @param  string|Zend_Config $pattern
+     * @param  string|Zend_Config  $pattern
+     *
      * @throws Zend_Validate_Exception On missing 'pattern' parameter
      */
     public function __construct($pattern)
@@ -96,18 +101,19 @@ class Zend_Validate_Regex extends Zend_Validate_Abstract
     /**
      * Sets the pattern option
      *
-     * @param  string $pattern
-     * @throws Zend_Validate_Exception if there is a fatal error in pattern matching
+     * @param  string  $pattern
      * @return Zend_Validate_Regex Provides a fluent interface
+     *
+     * @throws Zend_Validate_Exception if there is a fatal error in pattern matching
      */
     public function setPattern($pattern)
     {
         $this->_pattern = (string) $pattern;
-        $status         = @preg_match($this->_pattern, "Test");
+        $status = @preg_match($this->_pattern, 'Test');
 
         if (false === $status) {
             require_once 'Zend/Validate/Exception.php';
-            throw new Zend_Validate_Exception("Internal error while using the pattern '$this->_pattern'");
+            throw new Zend_Validate_Exception("Internal error while using the pattern '{$this->_pattern}'");
         }
 
         return $this;
@@ -118,13 +124,14 @@ class Zend_Validate_Regex extends Zend_Validate_Abstract
      *
      * Returns true if and only if $value matches against the pattern option
      *
-     * @param  string $value
-     * @return boolean
+     * @param  string  $value
+     * @return bool
      */
     public function isValid($value)
     {
-        if (!is_string($value) && !is_int($value) && !is_float($value)) {
+        if (! is_string($value) && ! is_int($value) && ! is_float($value)) {
             $this->_error(self::INVALID);
+
             return false;
         }
 
@@ -133,11 +140,13 @@ class Zend_Validate_Regex extends Zend_Validate_Abstract
         $status = @preg_match($this->_pattern, $value);
         if (false === $status) {
             $this->_error(self::ERROROUS);
+
             return false;
         }
 
-        if (!$status) {
+        if (! $status) {
             $this->_error(self::NOT_MATCH);
+
             return false;
         }
 

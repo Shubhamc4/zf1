@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Zend Framework
  *
@@ -13,10 +14,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_Tool
- * @subpackage Framework
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -40,7 +41,6 @@ require_once 'Zend/Filter/Word/CamelCaseToDash.php';
  */
 require_once 'Zend/Filter/StringToLower.php';
 
-
 /**
  * This class is the front most class for utilizing Zend_Tool_Project
  *
@@ -48,13 +48,12 @@ require_once 'Zend/Filter/StringToLower.php';
  * items within a specific project.
  *
  * @category   Zend
- * @package    Zend_Tool
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Tool_Project_Context_Zf_ViewScriptFile extends Zend_Tool_Project_Context_Filesystem_File
 {
-
     /**
      * @var string
      */
@@ -89,15 +88,16 @@ class Zend_Tool_Project_Context_Zf_ViewScriptFile extends Zend_Tool_Project_Cont
     {
         if ($forActionName = $this->_resource->getAttribute('forActionName')) {
             $this->_forActionName = $forActionName;
-            $this->_filesystemName = $this->_convertActionNameToFilesystemName($forActionName) . '.phtml';
+            $this->_filesystemName = $this->_convertActionNameToFilesystemName($forActionName).'.phtml';
         } elseif ($scriptName = $this->_resource->getAttribute('scriptName')) {
             $this->_scriptName = $scriptName;
-            $this->_filesystemName = $scriptName . '.phtml';
+            $this->_filesystemName = $scriptName.'.phtml';
         } else {
             throw new Exception('Either a forActionName or scriptName is required.');
         }
 
         parent::init();
+
         return $this;
     }
 
@@ -108,7 +108,7 @@ class Zend_Tool_Project_Context_Zf_ViewScriptFile extends Zend_Tool_Project_Cont
      */
     public function getPersistentAttributes()
     {
-        $attributes = array();
+        $attributes = [];
 
         if ($this->_forActionName) {
             $attributes['forActionName'] = $this->_forActionName;
@@ -131,7 +131,7 @@ class Zend_Tool_Project_Context_Zf_ViewScriptFile extends Zend_Tool_Project_Cont
         $contents = '';
 
         $controllerName = $this->_resource->getParentResource()->getAttribute('forControllerName');
-        
+
         $viewsDirectoryResource = $this->_resource
             ->getParentResource() // view script
             ->getParentResource() // view controller dir
@@ -141,9 +141,9 @@ class Zend_Tool_Project_Context_Zf_ViewScriptFile extends Zend_Tool_Project_Cont
         } else {
             $moduleName = 'default';
         }
-        
+
         if ($this->_filesystemName == 'error.phtml') {  // should also check that the above directory is forController=error
-            $contents .= <<<EOS
+            $contents .= <<<'EOS'
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -152,21 +152,21 @@ class Zend_Tool_Project_Context_Zf_ViewScriptFile extends Zend_Tool_Project_Cont
 </head>
 <body>
   <h1>An error occurred</h1>
-  <h2><?php echo \$this->message ?></h2>
+  <h2><?php echo $this->message ?></h2>
 
-  <?php if (isset(\$this->exception)): ?>
+  <?php if (isset($this->exception)): ?>
   
   <h3>Exception information:</h3>
   <p>
-      <b>Message:</b> <?php echo \$this->exception->getMessage() ?>
+      <b>Message:</b> <?php echo $this->exception->getMessage() ?>
   </p>
 
   <h3>Stack trace:</h3>
-  <pre><?php echo \$this->exception->getTraceAsString() ?>
+  <pre><?php echo $this->exception->getTraceAsString() ?>
   </pre>
 
   <h3>Request Parameters:</h3>
-  <pre><?php echo \$this->escape(var_export(\$this->request->getParams(), true)) ?>
+  <pre><?php echo $this->escape(var_export($this->request->getParams(), true)) ?>
   </pre>
 
   <?php endif ?>
@@ -177,7 +177,7 @@ class Zend_Tool_Project_Context_Zf_ViewScriptFile extends Zend_Tool_Project_Cont
 EOS;
         } elseif ($this->_forActionName == 'index' && $controllerName == 'Index' && $moduleName == 'default') {
 
-            $contents =<<<EOS
+            $contents = <<<'EOS'
 <style>
     a:link,
     a:visited
@@ -229,19 +229,20 @@ EOS;
             $contents = <<<EOS
 <br /><br />
 <div id="view-content">
-	<p>View script for controller <b>$controllerName</b> and script/action name <b>$actionName</b></p>
+	<p>View script for controller <b>{$controllerName}</b> and script/action name <b>{$actionName}</b></p>
 </div>
 EOS;
         }
+
         return $contents;
     }
 
     protected function _convertActionNameToFilesystemName($actionName)
     {
-        $filter = new Zend_Filter();
-        $filter->addFilter(new Zend_Filter_Word_CamelCaseToDash())
-            ->addFilter(new Zend_Filter_StringToLower());
+        $filter = new Zend_Filter;
+        $filter->addFilter(new Zend_Filter_Word_CamelCaseToDash)
+            ->addFilter(new Zend_Filter_StringToLower);
+
         return $filter->filter($actionName);
     }
-
 }

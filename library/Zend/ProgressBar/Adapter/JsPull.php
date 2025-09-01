@@ -1,4 +1,5 @@
 <?php
+
 /**
  * LICENSE
  *
@@ -11,9 +12,10 @@
  * to license@zend.com so we can send you a copy immediately.
  *
  * @category   Zend
- * @package    Zend_ProgressBar
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
  * @version    $Id$
  */
 
@@ -32,8 +34,9 @@ require_once 'Zend/ProgressBar/Adapter.php';
  * progressbar in a browser.
  *
  * @category  Zend
- * @package   Zend_ProgressBar
+ *
  * @uses      Zend_ProgressBar_Adapter_Interface
+ *
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -42,14 +45,14 @@ class Zend_ProgressBar_Adapter_JsPull extends Zend_ProgressBar_Adapter
     /**
      * Wether to exit after json data send or not
      *
-     * @var boolean
+     * @var bool
      */
     protected $_exitAfterSend = true;
 
     /**
      * Set wether to exit after json data send or not
      *
-     * @param  boolean $exitAfterSend
+     * @param  bool  $exitAfterSend
      * @return Zend_ProgressBar_Adapter_JsPull
      */
     public function setExitAfterSend($exitAfterSend)
@@ -60,25 +63,25 @@ class Zend_ProgressBar_Adapter_JsPull extends Zend_ProgressBar_Adapter
     /**
      * Defined by Zend_ProgressBar_Adapter_Interface
      *
-     * @param  float   $current       Current progress value
-     * @param  float   $max           Max progress value
-     * @param  float   $percent       Current percent value
-     * @param  integer $timeTaken     Taken time in seconds
-     * @param  integer $timeRemaining Remaining time in seconds
-     * @param  string  $text          Status text
+     * @param  float  $current  Current progress value
+     * @param  float  $max  Max progress value
+     * @param  float  $percent  Current percent value
+     * @param  int  $timeTaken  Taken time in seconds
+     * @param  int  $timeRemaining  Remaining time in seconds
+     * @param  string  $text  Status text
      * @return void
      */
     public function notify($current, $max, $percent, $timeTaken, $timeRemaining, $text)
     {
-        $arguments = array(
-            'current'       => $current,
-            'max'           => $max,
-            'percent'       => ($percent * 100),
-            'timeTaken'     => $timeTaken,
+        $arguments = [
+            'current' => $current,
+            'max' => $max,
+            'percent' => ($percent * 100),
+            'timeTaken' => $timeTaken,
             'timeRemaining' => $timeRemaining,
-            'text'          => $text,
-            'finished'      => false
-        );
+            'text' => $text,
+            'finished' => false,
+        ];
 
         $data = Zend_Json::encode($arguments);
 
@@ -93,7 +96,7 @@ class Zend_ProgressBar_Adapter_JsPull extends Zend_ProgressBar_Adapter
      */
     public function finish()
     {
-        $data = Zend_Json::encode(array('finished' => true));
+        $data = Zend_Json::encode(['finished' => true]);
 
         $this->_outputData($data);
     }
@@ -103,7 +106,7 @@ class Zend_ProgressBar_Adapter_JsPull extends Zend_ProgressBar_Adapter
      *
      * This split-off is required for unit-testing.
      *
-     * @param  string $data
+     * @param  string  $data
      * @return void
      */
     protected function _outputData($data)

@@ -16,12 +16,27 @@
   ],
   "license": "BSD-3-Clause",
   "require": {
-    "php": "^8.2"
+    "php": "^8.2",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "vlucas/phpdotenv": "^5.6.2"
+  },
+  "require-dev": {
+    "laravel/pint": "^1.32.1"
   },
   "autoload": {
     "psr-0": {
-      "Zend_": "library/"
-    }
+      "Zend_": "library/",
+      "ZF1_": "library/"
+    },
+    "psr-4": {
+      "ZF1\\": "library/ZF1/"
+    },
+    "files": [
+      "library/ZF1/Support/helpers.php"
+    ]
   },
+  "bin": ["bin/zf"],
   "minimum-stability": "stable"
 }

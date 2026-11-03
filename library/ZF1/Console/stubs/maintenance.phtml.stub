@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Maintenance in Progress | <?= htmlspecialchars($appName, ENT_QUOTES, 'UTF-8') ?></title>
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--brand-primary:#007bff;--brand-hover:#0062cc;--bg-page:#f4f5fa;--card-bg:#ffffff;--text-heading:#1e293b;--text-body:#475569;--text-muted:#94a3b8;--border-color:#e2e8f0;--warning-bg:#fef3c7;--warning-border:#fde68a;--warning-text:#b45309;--danger-bg:#fee2e2;--danger-border:#fecaca;--danger-text:#b91c1c}*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background-color:var(--bg-page);color:var(--text-body);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;-webkit-font-smoothing:antialiased}.maintenance-card{background-color:var(--card-bg);border:1px solid var(--border-color);border-radius:14px;box-shadow:0 10px 30px 0 rgba(82,63,105,0.08);max-width:32rem;width:100%;padding:2.75rem 2.25rem;text-align:center;position:relative}.brand-header{margin-bottom:1.75rem}.brand-logo{max-height:48px;width:auto;object-fit:contain}.brand-fallback{font-size:1.5rem;font-weight:700;color:var(--brand-primary);letter-spacing:-0.025em}.status-pill{display:inline-flex;align-items:center;gap:0.5rem;background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning-text);padding:0.35rem 0.85rem;border-radius:9999px;font-size:0.8125rem;font-weight:600;margin-bottom:1.25rem;text-transform:uppercase;letter-spacing:0.04em}.pulse-dot{width:0.5rem;height:0.5rem;background-color:#f59e0b;border-radius:50%;animation:pulse-ring 2s cubic-bezier(0.4,0,0.6,1) infinite}@keyframes pulse-ring{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.8)}}h1{color:var(--text-heading);font-size:1.625rem;font-weight:700;letter-spacing:-0.025em;margin-bottom:0.85rem;line-height:1.25}.message{color:var(--text-body);font-size:0.9375rem;line-height:1.6;margin-bottom:1.75rem}.clock-container{background:#f8fafc;border:1px solid var(--border-color);border-radius:10px;padding:1.25rem;margin-bottom:1.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem}.clock-label{font-size:0.8125rem;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em}.live-timer{font-family:'Inter',monospace;font-size:2.25rem;font-weight:700;color:var(--brand-primary);letter-spacing:0.02em;font-variant-numeric:tabular-nums}.refresh-actions{display:flex;gap:0.75rem;justify-content:center;margin-bottom:1.25rem}.btn{font-family:inherit;display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;padding:0.55rem 1.25rem;font-size:0.875rem;font-weight:500;border-radius:8px;cursor:pointer;transition:all 0.15s ease-in-out;text-decoration:none;border:1px solid transparent}.btn-primary{background-color:var(--brand-primary);color:#ffffff}.btn-primary:hover{background-color:var(--brand-hover)}.btn-outline{background-color:#ffffff;border-color:var(--border-color);color:var(--text-body)}.btn-outline:hover{background-color:#f8fafc;border-color:#cbd5e1}.btn-sm{padding:0.35rem 0.75rem;font-size:0.8125rem}.alert-danger{background-color:var(--danger-bg);border:1px solid var(--danger-border);color:var(--danger-text);padding:0.65rem 1rem;border-radius:8px;font-size:0.8125rem;margin-bottom:1rem;text-align:left}.bypass-section{border-top:1px solid var(--border-color);margin-top:1.5rem;padding-top:1.25rem}.bypass-toggle-btn{background:none;border:none;color:var(--text-muted);font-size:0.8125rem;cursor:pointer;text-decoration:underline;transition:color 0.15s}.bypass-toggle-btn:hover{color:var(--brand-primary)}.bypass-form{display:none;margin-top:1rem;text-align:left}.bypass-form.show{display:block}.input-group{display:flex;gap:0.5rem}.form-control{font-family:inherit;flex:1;padding:0.55rem 0.85rem;font-size:0.875rem;border:1px solid var(--border-color);border-radius:8px;outline:none;transition:border-color 0.15s}.form-control:focus{border-color:var(--brand-primary);box-shadow:0 0 0 3px rgba(0,123,255,0.12)}.footer-note{margin-top:1.75rem;font-size:0.75rem;color:var(--text-muted)}
+    </style>
+</head>
+
+<body>
+    <div class="maintenance-card">
+        <div class="brand-header">
+            <img class="brand-logo" src="/logo.png" alt="Logo"
+                onerror="this.style.display='none'; document.getElementById('brand-fallback').style.display='block';">
+            <div id="brand-fallback" class="brand-fallback" style="display: none;">
+                <?= htmlspecialchars($appName, ENT_QUOTES, 'UTF-8') ?>
+            </div>
+        </div>
+
+        <div class="status-pill">
+            <div class="pulse-dot"></div>
+            <span>Scheduled Maintenance</span>
+        </div>
+
+        <h1>System Update in Progress</h1>
+        <p class="message"><?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?></p>
+
+        <?php if (! empty($errorMessage)) { ?>
+            <div class="alert-danger">
+                <?= htmlspecialchars($errorMessage, ENT_QUOTES, 'UTF-8') ?>
+            </div>
+        <?php } ?>
+
+        <div class="clock-container">
+            <span class="clock-label" id="clock-status">Auto-refreshing in</span>
+            <div class="live-timer" id="countdown-timer">--:--</div>
+        </div>
+
+        <div class="refresh-actions">
+            <button type="button" class="btn btn-primary" onclick="triggerManualReload()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <polyline points="1 20 1 14 7 14"></polyline>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                </svg>
+                Refresh Now
+            </button>
+        </div>
+
+        <?php if ($hasSecret) { ?>
+            <div class="bypass-section">
+                <button type="button" class="bypass-toggle-btn" onclick="toggleBypassForm()">
+                    Authorized Personnel? Enter Bypass Key
+                </button>
+                <form method="POST" class="bypass-form <?= ! empty($errorMessage) ? 'show' : '' ?>" id="bypass-form"
+                    autocomplete="off">
+                    <input type="hidden" name="redirect" value="<?= $currentUri ?>">
+                    <div class="input-group">
+                        <input type="password" name="maintenance_secret" class="form-control" placeholder="Enter bypass key"
+                            required autofocus>
+                        <button type="submit" class="btn btn-primary btn-sm">Unlock</button>
+                    </div>
+                </form>
+            </div>
+        <?php } ?>
+
+        <div class="footer-note">
+            <?= htmlspecialchars($appName, ENT_QUOTES, 'UTF-8') ?> &bull; &copy; <?= date('Y') ?>
+        </div>
+    </div>
+
+    <script>
+        (function(){var remaining=<?=$retryAfter?>;var timerEl=document.getElementById('countdown-timer');var statusEl=document.getElementById('clock-status');function formatTime(t){var m=Math.floor(t/60),s=t%60;return(m<10?'0':'')+m+':'+(s<10?'0':'')+s;}function updateDisplay(){if(timerEl)timerEl.textContent=formatTime(remaining);}updateDisplay();var timerInterval=setInterval(function(){remaining--;if(remaining<=0){clearInterval(timerInterval);if(timerEl)timerEl.textContent='00:00';if(statusEl)statusEl.textContent='Checking server status...';window.location.reload();}else{updateDisplay();}},1000);window.triggerManualReload=function(){if(statusEl)statusEl.textContent='Checking server status...';window.location.reload();};window.toggleBypassForm=function(){var form=document.getElementById('bypass-form');if(form){form.classList.toggle('show');if(form.classList.contains('show')){var input=form.querySelector('input[name="maintenance_secret"]');if(input)input.focus();}};};})();
+    </script>
+</body>
+
+</html>

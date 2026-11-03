@@ -28,6 +28,84 @@ For more detailed information about the PHP 8.2 compatibility changes, see the [
 composer require shubhamc4/zf1
 ```
 
+## Quick Start & Scaffolding
+
+This package provides a modern application foundation and the **`zf`** CLI tool.
+
+To scaffold the root `zf` CLI runner, application Kernel, and Bootstrap in your project:
+
+```bash
+php vendor/bin/zf make:foundation
+```
+
+This creates:
+- `./zf` (root executable CLI runner)
+- `application/Kernel.php` (modern application lifecycle & path management)
+- `application/Bootstrap.php` (extended bootstrap)
+
+Once scaffolded, you can run commands directly using `./zf` or `php zf`:
+
+```bash
+php zf list
+```
+
+## Features & Modern Foundation
+
+### 1. Command Line Interface (`zf`)
+Built-in commands for queues, scheduling, scaffolding, system maintenance, and local development:
+- `php zf about` — Display an overview of application environment, database, storage permissions, and diagnostics
+- `php zf route:list` — List and filter all registered MVC routes, URL patterns, methods, and targets
+- `php zf cache:clear` — Flush file caches, Zend_Cache pools, and database metadata caches
+- `php zf serve {--port=8000}` — Start the PHP built-in local development web server
+- `php zf make:command <Name>` — Scaffold a new CLI command in `application/Commands/`
+- `php zf make:job <Name>` — Scaffold a new Queue Job in `application/Jobs/`
+- `php zf queue:table` — Create database tables for jobs and failed jobs (`zend_jobs`, `zend_failed_jobs`)
+- `php zf queue:work` — Start background queue worker
+- `php zf queue:status` — Inspect queue metrics
+- `php zf queue:retry {id|all}` — Retry failed jobs
+- `php zf queue:failed` — List failed jobs
+- `php zf queue:flush` / `php zf queue:forget` / `php zf queue:prune`
+- `php zf schedule:run [name]` — Run due scheduled tasks, or run a specific scheduled task on-demand by name
+- `php zf schedule:list` — View scheduled cron events, intervals, and names
+- `php zf schedule:work` — Run a local daemon worker for the scheduler
+- `php zf down` / `php zf up` — Maintenance mode management (supports `--publish` to publish editable maintenance view, `--template=` for custom views, and secret bypass tokens)
+- `php zf db:backup` — Automated gzip database backup with retention pruning
+
+### 2. Modern Application Kernel (`ZF1\Foundation\Kernel`)
+- Auto-detects and loads `.env` variables via `vlucas/phpdotenv`
+- Supports both PHP array configuration files (`application/configs/application.php`) and traditional INI files (`application/configs/application.ini`)
+- Automatic project path resolution (`base_path()`, `app_path()`, `storage_path()`, `public_path()`, `config_path()`)
+
+### 3. Background Job Queue (`ZF1\Queue\Queue`)
+- Database-backed (`zend_jobs`, `zend_failed_jobs`) and synchronous drivers
+- Automatic job deduplication and unique payloads
+- Exponential backoff and retry limits
+- Graceful shutdown on `SIGTERM` / `SIGINT` signals
+
+### 4. Cron Task Scheduler (`ZF1\Schedule\Schedule`)
+- Fluent scheduling syntax (`->daily()`, `->everyFiveMinutes()`, `->weekdays()`)
+- Pure PHP 5-part cron parser (`CronExpression`)
+- Name schedules for easy tracking and manual execution:
+  ```php
+  $schedule->command('db:backup')->name('nightly-backup')->dailyAt('02:00');
+  $schedule->job(PruneLogsJob::class)->name('prune-logs')->weekly();
+  ```
+- Run any scheduled task immediately on-demand by name:
+  ```bash
+  php zf schedule:run nightly-backup
+  ```
+- Mutex-based overlap prevention and background execution
+
+### 5. Universal Helpers
+Autoloaded framework helpers available globally:
+- `dispatch($job, $payload, $queue, $delay)` — Quickly dispatch a background job
+- `env($key, $default)`
+- `base_path($subpath)` / `app_path()` / `storage_path()` / `public_path()` / `config_path()`
+- `url($path, $params, $secure)` / `asset($path, $version)`
+- `storage($disk)`
+- `blank($val)` / `filled($val)` / `data_get($target, $key)`
+- `discord_notify($title, $message, $fields)`
+
 ## Requirements
 
 - PHP 8.2 or higher

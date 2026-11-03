@@ -1,0 +1,53 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * ZF1 Console - Command Line Interface for Zend Framework 1
+ */
+
+define('ZF1_START', microtime(true));
+
+// 1. Locate Composer autoloader
+$autoloadCandidates = [
+    getcwd().'/vendor/autoload.php',
+    __DIR__.'/../../../autoload.php',
+    __DIR__.'/../../../../autoload.php',
+    __DIR__.'/../vendor/autoload.php',
+];
+
+$autoloaderFound = false;
+foreach ($autoloadCandidates as $file) {
+    if (file_exists($file)) {
+        require_once $file;
+        $autoloaderFound = true;
+        break;
+    }
+}
+
+if (! $autoloaderFound) {
+    fwrite(STDERR, "Unable to find Composer autoload.php. Please run 'composer install'.\n");
+    exit(1);
+}
+
+$projectRoot = getcwd();
+if (class_exists(\ZF1\Foundation\Kernel::class)) {
+    \ZF1\Foundation\Kernel::setProjectRoot($projectRoot);
+    \ZF1\Foundation\Kernel::ensureIncludePaths();
+}
+
+try {
+    if (class_exists(\App\Kernel::class)) {
+        \App\Kernel::boot();
+    } elseif (class_exists(\ZF1\Foundation\Kernel::class)) {
+        \ZF1\Foundation\Kernel::boot();
+    }
+} catch (Throwable) {
+    // Silently continue so built-in commands (like make:foundation) can run before app is configured
+}
+
+// 4. Run Console Application
+$status = \ZF1\Console\Application::run(array_slice($argv, 1));
+
+exit($status);

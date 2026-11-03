@@ -1,0 +1,39 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use ZF1\Queue\Job;
+
+final class {{ class }} extends Job
+{
+    /**
+     * Maximum retry attempts before marking as failed.
+     *
+     * @var int
+     */
+    public $tries = 3;
+
+    /**
+     * Retry backoff in seconds (integer or array for progressive backoff).
+     *
+     * @var int|array<int>|null
+     */
+    public $backoff = [10, 30, 60];
+
+    /**
+     * Whether to coalesce duplicate pending jobs with identical payloads.
+     */
+    public bool $unique = true;
+
+    /**
+     * Execute the job logic.
+     *
+     * @param  array<string, mixed>  $payload
+     */
+    public function handle(array $payload): void
+    {
+        // Job execution logic here
+    }
+}

@@ -1,0 +1,13 @@
+<?php
+
+declare(strict_types=1);
+
+use ZF1\Foundation\Bootstrap as BaseBootstrap;
+
+final class Bootstrap extends BaseBootstrap
+{
+    /**
+     * Application-specific bootstrap initialization.
+     * Define custom resource methods prefixed with _init (e.g. _initCustomResource()).
+     */
+}

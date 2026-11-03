@@ -1,0 +1,23 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use ZF1\Console\Command;
+
+final class {{ class }} extends Command
+{
+    protected string $signature = '{{ signature }}';
+
+    protected string $description = 'Description for {{ signature }} command';
+
+    public function handle(): int
+    {
+        $this->info('Executing {{ signature }}...');
+
+        // Your command logic here
+
+        return 0;
+    }
+}

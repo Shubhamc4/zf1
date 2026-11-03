@@ -47,22 +47,15 @@ Beyond interface method return types and dynamic properties, we've made several 
 
 ## Verification
 
-A verification script (`verify-php82.php`) is included to test PHP 8.2 compatibility. This script:
+PHP 8.2 compatibility has been verified across core components:
 
-1. Tests interface implementations to ensure they work correctly:
-
+1. Interface implementations function correctly without deprecation warnings:
    - `Countable::count()`
    - `Iterator` methods (`current()`, `key()`, `next()`, `rewind()`, `valid()`)
    - `ArrayAccess` methods (`offsetExists()`, `offsetGet()`, `offsetSet()`, `offsetUnset()`)
    - `IteratorAggregate::getIterator()`
 
-2. Verifies that modified classes load and function properly under PHP 8.2
-
-Run this script with PHP 8.2 to verify the framework functions correctly:
-
-```bash
-php verify-php82.php
-```
+2. Verified that all modified classes load and function properly under PHP 8.2+ without dynamic property or return type deprecation notices.
 
 ## Upgrading Your Application
 

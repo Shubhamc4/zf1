@@ -1,0 +1,25 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App;
+
+use ZF1\Foundation\Kernel as BaseKernel;
+
+/**
+ * Application Kernel
+ */
+final class Kernel extends BaseKernel
+{
+    /**
+     * Custom include paths defined by the application.
+     *
+     * @return array<string>
+     */
+    protected static function includePaths(): array
+    {
+        return [
+            // public_path('classes'),
+        ];
+    }
+}

@@ -23,8 +23,10 @@ final class UnifiedErrorHandler
 
         self::$registered = true;
 
+        $maxPriority = self::resolveMaxPriority();
+
         // 1. Convert PHP warnings and errors into log entries
-        set_error_handler(static function (int $errno, string $errstr, ?string $errfile = null, ?int $errline = null) {
+        set_error_handler(static function (int $errno, string $errstr, ?string $errfile = null, ?int $errline = null) use ($maxPriority) {
             if (! (error_reporting() & $errno)) {
                 return false;
             }
@@ -36,8 +38,8 @@ final class UnifiedErrorHandler
                 default => Zend_Log::INFO,
             };
 
-            // Only log warnings and above
-            if ($priority > Zend_Log::WARN) {
+            // Discard logs below configured priority threshold
+            if ($priority > $maxPriority) {
                 return false;
             }
 
@@ -128,6 +130,39 @@ final class UnifiedErrorHandler
         }
 
         return 'Guest';
+    }
+
+    /**
+     * Resolve the maximum log priority threshold using APP_LOG_LEVEL, LOG_LEVEL, APP_DEBUG, and APP_ENV.
+     */
+    public static function resolveMaxPriority(): int
+    {
+        $explicitLevel = env('APP_LOG_LEVEL', env('LOG_LEVEL'));
+
+        if ($explicitLevel !== null && $explicitLevel !== '') {
+            $level = strtolower((string) $explicitLevel);
+        } else {
+            $isDebug = (bool) env('APP_DEBUG', false);
+            $appEnv = (string) env('APP_ENV', defined('APPLICATION_ENV') ? APPLICATION_ENV : 'production');
+
+            if ($isDebug) {
+                $level = 'debug';
+            } else {
+                $level = ($appEnv === 'production') ? 'error' : 'warning';
+            }
+        }
+
+        return match ($level) {
+            'emergency', 'emerg' => Zend_Log::EMERG,  // 0
+            'alert' => Zend_Log::ALERT,  // 1
+            'critical', 'crit' => Zend_Log::CRIT,   // 2
+            'error', 'err' => Zend_Log::ERR,    // 3
+            'warning', 'warn' => Zend_Log::WARN,   // 4
+            'notice' => Zend_Log::NOTICE, // 5
+            'info' => Zend_Log::INFO,   // 6
+            'debug' => Zend_Log::DEBUG,  // 7
+            default => Zend_Log::WARN,
+        };
     }
 
     /**

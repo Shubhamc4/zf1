@@ -687,6 +687,16 @@ if (! function_exists('formatAmount')) {
 if (! function_exists('displayAmount')) {
     function displayAmount(mixed $amount, int $precision = 2): string
     {
+        if (defined('APP_CURRENCY') && APP_CURRENCY) {
+            $locale = defined('APP_LOCALE') ? APP_LOCALE : null;
+
+            return (new Zend_Currency([
+                'value' => $amount ?? 0,
+                'symbol' => APP_CURRENCY,
+                'precision' => $precision,
+            ], $locale))->toString();
+        }
+
         return number_format((float) ($amount ?? 0), $precision, '.', ',');
     }
 }
@@ -694,7 +704,7 @@ if (! function_exists('displayAmount')) {
 if (! function_exists('printAmount')) {
     function printAmount(mixed $amount, int $precision = 2): string
     {
-        return displayAmount($amount, $precision);
+        return formatAmount($amount, $precision);
     }
 }
 

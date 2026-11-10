@@ -103,8 +103,40 @@ Autoloaded framework helpers available globally:
 - `base_path($subpath)` / `app_path()` / `storage_path()` / `public_path()` / `config_path()`
 - `url($path, $params, $secure)` / `asset($path, $version)`
 - `storage($disk)`
+- `mailer($to, $name)` / `Mailer::to($to, $name)`
 - `blank($val)` / `filled($val)` / `data_get($target, $key)`
 - `discord_notify($title, $message, $fields)`
+
+### 6. Mail Service (`ZF1\Mail\Mailer` or `Mailer`)
+- Fluent wrapper around `Zend_Mail` with SMTP transport auto-configured from `.env`:
+  ```ini
+  # Mail Configuration
+  MAIL_ACTIVE=false
+  MAIL_HOST=localhost
+  MAIL_PORT=25
+  MAIL_USERNAME=
+  MAIL_PASSWORD=
+  MAIL_ENCRYPTION=
+  TEST_MAIL=shubham@inerun.com
+  ```
+- Send emails with fluent chaining:
+  ```php
+  Mailer::to('user@example.com', 'John Doe')
+      ->setSubject('Welcome to our application!')
+      ->setBodyHtml('<p>Thank you for joining.</p>')
+      ->addAttachment('/path/to/invoice.pdf')
+      ->send();
+
+  // Or using the helper:
+  mailer('user@example.com')
+      ->setSubject('Password Reset')
+      ->setBodyHtml('<p>Reset link...</p>')
+      ->send();
+  ```
+- `MAIL_ACTIVE=false` safely skips SMTP transmission and logs to debug log
+- `TEST_MAIL` reroutes all outgoing emails in development to the test address and annotates original recipients in the subject
+- Auto-wraps email HTML via `CommonFunction::renderEmailLayout()` if defined
+- Failure tracking via `Mailer::$lastError` and automatic debug logging
 
 ## Requirements
 

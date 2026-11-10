@@ -154,6 +154,28 @@ if (! class_exists('Storage', false)) {
     class_alias(ZF1\Filesystem\Storage::class, 'Storage');
 }
 
+if (! class_exists('Mailer', false)) {
+    class_alias(ZF1\Mail\Mailer::class, 'Mailer');
+}
+
+if (! function_exists('mailer')) {
+    /**
+     * Get a new Mailer instance or create and configure with recipient.
+     *
+     * @param  string|array<string, string>|array<string>|null  $to
+     */
+    function mailer(string|array|null $to = null, string $name = ''): ZF1\Mail\Mailer
+    {
+        $mailer = new ZF1\Mail\Mailer;
+
+        if ($to !== null) {
+            $mailer->addTo($to, $name);
+        }
+
+        return $mailer;
+    }
+}
+
 if (! function_exists('ensure_directory_exists')) {
     /**
      * Ensure the given directory (or parent directory of a file) exists.
@@ -842,7 +864,7 @@ if (! function_exists('formatCleanTrace')) {
     /**
      * Filter out vendor/framework frames from stack traces and format application frames.
      */
-    function formatCleanTrace(Throwable|string $trace, bool $shortenAppPath = true): string
+    function formatCleanTrace(Throwable|string $trace, bool $shortenAppPath = false): string
     {
         $rawTrace = $trace instanceof Throwable ? $trace->getTraceAsString() : (string) $trace;
         if (trim($rawTrace) === '') {
@@ -874,6 +896,17 @@ if (! function_exists('formatCleanTrace')) {
                 continue;
             }
 
+            if (! $shortenAppPath && preg_match('/^(#\d+\s+)([^(]+)(\(\d+\):?.*)$/', $line, $matches)) {
+                $filePart = trim($matches[2]);
+                $isAbsolute = str_starts_with($filePart, '/')
+                    || str_starts_with($filePart, '\\')
+                    || (bool) preg_match('/^[a-zA-Z]:[\\\\\/]/', $filePart);
+
+                if (! $isAbsolute && $filePart !== '[internal function]' && $filePart !== '{main}' && function_exists('base_path')) {
+                    $line = $matches[1].base_path($filePart).$matches[3];
+                }
+            }
+
             if ($shortenAppPath && $baseDir !== '' && str_contains($line, $baseDir)) {
                 $line = str_replace($baseDir, '', $line);
             }
@@ -883,7 +916,22 @@ if (! function_exists('formatCleanTrace')) {
 
         if (empty($appFrames)) {
             $preview = array_slice($lines, 0, 4);
-            if ($shortenAppPath && $baseDir !== '') {
+            if (! $shortenAppPath && function_exists('base_path')) {
+                $preview = array_map(static function ($l) {
+                    if (preg_match('/^(#\d+\s+)([^(]+)(\(\d+\):?.*)$/', $l, $matches)) {
+                        $filePart = trim($matches[2]);
+                        $isAbsolute = str_starts_with($filePart, '/')
+                            || str_starts_with($filePart, '\\')
+                            || (bool) preg_match('/^[a-zA-Z]:[\\\\\/]/', $filePart);
+
+                        if (! $isAbsolute && $filePart !== '[internal function]' && $filePart !== '{main}') {
+                            return $matches[1].base_path($filePart).$matches[3];
+                        }
+                    }
+
+                    return $l;
+                }, $preview);
+            } elseif ($shortenAppPath && $baseDir !== '') {
                 $preview = array_map(static fn ($l) => str_replace($baseDir, '', $l), $preview);
             }
 
@@ -908,7 +956,22 @@ if (! function_exists('resolveAppOrigin')) {
      */
     function resolveAppOrigin(Throwable|array $source): array
     {
-        $baseDir = base_path().DIRECTORY_SEPARATOR;
+        $toExactPath = static function (string $filePath): string {
+            if ($filePath === '' || $filePath === 'unknown') {
+                return $filePath;
+            }
+
+            $isAbsolute = str_starts_with($filePath, '/')
+                || str_starts_with($filePath, '\\')
+                || (bool) preg_match('/^[a-zA-Z]:[\\\\\/]/', $filePath);
+
+            if (! $isAbsolute && function_exists('base_path')) {
+                return base_path($filePath);
+            }
+
+            return $filePath;
+        };
+
         $vendorDir = base_path('vendor').DIRECTORY_SEPARATOR;
         $libraryZfDir = base_path('library/Zend');
 
@@ -923,7 +986,7 @@ if (! function_exists('resolveAppOrigin')) {
 
             if (! $isFramework) {
                 return [
-                    'file' => ($baseDir !== '' && str_contains($file, $baseDir)) ? str_replace($baseDir, '', $file) : $file,
+                    'file' => $toExactPath($file),
                     'line' => $line,
                 ];
             }
@@ -940,7 +1003,7 @@ if (! function_exists('resolveAppOrigin')) {
 
                     if (! $isVendor) {
                         return [
-                            'file' => ($baseDir !== '' && str_contains($frameFile, $baseDir)) ? str_replace($baseDir, '', $frameFile) : $frameFile,
+                            'file' => $toExactPath($frameFile),
                             'line' => $frameLine,
                         ];
                     }
@@ -948,16 +1011,16 @@ if (! function_exists('resolveAppOrigin')) {
             }
 
             return [
-                'file' => ($baseDir !== '' && str_contains($file, $baseDir)) ? str_replace($baseDir, '', $file) : $file,
+                'file' => $toExactPath($file),
                 'line' => $line,
             ];
         }
 
-        $rawFile = (string) ($source['file'] ?? 'unknown');
-        $rawLine = (int) ($source['line'] ?? 0);
+        $rawFile = (string) ($source['file'] ?? $source['File'] ?? 'unknown');
+        $rawLine = (int) ($source['line'] ?? $source['Line'] ?? 0);
 
         return [
-            'file' => ($baseDir !== '' && str_contains($rawFile, $baseDir)) ? str_replace($baseDir, '', $rawFile) : $rawFile,
+            'file' => $toExactPath($rawFile),
             'line' => $rawLine,
         ];
     }

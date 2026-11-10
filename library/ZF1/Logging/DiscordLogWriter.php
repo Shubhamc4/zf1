@@ -58,7 +58,7 @@ final class DiscordLogWriter extends Zend_Log_Writer_Abstract
 
                 $fields = [
                     'File' => $fileDisplay,
-                    'Full Path' => $cleanFile,
+                    'Full Path' => $rawFile,
                     'Code' => (string) ($data['Code'] ?? '500'),
                     'User ID' => ! empty($data['User ID']) ? (string) $data['User ID'] : 'Guest',
                     'URL' => ! empty($_SERVER['REQUEST_URI']) ? sprintf('%s %s', $_SERVER['REQUEST_METHOD'] ?? 'GET', $_SERVER['REQUEST_URI']) : 'CLI',

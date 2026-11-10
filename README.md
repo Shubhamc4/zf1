@@ -104,10 +104,11 @@ Autoloaded framework helpers available globally:
 - `url($path, $params, $secure)` / `asset($path, $version)`
 - `storage($disk)`
 - `mailer($to, $name)` / `Mailer::to($to, $name)`
+- `render_email_layout($content, $subject, $data)` / `EmailLayout::render($content, $subject, $data)`
 - `blank($val)` / `filled($val)` / `data_get($target, $key)`
 - `discord_notify($title, $message, $fields)`
 
-### 6. Mail Service (`ZF1\Mail\Mailer` or `Mailer`)
+### 6. Mail Service & Email Layout System (`ZF1\Mail\Mailer`, `ZF1\Mail\EmailLayout`)
 - Fluent wrapper around `Zend_Mail` with SMTP transport auto-configured from `.env`:
   ```ini
   # Mail Configuration
@@ -130,12 +131,56 @@ Autoloaded framework helpers available globally:
   // Or using the helper:
   mailer('user@example.com')
       ->setSubject('Password Reset')
-      ->setBodyHtml('<p>Reset link...</p>')
+      ->setBody('<p>Reset link...</p>')
+      ->send();
+
+  // Sending with payload variables ({name}, {{email}}, etc.):
+  Mailer::to('user@example.com')
+      ->setSubject('Welcome to {app_name}, {name}!')
+      ->setBody('<p>Hi {name}, your email is {{email}}.</p>', [
+          'name' => 'John Doe',
+          'email' => 'user@example.com',
+      ])
+      ->send();
+
+  // Sending raw HTML without the layout:
+  Mailer::to('user@example.com')
+      ->withoutLayout()
+      ->setSubject('Raw Notification')
+      ->setBodyHtml('<div>Raw content</div>')
       ->send();
   ```
+- **Email Layout System**:
+  - Automatically wraps email HTML and plain text inside a responsive card layout with header logo and footer copyright.
+  - Automatically avoids double-wrapping if the content is already a complete `<!DOCTYPE html>` or `<html>` document.
+  - Automatically converts plain text with linebreaks into styled HTML paragraphs.
+  - **Logo Fallback Hierarchy**:
+    1. Checks `public/logo.png`
+    2. Then checks `public/logo-dark.png`
+    3. Then checks `public/logo-light.png`
+    4. If no logo is found, automatically falls back to `APP_NAME` as stylized text.
+    5. The logo can also be explicitly overridden in the payload via `'logo'` or `'logo_url'`.
+  - **Template Variable Interpolation**:
+    - Supports `{key}`, `{{key}}`, `{ key }`, and `{{ key }}` in both the subject and the body.
+    - Default available variables: `{app_name}`, `{app_url}`, `{year}`, `{date}`, `{time}`, `{logo_url}`.
+    - Payload values replace placeholders and can override defaults (e.g. passing `'app_name'` or `'logo'`).
+    - Globally shared variables can be registered application-wide via `Mailer::share(['support_email' => 'help@example.com'])` or `EmailLayout::share(...)`.
+  - **Resolution hierarchy**:
+    1. If a published layout exists at `application/views/scripts/emails/layout.phtml`, the project-specific layout is used.
+    2. Otherwise, the built-in responsive default layout is used automatically.
+- **Publishing Email Layout**:
+  - Publish the customizable template to your project using the CLI:
+    ```bash
+    php zf mail:layout --publish
+    # Or force overwrite if already published:
+    php zf mail:layout --publish --force
+    ```
+  - Or programmatically:
+    ```php
+    EmailLayout::publish(); // or Mailer::publishLayout();
+    ```
 - `MAIL_ACTIVE=false` safely skips SMTP transmission and logs to debug log
 - `TEST_MAIL` reroutes all outgoing emails in development to the test address and annotates original recipients in the subject
-- Auto-wraps email HTML via `CommonFunction::renderEmailLayout()` if defined
 - Failure tracking via `Mailer::$lastError` and automatic debug logging
 
 ## Requirements

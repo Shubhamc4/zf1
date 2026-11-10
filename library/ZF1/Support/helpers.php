@@ -158,6 +158,10 @@ if (! class_exists('Mailer', false)) {
     class_alias(ZF1\Mail\Mailer::class, 'Mailer');
 }
 
+if (! class_exists('EmailLayout', false)) {
+    class_alias(ZF1\Mail\EmailLayout::class, 'EmailLayout');
+}
+
 if (! function_exists('mailer')) {
     /**
      * Get a new Mailer instance or create and configure with recipient.
@@ -173,6 +177,20 @@ if (! function_exists('mailer')) {
         }
 
         return $mailer;
+    }
+}
+
+if (! function_exists('render_email_layout')) {
+    /**
+     * Render HTML or text content inside the email layout.
+     *
+     * @param  string  $content  Content body to inject into layout card
+     * @param  string|null  $subject  Email subject for title
+     * @param  array<string, mixed>  $data  Extra variables to pass to the layout
+     */
+    function render_email_layout(string $content, ?string $subject = null, array $data = []): string
+    {
+        return ZF1\Mail\EmailLayout::render($content, $subject, $data);
     }
 }
 

@@ -166,6 +166,7 @@ final class Application
             Commands\System\ServeCommand::class,
             Commands\System\AboutCommand::class,
             Commands\System\RouteListCommand::class,
+            Commands\System\MailLayoutCommand::class,
         ];
 
         foreach ($coreCommands as $class) {

@@ -68,6 +68,7 @@ Built-in commands for queues, scheduling, scaffolding, system maintenance, and l
 - `php zf schedule:run [name]` — Run due scheduled tasks, or run a specific scheduled task on-demand by name
 - `php zf schedule:list` — View scheduled cron events, intervals, and names
 - `php zf schedule:work` — Run a local daemon worker for the scheduler
+- `php zf mail:layout {--publish} {--force}` — Inspect or publish customizable responsive email layout template
 - `php zf down` / `php zf up` — Maintenance mode management (supports `--publish` to publish editable maintenance view, `--template=` for custom views, and secret bypass tokens)
 - `php zf db:backup` — Automated gzip database backup with retention pruning
 
@@ -143,6 +144,13 @@ Autoloaded framework helpers available globally:
       ])
       ->send();
 
+  // Fluent chaining with payload variables:
+  Mailer::to('user@example.com')
+      ->with(['name' => 'John Doe', 'email' => 'user@example.com'])
+      ->setSubject('Welcome to {app_name}, {name}!')
+      ->setBody('<p>Hi {name}, your email is {{email}}.</p>')
+      ->send();
+
   // Sending raw HTML without the layout:
   Mailer::to('user@example.com')
       ->withoutLayout()
@@ -154,16 +162,19 @@ Autoloaded framework helpers available globally:
   - Automatically wraps email HTML and plain text inside a responsive card layout with header logo and footer copyright.
   - Automatically avoids double-wrapping if the content is already a complete `<!DOCTYPE html>` or `<html>` document.
   - Automatically converts plain text with linebreaks into styled HTML paragraphs.
+  - Automatically generates a high-quality plain-text alternative if no text body is explicitly set.
   - **Logo Fallback Hierarchy**:
-    1. Checks `public/logo.png`
-    2. Then checks `public/logo-dark.png`
-    3. Then checks `public/logo-light.png`
-    4. If no logo is found, automatically falls back to `APP_NAME` as stylized text.
-    5. The logo can also be explicitly overridden in the payload via `'logo'` or `'logo_url'`.
-  - **Template Variable Interpolation**:
+    1. Explicit logo passed in payload (`'logo'`, `'logo_url'`)
+    2. `public/logo.png`
+    3. `public/logo-dark.png`
+    4. `public/logo-light.png`
+    5. Falls back to `APP_NAME` as stylized text.
+    - Caches logo discovery to eliminate redundant filesystem I/O in batch dispatches.
+  - **Template Variable Interpolation & Security**:
     - Supports `{key}`, `{{key}}`, `{ key }`, and `{{ key }}` in both the subject and the body.
-    - Default available variables: `{app_name}`, `{app_url}`, `{year}`, `{date}`, `{time}`, `{logo_url}`.
-    - Payload values replace placeholders and can override defaults (e.g. passing `'app_name'` or `'logo'`).
+    - Standard variables: `{app_name}`, `{app_url}`, `{year}`, `{date}`, `{time}`, `{logo_url}`.
+    - Single-use token slot isolation prevents template injection and double-interpolation leaks from user input.
+    - URL schemes are sanitized against dangerous protocols (`javascript:`, `vbscript:`, `data:text/html`).
     - Globally shared variables can be registered application-wide via `Mailer::share(['support_email' => 'help@example.com'])` or `EmailLayout::share(...)`.
   - **Resolution hierarchy**:
     1. If a published layout exists at `application/views/scripts/emails/layout.phtml`, the project-specific layout is used.
@@ -179,9 +190,10 @@ Autoloaded framework helpers available globally:
     ```php
     EmailLayout::publish(); // or Mailer::publishLayout();
     ```
-- `MAIL_ACTIVE=false` safely skips SMTP transmission and logs to debug log
-- `TEST_MAIL` reroutes all outgoing emails in development to the test address and annotates original recipients in the subject
-- Failure tracking via `Mailer::$lastError` and automatic debug logging
+- `MAIL_ACTIVE=false` safely skips SMTP transmission and logs to debug log.
+- `TEST_MAIL` reroutes all outgoing emails in non-production environments (`APP_ENV !== 'production'`) to one or more comma-separated test addresses and annotates original recipients in the subject (`[TEST: original@example.com] Subject`). Validates email formats before overriding.
+- CRLF injection protection automatically strips carriage returns and newlines from dynamic subjects.
+- Failure tracking via `Mailer::$lastError` and automatic debug logging.
 
 ## Requirements
 

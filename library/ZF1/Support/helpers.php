@@ -209,22 +209,67 @@ if (! function_exists('ensure_directory_exists')) {
     }
 }
 
+if (! function_exists('is_valid_ip')) {
+    function is_valid_ip(string $ip, bool $publicOnly = false): bool
+    {
+        $flags = FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6;
+        if ($publicOnly) {
+            $flags |= FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE;
+        }
+
+        return (bool) filter_var($ip, FILTER_VALIDATE_IP, $flags);
+    }
+}
+
 if (! function_exists('getIpAddress')) {
-    /**
-     * Get client IP address resolving proxies.
-     */
     function getIpAddress(): string
     {
-        if (! empty($_SERVER['HTTP_CLIENT_IP'])) {
-            return (string) $_SERVER['HTTP_CLIENT_IP'];
-        }
-        if (! empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $parts = explode(',', (string) $_SERVER['HTTP_X_FORWARDED_FOR']);
+        return get_client_ip();
+    }
+}
 
-            return trim($parts[0]);
+if (! function_exists('get_client_ip')) {
+    function get_client_ip(): string
+    {
+        $headers = [
+            'HTTP_CF_CONNECTING_IP',
+            'HTTP_TRUE_CLIENT_IP',
+            'HTTP_X_REAL_IP',
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_CLIENT_IP',
+            'REMOTE_ADDR',
+        ];
+
+        foreach ($headers as $header) {
+            if (empty($_SERVER[$header])) {
+                continue;
+            }
+
+            $raw = (string) $_SERVER[$header];
+
+            if (str_contains($raw, ',')) {
+                $parts = explode(',', $raw);
+                foreach ($parts as $part) {
+                    $ip = trim($part);
+                    if (is_valid_ip($ip, true)) {
+                        return $ip;
+                    }
+                }
+                foreach ($parts as $part) {
+                    $ip = trim($part);
+                    if (is_valid_ip($ip, false)) {
+                        return $ip;
+                    }
+                }
+            } else {
+                $ip = trim($raw);
+                if (is_valid_ip($ip, false)) {
+                    return $ip;
+                }
+            }
         }
 
-        return (string) ($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1');
+        return ! empty($_SERVER['REMOTE_ADDR']) ? (string) $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
     }
 }
 
@@ -316,6 +361,28 @@ if (! function_exists('limitString')) {
         }
 
         return str_limit($value, $limit, $end);
+    }
+}
+
+if (! function_exists('str_slug')) {
+    /**
+     * Generate a URL friendly "slug" from a given string.
+     */
+    function str_slug(string $title, string $separator = '-'): string
+    {
+        if (function_exists('transliterator_transliterate')) {
+            $title = (string) transliterator_transliterate('Any-Latin; Latin-ASCII; [\u0100-\u7fff] remove', $title);
+        } elseif (function_exists('iconv')) {
+            $converted = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $title);
+            if ($converted !== false) {
+                $title = $converted;
+            }
+        }
+
+        $title = preg_replace('/[^a-zA-Z0-9]+/', $separator, $title) ?? '';
+        $quotedSep = preg_quote($separator, '/');
+
+        return trim((string) preg_replace("/{$quotedSep}+/", $separator, strtolower($title)), $separator);
     }
 }
 
@@ -641,6 +708,87 @@ if (! function_exists('formatDate')) {
     }
 }
 
+if (! function_exists('formatTimeAgo')) {
+    function formatTimeAgo(DateTimeInterface|string|int|null $datetime): string
+    {
+        if (empty($datetime)) {
+            return 'N/A';
+        }
+
+        if ($datetime instanceof DateTimeInterface) {
+            $date = DateTimeImmutable::createFromInterface($datetime);
+            $timestamp = $date->getTimestamp();
+        } elseif (is_numeric($datetime)) {
+            $timestamp = (int) $datetime;
+            $date = (new DateTimeImmutable)->setTimestamp($timestamp);
+        } else {
+            try {
+                $date = new DateTimeImmutable((string) $datetime);
+                $timestamp = $date->getTimestamp();
+            } catch (Throwable) {
+                return 'N/A';
+            }
+        }
+
+        $diff = time() - $timestamp;
+
+        if ($diff < 0) {
+            $diff = abs($diff);
+
+            return match (true) {
+                $diff < 45 => 'Just now',
+                $diff < 90 => 'in 1 min',
+                $diff < 3600 => ($mins = (int) floor($diff / 60)) <= 1 ? 'in 1 min' : "in {$mins} mins",
+                $diff < 86400 => ($hours = (int) floor($diff / 3600)) <= 1 ? 'in 1 hr' : "in {$hours} hrs",
+                $diff < 172800 => 'Tomorrow '.$date->format('g:i A'),
+                $diff < 2592000 => ($days = (int) floor($diff / 86400)) <= 1 ? 'in 1 day' : "in {$days} days",
+                default => $date->format('M j, Y'),
+            };
+        }
+
+        return match (true) {
+            $diff < 45 => 'Just now',
+            $diff < 90 => '1 min ago',
+            $diff < 3600 => ($mins = (int) floor($diff / 60)) <= 1 ? '1 min ago' : "{$mins} mins ago",
+            $diff < 86400 => ($hours = (int) floor($diff / 3600)) === 1 ? '1 hr ago' : "{$hours} hrs ago",
+            $diff < 172800 => 'Yesterday '.$date->format('g:i A'),
+            $diff < 2592000 => ($days = (int) floor($diff / 86400)) === 1 ? '1 day ago' : "{$days} days ago",
+            default => $date->format('M j, Y'),
+        };
+    }
+}
+
+if (! function_exists('formatAmount')) {
+    function formatAmount(mixed $amount, int $decimals = 4, string $decimal_separator = '.', string $thousands_separator = ''): string
+    {
+        return number_format((float) ($amount ?? 0), $decimals, $decimal_separator, $thousands_separator);
+    }
+}
+
+if (! function_exists('displayAmount')) {
+    function displayAmount(mixed $amount, int $precision = 2): string
+    {
+        if (defined('APP_CURRENCY') && APP_CURRENCY) {
+            $locale = defined('APP_LOCALE') ? APP_LOCALE : null;
+
+            return (new Zend_Currency([
+                'value' => $amount ?? 0,
+                'symbol' => APP_CURRENCY,
+                'precision' => $precision,
+            ], $locale))->toString();
+        }
+
+        return number_format((float) ($amount ?? 0), $precision, '.', ',');
+    }
+}
+
+if (! function_exists('printAmount')) {
+    function printAmount(mixed $amount, int $precision = 2): string
+    {
+        return formatAmount($amount, $precision);
+    }
+}
+
 if (! function_exists('spellSeconds')) {
     /**
      * Convert seconds to human-readable interval string (e.g. 2 hours, 15 minutes).
@@ -674,37 +822,6 @@ if (! function_exists('spellSeconds')) {
         }
 
         return ! empty($output) ? implode($join, $output) : '0 seconds';
-    }
-}
-
-if (! function_exists('formatAmount')) {
-    function formatAmount(mixed $amount, int $decimals = 4, string $decimal_separator = '.', string $thousands_separator = ''): string
-    {
-        return number_format((float) ($amount ?? 0), $decimals, $decimal_separator, $thousands_separator);
-    }
-}
-
-if (! function_exists('displayAmount')) {
-    function displayAmount(mixed $amount, int $precision = 2): string
-    {
-        if (defined('APP_CURRENCY') && APP_CURRENCY) {
-            $locale = defined('APP_LOCALE') ? APP_LOCALE : null;
-
-            return (new Zend_Currency([
-                'value' => $amount ?? 0,
-                'symbol' => APP_CURRENCY,
-                'precision' => $precision,
-            ], $locale))->toString();
-        }
-
-        return number_format((float) ($amount ?? 0), $precision, '.', ',');
-    }
-}
-
-if (! function_exists('printAmount')) {
-    function printAmount(mixed $amount, int $precision = 2): string
-    {
-        return formatAmount($amount, $precision);
     }
 }
 
@@ -762,6 +879,24 @@ if (! function_exists('SpellAmount')) {
         }
 
         return trim(preg_replace('/\s+/', ' ', $string));
+    }
+}
+
+if (! function_exists('formatBytes')) {
+    /**
+     * Format bytes into a human-readable string (e.g. 1.25 MB).
+     */
+    function formatBytes(int|float $bytes, int $precision = 2): string
+    {
+        if ($bytes <= 0) {
+            return '0 B';
+        }
+
+        $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+        $pow = min((int) floor(log($bytes, 1024)), count($units) - 1);
+        $bytes /= (1024 ** $pow);
+
+        return round($bytes, $precision).' '.$units[$pow];
     }
 }
 
@@ -862,6 +997,81 @@ if (! function_exists('data_get')) {
                 }
             } else {
                 return $default instanceof Closure ? $default() : $default;
+            }
+        }
+
+        return $target;
+    }
+}
+
+if (! function_exists('data_set')) {
+    /**
+     * Set an item on an array or object using dot notation.
+     *
+     * @param  string|array<string|int>|int|null  $key
+     */
+    function data_set(mixed &$target, string|array|int|null $key, mixed $value, bool $overwrite = true): mixed
+    {
+        $segments = is_array($key) ? $key : explode('.', (string) $key);
+
+        if (empty($segments)) {
+            return $target;
+        }
+
+        $current = &$target;
+
+        while (count($segments) > 1) {
+            $segment = array_shift($segments);
+
+            if ($segment === '*') {
+                if (! is_array($current)) {
+                    return $target;
+                }
+
+                foreach ($current as &$inner) {
+                    data_set($inner, $segments, $value, $overwrite);
+                }
+
+                return $target;
+            }
+
+            if (is_array($current)) {
+                if (! array_key_exists($segment, $current) || ! is_array($current[$segment])) {
+                    $current[$segment] = [];
+                }
+                $current = &$current[$segment];
+            } elseif (is_object($current)) {
+                if (! isset($current->{$segment}) || ! is_object($current->{$segment})) {
+                    $current->{$segment} = new stdClass;
+                }
+                $current = &$current->{$segment};
+            } else {
+                $current = [];
+                $current = &$current[$segment];
+            }
+        }
+
+        $segment = array_shift($segments);
+
+        if ($segment === '*') {
+            if (is_array($current)) {
+                foreach ($current as &$inner) {
+                    if ($overwrite || ! isset($inner)) {
+                        $inner = $value;
+                    }
+                }
+            }
+
+            return $target;
+        }
+
+        if (is_array($current)) {
+            if ($overwrite || ! array_key_exists($segment, $current)) {
+                $current[$segment] = $value;
+            }
+        } elseif (is_object($current)) {
+            if ($overwrite || ! isset($current->{$segment})) {
+                $current->{$segment} = $value;
             }
         }
 

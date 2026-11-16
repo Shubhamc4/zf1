@@ -62,7 +62,7 @@ final class DiscordLogWriter extends Zend_Log_Writer_Abstract
                     'Code' => (string) ($data['Code'] ?? '500'),
                     'User ID' => ! empty($data['User ID']) ? (string) $data['User ID'] : 'Guest',
                     'URL' => ! empty($_SERVER['REQUEST_URI']) ? sprintf('%s %s', $_SERVER['REQUEST_METHOD'] ?? 'GET', $_SERVER['REQUEST_URI']) : 'CLI',
-                    'IP' => (string) ($data['IP'] ?? getIpAddress()),
+                    'IP' => (string) ($data['IP'] ?? get_client_ip()),
                     'Environment' => (string) env('APP_ENV', 'production'),
                 ];
 

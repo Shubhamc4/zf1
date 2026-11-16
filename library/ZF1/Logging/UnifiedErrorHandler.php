@@ -48,7 +48,7 @@ final class UnifiedErrorHandler
             $data = [
                 'Time' => \ZF1\Foundation\Bootstrap::now(),
                 'User ID' => self::resolveUserId(),
-                'IP' => getIpAddress(),
+                'IP' => get_client_ip(),
                 'Device' => $_SERVER['HTTP_USER_AGENT'] ?? 'CLI',
                 'Code' => $errno,
                 'File' => $origin['file'],
@@ -70,7 +70,7 @@ final class UnifiedErrorHandler
             $data = [
                 'Time' => \ZF1\Foundation\Bootstrap::now(),
                 'User ID' => self::resolveUserId(),
-                'IP' => getIpAddress(),
+                'IP' => get_client_ip(),
                 'Device' => $_SERVER['HTTP_USER_AGENT'] ?? 'CLI',
                 'Code' => $e->getCode() ?: 500,
                 'File' => $origin['file'],
@@ -96,7 +96,7 @@ final class UnifiedErrorHandler
                 $data = [
                     'Time' => \ZF1\Foundation\Bootstrap::now(),
                     'User ID' => self::resolveUserId(),
-                    'IP' => getIpAddress(),
+                    'IP' => get_client_ip(),
                     'Device' => $_SERVER['HTTP_USER_AGENT'] ?? 'CLI',
                     'Code' => $error['type'],
                     'File' => $origin['file'],

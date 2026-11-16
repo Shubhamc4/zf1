@@ -713,7 +713,7 @@ final class Mailer
             Bootstrap::debug([
                 'Time' => Bootstrap::now(),
                 'User ID' => self::resolveUserId(),
-                'IP' => php_sapi_name() === 'cli' ? '127.0.0.1' : (function_exists('getIpAddress') ? getIpAddress() : '127.0.0.1'),
+                'IP' => php_sapi_name() === 'cli' ? '127.0.0.1' : (function_exists('get_client_ip') ? get_client_ip() : '127.0.0.1'),
                 'Device' => $_SERVER['HTTP_USER_AGENT'] ?? 'CLI',
                 'Code' => $th->getCode(),
                 'File' => $th->getFile(),

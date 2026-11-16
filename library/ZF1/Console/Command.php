@@ -181,20 +181,34 @@ abstract class Command
 
                     $hasValue = false;
                     $default = false;
+                    $isArray = false;
 
                     if (str_contains($token, '=')) {
                         [$optName, $defaultVal] = explode('=', $token, 2);
                         $optName = trim($optName);
                         $hasValue = true;
-                        $default = $defaultVal !== '' ? $defaultVal : null;
+                        if ($defaultVal === '*' || str_starts_with($defaultVal, '*')) {
+                            $isArray = true;
+                            $default = [];
+                        } else {
+                            $default = $defaultVal !== '' ? $defaultVal : null;
+                        }
                     } else {
                         $optName = trim($token);
+                    }
+
+                    if (str_ends_with($optName, '*')) {
+                        $optName = rtrim($optName, '*');
+                        $isArray = true;
+                        $hasValue = true;
+                        $default = [];
                     }
 
                     $this->definedOptions[$optName] = [
                         'name' => $optName,
                         'shortcut' => $shortcut,
                         'hasValue' => $hasValue,
+                        'isArray' => $isArray,
                         'default' => $default,
                         'description' => $description,
                     ];
@@ -202,6 +216,13 @@ abstract class Command
                     // Argument definition
                     $required = true;
                     $default = null;
+                    $isArray = false;
+
+                    if (str_ends_with($token, '*')) {
+                        $token = rtrim($token, '*');
+                        $isArray = true;
+                        $default = [];
+                    }
 
                     if (str_ends_with($token, '?')) {
                         $argName = substr($token, 0, -1);
@@ -215,9 +236,16 @@ abstract class Command
                         $argName = trim($token);
                     }
 
+                    if (str_ends_with($argName, '*')) {
+                        $argName = rtrim($argName, '*');
+                        $isArray = true;
+                        $default = [];
+                    }
+
                     $this->definedArguments[$argName] = [
                         'name' => $argName,
                         'required' => $required,
+                        'isArray' => $isArray,
                         'default' => $default,
                         'description' => $description,
                     ];
@@ -258,10 +286,17 @@ abstract class Command
         $argNames = array_keys($this->definedArguments);
 
         foreach ($argNames as $idx => $argName) {
+            $meta = $this->definedArguments[$argName];
+            if (! empty($meta['isArray'])) {
+                $slice = array_slice($rawArguments, $idx);
+                $this->arguments[$argName] = ! empty($slice) ? array_values($slice) : ($meta['default'] ?? []);
+                break;
+            }
+
             if (isset($rawArguments[$idx])) {
                 $this->arguments[$argName] = $rawArguments[$idx];
-            } elseif ($this->definedArguments[$argName]['default'] !== null) {
-                $this->arguments[$argName] = $this->definedArguments[$argName]['default'];
+            } elseif ($meta['default'] !== null) {
+                $this->arguments[$argName] = $meta['default'];
             }
         }
 
@@ -277,6 +312,13 @@ abstract class Command
             // Fill default if not supplied
             if (! array_key_exists($optName, $this->options)) {
                 $this->options[$optName] = $meta['default'];
+            } elseif (! empty($meta['isArray'])) {
+                $val = $this->options[$optName];
+                if (is_string($val)) {
+                    $this->options[$optName] = array_values(array_filter(array_map('trim', explode(',', $val)), fn ($v) => $v !== ''));
+                } elseif (! is_array($val)) {
+                    $this->options[$optName] = [$val];
+                }
             }
         }
 
@@ -314,8 +356,12 @@ abstract class Command
     /**
      * Get an option by name with default fallback.
      */
-    public function option(string $name, mixed $default = null): mixed
+    public function option(?string $name = null, mixed $default = null): mixed
     {
+        if ($name === null) {
+            return $this->options;
+        }
+
         if (array_key_exists($name, $this->options)) {
             return $this->options[$name];
         }
@@ -508,6 +554,38 @@ abstract class Command
             echo $renderRow($row).PHP_EOL;
         }
         echo $separator.PHP_EOL;
+    }
+
+    /**
+     * Prompt the user for input.
+     */
+    public function ask(string $question, ?string $default = null): ?string
+    {
+        $prompt = $default !== null ? " [{$default}]" : '';
+        echo "\033[33m{$question}{$prompt}: \033[0m";
+
+        $handle = defined('STDIN') ? STDIN : fopen('php://stdin', 'r');
+        $input = trim((string) fgets($handle));
+
+        return $input !== '' ? $input : $default;
+    }
+
+    /**
+     * Confirm a question with the user (yes/no).
+     */
+    public function confirm(string $question, bool $default = false): bool
+    {
+        $prompt = $default ? ' (yes/no) [yes]' : ' (yes/no) [no]';
+        echo "\033[33m{$question}{$prompt}: \033[0m";
+
+        $handle = defined('STDIN') ? STDIN : fopen('php://stdin', 'r');
+        $input = strtolower(trim((string) fgets($handle)));
+
+        if ($input === '') {
+            return $default;
+        }
+
+        return in_array($input, ['y', 'yes', 'true', '1'], true);
     }
 
     /**

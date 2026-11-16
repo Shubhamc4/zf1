@@ -299,19 +299,16 @@ abstract class Kernel
 
         defined('APPLICATION_PATH') || define('APPLICATION_PATH', $projectRoot.'/application');
 
-        // 2. Load Environment file (.env) via ZF1\Environment\Env and validate required variables
         Env::load($projectRoot, required: static::requiredEnv());
 
         if (Env::getDotenv() !== null) {
             static::configureDotenv(Env::getDotenv());
         }
 
-        // 3. Define Application Environment
         defined('APPLICATION_ENV') || define('APPLICATION_ENV', $env ?: env('APP_ENV', 'production'));
         defined('APP_NAME') || define('APP_NAME', env('APP_NAME', 'ZF1'));
         defined('SESSION_NAME') || define('SESSION_NAME', env('SESSION_NAME', 'zf1'));
 
-        // 4. Fill CLI environment defaults
         if (PHP_SAPI === 'cli') {
             $_SERVER['HTTP_HOST'] = $_SERVER['HTTP_HOST'] ?? parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST) ?? 'localhost';
             $_SERVER['SERVER_NAME'] = $_SERVER['SERVER_NAME'] ?? $_SERVER['HTTP_HOST'];
@@ -319,13 +316,12 @@ abstract class Kernel
             $_SERVER['SCRIPT_NAME'] = $_SERVER['SCRIPT_NAME'] ?? '/zf';
         }
 
-        // 5. Global application variables if present
         if (file_exists(config_path('global.variables.php'))) {
             require_once config_path('global.variables.php');
         }
 
-        // 6. Handle Maintenance Mode (web requests only)
         if (PHP_SAPI !== 'cli') {
+            static::configureWebConsole();
             MaintenanceMode::check();
         }
     }
@@ -441,5 +437,38 @@ abstract class Kernel
         $paths[] = '.';
 
         set_include_path(implode(PATH_SEPARATOR, array_unique($paths)));
+    }
+
+    /**
+     * Hook to configure Web Console options in the child Kernel.
+     * Override in App\Kernel to customize web console path, restrictions, or UI branding.
+     *
+     * Example:
+     *   protected static function configureWebConsole(): void
+     *   {
+     *       WebConsole::path('/zf-console')
+     *           ->allowedIps(['127.0.0.1', '192.168.*'])
+     *           ->priorityGroups(['csr', 'dispatch', 'vsr', 'general', 'queue']);
+     *   }
+     */
+    protected static function configureWebConsole(): void
+    {
+        // Base hook
+    }
+
+    /**
+     * Determine whether Web Console is enabled.
+     */
+    public static function isWebConsoleEnabled(): bool
+    {
+        return \ZF1\Console\WebConsole::isEnabled();
+    }
+
+    /**
+     * Get the active Web Console path.
+     */
+    public static function getWebConsolePath(): string
+    {
+        return \ZF1\Console\WebConsole::path();
     }
 }

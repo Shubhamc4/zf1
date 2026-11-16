@@ -39,13 +39,22 @@ final class MaintenanceMode
             return;
         }
 
+        // Allow Web Console requests to proceed even during maintenance mode
+        if (class_exists(\ZF1\Console\WebConsole::class)
+            && \ZF1\Console\WebConsole::isAllowedDuringMaintenance()
+        ) {
+            $uri = $_SERVER['REQUEST_URI'] ?? '/';
+            if (\ZF1\Console\WebConsole::matchesPath($uri)) {
+                return;
+            }
+        }
+
         $content = file_get_contents($filePath);
         $data = json_decode((string) $content, true) ?: [];
 
         $secret = ! empty($data['secret']) ? (string) $data['secret'] : null;
         $cycleToken = ! empty($data['token']) ? (string) $data['token'] : null;
 
-        // 1. Check if user already has an active, valid bypass cookie matching THIS maintenance cycle
         if ($cycleToken !== null && ! empty($_COOKIE[self::getCookieName()])) {
             if (hash_equals($cycleToken, (string) $_COOKIE[self::getCookieName()])) {
                 return;
@@ -54,7 +63,6 @@ final class MaintenanceMode
 
         $errorMessage = null;
 
-        // 2. Check if secret was submitted via POST bypass form
         if ($secret !== null && isset($_POST['maintenance_secret'])) {
             $submitted = trim((string) $_POST['maintenance_secret']);
             if (hash_equals($secret, $submitted)) {
@@ -67,20 +75,17 @@ final class MaintenanceMode
             $errorMessage = 'Invalid maintenance bypass key. Please verify and try again.';
         }
 
-        // 3. Check if secret was provided via query parameter ?secret=...
         if ($secret !== null && isset($_GET['secret'])) {
             $paramSecret = trim((string) $_GET['secret']);
             if (hash_equals($secret, $paramSecret)) {
                 self::setBypassCookie($cycleToken ?? $secret);
 
-                // Redirect to the same URL without the ?secret parameter to keep URLs clean
                 $cleanUrl = self::removeQueryParam($_SERVER['REQUEST_URI'] ?? '/', 'secret');
                 header("Location: {$cleanUrl}");
                 exit(0);
             }
         }
 
-        // 4. Check if URL path matches secret (e.g. /my-secret-token)
         if ($secret !== null && ! empty($_SERVER['REQUEST_URI'])) {
             $uriPath = trim((string) parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
             if ($uriPath === $secret) {
@@ -92,7 +97,6 @@ final class MaintenanceMode
             }
         }
 
-        // 5. Application is DOWN and request is not bypassed: Return 503
         $retryAfter = max(5, (int) ($data['retry'] ?? 60));
         $appName = self::getAppName();
         $message = ! empty($data['message'])
@@ -320,7 +324,6 @@ final class MaintenanceMode
     {
         $candidates = [];
 
-        // 1. Explicit template passed to down()
         if ($template !== null && $template !== '') {
             $candidates[] = $template;
             $candidates[] = base_path($template);
@@ -329,7 +332,6 @@ final class MaintenanceMode
             $candidates[] = app_path('views/scripts/'.$template.'.phtml');
         }
 
-        // 2. Standard application view paths
         $candidates[] = app_path('views/scripts/maintenance.phtml');
         $candidates[] = app_path('views/scripts/error/503.phtml');
         $candidates[] = app_path('views/scripts/errors/503.phtml');

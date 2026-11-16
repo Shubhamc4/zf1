@@ -12,6 +12,9 @@ use ZF1\Console\Command;
 use ZF1\Queue\Queue;
 use ZF1\System\MaintenanceMode;
 
+/**
+ * Diagnostic command to inspect application environment, database, and system status.
+ */
 final class AboutCommand extends Command
 {
     protected string $name = 'about';
@@ -26,7 +29,6 @@ final class AboutCommand extends Command
         $this->info('  ZF1 Application Diagnostics & System Overview');
         $this->line('');
 
-        // 1. Application Section
         $this->renderSection('Application', [
             'Application Name' => (string) env('APP_NAME', defined('APP_NAME') ? (string) APP_NAME : 'ZF1'),
             'Environment' => defined('APPLICATION_ENV') ? APPLICATION_ENV : (string) env('APP_ENV', 'production'),
@@ -36,7 +38,6 @@ final class AboutCommand extends Command
             'Timezone' => date_default_timezone_get(),
         ]);
 
-        // 2. PHP & Server Section
         $opcacheEnabled = extension_loaded('Zend OPcache') && (bool) ini_get('opcache.enable');
         $requiredExtensions = ['curl', 'json', 'mbstring', 'openssl', 'pdo'];
         $missingExt = array_filter($requiredExtensions, fn ($ext) => ! extension_loaded($ext));
@@ -53,7 +54,6 @@ final class AboutCommand extends Command
                 : "\033[31mMissing: ".implode(', ', $missingExt)."\033[0m",
         ]);
 
-        // 3. Database Section
         $dbInfo = ['Status' => 'Not Configured'];
         try {
             $db = null;
@@ -86,7 +86,6 @@ final class AboutCommand extends Command
         }
         $this->renderSection('Database', $dbInfo);
 
-        // 4. Storage & Cache
         $storageDir = storage_path();
         $cacheDir = storage_path('cache');
         $logsDir = storage_path('logs');
@@ -97,7 +96,6 @@ final class AboutCommand extends Command
             'Logs Directory' => $logsDir.' '.(is_writable($logsDir) ? "[\033[32mwritable\033[0m]" : "[\033[31mnot writable\033[0m]"),
         ]);
 
-        // 5. Queue Status
         $queueInfo = ['Status' => 'Not available'];
         try {
             if (class_exists(Queue::class)) {

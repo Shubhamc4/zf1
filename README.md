@@ -69,8 +69,13 @@ Built-in commands for queues, scheduling, scaffolding, system maintenance, and l
 - `php zf schedule:list` — View scheduled cron events, intervals, and names
 - `php zf schedule:work` — Run a local daemon worker for the scheduler
 - `php zf mail:layout {--publish} {--force}` — Inspect or publish customizable responsive email layout template
+- `php zf console:publish {--force}` — Publish customizable web console HTML/CSS template to application/views/scripts/console/index.phtml
 - `php zf down` / `php zf up` — Maintenance mode management (supports `--publish` to publish editable maintenance view, `--template=` for custom views, and secret bypass tokens)
 - `php zf db:backup` — Automated gzip database backup with retention pruning
+- `php zf db:show` — Display an overview of database tables, rows, storage size, and engine
+- `php zf db:table <table>` — Inspect table schema, columns, data types, and indexes
+- `php zf db:wipe {--force} {--drop-views}` — Drop all tables, views, and types in the active database
+- `php zf optimize` / `php zf optimize:clear` — Pre-cache database metadata and warm application caches, or clear all optimization caches
 
 ### 2. Modern Application Kernel (`ZF1\Foundation\Kernel`)
 - Auto-detects and loads `.env` variables via `vlucas/phpdotenv`
@@ -99,17 +104,235 @@ Built-in commands for queues, scheduling, scaffolding, system maintenance, and l
 
 ### 5. Universal Helpers
 Autoloaded framework helpers available globally:
-- `dispatch($job, $payload, $queue, $delay)` — Quickly dispatch a background job
-- `env($key, $default)`
-- `base_path($subpath)` / `app_path()` / `storage_path()` / `public_path()` / `config_path()`
-- `url($path, $params, $secure)` / `asset($path, $version)`
-- `storage($disk)`
-- `mailer($to, $name)` / `Mailer::to($to, $name)`
-- `render_email_layout($content, $subject, $data)` / `EmailLayout::render($content, $subject, $data)`
-- `blank($val)` / `filled($val)` / `data_get($target, $key)`
-- `discord_notify($title, $message, $fields)`
+- **Environment & App**: `env($key, $default)`, `app_env()`, `is_production()`, `is_local()`, `is_testing()`, `is_development()`, `app_name()`, `app_url($path)`, `is_cli()`
+- **Paths & Assets**: `base_path()`, `app_path()`, `storage_path()`, `public_path()`, `config_path()`, `url($path)`, `asset($path, $version)`
+- **Database & Cache**: `db($conn)`, `db_transaction(fn ($db) => ...)`, `cache($key, $default)`, `Cache::remember($key, $ttl, fn () => ...)`, `session($key, $default)`
+- **Strings**: `str_uuid()`, `str_random($len)`, `str_mask($str, $char, $index, $len)`, `str_headline($str)`, `str_slug($title)`, `str_limit($val, $limit)`, `str_contains_any($str, $needles)`, `str_starts_with_any()`, `str_ends_with_any()`
+- **Arrays & Collections**: `array_only($arr, $keys)`, `array_except($arr, $keys)`, `array_wrap($val)`, `array_pull($arr, $key)`, `array_key_by($arr, $key)`, `array_first($arr, $fn)`, `array_last($arr, $fn)`, `array_has($arr, $key)`, `array_forget($arr, $keys)`, `data_get($target, $key)`, `data_set($target, $key, $val)`, `pluck($data, $cols)`
+- **Request & Redirects**: `redirect($to, $status)`, `back($fallback, $status)`, `old($key, $default)`, `optional($val, $fn)`, `validator($data, $rules)`, `csrf_token()`, `csrf_field()`, `csrf_verify($token)`, `request_wants_json()`, `request_bearer_token()`, `get_client_ip()`
+- **Numbers & Formatting**: `formatAmount($amt)`, `displayAmount($amt, $currency)`, `spellSeconds($secs)`, `formatBytes($bytes)`
+- **Filesystem & Mail**: `storage($disk)`, `mailer($to, $name)`, `render_email_layout($content, $subject, $data)`, `dispatch($job)`
+- **Alerts**: `discord_notify($message, $level, $fields, $title)`
 
-### 6. Mail Service & Email Layout System (`ZF1\Mail\Mailer`, `ZF1\Mail\EmailLayout`)
+### 6. Database Facade & Transactions (`ZF1\Database\DB`)
+Modern static database interface with automatic transaction rollback and deadlock retries:
+```php
+use ZF1\Database\DB;
+
+// Automatic transaction management (commits on success, rolls back on exception)
+$orderId = db_transaction(function ($db) use ($cart) {
+    $db->insert('orders', [
+        'customer_id' => $cart['customer_id'],
+        'total' => $cart['total'],
+        'created_at' => date('Y-m-d H:i:s'),
+    ]);
+    $orderId = $db->lastInsertId();
+
+    foreach ($cart['items'] as $item) {
+        $db->insert('order_items', [
+            'order_id' => $orderId,
+            'product_id' => $item['id'],
+            'qty' => $item['qty'],
+        ]);
+    }
+
+    return $orderId;
+});
+
+// Fluent helper methods
+$users = DB::select('users', ['id', 'name', 'email'], ['status = ?' => 1], 'id DESC', 20);
+$userId = DB::insert('users', ['name' => 'Alice', 'email' => 'alice@example.com']);
+DB::update('users', ['status' => 2], ['id = ?' => $userId]);
+DB::delete('users', ['id = ?' => $userId]);
+```
+
+### 7. Modern Cache Manager & Remember Pattern (`ZF1\Cache\Cache`)
+Wrap slow queries or computations with automatic caching:
+```php
+use ZF1\Cache\Cache;
+
+// The remember pattern: returns cached data if exists, otherwise runs callback, caches, and returns
+$permissions = Cache::remember("user_permissions_{$userId}", 3600, function () use ($userId) {
+    return (new UserRoleModel)->fetchPermissions($userId);
+});
+
+// Cache operations
+Cache::put('key', 'value', 3600);
+$value = Cache::get('key', 'default');
+Cache::has('key');
+Cache::forget('key');
+Cache::flush();
+```
+
+### 8. Base Application Controller (`ZF1\Foundation\Controller`)
+Extend `ZF1\Foundation\Controller` for modern API, SPA, and download capabilities:
+```php
+use ZF1\Foundation\Controller;
+
+final class ApiController extends Controller
+{
+    public function usersAction(): void
+    {
+        // 1. Reading JSON request payloads (Vue / React / Axios php://input)
+        $email = $this->jsonPayload('user.email');
+
+        // 2. Simple parameter validation
+        $data = $this->validate([
+            'email' => 'required|email',
+            'role' => 'required|in:admin,editor,viewer',
+        ]);
+
+        // 3. Standard JSON API envelopes
+        $this->success(['userId' => 42], 'User registered successfully.');
+    }
+
+    public function downloadInvoiceAction(): void
+    {
+        // 4. File download helper
+        $this->download(storage_path('invoices/inv-1001.pdf'));
+    }
+
+    public function updateProfileAction(): void
+    {
+        // 5. Fluent redirects with flash messages & old input retention
+        $this->redirect('/dashboard')
+            ->withSuccess('Profile updated successfully!')
+            ->with('status', 'active');
+
+        // Redirect back to previous page with errors and input:
+        $this->back()
+            ->withErrors(['email' => 'Invalid email address'])
+            ->withInput();
+
+        // Redirect to named route or action:
+        $this->redirect()->route('user_profile', ['id' => 42]);
+        $this->redirect()->action('index', 'users');
+    }
+}
+```
+
+### 9. Modern Session Store & Flash Messages (`ZF1\Session\Session`)
+Seamlessly integrates with `Zend_Session`, `Zend_Session_Namespace`, and native `$_SESSION` with dot-notation support:
+```php
+use ZF1\Session\Session;
+
+// 1. Read & write using dot-notation
+session(['user.profile.name' => 'Jane Doe', 'user.role' => 'admin']);
+$name = session('user.profile.name'); // 'Jane Doe'
+$role = Session::get('user.role');
+
+// 2. Inspection & management
+Session::has('user.role');      // true
+Session::missing('user.age');   // true
+Session::pull('user.role');     // gets and deletes
+Session::forget('user.profile');
+Session::all();
+
+// 3. One-request flash messages (auto-purged on subsequent request)
+Session::flash('success', 'Order created successfully!');
+// Or via helper:
+session()->flash('info', 'Profile updated');
+
+// 4. Lifecycle & security
+Session::regenerate(); // Regenerates session ID to prevent session fixation
+Session::invalidate(); // Destroys session and regenerates fresh session ID
+Session::token();      // Active CSRF token
+```
+
+#### In `.phtml` Views:
+```html
+<!-- Flash notifications -->
+<?php if ($msg = $this->flash('success')) { ?>
+    <div class="alert alert-success"><?= $this->escape($msg) ?></div>
+<?php } ?>
+
+<!-- Reading session data -->
+<span>Logged in as: <?= $this->escape($this->session('user.profile.name')) ?></span>
+
+<!-- CSRF Field & Old Input -->
+<form method="POST">
+    <?= $this->csrf() ?>
+    <input type="text" name="email" value="<?= $this->escape($this->old('email')) ?>">
+    ...
+</form>
+```
+
+### 10. Dedicated Validation Engine (`ZF1\Validation\Validator`)
+Powerful, standalone validation engine inspired by modern frameworks. Features 30+ built-in rules, database uniqueness and existence checks, custom closure rules, global rule extensions, and automatic 422 JSON envelopes or flash redirect responses:
+
+```php
+use ZF1\Validation\Validator;
+
+// 1. Manual Validation:
+$validator = Validator::make($data, [
+    'email' => 'required|email|max:255',
+    'password' => 'required|string|min:8|confirmed',
+    'age' => 'required|integer|between:18,65',
+    'avatar' => 'nullable|url',
+    'role' => 'required|in:admin,editor,subscriber',
+    'username' => 'required|alpha_dash|unique:users,username',
+], [
+    'email.required' => 'We need your email address to register!',
+], [
+    'username' => 'User Handle',
+]);
+
+if ($validator->fails()) {
+    $errors = $validator->errors(); // Returns ZF1\Validation\MessageBag
+    $firstError = $errors->first('email');
+    $allErrors = $errors->all();
+}
+
+$validated = $validator->validated(); // Only returns passed inputs
+
+// 2. Custom Closure Rules:
+Validator::make($data, [
+    'coupon' => [
+        'required',
+        function ($attribute, $value, $fail) {
+            if (! CouponService::isValid($value)) {
+                $fail('The :attribute has expired.');
+            }
+        },
+    ],
+]);
+
+// 3. Register Global Rule Extensions:
+Validator::extend('strong_password', function ($attribute, $value) {
+    return is_string($value) && preg_match('/[A-Z]/', $value) && preg_match('/[0-9]/', $value);
+}, 'The :attribute must contain at least one uppercase letter and one number.');
+```
+
+#### In Controllers:
+```php
+// In any controller extending ZF1\Foundation\Controller:
+public function storeAction(): void
+{
+    // Auto-validates: sends 422 JSON if request wants JSON, or redirects back with errors & old input:
+    $data = $this->validate([
+        'title' => 'required|string|max:100',
+        'body' => 'required|string|min:10',
+    ]);
+
+    // Data is safely validated here
+}
+```
+
+#### In `.phtml` Views:
+```html
+<form method="POST">
+    <?= $this->csrf() ?>
+
+    <input type="email" name="email" value="<?= $this->escape($this->old('email')) ?>">
+    <?php if ($this->errors()->has('email')): ?>
+        <span class="text-danger"><?= $this->escape($this->error('email')) ?></span>
+    <?php endif; ?>
+
+    <button type="submit">Submit</button>
+</form>
+```
+
+### 11. Mail Service & Email Layout System (`ZF1\Mail\Mailer`, `ZF1\Mail\EmailLayout`)
 - Fluent wrapper around `Zend_Mail` with SMTP transport auto-configured from `.env`:
   ```ini
   # Mail Configuration
@@ -194,6 +417,80 @@ Autoloaded framework helpers available globally:
 - `TEST_MAIL` reroutes all outgoing emails in non-production environments (`APP_ENV !== 'production'`) to one or more comma-separated test addresses and annotates original recipients in the subject (`[TEST: original@example.com] Subject`). Validates email formats before overriding.
 - CRLF injection protection automatically strips carriage returns and newlines from dynamic subjects.
 - Failure tracking via `Mailer::$lastError` and automatic debug logging.
+
+### 12. Interactive Web Console & Terminal (`ZF1\Console\WebConsole`)
+A browser-based terminal interface for running `zf` console commands securely with real-time SSE streaming, syntax-highlighted ANSI output, command history, and instant search.
+
+- **Default Route**: `/zf-console`
+- **Zero Config**: Ready out of the box in local and development environments.
+- **Maintenance Mode Access**: Accessible even while the application is down (`php zf down`), allowing authorized administrators to perform maintenance tasks, inspect status, and execute `php zf up` directly from the web terminal.
+- **Environment Configuration (`.env`)**:
+  ```ini
+  # Web Console
+  ZF_CONSOLE_ENABLED=true
+  ZF_CONSOLE_PATH=/zf-console
+  ZF_CONSOLE_ALLOWED_IPS=127.0.0.1,::1,192.168.*
+  ZF_CONSOLE_ALLOW_MAINTENANCE=true
+  ```
+
+#### Access Restriction & Authorization
+In `production`, access is locked by default. Restrict who can access the web console in `application/Bootstrap.php`:
+```php
+class Bootstrap extends \ZF1\Foundation\Bootstrap
+{
+    /**
+     * Authorize access to the Web Console.
+     */
+    public function authorizeWebConsole(\Zend_Controller_Request_Http $request): bool
+    {
+        // Example: Only permit logged-in administrators
+        return ! empty($this->roleid) && $this->roleid === 1;
+    }
+}
+```
+Or register a gate closure anywhere (e.g. in `public/index.php` or `Kernel`):
+```php
+WebConsole::auth(function ($request, $bootstrap) {
+    return isset($_SESSION['user']) && $_SESSION['user']['is_admin'] === true;
+});
+```
+
+#### Customizing the Console & UI
+Configure paths, priority groups, command filtering, and styling in `App\Kernel`:
+```php
+class Kernel extends \ZF1\Foundation\Kernel
+{
+    protected static function configureWebConsole(): void
+    {
+        WebConsole::path('/zf-console')
+            ->title('TigmooBiz Terminal')
+            ->homeUrl('/')
+            ->theme('dark') // 'dark', 'light', or 'auto'
+            ->priorityGroups(['csr', 'dispatch', 'vsr', 'general', 'queue'])
+            ->hideCommands(['system:down', 'db:backup']) // Blacklist sensitive commands
+            ->allowedIps(['127.0.0.1', '192.168.1.*'])
+            ->redirectOnForbidden('/error/unauthorized') // Optional custom redirect (defaults to project ErrorController)
+            ->onlyProjectCommands(false); // Default false shows all framework + app commands
+    }
+}
+```
+
+#### Publishing and Customizing the View Template
+To customize the HTML, CSS styles, or keyboard shortcuts, publish the template into your application:
+```bash
+php zf console:publish
+# Or force overwrite if already published:
+php zf console:publish --force
+```
+This publishes the template to `application/views/scripts/console/index.phtml`.
+
+### 13. Database Profiler & Slow Query Logger (`ZF1\Database\DatabaseProfiler`)
+- Automatically logs slow queries exceeding configurable threshold (e.g. `DB_SLOW_QUERY_MS=500`).
+- Configurable via `.env`:
+  ```ini
+  DB_LOGGING=true
+  DB_SLOW_QUERY_MS=500
+  ```
 
 ## Requirements
 

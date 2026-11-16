@@ -16,6 +16,104 @@ if (! function_exists('env')) {
     }
 }
 
+if (! function_exists('app_env')) {
+    /**
+     * Get the active application environment name (e.g. 'production', 'local', 'testing').
+     */
+    function app_env(): string
+    {
+        return defined('APPLICATION_ENV') ? (string) APPLICATION_ENV : (string) env('APP_ENV', 'production');
+    }
+}
+
+if (! function_exists('is_production')) {
+    /**
+     * Check if the application is currently running in a production environment.
+     */
+    function is_production(): bool
+    {
+        $env = strtolower(app_env());
+
+        return in_array($env, ['production', 'prod', 'live'], true);
+    }
+}
+
+if (! function_exists('is_local')) {
+    /**
+     * Check if the application is currently running in a local environment.
+     */
+    function is_local(): bool
+    {
+        $env = strtolower(app_env());
+
+        return in_array($env, ['local', 'dev', 'development'], true);
+    }
+}
+
+if (! function_exists('is_development')) {
+    /**
+     * Alias for is_local().
+     */
+    function is_development(): bool
+    {
+        return is_local();
+    }
+}
+
+if (! function_exists('is_testing')) {
+    /**
+     * Check if the application is running in a testing environment.
+     */
+    function is_testing(): bool
+    {
+        return strtolower(app_env()) === 'testing';
+    }
+}
+
+if (! function_exists('is_staging')) {
+    /**
+     * Check if the application is running in a staging or UAT environment.
+     */
+    function is_staging(): bool
+    {
+        $env = strtolower(app_env());
+
+        return in_array($env, ['staging', 'stage', 'uat'], true);
+    }
+}
+
+if (! function_exists('app_name')) {
+    /**
+     * Get the configured application name.
+     */
+    function app_name(): string
+    {
+        return defined('APP_NAME') ? (string) APP_NAME : (string) env('APP_NAME', 'ZF1');
+    }
+}
+
+if (! function_exists('app_url')) {
+    /**
+     * Get the configured application base URL or an absolute URL for a path.
+     */
+    function app_url(string $path = ''): string
+    {
+        $base = rtrim((string) env('APP_URL', 'http://localhost'), '/');
+
+        return $path !== '' ? "{$base}/".ltrim($path, '/') : $base;
+    }
+}
+
+if (! function_exists('is_cli')) {
+    /**
+     * Check if current execution context is Command Line Interface.
+     */
+    function is_cli(): bool
+    {
+        return PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg';
+    }
+}
+
 if (! function_exists('base_path')) {
     /**
      * Get the project root directory or a subpath within it.
@@ -162,6 +260,30 @@ if (! class_exists('EmailLayout', false)) {
     class_alias(ZF1\Mail\EmailLayout::class, 'EmailLayout');
 }
 
+if (! class_exists('WebConsole', false)) {
+    class_alias(ZF1\Console\WebConsole::class, 'WebConsole');
+}
+
+if (! class_exists('DB', false)) {
+    class_alias(ZF1\Database\DB::class, 'DB');
+}
+
+if (! class_exists('Cache', false)) {
+    class_alias(ZF1\Cache\Cache::class, 'Cache');
+}
+
+if (! class_exists('Session', false)) {
+    class_alias(ZF1\Session\Session::class, 'Session');
+}
+
+if (! class_exists('Optional', false)) {
+    class_alias(ZF1\Support\Optional::class, 'Optional');
+}
+
+if (! class_exists('Validator', false)) {
+    class_alias(ZF1\Validation\Validator::class, 'Validator');
+}
+
 if (! function_exists('mailer')) {
     /**
      * Get a new Mailer instance or create and configure with recipient.
@@ -191,6 +313,162 @@ if (! function_exists('render_email_layout')) {
     function render_email_layout(string $content, ?string $subject = null, array $data = []): string
     {
         return ZF1\Mail\EmailLayout::render($content, $subject, $data);
+    }
+}
+
+if (! function_exists('db')) {
+    /**
+     * Get the active Zend_Db_Adapter_Abstract instance.
+     */
+    function db(?string $connection = null): Zend_Db_Adapter_Abstract
+    {
+        return ZF1\Database\DB::connection($connection);
+    }
+}
+
+if (! function_exists('db_transaction')) {
+    /**
+     * Execute a callback inside a database transaction.
+     *
+     * @template T
+     *
+     * @param  callable(Zend_Db_Adapter_Abstract): T  $callback
+     * @return T
+     */
+    function db_transaction(callable $callback, int $attempts = 1, ?string $connection = null): mixed
+    {
+        return ZF1\Database\DB::transaction($callback, $attempts, $connection);
+    }
+}
+
+if (! function_exists('cache')) {
+    /**
+     * Get / set cache values or retrieve the Cache facade.
+     */
+    function cache(mixed $key = null, mixed $default = null): mixed
+    {
+        if ($key === null) {
+            return new ZF1\Cache\Cache;
+        }
+
+        if (is_array($key)) {
+            foreach ($key as $k => $v) {
+                ZF1\Cache\Cache::put((string) $k, $v);
+            }
+
+            return true;
+        }
+
+        return ZF1\Cache\Cache::get((string) $key, $default);
+    }
+}
+
+if (! function_exists('session')) {
+    /**
+     * Get / set session values or retrieve the Session manager.
+     *
+     * @param  string|array<string, mixed>|null  $key
+     * @return mixed|ZF1\Session\Session
+     */
+    function session(mixed $key = null, mixed $default = null): mixed
+    {
+        if ($key === null) {
+            return new ZF1\Session\Session;
+        }
+
+        if (is_array($key)) {
+            ZF1\Session\Session::put($key);
+
+            return true;
+        }
+
+        return ZF1\Session\Session::get((string) $key, $default);
+    }
+}
+
+if (! function_exists('redirect')) {
+    /**
+     * Create a new RedirectResponse instance.
+     */
+    function redirect(?string $to = null, int $status = 302): ZF1\Foundation\RedirectResponse
+    {
+        return new ZF1\Foundation\RedirectResponse($to, $status);
+    }
+}
+
+if (! function_exists('back')) {
+    /**
+     * Create a redirect response back to the previous URL.
+     */
+    function back(?string $fallback = '/', int $status = 302): ZF1\Foundation\RedirectResponse
+    {
+        return (new ZF1\Foundation\RedirectResponse(null, $status))->back($fallback, $status);
+    }
+}
+
+if (! function_exists('old')) {
+    /**
+     * Retrieve a flashed old input value from the session.
+     */
+    function old(?string $key = null, mixed $default = null): mixed
+    {
+        $old = ZF1\Session\Session::get('_old_input', []);
+        if (! is_array($old)) {
+            $old = [];
+        }
+
+        if ($key === null) {
+            return $old;
+        }
+
+        return function_exists('data_get') ? data_get($old, $key, $default) : ($old[$key] ?? $default);
+    }
+}
+
+if (! function_exists('optional')) {
+    /**
+     * Provide access to optional objects and values.
+     *
+     * @template T
+     *
+     * @param  T  $value
+     * @param  (callable(T): mixed)|null  $callback
+     * @return mixed|ZF1\Support\Optional
+     */
+    function optional(mixed $value = null, ?callable $callback = null): mixed
+    {
+        if ($callback === null) {
+            if ($value instanceof ZF1\Support\Optional) {
+                return $value;
+            }
+
+            return new ZF1\Support\Optional($value);
+        }
+
+        if ($value !== null) {
+            return $callback($value);
+        }
+
+        return null;
+    }
+}
+
+if (! function_exists('validator')) {
+    /**
+     * Create a new Validator instance.
+     *
+     * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>  $rules
+     * @param  array<string, string>  $messages
+     * @param  array<string, string>  $customAttributes
+     */
+    function validator(
+        array $data = [],
+        array $rules = [],
+        array $messages = [],
+        array $customAttributes = []
+    ): ZF1\Validation\Validator {
+        return ZF1\Validation\Validator::make($data, $rules, $messages, $customAttributes);
     }
 }
 
@@ -383,6 +661,131 @@ if (! function_exists('str_slug')) {
         $quotedSep = preg_quote($separator, '/');
 
         return trim((string) preg_replace("/{$quotedSep}+/", $separator, strtolower($title)), $separator);
+    }
+}
+
+if (! function_exists('str_uuid')) {
+    /**
+     * Generate a cryptographically secure UUID (version 4).
+     */
+    function str_uuid(): string
+    {
+        $data = random_bytes(16);
+        $data[6] = chr((ord($data[6]) & 0x0F) | 0x40); // set version to 0100
+        $data[8] = chr((ord($data[8]) & 0x3F) | 0x80); // set bits 6-7 to 10
+
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
+}
+
+if (! function_exists('str_random')) {
+    /**
+     * Generate a cryptographically secure random alphanumeric string.
+     */
+    function str_random(int $length = 16): string
+    {
+        $bytes = random_bytes((int) ceil($length / 2));
+
+        return substr(bin2hex($bytes), 0, $length);
+    }
+}
+
+if (! function_exists('str_mask')) {
+    /**
+     * Mask a portion of a string with a repeated character.
+     */
+    function str_mask(string $string, string $character = '*', int $index = 0, ?int $length = null): string
+    {
+        if ($character === '') {
+            return $string;
+        }
+
+        $strLen = mb_strlen($string, 'UTF-8');
+        if ($strLen === 0) {
+            return '';
+        }
+
+        if ($index < 0) {
+            $index = max(0, $strLen + $index);
+        }
+
+        if ($length === null) {
+            $length = $strLen - $index;
+        } elseif ($length < 0) {
+            $length = max(0, $strLen - $index + $length);
+        }
+
+        $start = mb_substr($string, 0, $index, 'UTF-8');
+        $mask = str_repeat($character, min($length, $strLen - $index));
+        $end = mb_substr($string, $index + $length, null, 'UTF-8');
+
+        return $start.$mask.$end;
+    }
+}
+
+if (! function_exists('str_headline')) {
+    /**
+     * Convert a string into headline / Title Case (e.g. 'order_status_id' -> 'Order Status Id').
+     */
+    function str_headline(string $value): string
+    {
+        $parts = explode(' ', trim((string) preg_replace('/[_\-\s]+/', ' ', $value)));
+
+        return ucwords(strtolower(implode(' ', $parts)));
+    }
+}
+
+if (! function_exists('str_contains_any')) {
+    /**
+     * Determine if a given string contains any of the provided needles.
+     *
+     * @param  array<string>  $needles
+     */
+    function str_contains_any(string $haystack, array $needles): bool
+    {
+        foreach ($needles as $needle) {
+            if ($needle !== '' && str_contains($haystack, $needle)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+if (! function_exists('str_starts_with_any')) {
+    /**
+     * Determine if a given string starts with any of the provided needles.
+     *
+     * @param  array<string>  $needles
+     */
+    function str_starts_with_any(string $haystack, array $needles): bool
+    {
+        foreach ($needles as $needle) {
+            if ($needle !== '' && str_starts_with($haystack, $needle)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+if (! function_exists('str_ends_with_any')) {
+    /**
+     * Determine if a given string ends with any of the provided needles.
+     *
+     * @param  array<string>  $needles
+     */
+    function str_ends_with_any(string $haystack, array $needles): bool
+    {
+        foreach ($needles as $needle) {
+            if ($needle !== '' && str_ends_with($haystack, $needle)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
@@ -1076,6 +1479,246 @@ if (! function_exists('data_set')) {
         }
 
         return $target;
+    }
+}
+
+if (! function_exists('array_only')) {
+    /**
+     * Get a subset of the items from the given array.
+     *
+     * @param  array<string, mixed>  $array
+     * @param  array<string>|string  $keys
+     * @return array<string, mixed>
+     */
+    function array_only(array $array, array|string $keys): array
+    {
+        $keys = is_array($keys) ? $keys : [$keys];
+
+        return array_intersect_key($array, array_flip($keys));
+    }
+}
+
+if (! function_exists('array_except')) {
+    /**
+     * Get all of the given array except for a specified array of keys.
+     *
+     * @param  array<string, mixed>  $array
+     * @param  array<string>|string  $keys
+     * @return array<string, mixed>
+     */
+    function array_except(array $array, array|string $keys): array
+    {
+        $keys = is_array($keys) ? $keys : [$keys];
+
+        return array_diff_key($array, array_flip($keys));
+    }
+}
+
+if (! function_exists('array_wrap')) {
+    /**
+     * If the given value is not an array and not null, wrap it in one.
+     */
+    function array_wrap(mixed $value): array
+    {
+        if ($value === null) {
+            return [];
+        }
+
+        return is_array($value) ? $value : [$value];
+    }
+}
+
+if (! function_exists('array_first')) {
+    /**
+     * Return the first element in an array passing a given truth test.
+     *
+     * @param  array<mixed>  $array
+     */
+    function array_first(array $array, ?callable $callback = null, mixed $default = null): mixed
+    {
+        if ($callback === null) {
+            if (empty($array)) {
+                return $default instanceof Closure ? $default() : $default;
+            }
+            foreach ($array as $item) {
+                return $item;
+            }
+        }
+
+        foreach ($array as $key => $value) {
+            if ($callback($value, $key)) {
+                return $value;
+            }
+        }
+
+        return $default instanceof Closure ? $default() : $default;
+    }
+}
+
+if (! function_exists('array_last')) {
+    /**
+     * Return the last element in an array passing a given truth test.
+     *
+     * @param  array<mixed>  $array
+     */
+    function array_last(array $array, ?callable $callback = null, mixed $default = null): mixed
+    {
+        return array_first(array_reverse($array, true), $callback, $default);
+    }
+}
+
+if (! function_exists('array_has')) {
+    /**
+     * Check if an item or items exist in an array using "dot" notation.
+     *
+     * @param  array<string, mixed>  $array
+     */
+    function array_has(array $array, string $key): bool
+    {
+        if (array_key_exists($key, $array)) {
+            return true;
+        }
+
+        $segments = explode('.', $key);
+        $current = $array;
+
+        foreach ($segments as $segment) {
+            if (! is_array($current) || ! array_key_exists($segment, $current)) {
+                return false;
+            }
+            $current = $current[$segment];
+        }
+
+        return true;
+    }
+}
+
+if (! function_exists('array_forget')) {
+    /**
+     * Remove one or many array items from a given array using "dot" notation.
+     *
+     * @param  array<string, mixed>  $array
+     * @param  array<string>|string  $keys
+     */
+    function array_forget(array &$array, array|string $keys): void
+    {
+        $keys = is_array($keys) ? $keys : [$keys];
+
+        foreach ($keys as $key) {
+            $segments = explode('.', $key);
+            $current = &$array;
+
+            while (count($segments) > 1) {
+                $segment = array_shift($segments);
+                if (! isset($current[$segment]) || ! is_array($current[$segment])) {
+                    continue 2;
+                }
+                $current = &$current[$segment];
+            }
+
+            unset($current[array_shift($segments)]);
+        }
+    }
+}
+
+if (! function_exists('array_pull')) {
+    /**
+     * Get a value from the array, and remove it.
+     *
+     * @param  array<string, mixed>  $array
+     */
+    function array_pull(array &$array, string $key, mixed $default = null): mixed
+    {
+        $value = data_get($array, $key, $default);
+        array_forget($array, $key);
+
+        return $value;
+    }
+}
+
+if (! function_exists('array_key_by')) {
+    /**
+     * Key an associative array by a field or callback.
+     *
+     * @param  array<mixed>  $array
+     */
+    function array_key_by(array $array, string|callable $key): array
+    {
+        $results = [];
+
+        foreach ($array as $item) {
+            $resolvedKey = is_callable($key) ? $key($item) : data_get($item, $key);
+            if ($resolvedKey !== null) {
+                $results[(string) $resolvedKey] = $item;
+            }
+        }
+
+        return $results;
+    }
+}
+
+if (! function_exists('csrf_token')) {
+    /**
+     * Get or generate the current CSRF token from the session.
+     */
+    function csrf_token(): string
+    {
+        return ZF1\Session\Session::token();
+    }
+}
+
+if (! function_exists('csrf_field')) {
+    /**
+     * Generate a CSRF token hidden HTML form input tag.
+     */
+    function csrf_field(): string
+    {
+        return '<input type="hidden" name="_token" value="'.htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8').'">';
+    }
+}
+
+if (! function_exists('csrf_verify')) {
+    /**
+     * Verify whether the given token matches the active CSRF token.
+     */
+    function csrf_verify(?string $token = null): bool
+    {
+        $token = $token ?: ($_POST['_token'] ?? ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? null));
+        $sessionToken = ZF1\Session\Session::get('_token');
+
+        if (empty($token) || empty($sessionToken)) {
+            return false;
+        }
+
+        return hash_equals((string) $sessionToken, (string) $token);
+    }
+}
+
+if (! function_exists('request_wants_json')) {
+    /**
+     * Determine if current request expects a JSON response.
+     */
+    function request_wants_json(): bool
+    {
+        return (isset($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'application/json'))
+            || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+            || (isset($_SERVER['CONTENT_TYPE']) && str_contains($_SERVER['CONTENT_TYPE'], 'application/json'));
+    }
+}
+
+if (! function_exists('request_bearer_token')) {
+    /**
+     * Get the bearer token from the request Authorization header.
+     */
+    function request_bearer_token(): ?string
+    {
+        $header = $_SERVER['HTTP_AUTHORIZATION'] ?? ($_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '');
+
+        if ($header !== '' && preg_match('/Bearer\s+(\S+)/i', $header, $matches)) {
+            return $matches[1];
+        }
+
+        return null;
     }
 }
 

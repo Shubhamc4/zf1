@@ -140,39 +140,57 @@ final class Application
     }
 
     /**
-     * Register standard built-in framework commands.
+     * Get all registered unique command instances keyed by command name.
+     *
+     * @return array<string, Command>
+     */
+    public static function getUniqueCommands(): array
+    {
+        self::boot();
+
+        return self::$uniqueCommands;
+    }
+
+    /**
+     * Get all registered command instances keyed by name and alias.
+     *
+     * @return array<string, Command>
+     */
+    public static function getCommands(): array
+    {
+        self::boot();
+
+        return self::$commands;
+    }
+
+    /**
+     * Get a registered command by name or alias.
+     */
+    public static function getCommand(string $name): ?Command
+    {
+        self::boot();
+
+        return self::$commands[$name] ?? null;
+    }
+
+    /**
+     * Check if a command is registered.
+     */
+    public static function hasCommand(string $name): bool
+    {
+        self::boot();
+
+        return isset(self::$commands[$name]);
+    }
+
+    /**
+     * Register standard built-in framework commands dynamically from Commands/ directory and subdirectories.
      */
     protected static function registerBuiltInCommands(): void
     {
-        $coreCommands = [
-            Commands\Queue\TableCommand::class,
-            Commands\Queue\WorkCommand::class,
-            Commands\Queue\StatusCommand::class,
-            Commands\Queue\FailedCommand::class,
-            Commands\Queue\RetryCommand::class,
-            Commands\Queue\ForgetCommand::class,
-            Commands\Queue\FlushCommand::class,
-            Commands\Queue\PruneCommand::class,
-            Commands\Schedule\RunCommand::class,
-            Commands\Schedule\ListCommand::class,
-            Commands\Schedule\WorkCommand::class,
-            Commands\System\DownCommand::class,
-            Commands\System\UpCommand::class,
-            Commands\System\BackupCommand::class,
-            Commands\System\CacheClearCommand::class,
-            Commands\System\FoundationCommand::class,
-            Commands\System\MakeCommandCommand::class,
-            Commands\System\MakeJobCommand::class,
-            Commands\System\ServeCommand::class,
-            Commands\System\AboutCommand::class,
-            Commands\System\RouteListCommand::class,
-            Commands\System\MailLayoutCommand::class,
-        ];
-
-        foreach ($coreCommands as $class) {
-            if (class_exists($class)) {
-                self::register($class);
-            }
+        $builtInPath = __DIR__.'/Commands';
+        if (is_dir($builtInPath)) {
+            self::discoverCommandsInDirectory($builtInPath);
         }
     }
 
@@ -207,18 +225,50 @@ final class Application
         require_once $filePath;
         $declaredAfter = get_declared_classes();
 
-        $newClasses = array_diff($declaredAfter, $declaredBefore);
+        $candidateClasses = array_diff($declaredAfter, $declaredBefore);
 
-        foreach ($newClasses as $class) {
+        // Also extract class name directly from the file in case it was already loaded/autoloaded
+        $fileClass = self::getClassFromFile($filePath);
+        if ($fileClass !== null && ! in_array($fileClass, $candidateClasses, true)) {
+            $candidateClasses[] = $fileClass;
+        }
+
+        foreach ($candidateClasses as $class) {
             try {
-                $ref = new ReflectionClass($class);
-                if (! $ref->isAbstract() && $ref->isSubclassOf(Command::class)) {
-                    self::register($ref->newInstance());
+                if (class_exists($class, false)) {
+                    $ref = new ReflectionClass($class);
+                    if (! $ref->isAbstract() && $ref->isSubclassOf(Command::class)) {
+                        self::register($ref->newInstance());
+                    }
                 }
             } catch (Throwable) {
                 // Ignore classes that cannot be reflected or instantiated
             }
         }
+    }
+
+    /**
+     * Extract fully qualified class name from a PHP file.
+     */
+    protected static function getClassFromFile(string $filePath): ?string
+    {
+        $content = @file_get_contents($filePath);
+        if ($content === false || $content === '') {
+            return null;
+        }
+
+        $namespace = '';
+        if (preg_match('/^\s*namespace\s+([^;]+);/m', $content, $m)) {
+            $namespace = trim($m[1]);
+        }
+
+        if (preg_match('/^\s*(?:final\s+|abstract\s+)?class\s+([a-zA-Z0-9_]+)/m', $content, $m)) {
+            $class = trim($m[1]);
+
+            return $namespace !== '' ? "{$namespace}\\{$class}" : $class;
+        }
+
+        return null;
     }
 
     /**

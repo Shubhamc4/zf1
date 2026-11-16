@@ -1,0 +1,732 @@
+<?php
+$hasThis = isset($this) && is_object($this);
+$appName = (string) (($hasThis && isset($this->appName)) ? $this->appName : ($appName ?? (defined('APP_NAME') ? APP_NAME : 'ZF1')));
+$homeUrl = (string) (($hasThis && isset($this->homeUrl)) ? $this->homeUrl : ($homeUrl ?? (function_exists('url') ? url('/') : '/')));
+$consolePath = (string) (($hasThis && isset($this->consolePath)) ? $this->consolePath : ($consolePath ?? '/zf-console'));
+$executeUrl = (string) (($hasThis && isset($this->executeUrl)) ? $this->executeUrl : ($executeUrl ?? rtrim($consolePath, '/').'/execute'));
+$totalCommands = (int) (($hasThis && isset($this->totalCommands)) ? $this->totalCommands : ($totalCommands ?? 0));
+$groups = (array) (($hasThis && isset($this->groups)) ? $this->groups : ($groups ?? []));
+$defaultTheme = (string) (($hasThis && isset($this->defaultTheme)) ? $this->defaultTheme : ($defaultTheme ?? 'dark'));
+$customCss = (string) (($hasThis && isset($this->customCss)) ? $this->customCss : ($customCss ?? ''));
+$envName = (string) (($hasThis && isset($this->envName)) ? $this->envName : ($envName ?? (defined('APPLICATION_ENV') ? APPLICATION_ENV : 'production')));
+$isDown = (bool) (($hasThis && isset($this->isDown)) ? $this->isDown : ($isDown ?? false));
+$phpVer = PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b0d12">
+    <title><?= htmlspecialchars($appName.' Console', ENT_QUOTES, 'UTF-8') ?></title>
+    <style>
+        :root{color-scheme:dark;--bg-base:#0b0d12;--bg-panel:#141821;--bg-elevated:#191e29;--bg-input:#0d1017;--bg-hover:#1c2330;--border-color:#252c39;--border-subtle:#1d2430;--border-focus:#818cf8;--text-main:#e8ecf4;--text-muted:#a0a9ba;--text-dim:#717d91;--accent:#818cf8;--accent-hover:#a5adff;--accent-soft:rgba(129,140,248,.12);--green:#34d399;--green-soft:rgba(52,211,153,.1);--green-border:rgba(52,211,153,.23);--amber:#fbbf24;--amber-soft:rgba(251,191,36,.1);--amber-border:rgba(251,191,36,.23);--red:#fb7185;--red-soft:rgba(251,113,133,.1);--terminal-text:#dce3ef;--font-sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--font-mono:"JetBrains Mono","SFMono-Regular",Consolas,"Liberation Mono",monospace;--radius-sm:6px;--radius-md:9px;--radius-lg:12px;--transition:150ms ease}
+        :root[data-theme="light"],[data-theme="light"]{color-scheme:light;--bg-base:#f5f6f8;--bg-panel:#ffffff;--bg-elevated:#f8f9fb;--bg-input:#ffffff;--bg-hover:#f0f2f6;--border-color:#e2e6ed;--border-subtle:#edf0f4;--border-focus:#6366f1;--text-main:#202534;--text-muted:#626d80;--text-dim:#8b95a5;--accent:#6366f1;--accent-hover:#4f46e5;--accent-soft:rgba(99,102,241,.09);--green:#059669;--green-soft:rgba(5,150,105,.09);--green-border:rgba(5,150,105,.2);--amber:#b7791f;--amber-soft:rgba(183,121,31,.09);--amber-border:rgba(183,121,31,.2);--red:#dc5265;--red-soft:rgba(220,82,101,.09);--terminal-text:#293244}
+        @media(prefers-color-scheme:light){:root:not([data-theme="dark"]){color-scheme:light;--bg-base:#f5f6f8;--bg-panel:#ffffff;--bg-elevated:#f8f9fb;--bg-input:#ffffff;--bg-hover:#f0f2f6;--border-color:#e2e6ed;--border-subtle:#edf0f4;--border-focus:#6366f1;--text-main:#202534;--text-muted:#626d80;--text-dim:#8b95a5;--accent:#6366f1;--accent-hover:#4f46e5;--accent-soft:rgba(99,102,241,.09);--green:#059669;--green-soft:rgba(5,150,105,.09);--green-border:rgba(5,150,105,.2);--amber:#b7791f;--amber-soft:rgba(183,121,31,.09);--amber-border:rgba(183,121,31,.2);--red:#dc5265;--red-soft:rgba(220,82,101,.09);--terminal-text:#293244}}
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        html,body{width:100%;height:100%;overflow:hidden;background:var(--bg-base);color:var(--text-main);font-family:var(--font-sans);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+        button,input{font:inherit}
+        button{-webkit-tap-highlight-color:transparent}
+        ::selection{background:var(--accent-soft);color:var(--text-main)}
+        :focus-visible{outline:2px solid var(--border-focus);outline-offset:2px}
+        .console-app{display:flex;width:100%;height:100vh;height:100dvh;overflow:hidden;background:var(--bg-base)}
+        .console-sidebar{width:286px;min-width:260px;max-width:320px;height:100%;display:flex;flex-direction:column;background:var(--bg-panel);border-right:1px solid var(--border-color);user-select:none}
+        .sidebar-brand{min-height:54px;padding:0 15px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--bg-panel);border-bottom:1px solid var(--border-subtle)}
+        .brand-title{display:inline-flex;align-items:center;gap:9px;color:var(--text-main);text-decoration:none;font-family:var(--font-mono);font-size:13px;font-weight:700;letter-spacing:-.4px;min-width:0;overflow:hidden}
+        .brand-title span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .brand-title svg{color:var(--green);flex-shrink:0}
+        .brand-badge{padding:3px 8px;border-radius:5px;background:var(--bg-elevated);border:1px solid var(--border-color);color:var(--text-muted);font-family:var(--font-mono);font-size:11px;font-weight:600;white-space:nowrap;flex-shrink:0;line-height:1.4}
+        .sidebar-search-wrap{padding:12px;background:var(--bg-panel);border-bottom:1px solid var(--border-subtle)}
+        .search-box{position:relative;display:flex;align-items:center}
+        .search-box svg{position:absolute;left:10px;color:var(--text-dim);pointer-events:none}
+        .search-input{width:100%;height:34px;padding:0 35px 0 32px;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-md);color:var(--text-main);font-size:12px;outline:none;transition:border-color var(--transition),box-shadow var(--transition)}
+        .search-input::placeholder,.command-input::placeholder{color:var(--text-dim)}
+        .search-input:focus,.command-input:focus{border-color:var(--border-focus);box-shadow:0 0 0 3px var(--accent-soft)}
+        .search-kbd{position:absolute;right:9px;padding:1px 5px;border:1px solid var(--border-color);border-radius:4px;background:var(--bg-elevated);color:var(--text-dim);font-family:var(--font-mono);font-size:10px;pointer-events:none}
+        .sidebar-commands{flex:1;min-height:0;overflow-y:auto;padding:9px;scrollbar-width:thin;scrollbar-color:var(--border-color) transparent}
+        .cmd-group{margin-bottom:15px}
+        .cmd-group-title{display:flex;align-items:center;justify-content:space-between;margin:8px 7px 6px;color:var(--text-dim);font-size:10px;font-weight:700;letter-spacing:.09em}
+        .cmd-group-title span:last-child{font-family:var(--font-mono);letter-spacing:0}
+        .cmd-card{display:flex;flex-direction:column;gap:2px;margin-bottom:3px;padding:7px 9px;border:1px solid transparent;border-radius:var(--radius-sm);background:transparent;cursor:pointer;transition:background var(--transition),border-color var(--transition)}
+        .cmd-card:hover{background:var(--bg-hover);border-color:var(--border-color)}
+        .cmd-card:active{background:var(--accent-soft)}
+        .cmd-card-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+        .cmd-card-name{overflow:hidden;color:var(--accent);font-family:var(--font-mono);font-size:11.5px;font-weight:600;text-overflow:ellipsis;white-space:nowrap}
+        .cmd-card-tools{display:flex;flex-shrink:0;gap:3px;opacity:.45;transition:opacity var(--transition)}
+        .cmd-card:hover .cmd-card-tools,.cmd-card:focus-within .cmd-card-tools{opacity:1}
+        .cmd-tool-btn{width:23px;height:23px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:5px;background:transparent;color:var(--text-muted);cursor:pointer}
+        .cmd-tool-btn:hover{background:var(--bg-elevated);color:var(--text-main)}
+        .cmd-card-desc{overflow:hidden;color:var(--text-dim);font-size:10.5px;line-height:1.4;text-overflow:ellipsis;white-space:nowrap}
+        .empty-commands{padding:24px 12px;color:var(--text-dim);text-align:center;font-size:11px}
+        .console-main{position:relative;flex:1;min-width:0;height:100%;display:flex;flex-direction:column;overflow:hidden;background:var(--bg-base)}
+        .main-topbar{min-height:54px;padding:0 17px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--bg-panel);border-bottom:1px solid var(--border-color);user-select:none}
+        .topbar-left{display:flex;align-items:center;gap:12px;min-width:0}
+        .window-controls{display:flex;align-items:center;gap:6px}
+        .window-dot{width:9px;height:9px;border-radius:50%}
+        .dot-red{background:#f87171}.dot-yellow{background:#fbbf24}.dot-green{background:#34d399}
+        .topbar-meta{display:flex;align-items:center;flex-wrap:wrap;gap:11px;font-family:var(--font-mono);font-size:11px}
+        .meta-host{color:var(--text-muted);font-weight:600}
+        .status-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 8px;border:1px solid var(--green-border);border-radius:20px;background:var(--green-soft);color:var(--green);font-family:var(--font-sans);font-size:10px;font-weight:600}
+        .status-badge.running{border-color:var(--amber-border);background:var(--amber-soft);color:var(--amber)}
+        .status-badge.failed{border-color:rgba(251,113,133,.25);background:var(--red-soft);color:var(--red)}
+        .status-dot{width:6px;height:6px;flex-shrink:0;border-radius:50%;background:currentColor}
+        .status-dot.pulse{animation:pulseAnim 1.2s infinite ease-in-out}
+        @keyframes pulseAnim{50%{opacity:.35;transform:scale(.8)}}
+        .topbar-actions{display:flex;align-items:center;gap:8px}
+        .action-btn{height:32px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-elevated);color:var(--text-main);font-size:11.5px;font-weight:600;text-decoration:none;cursor:pointer;transition:all var(--transition);user-select:none;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+        .action-btn:hover{background:var(--bg-hover);border-color:var(--border-focus);color:var(--accent);transform:translateY(-1px);box-shadow:0 2px 4px rgba(0,0,0,.08)}
+        .action-btn:active{transform:translateY(0)}
+        .action-btn svg{flex-shrink:0;width:14px;height:14px;color:var(--text-muted);transition:color var(--transition)}
+        .action-btn:hover svg{color:var(--accent)}
+        .theme-toggle{width:32px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border-color);border-radius:var(--radius-sm);background:var(--bg-elevated);color:var(--text-muted);cursor:pointer;transition:all var(--transition);margin-left:4px;flex-shrink:0;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+        .theme-toggle:hover{color:var(--accent);border-color:var(--border-focus);background:var(--bg-hover);transform:translateY(-1px);box-shadow:0 2px 4px rgba(0,0,0,.08)}
+        .theme-toggle:active{transform:translateY(0)}
+        .theme-toggle svg{display:block;width:15px;height:15px}
+        .terminal-viewport{flex:1;min-height:0;padding:19px 22px;overflow-y:auto;overflow-x:auto;background:var(--bg-base);color:var(--terminal-text);font-family:var(--font-mono);font-size:12px;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere;scrollbar-width:thin;scrollbar-color:var(--border-color) transparent}
+        .term-prompt-glyph{color:var(--green);font-weight:700}
+        .term-cmd-echo{color:var(--accent);font-weight:600}
+        .term-timestamp{color:var(--text-dim)}
+        .term-command-prefix{color:var(--text-muted)}
+        .term-error{color:var(--red);font-weight:600}
+        .term-meta-tag{display:inline-block;margin:5px 0;padding:2px 8px;border:1px solid transparent;border-radius:5px;font-family:var(--font-mono);font-size:10px;font-weight:600}
+        .meta-success{border-color:var(--green-border);background:var(--green-soft);color:var(--green)}
+        .meta-fail{border-color:rgba(251,113,133,.25);background:var(--red-soft);color:var(--red)}
+        .terminal-input-bar{min-height:62px;padding:11px 17px;display:flex;align-items:center;gap:11px;background:var(--bg-panel);border-top:1px solid var(--border-color)}
+        .prompt-label{display:flex;align-items:center;flex-shrink:0;gap:6px;color:var(--text-muted);font-family:var(--font-mono);font-size:11px;font-weight:600;user-select:none}
+        .prompt-label .term-prompt-glyph{font-size:15px}
+        .command-input{flex:1;min-width:0;height:36px;padding:0 12px;border:1px solid var(--border-color);border-radius:var(--radius-md);outline:none;background:var(--bg-input);color:var(--text-main);font-family:var(--font-mono);font-size:12px;transition:all var(--transition)}
+        .btn-run{min-width:82px;height:36px;padding:0 13px;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid transparent;border-radius:var(--radius-md);background:#059669;color:#fff;font-size:11px;font-weight:700;cursor:pointer;transition:all var(--transition)}
+        .btn-run:hover:not(:disabled){background:#047857;box-shadow:0 2px 8px rgba(5,150,105,.2)}
+        .btn-run:disabled{opacity:.55;cursor:not-allowed}
+        .btn-run kbd{padding:1px 4px;border-radius:3px;background:rgba(0,0,0,.18);color:#fff;font-family:var(--font-mono);font-size:9px}
+        .spinner{width:13px;height:13px;display:inline-block;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .bottom-hint-bar{min-height:29px;padding:4px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid var(--border-subtle);background:var(--bg-panel);color:var(--text-dim);font-size:10px;user-select:none}
+        .bottom-hint-bar kbd{margin:0 2px;padding:1px 4px;border:1px solid var(--border-color);border-radius:4px;background:var(--bg-elevated);color:var(--text-muted);font-family:var(--font-mono);font-size:9px}
+        .sidebar-commands::-webkit-scrollbar,.terminal-viewport::-webkit-scrollbar{width:6px;height:6px}
+        .sidebar-commands::-webkit-scrollbar-thumb,.terminal-viewport::-webkit-scrollbar-thumb{border-radius:10px;background:var(--border-color)}
+        .sidebar-commands::-webkit-scrollbar-thumb:hover,.terminal-viewport::-webkit-scrollbar-thumb:hover{background:var(--text-dim)}
+        .sidebar-commands::-webkit-scrollbar-track,.terminal-viewport::-webkit-scrollbar-track{background:transparent}
+        @media(max-width:900px){.console-sidebar{width:245px;min-width:220px}.help-pill{display:none}.terminal-viewport{padding:16px}}
+        @media(max-width:640px){.console-app{flex-direction:column}.console-sidebar{width:100%;min-width:0;max-width:none;height:195px;flex:0 0 195px;border-right:0;border-bottom:1px solid var(--border-color)}.sidebar-brand{min-height:45px}.sidebar-search-wrap{padding:8px 10px}.sidebar-commands{padding:5px 9px}.cmd-group{margin-bottom:8px}.main-topbar{min-height:48px;padding:0 10px}.topbar-left{gap:7px}.topbar-meta{gap:6px;font-size:10px}.window-controls{display:none}.topbar-actions{gap:2px}.action-btn{height:30px;padding:0 9px;font-size:10px}.action-btn span{display:none}.theme-toggle{width:30px;height:30px}.terminal-viewport{padding:12px;font-size:11px}.terminal-input-bar{min-height:57px;padding:9px;gap:7px}.prompt-label{gap:3px}.prompt-label span:last-child{display:none}.command-input{height:35px;padding:0 8px;font-size:11px}.btn-run{min-width:37px;width:37px;height:35px;padding:0}.btn-run span,.btn-run kbd{display:none}.bottom-hint-bar{min-height:27px;padding:4px 8px;font-size:9px}.bottom-hint-bar>div:last-child{display:none}}
+        @media(max-width:380px){.console-sidebar{height:165px;flex-basis:165px}.meta-host{max-width:105px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bottom-hint-bar{font-size:8px}}
+        @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+        <?= $customCss ?>
+    </style>
+    <script>
+        (function(){try{const s=localStorage.getItem('zf1-console-theme');if(s==='dark'||s==='light'){document.documentElement.setAttribute('data-theme',s);document.documentElement.dataset.theme=s;}else if('<?= htmlspecialchars($defaultTheme, ENT_QUOTES, 'UTF-8') ?>'==='light'){document.documentElement.setAttribute('data-theme','light');document.documentElement.dataset.theme='light';}}catch(e){}})();
+    </script>
+</head>
+<body>
+    <div class="console-app">
+        <!-- Sidebar -->
+        <aside class="console-sidebar">
+            <div class="sidebar-brand">
+                <a href="<?= htmlspecialchars($homeUrl, ENT_QUOTES, 'UTF-8') ?>" class="brand-title" title="Back to Homepage">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line>
+                    </svg>
+                    <span><?= htmlspecialchars($appName, ENT_QUOTES, 'UTF-8') ?> Console</span>
+                </a>
+                <span class="brand-badge"><?= $totalCommands ?> cmds</span>
+            </div>
+
+            <!-- Command search -->
+            <div class="sidebar-search-wrap">
+                <div class="search-box">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" id="cmd-filter" class="search-input" placeholder="Filter commands..." autocomplete="off" aria-label="Filter commands">
+                    <span class="search-kbd">/</span>
+                </div>
+            </div>
+
+            <!-- Commands -->
+            <div class="sidebar-commands" id="cmd-container">
+                <?php if (empty($groups)) { ?>
+                    <div class="empty-commands">No commands available.</div>
+                <?php } else { ?>
+                    <?php foreach ($groups as $group => $commands) { ?>
+                        <div class="cmd-group" data-group="<?= htmlspecialchars((string) $group, ENT_QUOTES, 'UTF-8') ?>">
+                            <div class="cmd-group-title">
+                                <span><?= htmlspecialchars(strtoupper((string) $group), ENT_QUOTES, 'UTF-8') ?></span>
+                                <span><?= count($commands) ?></span>
+                            </div>
+                            <?php foreach ($commands as $cmd) {
+                                $commandName = (string) ($cmd['name'] ?? '');
+                                $commandDescription = (string) ($cmd['description'] ?? '');
+                                $commandAttribute = htmlspecialchars($commandName, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                                ?>
+                                <div class="cmd-card" data-command="<?= $commandAttribute ?>" role="button" tabindex="0" title="Click to insert command">
+                                    <div class="cmd-card-header">
+                                        <span class="cmd-card-name"><?= htmlspecialchars($commandName, ENT_QUOTES, 'UTF-8') ?></span>
+                                        <div class="cmd-card-tools">
+                                            <button type="button" class="cmd-tool-btn" data-action="help" title="View synopsis and options" aria-label="View command help">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                                </svg>
+                                            </button>
+                                            <button type="button" class="cmd-tool-btn" data-action="insert" title="Insert command" aria-label="Insert command">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <polyline points="9 10 4 15 9 20"></polyline><path d="M20 4v7a4 4 0 0 1-4 4H4"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="cmd-card-desc"><?= htmlspecialchars($commandDescription ?: 'No description.', ENT_QUOTES, 'UTF-8') ?></div>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    <?php } ?>
+                <?php } ?>
+            </div>
+        </aside>
+
+        <!-- Main console -->
+        <main class="console-main">
+            <!-- Topbar -->
+            <header class="main-topbar">
+                <div class="topbar-left">
+                    <div class="window-controls">
+                        <span class="window-dot dot-red"></span>
+                        <span class="window-dot dot-yellow"></span>
+                        <span class="window-dot dot-green"></span>
+                    </div>
+                    <div class="topbar-meta">
+                        <span class="meta-host"><?= htmlspecialchars($appName, ENT_QUOTES, 'UTF-8') ?> Console</span>
+                        <span id="term-status" class="status-badge">
+                            <span class="status-dot"></span>
+                            <span id="term-status-text">Ready</span>
+                        </span>
+                        <?php if ($isDown) { ?>
+                            <span class="status-badge failed" title="Application is currently in maintenance mode (503)">
+                                <span class="status-dot"></span>
+                                <span>MAINTENANCE MODE</span>
+                            </span>
+                        <?php } ?>
+                    </div>
+                </div>
+
+                <div class="topbar-actions">
+                    <!-- Home -->
+                    <a href="<?= htmlspecialchars($homeUrl, ENT_QUOTES, 'UTF-8') ?>" class="action-btn" title="Back to Homepage">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <span>Home</span>
+                    </a>
+
+                    <!-- Clear -->
+                    <button type="button" class="action-btn" onclick="clearTerminal()" title="Clear terminal (Ctrl+L)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        <span>Clear</span>
+                    </button>
+
+                    <!-- Copy -->
+                    <button type="button" class="action-btn" id="btn-copy" onclick="copyTerminalOutput()" title="Copy terminal output">
+                        <svg id="btn-copy-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span id="btn-copy-text">Copy</span>
+                    </button>
+
+                    <!-- Theme toggle pushed to the right -->
+                    <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch color theme" title="Switch color theme">
+                        <svg id="theme-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Terminal output -->
+            <div class="terminal-viewport" id="terminal-screen" role="log" aria-live="polite" aria-label="Terminal output"><?php if ($isDown) { ?><span style="color:var(--amber);font-weight:600;">⚠ APPLICATION IS CURRENTLY IN MAINTENANCE MODE (503).</span>
+<span style="color:var(--text-dim)">Run <span style="color:var(--green)">up</span> or <span style="color:var(--green)">php zf up</span> to bring the application back online.</span>
+
+<?php } ?><span style="color:var(--text-dim)"><?= htmlspecialchars($appName, ENT_QUOTES, 'UTF-8') ?> Console initialized (<?= htmlspecialchars($envName, ENT_QUOTES, 'UTF-8') ?>). Ready for commands.</span></div>
+
+            <!-- Terminal input -->
+            <form id="terminal-form" autocomplete="off">
+                <div class="terminal-input-bar">
+                    <div class="prompt-label">
+                        <span class="term-prompt-glyph">❯</span>
+                        <span>php zf</span>
+                    </div>
+                    <input type="text" id="terminal-cmd-input" class="command-input terminal-cmd-input" data-allow-enter="true" placeholder="Enter command and arguments..." autocomplete="off" autocapitalize="off" spellcheck="false" autofocus aria-label="Terminal command">
+                    <button type="submit" id="btn-run" class="btn-run">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        <span>Run</span>
+                        <kbd>↵</kbd>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Footer -->
+            <footer class="bottom-hint-bar">
+                <div>
+                    <span><kbd>↑</kbd> <kbd>↓</kbd> History</span> &bull;
+                    <span><kbd>/</kbd> Filter</span> &bull;
+                    <span><kbd>Esc</kbd> Clear Input</span> &bull;
+                    <span><kbd>Ctrl+L</kbd> Clear Screen</span>
+                </div>
+                <div>
+                    <span><?= htmlspecialchars($appName, ENT_QUOTES, 'UTF-8') ?> &bull; PHP <?= htmlspecialchars($phpVer, ENT_QUOTES, 'UTF-8') ?> &bull; <?= htmlspecialchars($envName, ENT_QUOTES, 'UTF-8') ?></span>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        'use strict';
+        const EXECUTE_URL = <?= json_encode($executeUrl, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
+        const THEME_STORAGE_KEY = 'zf1-console-theme';
+
+        let commandHistory = [];
+        let historyIndex = -1;
+        let isRunning = false;
+
+        const root = document.documentElement;
+        const terminalScreen = document.getElementById('terminal-screen');
+        const terminalInput = document.getElementById('terminal-cmd-input');
+        const terminalForm = document.getElementById('terminal-form');
+        const runButton = document.getElementById('btn-run');
+        const filterInput = document.getElementById('cmd-filter');
+        const statusBadge = document.getElementById('term-status');
+        const statusText = document.getElementById('term-status-text');
+        const copyButtonText = document.getElementById('btn-copy-text');
+        const copyButtonIcon = document.getElementById('btn-copy-svg');
+        const commandContainer = document.getElementById('cmd-container');
+
+        /* Theme Management */
+        (function initTheme() {
+            const toggle = document.getElementById('theme-toggle');
+            const icon = document.getElementById('theme-icon');
+            function getSystemTheme() {
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            function getSavedTheme() {
+                try {
+                    const s = localStorage.getItem(THEME_STORAGE_KEY);
+                    return s === 'dark' || s === 'light' ? s : null;
+                } catch (_) { return null; }
+            }
+            function applyTheme(theme) {
+                root.setAttribute('data-theme', theme);
+                root.dataset.theme = theme;
+                if (icon) {
+                    icon.innerHTML = theme === 'dark'
+                        ? '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>'
+                        : '<path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"></path>';
+                }
+                if (toggle) {
+                    const next = theme === 'dark' ? 'light' : 'dark';
+                    toggle.title = `Switch to ${next} mode`;
+                    toggle.setAttribute('aria-label', `Switch to ${next} mode`);
+                }
+            }
+            applyTheme(getSavedTheme() || getSystemTheme());
+            if (toggle) {
+                toggle.addEventListener('click', function () {
+                    const current = root.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                    const next = current === 'dark' ? 'light' : 'dark';
+                    try { localStorage.setItem(THEME_STORAGE_KEY, next); } catch (_) {}
+                    applyTheme(next);
+                });
+            }
+            const colorScheme = window.matchMedia('(prefers-color-scheme: dark)');
+            const onSystemThemeChange = function () {
+                if (!getSavedTheme()) applyTheme(getSystemTheme());
+            };
+            if (colorScheme.addEventListener) {
+                colorScheme.addEventListener('change', onSystemThemeChange);
+            } else if (colorScheme.addListener) {
+                colorScheme.addListener(onSystemThemeChange);
+            }
+        })();
+
+        /* Terminal Helpers & Smart Autoscroll */
+        function scrollTerminal(force = false) {
+            if (!terminalScreen) return;
+            const isNearBottom = terminalScreen.scrollHeight - terminalScreen.scrollTop - terminalScreen.clientHeight < 80;
+            if (force || isNearBottom) {
+                terminalScreen.scrollTop = terminalScreen.scrollHeight;
+            }
+        }
+
+        function appendTerminalHTML(html, forceScroll = false) {
+            if (!terminalScreen) return;
+            terminalScreen.insertAdjacentHTML('beforeend', html);
+            scrollTerminal(forceScroll);
+        }
+
+        function appendTerminalText(text, className = '') {
+            if (!terminalScreen) return;
+            const span = document.createElement('span');
+            if (className) span.className = className;
+            span.textContent = text;
+            terminalScreen.appendChild(span);
+            scrollTerminal();
+        }
+
+        function escapeHtml(val) {
+            const div = document.createElement('div');
+            div.textContent = String(val ?? '');
+            return div.innerHTML;
+        }
+
+        function clearTerminal() {
+            if (!terminalScreen) return;
+            terminalScreen.replaceChildren();
+            appendTerminalText('Terminal screen cleared. Ready for commands.', 'term-timestamp');
+            terminalScreen.appendChild(document.createTextNode('\n\n'));
+        }
+
+        /* Status Management */
+        function setTerminalStatus(state, text) {
+            if (!statusBadge || !statusText) return;
+            const dot = statusBadge.querySelector('.status-dot');
+            statusBadge.className = 'status-badge';
+            if (state === 'running') {
+                statusBadge.classList.add('running');
+                if (dot) dot.classList.add('pulse');
+            } else if (state === 'failed') {
+                statusBadge.classList.add('failed');
+                if (dot) dot.classList.remove('pulse');
+            } else {
+                if (dot) dot.classList.remove('pulse');
+            }
+            statusText.textContent = text || 'Ready';
+        }
+
+        /* Command Input Actions */
+        function insertCommand(cmd) {
+            if (!terminalInput) return;
+            terminalInput.value = (cmd || '').trim() + ' ';
+            terminalInput.focus();
+            terminalInput.setSelectionRange(terminalInput.value.length, terminalInput.value.length);
+        }
+
+        function runPreset(cmd) {
+            if (!terminalInput) return;
+            terminalInput.value = cmd;
+            submitCommand(cmd);
+        }
+
+        /* Copy Output with HTTP/Non-Secure Context Fallback */
+        async function writeToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext && typeof navigator.clipboard.writeText === 'function') {
+                return navigator.clipboard.writeText(text);
+            }
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.top = '-9999px';
+            ta.style.left = '-9999px';
+            ta.style.opacity = '0';
+            ta.setAttribute('readonly', '');
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            try {
+                const ok = document.execCommand('copy');
+                document.body.removeChild(ta);
+                if (!ok) throw new Error('execCommand copy returned false');
+                return Promise.resolve();
+            } catch (err) {
+                document.body.removeChild(ta);
+                return Promise.reject(err);
+            }
+        }
+
+        async function copyTerminalOutput() {
+            if (!terminalScreen) return;
+            try {
+                await writeToClipboard(terminalScreen.innerText);
+                if (copyButtonText) copyButtonText.textContent = 'Copied!';
+                if (copyButtonIcon) {
+                    copyButtonIcon.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
+                    copyButtonIcon.style.color = 'var(--green)';
+                }
+                setTimeout(() => {
+                    if (copyButtonText) copyButtonText.textContent = 'Copy';
+                    if (copyButtonIcon) {
+                        copyButtonIcon.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>';
+                        copyButtonIcon.style.color = '';
+                    }
+                }, 2000);
+            } catch (err) {
+                appendTerminalText('\nCopy failed: ' + err.message + '\n', 'term-error');
+            }
+        }
+
+        function setRunButtonState(running) {
+            if (!runButton) return;
+            runButton.disabled = running;
+            runButton.innerHTML = running
+                ? '<span class="spinner"></span><span>Running...</span>'
+                : '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg><span>Run</span><kbd>↵</kbd>';
+        }
+
+        /* Execution */
+        function executeConsoleCommand(e) {
+            if (e) {
+                if (typeof e.preventDefault === 'function') e.preventDefault();
+                if (typeof e.stopPropagation === 'function') e.stopPropagation();
+                if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+            }
+            if (isRunning || !terminalInput) return;
+            const cmd = terminalInput.value.trim();
+            if (!cmd) return;
+            submitCommand(cmd);
+        }
+
+        async function submitCommand(cmd) {
+            cmd = String(cmd || '').trim();
+            if (!cmd || isRunning) return;
+            isRunning = true;
+
+            if (commandHistory[commandHistory.length - 1] !== cmd) {
+                commandHistory.push(cmd);
+            }
+            historyIndex = commandHistory.length;
+
+            const time = new Date().toLocaleTimeString();
+            appendTerminalHTML(
+                `\n<span class="term-timestamp">[${escapeHtml(time)}]</span> ` +
+                `<span class="term-prompt-glyph">❯</span> ` +
+                `<span class="term-command-prefix">php zf</span> ` +
+                `<span class="term-cmd-echo">${escapeHtml(cmd)}</span>\n`,
+                true
+            );
+
+            setTerminalStatus('running', 'Running...');
+            setRunButtonState(true);
+
+            const formData = new FormData();
+            formData.append('command', cmd);
+            formData.append('stream', '1');
+
+            let finalStatus = 'Ready';
+
+            try {
+                const response = await fetch(EXECUTE_URL, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'text/event-stream' }
+                });
+
+                if (!response.ok) {
+                    let errMsg = `HTTP Error ${response.status}`;
+                    try {
+                        const errData = await response.json();
+                        if (errData && errData.error) errMsg = errData.error;
+                    } catch (_) {}
+                    throw new Error(errMsg);
+                }
+
+                /* Non-streaming fallback */
+                if (!response.body || typeof response.body.getReader !== 'function') {
+                    const data = await response.json();
+                    if (!data.success) {
+                        appendTerminalHTML(`<span class="term-error">✖ Error: ${escapeHtml(data.error || 'Execution failed')}</span>\n`, true);
+                        finalStatus = 'Failed';
+                    } else {
+                        appendTerminalHTML(data.html_output || '<span>(No output)</span>\n');
+                        const ok = Number(data.exit_code) === 0;
+                        const tagClass = ok ? 'meta-success' : 'meta-fail';
+                        const icon = ok ? '✔' : '✖';
+                        appendTerminalHTML(`<span class="term-meta-tag ${tagClass}">${icon} Exit ${escapeHtml(data.exit_code)} &bull; ${escapeHtml(data.execution_time_ms)} ms</span>\n`, true);
+                        finalStatus = ok ? 'Done' : 'Failed';
+                    }
+                    return;
+                }
+
+                /* Streaming SSE Response */
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder('utf-8');
+                let buffer = '';
+                let receivedEnd = false;
+
+                function processSSEEvent(eventText) {
+                    const lines = eventText.split(/\r?\n/);
+                    const dataLines = lines.filter(l => l.startsWith('data:')).map(l => l.replace(/^data:\s?/, ''));
+                    if (!dataLines.length) return;
+                    const payload = dataLines.join('\n');
+                    let data;
+                    try {
+                        data = JSON.parse(payload);
+                    } catch (err) {
+                        return;
+                    }
+                    if (data.type === 'output' && data.html) {
+                        appendTerminalHTML(data.html);
+                    } else if (data.type === 'end') {
+                        receivedEnd = true;
+                        const ok = Number(data.exit_code) === 0;
+                        const tagClass = ok ? 'meta-success' : 'meta-fail';
+                        const icon = ok ? '✔' : '✖';
+                        appendTerminalHTML(`\n<span class="term-meta-tag ${tagClass}">${icon} Exit ${escapeHtml(data.exit_code)} &bull; ${escapeHtml(data.execution_time_ms)} ms</span>\n`, true);
+                        finalStatus = ok ? 'Done' : ('Exit ' + data.exit_code);
+                    } else if (data.type === 'error') {
+                        appendTerminalHTML(`<span class="term-error">✖ Error: ${escapeHtml(data.error || 'Execution failed')}</span>\n`, true);
+                        finalStatus = 'Failed';
+                    }
+                }
+
+                while (true) {
+                    const res = await reader.read();
+                    if (res.done) break;
+                    buffer += decoder.decode(res.value, { stream: true });
+                    const events = buffer.split(/\r?\n\r?\n/);
+                    buffer = events.pop();
+                    for (const ev of events) {
+                        processSSEEvent(ev);
+                    }
+                }
+
+                buffer += decoder.decode();
+                if (buffer.trim()) {
+                    processSSEEvent(buffer);
+                }
+
+                if (!receivedEnd && finalStatus === 'Ready') {
+                    finalStatus = 'Completed';
+                }
+            } catch (err) {
+                appendTerminalHTML(`<span class="term-error">✖ Request Error: ${escapeHtml(err.message || 'Network error')}</span>\n`, true);
+                finalStatus = 'Network Error';
+                console.error('Console execution error:', err);
+            } finally {
+                isRunning = false;
+                setRunButtonState(false);
+                setTerminalStatus(finalStatus === 'Failed' || finalStatus === 'Network Error' ? 'failed' : 'ready', finalStatus);
+                if (terminalInput) terminalInput.focus();
+            }
+        }
+
+        /* Command Explorer Filter */
+        function filterCommands() {
+            if (!filterInput || !commandContainer) return;
+            const q = filterInput.value.toLowerCase().trim();
+            const groups = commandContainer.querySelectorAll('.cmd-group');
+            groups.forEach(function (group) {
+                const cards = group.querySelectorAll('.cmd-card');
+                let count = 0;
+                cards.forEach(function (card) {
+                    const match = card.textContent.toLowerCase().includes(q);
+                    card.style.display = match ? 'flex' : 'none';
+                    if (match) count++;
+                });
+                group.style.display = count > 0 ? 'block' : 'none';
+            });
+        }
+
+        if (filterInput) {
+            filterInput.addEventListener('input', filterCommands);
+            filterInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const first = commandContainer ? commandContainer.querySelector('.cmd-card:not([style*="display: none"])') : null;
+                    if (first) insertCommand(first.dataset.command);
+                } else if (e.key === 'Escape') {
+                    this.value = '';
+                    filterCommands();
+                    if (terminalInput) terminalInput.focus();
+                }
+            });
+        }
+
+        /* Delegated Command Card Click & Keydown */
+        if (commandContainer) {
+            commandContainer.addEventListener('click', function (e) {
+                const card = e.target.closest('.cmd-card');
+                if (!card) return;
+                const cmd = card.dataset.command;
+                const actionBtn = e.target.closest('[data-action]');
+                if (actionBtn) {
+                    const action = actionBtn.dataset.action;
+                    if (action === 'help') runPreset(cmd + ' --help');
+                    else if (action === 'insert') insertCommand(cmd);
+                    return;
+                }
+                insertCommand(cmd);
+            });
+
+            commandContainer.addEventListener('keydown', function (e) {
+                const card = e.target.closest('.cmd-card');
+                if (!card || e.target.closest('button')) return;
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    insertCommand(card.dataset.command);
+                }
+            });
+        }
+
+        /* Terminal Form & Input */
+        if (terminalForm) {
+            terminalForm.addEventListener('submit', function (e) {
+                executeConsoleCommand(e);
+            });
+        }
+
+        if (terminalInput) {
+            terminalInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    executeConsoleCommand(e);
+                    return;
+                }
+                if (e.key === 'ArrowUp') {
+                    if (historyIndex > 0) {
+                        historyIndex--;
+                        this.value = commandHistory[historyIndex];
+                    }
+                    e.preventDefault();
+                    return;
+                }
+                if (e.key === 'ArrowDown') {
+                    if (historyIndex < commandHistory.length - 1) {
+                        historyIndex++;
+                        this.value = commandHistory[historyIndex];
+                    } else {
+                        historyIndex = commandHistory.length;
+                        this.value = '';
+                    }
+                    e.preventDefault();
+                    return;
+                }
+                if (e.key === 'Escape') {
+                    this.value = '';
+                    e.preventDefault();
+                }
+            });
+        }
+
+        /* Global Shortcuts */
+        document.addEventListener('keydown', function (e) {
+            const el = document.activeElement;
+            const isTyping = el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
+            if (e.key === '/' && !isTyping && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                e.preventDefault();
+                if (filterInput) {
+                    filterInput.focus();
+                    filterInput.select();
+                }
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'l') {
+                e.preventDefault();
+                clearTerminal();
+            }
+        });
+
+        /* Autofocus */
+        if (terminalInput && window.matchMedia('(min-width: 641px)').matches) {
+            terminalInput.focus();
+        }
+    </script>
+</body>
+</html>

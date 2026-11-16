@@ -13,7 +13,6 @@ final class TableCommand extends Command
     protected string $signature = 'queue:table {--force : Drop existing tables if present and recreate}';
 
     protected array $aliases = [
-        'queue:install',
         'queue:setup',
     ];
 

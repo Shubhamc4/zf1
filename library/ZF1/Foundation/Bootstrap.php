@@ -9,6 +9,8 @@ use Zend_Application_Bootstrap_Bootstrap;
 use Zend_Application_Module_Autoloader;
 use Zend_Cache;
 use Zend_Cache_Manager;
+use Zend_Controller_Front;
+use Zend_Controller_Request_Http;
 use Zend_Db_Adapter_Abstract;
 use Zend_Db_Exception;
 use Zend_Db_Profiler;
@@ -18,6 +20,8 @@ use Zend_Log;
 use Zend_Log_Writer_Stream;
 use Zend_Registry;
 use Zend_Session;
+use ZF1\Console\WebConsole;
+use ZF1\Console\WebConsolePlugin;
 use ZF1\Logging\DiscordLogWriter;
 use ZF1\Logging\UnifiedErrorHandler;
 
@@ -46,6 +50,7 @@ abstract class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             'dbadapter',
             'helpers',
             'logger',
+            'webconsole',
         ];
 
         $front = [];
@@ -71,6 +76,7 @@ abstract class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             'cookie_httponly' => true,
         ]);
         Zend_Session::start();
+        \ZF1\Session\Session::start();
     }
 
     /**
@@ -281,6 +287,55 @@ abstract class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Zend_Registry::set('cacheManager', $cacheManager);
 
         return $cacheManager;
+    }
+
+    /**
+     * Initialize Web Console endpoint and register the front controller plugin.
+     */
+    public function _initWebConsole(): void
+    {
+        if (PHP_SAPI === 'cli' || ! WebConsole::isEnabled()) {
+            return;
+        }
+
+        $this->bootstrap('frontcontroller');
+        $front = $this->getResource('frontcontroller');
+
+        if (! ($front instanceof Zend_Controller_Front)) {
+            $front = Zend_Controller_Front::getInstance();
+        }
+
+        $front->registerPlugin(new WebConsolePlugin);
+    }
+
+    /**
+     * Authorize access to the Web Console.
+     * Override in application Bootstrap to customize authorization logic.
+     *
+     * Example in application/Bootstrap.php:
+     *   public function authorizeWebConsole(Zend_Controller_Request_Http $request): bool
+     *   {
+     *       return ! empty($this->roleid) && $this->roleid === 1;
+     *   }
+     */
+    public function authorizeWebConsole(Zend_Controller_Request_Http $request): bool
+    {
+        if ($gate = WebConsole::getAuthGate()) {
+            return (bool) call_user_func($gate, $request, $this);
+        }
+
+        if (WebConsole::isAllowedDuringMaintenance()
+            && class_exists(\ZF1\System\MaintenanceMode::class)
+            && \ZF1\System\MaintenanceMode::isDown()
+        ) {
+            return true;
+        }
+
+        if (function_exists('is_production')) {
+            return ! is_production();
+        }
+
+        return defined('APPLICATION_ENV') && APPLICATION_ENV !== 'production';
     }
 
     /**

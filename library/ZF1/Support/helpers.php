@@ -894,11 +894,13 @@ if (! function_exists('array_group_by')) {
 if (! function_exists('parseCSV')) {
     /**
      * Parse a CSV file into an associative or indexed array.
+     *
+     * @return array If $has_header is true, returns [$data, $header], otherwise $data.
      */
     function parseCSV(string $filepath, bool $has_header = true): array
     {
         if (! file_exists($filepath) || ! is_readable($filepath)) {
-            return [];
+            return $has_header ? [[], []] : [];
         }
 
         $data = [];
@@ -922,7 +924,7 @@ if (! function_exists('parseCSV')) {
             fclose($handle);
         }
 
-        return $data;
+        return $has_header ? [$data, $header ?? []] : $data;
     }
 }
 
@@ -967,12 +969,13 @@ if (! function_exists('validateColumnsExist')) {
     /**
      * Verify required columns exist in given CSV headers.
      *
-     * @param  array<string>  $headers
+     * @param  array<string>|null  $headers
      * @param  array<string>  $columns
      * @return array<string> Missing columns
      */
-    function validateColumnsExist(array $headers, array $columns): array
+    function validateColumnsExist(?array $headers, array $columns): array
     {
+        $headers = $headers ?? [];
         $normalizedHeaders = array_map(static fn ($h) => strtolower(trim((string) $h)), $headers);
         $missing = [];
 

@@ -8,7 +8,9 @@ use Throwable;
 use Zend_Controller_Action;
 use Zend_Controller_Front;
 use Zend_Controller_Plugin_ErrorHandler;
+use Zend_Layout;
 use Zend_Log;
+use Zend_View;
 
 /**
  * Modern Centralized Error and Exception Renderer for ZF1 Applications.
@@ -199,18 +201,38 @@ final class ErrorRenderer
         if (preg_match('/^(.*?)(?:#0\s+.*|\n#\d+\s+.*)$/s', $message, $matches)) {
             $clean = trim($matches[1]);
             if ($clean !== '') {
-                return $clean;
+                $message = $clean;
             }
         }
 
         if (preg_match('/^(.*?)(?:\s+in\s+[a-zA-Z0-9_\/\\\\.-]+\s+on\s+line\s+\d+|\s+in\s+[a-zA-Z0-9_\/\\\\.-]+:\d+)$/i', $message, $matches)) {
             $clean = trim($matches[1]);
             if ($clean !== '') {
-                return $clean;
+                $message = $clean;
             }
         }
 
-        return trim($message);
+        $trimmed = trim($message);
+
+        if (preg_match('/^Action\s+"([^"]+)"\s+does not exist/i', $trimmed, $matches)) {
+            return "The requested route '{$matches[1]}' could not be found.";
+        }
+
+        if (preg_match('/^Invalid controller specified\s*(?:\(([^)]+)\))?/i', $trimmed, $matches)) {
+            return ! empty($matches[1])
+                ? "The requested route '{$matches[1]}' could not be found."
+                : 'The requested route could not be found.';
+        }
+
+        if (preg_match('/^Method\s+"([^"]+)"\s+does not exist/i', $trimmed)) {
+            return 'The requested route could not be found.';
+        }
+
+        if (preg_match('/^Controller\s+"([^"]+)"\s+is not an instance of/i', $trimmed)) {
+            return 'The requested route could not be found.';
+        }
+
+        return $trimmed;
     }
 
     /**
@@ -443,7 +465,46 @@ final class ErrorRenderer
 
         $customView = self::resolveCustomView($code);
         if ($customView !== null) {
-            require $customView;
+            $view = null;
+            if (class_exists(Zend_Layout::class) && Zend_Layout::getMvcInstance()) {
+                $view = Zend_Layout::getMvcInstance()->getView();
+            }
+            if ($view === null && class_exists(Zend_View::class)) {
+                $view = new Zend_View;
+            }
+            if ($view === null) {
+                $view = new class
+                {
+                    public function __call(string $name, array $args): string
+                    {
+                        return '';
+                    }
+
+                    public function __get(string $name): mixed
+                    {
+                        return null;
+                    }
+                };
+            }
+
+            $scope = (function () use ($customView, $code, $title, $message, $appName, $homeUrl, $isDebug, $theme, $data, $errorMessage, $retryAfter, $secret, $hasSecret) {
+                $this->code = $code;
+                $this->title = $title;
+                $this->message = $message;
+                $this->appName = $appName;
+                $this->homeUrl = $homeUrl;
+                $this->isDebug = $isDebug;
+                $this->theme = $theme;
+                $this->data = $data;
+                $this->errorMessage = $errorMessage;
+                $this->retryAfter = $retryAfter;
+                $this->secret = $secret;
+                $this->hasSecret = $hasSecret;
+
+                require $customView;
+            })->bindTo($view, $view);
+
+            $scope();
 
             return;
         }

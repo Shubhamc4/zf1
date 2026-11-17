@@ -8,14 +8,9 @@ use ZF1\Console\Command;
 
 final class FoundationCommand extends Command
 {
-    protected string $signature = 'make:foundation {--cli : Scaffold only root CLI file (zf)} {--kernel : Scaffold only application/Kernel.php} {--bootstrap : Scaffold only application/Bootstrap.php} {--force : Overwrite existing files}';
+    protected string $signature = 'foundation:install {--cli : Scaffold only root CLI file (zf)} {--kernel : Scaffold only application/Kernel.php} {--bootstrap : Scaffold only application/Bootstrap.php} {--errors : Scaffold application/controllers/ErrorController.php} {--force : Overwrite existing files}';
 
-    protected array $aliases = [
-        'foundation:install',
-        'make:cli',
-        'make:kernel',
-        'make:bootstrap',
-    ];
+    protected array $aliases = ['foundation'];
 
     protected string $description = 'Scaffold root zf CLI tool, application Kernel, and Bootstrap foundation files if not present';
 
@@ -25,13 +20,13 @@ final class FoundationCommand extends Command
         $onlyCli = (bool) $this->option('cli');
         $onlyKernel = (bool) $this->option('kernel');
         $onlyBootstrap = (bool) $this->option('bootstrap');
+        $onlyErrors = (bool) $this->option('errors');
 
-        $scaffoldAll = (! $onlyCli && ! $onlyKernel && ! $onlyBootstrap)
-            || ($onlyCli && $onlyKernel && $onlyBootstrap);
+        $scaffoldAll = (! $onlyCli && ! $onlyKernel && ! $onlyBootstrap && ! $onlyErrors)
+            || ($onlyCli && $onlyKernel && $onlyBootstrap && $onlyErrors);
 
         $createdCount = 0;
 
-        // 1. Scaffold root zf CLI file
         if ($scaffoldAll || $onlyCli) {
             $cliPath = base_path('zf');
             if (file_exists($cliPath) && ! $force) {
@@ -46,7 +41,6 @@ final class FoundationCommand extends Command
             }
         }
 
-        // 2. Scaffold application/Kernel.php
         if ($scaffoldAll || $onlyKernel) {
             $appDir = app_path();
             ensure_directory_exists($appDir);
@@ -63,7 +57,6 @@ final class FoundationCommand extends Command
             }
         }
 
-        // 3. Scaffold application/Bootstrap.php
         if ($scaffoldAll || $onlyBootstrap) {
             $appDir = app_path();
             ensure_directory_exists($appDir);
@@ -76,6 +69,22 @@ final class FoundationCommand extends Command
                 file_put_contents($bootstrapPath, self::resolveStub('bootstrap.stub'));
                 $statusLabel = $isUpdate ? '[UPDATED]' : '[CREATED]';
                 $this->info("  {$statusLabel} {$bootstrapPath}");
+                $createdCount++;
+            }
+        }
+
+        if ($scaffoldAll || $onlyErrors) {
+            $controllersDir = app_path('controllers');
+            ensure_directory_exists($controllersDir);
+
+            $errorControllerPath = app_path('controllers/ErrorController.php');
+            if (file_exists($errorControllerPath) && ! $force) {
+                $this->comment("  [SKIP] {$errorControllerPath} already exists. (Use --force to overwrite)");
+            } else {
+                $isUpdate = file_exists($errorControllerPath);
+                file_put_contents($errorControllerPath, self::resolveStub('error-controller.stub'));
+                $statusLabel = $isUpdate ? '[UPDATED]' : '[CREATED]';
+                $this->info("  {$statusLabel} {$errorControllerPath}");
                 $createdCount++;
             }
         }

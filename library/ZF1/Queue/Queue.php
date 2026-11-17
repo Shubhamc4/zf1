@@ -55,7 +55,6 @@ final class Queue
 
         $adapter = $db ?? self::getAdapter();
 
-        // Check if job is unique and already pending in this queue
         $resolvedClass = self::resolveJobClass($job);
         if ($resolvedClass !== null && is_subclass_of($resolvedClass, Job::class)) {
             $jobInstance = new $resolvedClass;
@@ -147,7 +146,6 @@ final class Queue
         $adapter->beginTransaction();
 
         try {
-            // Find next available job with row locking
             $sql = sprintf(
                 'SELECT * FROM %s WHERE queue = ? AND (reserved_at IS NULL OR reserved_at <= ?) AND available_at <= ? ORDER BY id ASC LIMIT 1 FOR UPDATE',
                 self::TABLE_NAME
@@ -163,7 +161,6 @@ final class Queue
 
             $newAttempts = (int) $job['attempts'] + 1;
 
-            // Reserve job and increment attempts
             $adapter->update(
                 self::TABLE_NAME,
                 [
@@ -346,7 +343,6 @@ final class Queue
 
         $adapter->delete(self::TABLE_NAME, ['id = ?' => $jobId]);
 
-        // Send Discord notification if configured
         $jobData = is_string($job['payload']) ? json_decode($job['payload'], true) : $job['payload'];
         $jobClass = $jobData['job'] ?? 'Unknown Job';
         $shortClass = self::getJobShortName($jobClass);

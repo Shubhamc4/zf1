@@ -7,6 +7,8 @@ namespace ZF1\Foundation;
 use ReflectionClass;
 use Throwable;
 use Zend_Application;
+use Zend_Config_Exception;
+use Zend_Config_Ini;
 use ZF1\Environment\Env;
 use ZF1\System\MaintenanceMode;
 
@@ -18,22 +20,53 @@ abstract class Kernel
     protected static ?Zend_Application $application = null;
 
     /**
+     * Resolve the active application Kernel class (preferring App\Kernel if present).
+     *
+     * @return class-string<self>
+     */
+    public static function resolveKernelClass(): string
+    {
+        if (static::class !== self::class) {
+            return static::class;
+        }
+
+        if (class_exists(\App\Kernel::class)) {
+            return \App\Kernel::class;
+        }
+
+        $appKernel = self::getApplicationPath().'/Kernel.php';
+        if (file_exists($appKernel)) {
+            require_once $appKernel;
+            if (class_exists(\App\Kernel::class)) {
+                return \App\Kernel::class;
+            }
+        }
+
+        return self::class;
+    }
+
+    /**
      * Bootstrap the application and return the Zend_Application instance.
      *
      * @param  string|null  $env  Explicit environment override (e.g. 'production', 'local', 'testing')
      */
     public static function boot(?string $env = null): Zend_Application
     {
+        $kernelClass = static::resolveKernelClass();
+        if ($kernelClass !== static::class) {
+            return $kernelClass::boot($env);
+        }
+
         if (self::$application instanceof Zend_Application) {
             return self::$application;
         }
 
-        self::initializeEnvironment($env);
-        self::initializeIncludePaths();
+        static::initializeEnvironment($env);
+        static::initializeIncludePaths();
 
         require_once 'Zend/Application.php';
 
-        $config = self::getConfig();
+        $config = static::getConfig();
 
         self::$application = new Zend_Application(
             APPLICATION_ENV,
@@ -50,7 +83,14 @@ abstract class Kernel
      */
     public static function run(?string $env = null): void
     {
-        self::boot($env)->run();
+        $kernelClass = static::resolveKernelClass();
+        if ($kernelClass !== static::class) {
+            $kernelClass::run($env);
+
+            return;
+        }
+
+        static::boot($env)->run();
     }
 
     /**
@@ -114,13 +154,11 @@ abstract class Kernel
             }
         }
 
-        // If inside a vendor package: <project-root>/vendor/...
         $vendorPos = strpos(__DIR__, DIRECTORY_SEPARATOR.'vendor'.DIRECTORY_SEPARATOR);
         if ($vendorPos !== false) {
             return substr(__DIR__, 0, $vendorPos);
         }
 
-        // Standalone or local package development fallback
         return dirname(__DIR__, 3);
     }
 
@@ -228,6 +266,25 @@ abstract class Kernel
             }
         }
 
+        if (str_ends_with(strtolower($configPath), '.ini') && file_exists($configPath)) {
+            require_once 'Zend/Config/Ini.php';
+            $env = defined('APPLICATION_ENV') ? APPLICATION_ENV : (string) env('APP_ENV', 'production');
+
+            try {
+                $ini = new Zend_Config_Ini($configPath, $env, ['allowModifications' => true]);
+
+                return $ini->toArray();
+            } catch (Zend_Config_Exception) {
+                try {
+                    $ini = new Zend_Config_Ini($configPath, 'production', ['allowModifications' => true]);
+
+                    return $ini->toArray();
+                } catch (Throwable) {
+                    return $configPath;
+                }
+            }
+        }
+
         return $configPath;
     }
 
@@ -293,7 +350,11 @@ abstract class Kernel
      */
     protected static function initializeEnvironment(?string $env = null): void
     {
-        error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+        $mask = E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_USER_DEPRECATED & ~E_USER_NOTICE;
+        if (! (bool) env('PHP_REPORT_WARNINGS', false)) {
+            $mask &= ~E_WARNING & ~E_USER_WARNING;
+        }
+        error_reporting($mask);
 
         $projectRoot = self::getProjectRoot();
 
@@ -319,6 +380,8 @@ abstract class Kernel
         if (file_exists(config_path('global.variables.php'))) {
             require_once config_path('global.variables.php');
         }
+
+        static::configureErrorRenderer();
 
         if (PHP_SAPI !== 'cli') {
             static::configureWebConsole();
@@ -373,14 +436,12 @@ abstract class Kernel
             return $packageLibrary;
         }
 
-        // 2. In consuming project vendor directory
         $projectRoot = self::getProjectRoot();
         $vendorZf = $projectRoot.'/vendor/shubhamc4/zf1/library';
         if (is_file($vendorZf.'/Zend/Application.php')) {
             return $vendorZf;
         }
 
-        // 3. Fallback: discover any vendor directory containing Zend/Application.php
         $vendorDir = $projectRoot.'/vendor';
         if (is_dir($vendorDir)) {
             $matches = glob($vendorDir.'/*/*/library/Zend/Application.php');
@@ -407,26 +468,22 @@ abstract class Kernel
     {
         $paths = [];
 
-        // 1. Zend Framework 1 library
         if ($zfLibrary = self::getZendLibraryPath()) {
             $paths[] = $zfLibrary;
         }
 
-        // 2. Project-defined include paths from child Kernel hook
         foreach (static::includePaths() as $p) {
             if (is_dir($p)) {
                 $paths[] = rtrim($p, '/\\');
             }
         }
 
-        // 3. Extra include paths added dynamically via Kernel::addIncludePath()
         foreach (static::$extraIncludePaths as $p) {
             if (is_dir($p)) {
                 $paths[] = rtrim($p, '/\\');
             }
         }
 
-        // 4. Current PHP include_path
         $current = explode(PATH_SEPARATOR, get_include_path());
         foreach ($current as $p) {
             if ($p !== '' && $p !== '.' && is_dir($p)) {
@@ -437,6 +494,96 @@ abstract class Kernel
         $paths[] = '.';
 
         set_include_path(implode(PATH_SEPARATOR, array_unique($paths)));
+    }
+
+    /**
+     * Error display theme ('auto', 'dark', 'light').
+     * Override in child App\Kernel.
+     */
+    protected static string $errorTheme = 'auto';
+
+    /**
+     * Custom master error layout template path.
+     * Override in child App\Kernel (e.g. 'views/error/layout.phtml').
+     */
+    protected static ?string $errorLayout = null;
+
+    /**
+     * Project-specific sensitive keys to mask on error and debug pages.
+     *
+     * @var array<string>
+     */
+    protected static array $sensitiveKeys = [];
+
+    /**
+     * Exception classes that should not be reported to zf1.log.
+     * Override in child App\Kernel (e.g. custom business exceptions).
+     *
+     * @var array<class-string<Throwable>>
+     */
+    protected static array $dontReport = [];
+
+    /**
+     * Get the active error display theme from Kernel.
+     */
+    public static function getErrorTheme(): string
+    {
+        return static::$errorTheme;
+    }
+
+    /**
+     * Get the active error master layout path from Kernel.
+     */
+    public static function getErrorLayout(): ?string
+    {
+        return static::$errorLayout;
+    }
+
+    /**
+     * Get project-specific sensitive keys from Kernel.
+     *
+     * @return array<string>
+     */
+    public static function getSensitiveKeys(): array
+    {
+        return static::$sensitiveKeys;
+    }
+
+    /**
+     * Get exception classes that should not be reported from Kernel.
+     *
+     * @return array<class-string<Throwable>>
+     */
+    public static function getDontReport(): array
+    {
+        return static::$dontReport;
+    }
+
+    /**
+     * Hook to configure ErrorRenderer options in the child Kernel.
+     * Override in App\Kernel to customize theme, error layout, or add sensitive keys.
+     *
+     * Example:
+     *   protected static function configureErrorRenderer(): void
+     *   {
+     *       \ZF1\View\ErrorRenderer::theme('dark');
+     *       \ZF1\View\ErrorRenderer::layout('views/error/layout.phtml');
+     *       \ZF1\View\ErrorRenderer::addSensitiveKeys(['stripe_secret', 'pin']);
+     *   }
+     */
+    protected static function configureErrorRenderer(): void
+    {
+        if (class_exists(\ZF1\View\ErrorRenderer::class)) {
+            \ZF1\View\ErrorRenderer::theme(static::$errorTheme);
+
+            if (static::$errorLayout !== null) {
+                \ZF1\View\ErrorRenderer::layout(static::$errorLayout);
+            }
+
+            if (! empty(static::$sensitiveKeys)) {
+                \ZF1\View\ErrorRenderer::addSensitiveKeys(static::$sensitiveKeys);
+            }
+        }
     }
 
     /**

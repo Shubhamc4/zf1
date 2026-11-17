@@ -1,0 +1,8 @@
+<?php
+
+$code = 429;
+$title = $title ?? 'Too Many Requests';
+$message = $message ?? 'You have sent too many requests in a given amount of time. Please slow down and try again later.';
+
+$layoutFile = \ZF1\View\ErrorRenderer::resolveLayoutPath();
+require $layoutFile;

@@ -79,7 +79,7 @@ final class DB
                 }
 
                 if ($currentAttempt < $attempts && self::isDeadlockException($e)) {
-                    usleep(100000 * $currentAttempt); // 100ms backoff
+                    usleep(100000 * $currentAttempt);
 
                     continue;
                 }

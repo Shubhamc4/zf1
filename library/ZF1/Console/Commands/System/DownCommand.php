@@ -9,16 +9,17 @@ use ZF1\System\MaintenanceMode;
 
 final class DownCommand extends Command
 {
-    protected string $signature = 'down {--message= : Custom maintenance message} {--retry=60 : Retry-After header interval in seconds} {--secret= : Secret key to bypass maintenance mode} {--template= : Custom view template path or script name} {--publish : Publish customizable maintenance view template to application/views/scripts/maintenance.phtml}';
+    protected string $signature = 'down {--message= : Custom maintenance message} {--retry=60 : Retry-After header interval in seconds} {--secret= : Secret key to bypass maintenance mode} {--template= : Custom 503 view template path or script name} {--publish : Publish customizable 503 view template to application/views/error/503.phtml} {--force : Overwrite existing view file when publishing}';
 
     protected string $description = 'Put the application into maintenance mode';
 
     public function handle(): int
     {
         if ($this->option('publish')) {
-            $path = MaintenanceMode::publishView();
-            $this->info("✔ Published maintenance view template to: {$path}");
-            $this->comment('  You can now customize this template to style your maintenance page.');
+            $force = (bool) $this->option('force');
+            $path = MaintenanceMode::publishView(force: $force);
+            $this->info("✔ Published 503 view template to: {$path}");
+            $this->comment('  You can now customize this template to style your maintenance / 503 page.');
 
             return 0;
         }

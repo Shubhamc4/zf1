@@ -1,0 +1,8 @@
+<?php
+
+$code = 403;
+$title = $title ?? 'Access Forbidden';
+$message = $message ?? 'You do not have permission to access the requested resource.';
+
+$layoutFile = \ZF1\View\ErrorRenderer::resolveLayoutPath();
+require $layoutFile;

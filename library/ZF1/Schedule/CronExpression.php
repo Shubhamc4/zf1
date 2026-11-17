@@ -67,16 +67,13 @@ final class CronExpression
             return true;
         }
 
-        // Support Sunday as 7 as well
         if ($isDayOfWeek && $value === 0 && str_contains($part, '7')) {
             $value = 7;
         }
 
-        // Support comma-separated items: "1,5,10"
         foreach (explode(',', $part) as $subPart) {
             $subPart = trim($subPart);
 
-            // Step values: "*/5" or "10-30/5"
             if (str_contains($subPart, '/')) {
                 [$range, $step] = explode('/', $subPart, 2);
                 $step = (int) $step;
@@ -100,7 +97,6 @@ final class CronExpression
                 continue;
             }
 
-            // Range values: "1-5"
             if (str_contains($subPart, '-')) {
                 [$start, $end] = explode('-', $subPart, 2);
                 if ($value >= (int) $start && $value <= (int) $end) {
@@ -110,7 +106,6 @@ final class CronExpression
                 continue;
             }
 
-            // Exact match
             if ((int) $subPart === $value) {
                 return true;
             }

@@ -424,7 +424,6 @@ final class Mailer
         $this->mail->clearSubject();
         $this->mail->setSubject($this->subject);
 
-        // If HTML content was already set and layout is enabled, re-render to update the layout <title>
         if ($this->rawContent !== null && $this->useLayout) {
             $rendered = $this->renderBodyHtml($this->rawContent);
             $this->mail->setBodyHtml($rendered, $this->htmlCharset, $this->htmlEncoding);
@@ -460,7 +459,6 @@ final class Mailer
         $this->htmlCharset = $charset;
         $this->htmlEncoding = $encoding;
 
-        // If rawSubject was set before this payload was provided, re-interpolate the subject
         if ($this->rawSubject !== null) {
             $this->subject = EmailLayout::interpolate($this->rawSubject, $this->resolveSubjectVariables());
             $this->mail->clearSubject();

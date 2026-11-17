@@ -133,7 +133,6 @@ final class Cache
      */
     public static function rememberForever(string $key, callable $callback, array $tags = [], ?string $store = null): mixed
     {
-        // 0 in Zend_Cache means infinite lifetime
         return self::remember($key, 0, $callback, $tags, $store);
     }
 
@@ -167,7 +166,6 @@ final class Cache
             }
         }
 
-        // Fallback: Default File cache inside storage/cache/app
         if (class_exists(\ZF1\Foundation\Kernel::class)) {
             \ZF1\Foundation\Kernel::ensureIncludePaths();
         }

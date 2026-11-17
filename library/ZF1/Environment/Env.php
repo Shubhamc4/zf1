@@ -20,8 +20,6 @@ final class Env
 
     /**
      * Load environment variables from .env file at the project root.
-     *
-     * @param  array<string>  $required  Optional list of environment variables to require as not empty
      */
     public static function load(string $projectRoot, string $file = '.env', array $required = []): ?Dotenv
     {

@@ -318,7 +318,6 @@ final class Session
             $_SESSION['_flash']['new'][] = $key;
         }
 
-        // Remove from old if present
         if (isset($_SESSION['_flash']['old'])) {
             $_SESSION['_flash']['old'] = array_values(array_diff($_SESSION['_flash']['old'], [$key]));
         }

@@ -941,10 +941,8 @@ if (! function_exists('arrayToCsv')) {
             return null;
         }
 
-        // Write header
         fputcsv($handle, array_keys(reset($array)));
 
-        // Write data
         foreach ($array as $row) {
             fputcsv($handle, (array) $row);
         }
@@ -1228,60 +1226,88 @@ if (! function_exists('spellSeconds')) {
     }
 }
 
-if (! function_exists('SpellAmount')) {
-    /**
-     * Convert currency number into English words.
-     */
-    function SpellAmount(float|int|string $amount): string
+if (! function_exists('convertChunkToWords')) {
+    function convertChunkToWords(int $num): string
     {
-        $amount = (float) $amount;
         $ones = [
-            0 => '', 1 => 'One', 2 => 'Two', 3 => 'Three', 4 => 'Four',
-            5 => 'Five', 6 => 'Six', 7 => 'Seven', 8 => 'Eight', 9 => 'Nine',
-            10 => 'Ten', 11 => 'Eleven', 12 => 'Twelve', 13 => 'Thirteen', 14 => 'Fourteen',
-            15 => 'Fifteen', 16 => 'Sixteen', 17 => 'Seventeen', 18 => 'Eighteen', 19 => 'Nineteen',
+            '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
+            'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
+            'Seventeen', 'Eighteen', 'Nineteen',
         ];
         $tens = [
-            1 => 'Ten', 2 => 'Twenty', 3 => 'Thirty', 4 => 'Forty', 5 => 'Fifty',
-            6 => 'Sixty', 7 => 'Seventy', 8 => 'Eighty', 9 => 'Ninety',
+            '', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety',
         ];
-        $hundreds = ['Hundred', 'Thousand', 'Million', 'Billion', 'Trillion', 'Quadrillion'];
+        $scales = ['', 'Thousand', 'Million', 'Billion', 'Trillion', 'Quadrillion'];
 
-        $num_arr = explode('.', number_format($amount, 2, '.', ','));
-        $decnum = (int) ($num_arr[1] ?? 0);
-        $whole_arr = array_reverse(explode(',', $num_arr[0]));
-        krsort($whole_arr);
-
-        $string = '';
-        foreach ($whole_arr as $key => $i) {
-            $i = (int) $i;
-            if ($i < 20) {
-                $string .= $ones[$i];
-            } elseif ($i < 100) {
-                $string .= $tens[(int) substr((string) $i, 0, 1)];
-                $string .= ' '.$ones[(int) substr((string) $i, 1, 1)];
-            } else {
-                $string .= $ones[(int) substr((string) $i, 0, 1)].' '.$hundreds[0];
-                $string .= ' '.$tens[(int) substr((string) $i, 1, 1)];
-                $string .= ' '.$ones[(int) substr((string) $i, 2, 1)];
-            }
-
-            if ($key > 0 && $i > 0) {
-                $string .= ' '.$hundreds[$key].' ';
-            }
+        if ($num === 0) {
+            return '';
         }
 
-        if ($decnum > 0) {
-            $string .= ' and ';
-            if ($decnum < 20) {
-                $string .= $ones[$decnum];
-            } elseif ($decnum < 100) {
-                $string .= $tens[(int) substr((string) $decnum, 0, 1)];
-                $string .= ' '.$ones[(int) substr((string) $decnum, 1, 1)];
-            }
+        $chunks = [];
+        while ($num > 0) {
+            $chunks[] = $num % 1000;
+            $num = intdiv($num, 1000);
         }
 
-        return trim(preg_replace('/\s+/', ' ', $string));
+        $stringParts = [];
+        foreach ($chunks as $index => $chunk) {
+            if ($chunk === 0) {
+                continue;
+            }
+
+            $chunkWords = '';
+            $hundreds = intdiv($chunk, 100);
+            $remainder = $chunk % 100;
+
+            if ($hundreds > 0) {
+                $chunkWords .= $ones[$hundreds].' Hundred';
+                if ($remainder > 0) {
+                    $chunkWords .= ' ';
+                }
+            }
+
+            if ($remainder > 0) {
+                if ($remainder < 20) {
+                    $chunkWords .= $ones[$remainder];
+                } else {
+                    $chunkWords .= $tens[intdiv($remainder, 10)];
+                    $onesDigit = $remainder % 10;
+                    if ($onesDigit > 0) {
+                        $chunkWords .= ' '.$ones[$onesDigit];
+                    }
+                }
+            }
+
+            if ($index > 0 && isset($scales[$index])) {
+                $chunkWords .= ' '.$scales[$index];
+            }
+
+            $stringParts[] = $chunkWords;
+        }
+
+        return implode(' ', array_reverse($stringParts));
+    }
+}
+
+if (! function_exists('SpellAmount')) {
+    function SpellAmount(float|int|string $amount): string
+    {
+        $formatted = number_format((float) $amount, 2, '.', '');
+        [$whole, $decimal] = explode('.', $formatted);
+
+        $wholeNum = (int) $whole;
+        if ($wholeNum === 0) {
+            $result = 'Zero';
+        } else {
+            $result = convertChunkToWords($wholeNum);
+        }
+
+        $decNum = (int) $decimal;
+        if ($decNum > 0) {
+            $result .= ' and '.convertChunkToWords($decNum);
+        }
+
+        return trim(preg_replace('/\s+/', ' ', $result));
     }
 }
 
@@ -1741,6 +1767,43 @@ if (! function_exists('discord_notify')) {
     }
 }
 
+if (! function_exists('is_framework_path')) {
+    /**
+     * Determine if a given file path or trace frame belongs to the framework, vendor, or runtime.
+     */
+    function is_framework_path(string $filePath): bool
+    {
+        if ($filePath === '' || $filePath === 'unknown' || $filePath === '[internal function]' || $filePath === '{main}') {
+            return true;
+        }
+
+        $normalized = str_replace('\\', '/', $filePath);
+
+        $frameworkPatterns = [
+            '/vendor/',
+            '/packages/zf1/',
+            'shubhamc4/zf1',
+            '/library/Zend/',
+            '/library/ZF1/',
+            '/Zend/',
+            '/ZF1/',
+            '/valet/',
+            'Herd.app',
+            '/public/index.php',
+            '/public/zf',
+            '/bin/zf',
+        ];
+
+        foreach ($frameworkPatterns as $pattern) {
+            if (str_contains($normalized, $pattern)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
 if (! function_exists('formatCleanTrace')) {
     /**
      * Filter out vendor/framework frames from stack traces and format application frames.
@@ -1753,8 +1816,6 @@ if (! function_exists('formatCleanTrace')) {
         }
 
         $baseDir = base_path().DIRECTORY_SEPARATOR;
-        $vendorDir = base_path('vendor').DIRECTORY_SEPARATOR;
-        $libraryZfDir = base_path('library/Zend');
 
         $lines = explode("\n", $rawTrace);
         $appFrames = [];
@@ -1766,12 +1827,7 @@ if (! function_exists('formatCleanTrace')) {
                 continue;
             }
 
-            $isFramework = str_contains($line, $vendorDir)
-                || str_contains($line, $libraryZfDir)
-                || str_contains($line, 'shubhamc4/zf1')
-                || str_contains($line, 'Zend/');
-
-            if ($isFramework) {
+            if (is_framework_path($trimmed)) {
                 $hiddenCount++;
 
                 continue;
@@ -1853,47 +1909,126 @@ if (! function_exists('resolveAppOrigin')) {
             return $filePath;
         };
 
-        $vendorDir = base_path('vendor').DIRECTORY_SEPARATOR;
-        $libraryZfDir = base_path('library/Zend');
-
         if ($source instanceof Throwable) {
-            $file = (string) $source->getFile();
-            $line = (int) $source->getLine();
+            if (class_exists('Zend_Controller_Front', false)) {
+                try {
+                    $front = Zend_Controller_Front::getInstance();
+                    $resp = $front ? $front->getResponse() : null;
+                    if ($resp !== null && $resp->isException()) {
+                        $original = $resp->getException();
+                        if (! empty($original[0]) && $original[0] !== $source) {
+                            $source = $original[0];
+                        }
+                    }
+                } catch (Throwable) {
+                    // Ignore
+                }
+            }
 
-            $isFramework = str_contains($file, $vendorDir)
-                || str_contains($file, $libraryZfDir)
-                || str_contains($file, 'shubhamc4/zf1')
-                || str_contains($file, 'Zend/');
+            while ($source->getPrevious() !== null) {
+                $class = get_class($source);
+                if (str_contains($class, 'Zend_') || $class === 'Exception' || $class === 'ErrorException') {
+                    $source = $source->getPrevious();
+                } else {
+                    break;
+                }
+            }
 
-            if (! $isFramework) {
+            $thrownFile = (string) $source->getFile();
+            $thrownLine = (int) $source->getLine();
+
+            $trace = $source->getTrace();
+            $appDir = function_exists('app_path') ? str_replace('\\', '/', app_path()) : '';
+            $baseDir = function_exists('base_path') ? str_replace('\\', '/', base_path()) : '';
+
+            if ($appDir !== '') {
+                $normThrown = str_replace('\\', '/', $thrownFile);
+                if (str_starts_with($normThrown, $appDir) && (str_contains($normThrown, '/controllers/') || str_ends_with($normThrown, 'Controller.php'))) {
+                    return [
+                        'file' => $toExactPath($thrownFile),
+                        'line' => $thrownLine,
+                        'thrown_file' => $toExactPath($thrownFile),
+                        'thrown_line' => $thrownLine,
+                    ];
+                }
+
+                foreach ($trace as $frame) {
+                    if (! empty($frame['file']) && ! empty($frame['line'])) {
+                        $normFrameFile = str_replace('\\', '/', (string) $frame['file']);
+                        if (str_starts_with($normFrameFile, $appDir)
+                            && (str_contains($normFrameFile, '/controllers/') || str_ends_with($normFrameFile, 'Controller.php'))
+                            && ! is_framework_path($normFrameFile)
+                        ) {
+                            return [
+                                'file' => $toExactPath($frame['file']),
+                                'line' => (int) $frame['line'],
+                                'thrown_file' => $toExactPath($thrownFile),
+                                'thrown_line' => $thrownLine,
+                            ];
+                        }
+                    }
+                }
+            }
+
+            if (! is_framework_path($thrownFile)) {
                 return [
-                    'file' => $toExactPath($file),
-                    'line' => $line,
+                    'file' => $toExactPath($thrownFile),
+                    'line' => $thrownLine,
+                    'thrown_file' => $toExactPath($thrownFile),
+                    'thrown_line' => $thrownLine,
                 ];
             }
 
-            foreach ($source->getTrace() as $frame) {
+            if ($appDir !== '') {
+                foreach ($trace as $frame) {
+                    if (! empty($frame['file']) && ! empty($frame['line'])) {
+                        $normFrameFile = str_replace('\\', '/', (string) $frame['file']);
+                        if (str_starts_with($normFrameFile, $appDir) && ! is_framework_path($normFrameFile)) {
+                            return [
+                                'file' => $toExactPath($frame['file']),
+                                'line' => (int) $frame['line'],
+                                'thrown_file' => $toExactPath($thrownFile),
+                                'thrown_line' => $thrownLine,
+                            ];
+                        }
+                    }
+                }
+            }
+
+            if ($baseDir !== '') {
+                foreach ($trace as $frame) {
+                    if (! empty($frame['file']) && ! empty($frame['line'])) {
+                        $normFrameFile = str_replace('\\', '/', (string) $frame['file']);
+                        if (str_starts_with($normFrameFile, $baseDir) && ! is_framework_path($normFrameFile)) {
+                            return [
+                                'file' => $toExactPath($frame['file']),
+                                'line' => (int) $frame['line'],
+                                'thrown_file' => $toExactPath($thrownFile),
+                                'thrown_line' => $thrownLine,
+                            ];
+                        }
+                    }
+                }
+            }
+
+            foreach ($trace as $frame) {
                 if (! empty($frame['file']) && ! empty($frame['line'])) {
-                    $frameFile = (string) $frame['file'];
-                    $frameLine = (int) $frame['line'];
-
-                    $isVendor = str_contains($frameFile, $vendorDir)
-                        || str_contains($frameFile, $libraryZfDir)
-                        || str_contains($frameFile, 'shubhamc4/zf1')
-                        || str_contains($frameFile, 'Zend/');
-
-                    if (! $isVendor) {
+                    if (! is_framework_path((string) $frame['file'])) {
                         return [
-                            'file' => $toExactPath($frameFile),
-                            'line' => $frameLine,
+                            'file' => $toExactPath($frame['file']),
+                            'line' => (int) $frame['line'],
+                            'thrown_file' => $toExactPath($thrownFile),
+                            'thrown_line' => $thrownLine,
                         ];
                     }
                 }
             }
 
             return [
-                'file' => $toExactPath($file),
-                'line' => $line,
+                'file' => $toExactPath($thrownFile),
+                'line' => $thrownLine,
+                'thrown_file' => $toExactPath($thrownFile),
+                'thrown_line' => $thrownLine,
             ];
         }
 
@@ -1934,5 +2069,135 @@ if (! function_exists('dispatch')) {
         }
 
         return ZF1\Queue\Queue::push($job, $payload, $queue, $delay);
+    }
+}
+
+if (! function_exists('abort')) {
+    /**
+     * Throw an HttpException with the given status code, message, and headers.
+     *
+     * Examples:
+     *   abort(404);
+     *   abort(403, 'Unauthorized access.');
+     *   abort(429, 'Too many requests.', ['Retry-After' => '60']);
+     *
+     * @param  array<string, string>  $headers
+     *
+     * @throws ZF1\Exceptions\HttpException
+     */
+    function abort(int|Throwable $code, string $message = '', array $headers = []): never
+    {
+        if ($code instanceof Throwable) {
+            throw $code;
+        }
+
+        foreach ($headers as $header => $value) {
+            if (! headers_sent()) {
+                header("{$header}: {$value}");
+            }
+        }
+
+        throw match ($code) {
+            400 => new ZF1\Exceptions\BadRequestHttpException($message, null, $headers),
+            401 => new ZF1\Exceptions\UnauthorizedHttpException($message, null, $headers),
+            403 => new ZF1\Exceptions\AccessDeniedHttpException($message, null, $headers),
+            404 => new ZF1\Exceptions\NotFoundHttpException($message, null, $headers),
+            405 => new ZF1\Exceptions\MethodNotAllowedHttpException($message, null, $headers),
+            429 => new ZF1\Exceptions\TooManyRequestsHttpException($message, null, $headers),
+            503 => new ZF1\Exceptions\ServiceUnavailableHttpException($message, null, $headers),
+            default => new ZF1\Exceptions\HttpException($code, $message, null, $headers),
+        };
+    }
+}
+
+if (! function_exists('abort_if')) {
+    /**
+     * Throw an HttpException if the given condition is true.
+     *
+     * Examples:
+     *   abort_if(! $user, 404);
+     *   abort_if($user->is_banned, 403, 'Account suspended.');
+     *   abort_if(fn() => $this->isRateLimited(), 429);
+     *
+     * @param  array<string, string>  $headers
+     *
+     * @throws ZF1\Exceptions\HttpException
+     */
+    function abort_if(mixed $boolean, int|Throwable $code, string $message = '', array $headers = []): void
+    {
+        if ($boolean instanceof Closure) {
+            $boolean = $boolean();
+        }
+
+        if ($boolean) {
+            abort($code, $message, $headers);
+        }
+    }
+}
+
+if (! function_exists('abort_unless')) {
+    /**
+     * Throw an HttpException unless the given condition is true.
+     *
+     * Examples:
+     *   abort_unless($user, 404);
+     *   abort_unless($user->hasPermission('admin'), 403, 'Access denied.');
+     *
+     * @param  array<string, string>  $headers
+     *
+     * @throws ZF1\Exceptions\HttpException
+     */
+    function abort_unless(mixed $boolean, int|Throwable $code, string $message = '', array $headers = []): void
+    {
+        if ($boolean instanceof Closure) {
+            $boolean = $boolean();
+        }
+
+        if (! $boolean) {
+            abort($code, $message, $headers);
+        }
+    }
+}
+
+if (! function_exists('report')) {
+    /**
+     * Report an exception to the logger without terminating execution.
+     */
+    function report(Throwable|string $exception): void
+    {
+        if (is_string($exception)) {
+            $exception = new RuntimeException($exception);
+        }
+
+        if (class_exists(ZF1\Logging\UnifiedErrorHandler::class)) {
+            ZF1\Logging\UnifiedErrorHandler::logException($exception);
+        }
+    }
+}
+
+if (! function_exists('rescue')) {
+    /**
+     * Catch an exception and return a fallback value.
+     *
+     * @template TReturn
+     * @template TFallback
+     *
+     * @param  callable(): TReturn  $callback
+     * @param  (callable(Throwable): TFallback)|TFallback  $rescue
+     * @param  bool|callable(Throwable): bool  $report
+     * @return TReturn|TFallback
+     */
+    function rescue(callable $callback, mixed $rescue = null, mixed $report = true): mixed
+    {
+        try {
+            return $callback();
+        } catch (Throwable $e) {
+            $shouldReport = is_callable($report) ? $report($e) : (bool) $report;
+            if ($shouldReport && function_exists('report')) {
+                report($e);
+            }
+
+            return is_callable($rescue) ? $rescue($e) : $rescue;
+        }
     }
 }

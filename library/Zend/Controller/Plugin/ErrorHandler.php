@@ -244,9 +244,16 @@ class Zend_Controller_Plugin_ErrorHandler extends Zend_Controller_Plugin_Abstrac
         if ($this->_isInsideErrorHandlerLoop) {
             $exceptions = $response->getException();
             if (count($exceptions) > $this->_exceptionCountAtFirstEncounter) {
-                // Exception thrown by error handler; tell the front controller to throw it
+                $rootException = $exceptions[0] ?? array_pop($exceptions);
+                if (class_exists(\ZF1\View\ErrorRenderer::class)) {
+                    $code = ($rootException->getCode() >= 400 && $rootException->getCode() <= 599)
+                        ? (int) $rootException->getCode()
+                        : 500;
+                    \ZF1\View\ErrorRenderer::render($code, $rootException);
+                    exit(1);
+                }
                 $frontController->throwExceptions(true);
-                throw array_pop($exceptions);
+                throw $rootException;
             }
         }
 
@@ -279,7 +286,13 @@ class Zend_Controller_Plugin_ErrorHandler extends Zend_Controller_Plugin_Abstrac
                     }
                     break;
                 default:
-                    $error->type = self::EXCEPTION_OTHER;
+                    if ($exception->getCode() === 404
+                        || (class_exists(\ZF1\Exceptions\HttpException::class) && $exception instanceof \ZF1\Exceptions\HttpException && $exception->getStatusCode() === 404)
+                    ) {
+                        $error->type = self::EXCEPTION_NO_ACTION;
+                    } else {
+                        $error->type = self::EXCEPTION_OTHER;
+                    }
                     break;
             }
 
@@ -288,6 +301,29 @@ class Zend_Controller_Plugin_ErrorHandler extends Zend_Controller_Plugin_Abstrac
 
             // get a count of the number of exceptions encountered
             $this->_exceptionCountAtFirstEncounter = count($exceptions);
+
+            // Check if project has an ErrorController; if not, directly render via ErrorRenderer
+            $dispatcher = $frontController->getDispatcher();
+            $testRequest = clone $request;
+            $testRequest->setModuleName($this->getErrorHandlerModule())
+                        ->setControllerName($this->getErrorHandlerController())
+                        ->setActionName($this->getErrorHandlerAction());
+
+            if (! $dispatcher->isDispatchable($testRequest) && class_exists(\ZF1\View\ErrorRenderer::class)) {
+                $code = 500;
+                if ($error->type === self::EXCEPTION_NO_ROUTE
+                    || $error->type === self::EXCEPTION_NO_CONTROLLER
+                    || $error->type === self::EXCEPTION_NO_ACTION
+                ) {
+                    $code = 404;
+                } elseif (class_exists(\ZF1\Exceptions\HttpException::class) && $exception instanceof \ZF1\Exceptions\HttpException) {
+                    $code = $exception->getStatusCode();
+                } elseif ($exception->getCode() >= 400 && $exception->getCode() <= 599) {
+                    $code = (int) $exception->getCode();
+                }
+                \ZF1\View\ErrorRenderer::render($code, $exception);
+                exit(1);
+            }
 
             // Forward to the error handler
             $request->setParam('error_handler', $error)

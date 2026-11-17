@@ -52,10 +52,6 @@ final class Event
         $this->payload = $payload;
     }
 
-    // =========================================================================
-    // Fluent Scheduling Intervals
-    // =========================================================================
-
     public function cron(string $expression): self
     {
         $this->expression = trim($expression);
@@ -224,10 +220,6 @@ final class Event
         return $this;
     }
 
-    // =========================================================================
-    // Options & Hooks
-    // =========================================================================
-
     public function description(string $description): self
     {
         $this->description = $description;
@@ -235,9 +227,6 @@ final class Event
         return $this;
     }
 
-    /**
-     * Set the unique or human-friendly name for this event.
-     */
     public function name(string $name): self
     {
         $this->name = trim($name);
@@ -293,10 +282,6 @@ final class Event
 
         return $this;
     }
-
-    // =========================================================================
-    // Evaluation & Execution
-    // =========================================================================
 
     public function isDue(?DateTimeInterface $date = null): bool
     {
@@ -396,7 +381,6 @@ final class Event
             $status = 'failed';
             $output = $e->getMessage();
 
-            // Alert via Discord if configured
             try {
                 DiscordNotifier::error(
                     '🚨 Scheduled Task Failed',
@@ -428,10 +412,6 @@ final class Event
         ];
     }
 
-    // =========================================================================
-    // Lock Management (withoutOverlapping)
-    // =========================================================================
-
     public function getLockFilePath(): string
     {
         $lockDir = ensure_directory_exists(storage_path('data/locks'));
@@ -457,7 +437,6 @@ final class Event
 
         $mtime = filemtime($path);
         if ($mtime !== false && (time() - $mtime) > ($this->expiresAtMinutes * 60)) {
-            // Lock expired, clean up
             @unlink($path);
 
             return false;
@@ -477,10 +456,6 @@ final class Event
             @unlink($path);
         }
     }
-
-    // =========================================================================
-    // Getters
-    // =========================================================================
 
     public function getExpression(): string
     {

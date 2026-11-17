@@ -1,0 +1,8 @@
+<?php
+
+$code = 404;
+$title = $title ?? 'Page Not Found';
+$message = $message ?? 'The page or resource you are looking for could not be found or has been moved.';
+
+$layoutFile = \ZF1\View\ErrorRenderer::resolveLayoutPath();
+require $layoutFile;

@@ -149,14 +149,12 @@ abstract class Command
             return;
         }
 
-        // 1. Extract command name (everything before whitespace or '{')
         if (preg_match('/^([^\s{]+)/', $sig, $nameMatch)) {
             if ($this->name === '') {
                 $this->name = trim($nameMatch[1]);
             }
         }
 
-        // 2. Parse Laravel-style tokens in { ... }
         if (preg_match_all('/\{([^}]+)\}/', $sig, $matches)) {
             foreach ($matches[1] as $token) {
                 $token = trim($token);
@@ -169,7 +167,6 @@ abstract class Command
                 }
 
                 if (str_starts_with($token, '--')) {
-                    // Option definition
                     $token = substr($token, 2);
                     $shortcut = null;
 
@@ -213,7 +210,6 @@ abstract class Command
                         'description' => $description,
                     ];
                 } else {
-                    // Argument definition
                     $required = true;
                     $default = null;
                     $isArray = false;
@@ -253,7 +249,6 @@ abstract class Command
             }
         }
 
-        // 3. Shorthand support: e.g. "db:backup :days" or "db:backup :days=30"
         $afterName = trim(substr($sig, strlen($this->name)));
         if ($afterName !== '' && preg_match_all('/:([a-zA-Z0-9_-]+)(?:=([^\s]+))?/', $afterName, $shortMatches, PREG_SET_ORDER)) {
             foreach ($shortMatches as $sm) {
@@ -281,7 +276,6 @@ abstract class Command
     {
         $this->parseSignature();
 
-        // 1. Map positional arguments to defined named arguments
         $this->arguments = $rawArguments;
         $argNames = array_keys($this->definedArguments);
 
@@ -300,16 +294,13 @@ abstract class Command
             }
         }
 
-        // 2. Map options and fill defaults from signature
         $this->options = $rawOptions;
 
         foreach ($this->definedOptions as $optName => $meta) {
-            // Check shortcut
             if ($meta['shortcut'] !== null && isset($rawOptions[$meta['shortcut']]) && ! isset($this->options[$optName])) {
                 $this->options[$optName] = $rawOptions[$meta['shortcut']];
             }
 
-            // Fill default if not supplied
             if (! array_key_exists($optName, $this->options)) {
                 $this->options[$optName] = $meta['default'];
             } elseif (! empty($meta['isArray'])) {
@@ -541,7 +532,9 @@ abstract class Command
             $line = '|';
             foreach (array_values($cells) as $i => $cell) {
                 $w = $colWidths[$i] ?? 10;
-                $line .= ' '.str_pad((string) $cell, $w).' |';
+                $str = (string) $cell;
+                $pad = str_repeat(' ', max(0, $w - mb_strwidth($str)));
+                $line .= ' '.$str.$pad.' |';
             }
 
             return $line;

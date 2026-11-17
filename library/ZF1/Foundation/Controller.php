@@ -6,6 +6,7 @@ namespace ZF1\Foundation;
 
 use AllowDynamicProperties;
 use RuntimeException;
+use Throwable;
 use Zend_Controller_Action;
 use Zend_Controller_Action_HelperBroker;
 use Zend_Controller_Request_Http;
@@ -29,7 +30,7 @@ use ZF1\Validation\Validator;
  * @method Zend_Controller_Response_Http getResponse()
  */
 #[AllowDynamicProperties]
-abstract class Controller extends Zend_Controller_Action
+class Controller extends Zend_Controller_Action
 {
     /**
      * Cached JSON request payload.
@@ -382,5 +383,103 @@ abstract class Controller extends Zend_Controller_Action
     public function optional(mixed $value = null, ?callable $callback = null): mixed
     {
         return function_exists('optional') ? optional($value, $callback) : ($callback ? ($value !== null ? $callback($value) : null) : new \ZF1\Support\Optional($value));
+    }
+
+    /**
+     * Throw an HttpException with the given status code, message, and headers.
+     *
+     * @param  array<string, string>  $headers
+     *
+     * @throws \ZF1\Exceptions\HttpException
+     */
+    public function abort(int|Throwable $code, string $message = '', array $headers = []): never
+    {
+        if (function_exists('abort')) {
+            abort($code, $message, $headers);
+        }
+
+        throw new \ZF1\Exceptions\HttpException((int) $code, $message, null, $headers);
+    }
+
+    /**
+     * Throw an HttpException if the given condition is true.
+     *
+     * @param  array<string, string>  $headers
+     *
+     * @throws \ZF1\Exceptions\HttpException
+     */
+    public function abortIf(mixed $boolean, int|Throwable $code, string $message = '', array $headers = []): void
+    {
+        if (function_exists('abort_if')) {
+            abort_if($boolean, $code, $message, $headers);
+
+            return;
+        }
+
+        if ($boolean) {
+            $this->abort($code, $message, $headers);
+        }
+    }
+
+    /**
+     * Throw an HttpException unless the given condition is true.
+     *
+     * @param  array<string, string>  $headers
+     *
+     * @throws \ZF1\Exceptions\HttpException
+     */
+    public function abortUnless(mixed $boolean, int|Throwable $code, string $message = '', array $headers = []): void
+    {
+        if (function_exists('abort_unless')) {
+            abort_unless($boolean, $code, $message, $headers);
+
+            return;
+        }
+
+        if (! $boolean) {
+            $this->abort($code, $message, $headers);
+        }
+    }
+
+    /**
+     * Report an exception to the error handler without terminating execution.
+     */
+    public function report(Throwable|string $exception): void
+    {
+        if (function_exists('report')) {
+            report($exception);
+        }
+    }
+
+    /**
+     * Catch an exception and return a fallback value.
+     *
+     * @template TReturn
+     * @template TFallback
+     *
+     * @param  callable(): TReturn  $callback
+     * @param  (callable(Throwable): TFallback)|TFallback  $rescue
+     * @param  bool|callable(Throwable): bool  $report
+     * @return TReturn|TFallback
+     */
+    public function rescue(callable $callback, mixed $rescue = null, mixed $report = true): mixed
+    {
+        return function_exists('rescue') ? rescue($callback, $rescue, $report) : $callback();
+    }
+
+    /**
+     * Render an HTTP error response using the modern ZF1 ErrorRenderer.
+     *
+     * In an ErrorController:
+     *   $this->renderError();
+     * Or with explicit code/exception/context:
+     *   $this->renderError(404);
+     *   $this->renderError(403, context: ['message' => 'Restricted area']);
+     *
+     * @param  array<string, mixed>  $context
+     */
+    public function renderError(?int $code = null, ?Throwable $exception = null, array $context = []): void
+    {
+        \ZF1\View\ErrorRenderer::handleMvc($this, $code, $exception, $context);
     }
 }

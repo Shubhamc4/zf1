@@ -35,55 +35,20 @@ final class WebConsolePlugin extends Zend_Controller_Plugin_Abstract
             return;
         }
 
-        $isJson = $request->isXmlHttpRequest() || WebConsole::isExecuteRequest($uri)
-            || (isset($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'application/json'));
-
         if (! WebConsole::checkIp()) {
-            if ($isJson) {
-                http_response_code(403);
-                header('Content-Type: application/json; charset=utf-8');
-                echo json_encode([
-                    'success' => false,
-                    'status' => 403,
-                    'error' => 'Access denied: Client IP address not authorized to access web console.',
-                ], JSON_UNESCAPED_SLASHES);
-                exit(0);
+            if ($redirectUrl = WebConsole::resolveForbiddenRedirect()) {
+                redirect($redirectUrl)->with('error', 'Access denied: Client IP address not authorized to access web console.');
             }
 
-            $redirectUrl = WebConsole::resolveForbiddenRedirect();
-            if (class_exists(\ZF1\Session\Session::class)) {
-                \ZF1\Session\Session::flash('error', 'Access denied: Client IP address not authorized to access web console.');
-            }
-
-            if (! headers_sent()) {
-                http_response_code(302);
-                header("Location: {$redirectUrl}", true, 302);
-            }
-            exit(0);
+            abort(403, 'Access denied: Client IP address not authorized to access web console.');
         }
 
         if (! WebConsole::checkAuth($request)) {
-            if ($isJson) {
-                http_response_code(403);
-                header('Content-Type: application/json; charset=utf-8');
-                echo json_encode([
-                    'success' => false,
-                    'status' => 403,
-                    'error' => 'Access denied. Administrator privileges required.',
-                ], JSON_UNESCAPED_SLASHES);
-                exit(0);
+            if ($redirectUrl = WebConsole::resolveForbiddenRedirect()) {
+                redirect($redirectUrl)->with('error', 'Access denied. Administrator privileges required.');
             }
 
-            $redirectUrl = WebConsole::resolveForbiddenRedirect();
-            if (class_exists(\ZF1\Session\Session::class)) {
-                \ZF1\Session\Session::flash('error', 'Access denied. Administrator privileges required.');
-            }
-
-            if (! headers_sent()) {
-                http_response_code(302);
-                header("Location: {$redirectUrl}", true, 302);
-            }
-            exit(0);
+            abort(403, 'Access denied. Administrator privileges required.');
         }
 
         $response = $this->getResponse();

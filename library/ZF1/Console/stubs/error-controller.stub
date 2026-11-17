@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+use ZF1\Foundation\Controller;
+
+final class ErrorController extends Controller
+{
+    /**
+     * Centralized Error Handler Action.
+     *
+     * Automatically handles 404, 500, and HTTP status exceptions,
+     * renders rich diagnostics when APP_DEBUG=true,
+     * or minimal status pages from application/views/error/{code}.phtml in production.
+     */
+    public function errorAction(): void
+    {
+        $this->renderError();
+    }
+}

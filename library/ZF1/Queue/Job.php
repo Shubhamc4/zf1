@@ -140,7 +140,6 @@ abstract class Job implements JobInterface
             return false;
         }
 
-        // 1. Check custom classes defined in child job's $dontRetry
         if ($reason instanceof Throwable && ! empty($this->dontRetry)) {
             foreach ($this->dontRetry as $dontRetryClass) {
                 if ($reason instanceof $dontRetryClass) {
@@ -149,7 +148,6 @@ abstract class Job implements JobInterface
             }
         }
 
-        // 2. Built-in universal permanent error check (400s, 500s, InvalidArgument, TypeError, SMTP, etc.)
         return static::isPermanentError($reason);
     }
 
@@ -164,7 +162,6 @@ abstract class Job implements JobInterface
         }
 
         if ($reason instanceof Throwable) {
-            // Check default unrecoverable PHP exceptions
             $unrecoverableClasses = [
                 InvalidArgumentException::class,
                 TypeError::class,
@@ -181,18 +178,14 @@ abstract class Job implements JobInterface
                 }
             }
 
-            // Check HTTP / Exception status code
             $code = (int) $reason->getCode();
-            // 4xx Client Errors (400 to 499, excluding 429 Too Many Requests which is retriable)
             if ($code >= 400 && $code < 500 && $code !== 429) {
                 return true;
             }
-            // 500 Server Errors & permanent SMTP response codes
             if ($code === 500 || $code === 501 || $code === 505 || ($code >= 534 && $code <= 554)) {
                 return true;
             }
 
-            // Guzzle / PSR-7 response status code
             if (method_exists($reason, 'hasResponse') && $reason->hasResponse() && method_exists($reason, 'getResponse')) {
                 $response = $reason->getResponse();
                 if (is_object($response) && method_exists($response, 'getStatusCode')) {

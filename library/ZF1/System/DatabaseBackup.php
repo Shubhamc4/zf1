@@ -99,13 +99,11 @@ final class DatabaseBackup
             throw new RuntimeException($errorMessage);
         }
 
-        // Update latest.sql.gz copy
         copy($targetPath, $latestPath);
 
         $fileSizeBytes = (int) filesize($targetPath);
-        $formattedSize = self::formatBytes($fileSizeBytes);
+        $formattedSize = formatBytes($fileSizeBytes);
 
-        // Prune old backups older than retention period
         $prunedCount = self::pruneOldBackups($backupDir, $retentionDays);
 
         return [
@@ -143,23 +141,5 @@ final class DatabaseBackup
         }
 
         return $pruned;
-    }
-
-    /**
-     * Format bytes to human readable format.
-     */
-    public static function formatBytes(int $bytes): string
-    {
-        if ($bytes >= 1073741824) {
-            return sprintf('%.2f GB', $bytes / 1073741824);
-        }
-        if ($bytes >= 1048576) {
-            return sprintf('%.2f MB', $bytes / 1048576);
-        }
-        if ($bytes >= 1024) {
-            return sprintf('%.2f KB', $bytes / 1024);
-        }
-
-        return "{$bytes} B";
     }
 }

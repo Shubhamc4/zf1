@@ -35,7 +35,7 @@ This package provides a modern application foundation and the **`zf`** CLI tool.
 To scaffold the root `zf` CLI runner, application Kernel, and Bootstrap in your project:
 
 ```bash
-php vendor/bin/zf make:foundation
+php vendor/bin/zf foundation:install
 ```
 
 This creates:
@@ -70,7 +70,8 @@ Built-in commands for queues, scheduling, scaffolding, system maintenance, and l
 - `php zf schedule:work` — Run a local daemon worker for the scheduler
 - `php zf mail:layout {--publish} {--force}` — Inspect or publish customizable responsive email layout template
 - `php zf console:publish {--force}` — Publish customizable web console HTML/CSS template to application/views/scripts/console/index.phtml
-- `php zf down` / `php zf up` — Maintenance mode management (supports `--publish` to publish editable maintenance view, `--template=` for custom views, and secret bypass tokens)
+- `php zf error:publish {--code=} {--path=} {--force}` — Publish customizable error view templates to application/views/error/{code}.phtml
+- `php zf down` / `php zf up` — Maintenance mode management (supports `--publish` to publish editable 503 error view to `application/views/error/503.phtml`, `--template=` for custom views, and secret bypass tokens)
 - `php zf db:backup` — Automated gzip database backup with retention pruning
 - `php zf db:show` — Display an overview of database tables, rows, storage size, and engine
 - `php zf db:table <table>` — Inspect table schema, columns, data types, and indexes
@@ -491,6 +492,193 @@ This publishes the template to `application/views/scripts/console/index.phtml`.
   DB_LOGGING=true
   DB_SLOW_QUERY_MS=500
   ```
+
+### 14. Modern Error Handling & Error Views (`ZF1\View\ErrorRenderer`)
+A modern error handling system featuring rich diagnostics during development, clean status pages in production, automatic project view overrides, chronological stack traces, and unified JSON handling.
+
+- **Developer Debug Mode (`APP_DEBUG=true`)**:
+  - Full-screen dark developer diagnostics screen inspired by Laravel Ignition.
+  - Exception class, HTTP status badge, and primary error message.
+  - Prioritizes project controllers in the error header and source code preview over framework drivers or models (e.g. highlights `ServiceorderController.php:50` when a model query fails).
+  - Interactive source code preview with 15–20 lines centered around the error line and highlighted syntax.
+  - Comprehensive inspection tabs for Request, Parameters (`$_GET`, `$_POST`, JSON payload), Headers, Session, and Server/Environment variables (with sensitive keys masked).
+  - One-click copy buttons for exception messages, file locations, and clean stack traces (works seamlessly in both HTTPS and non-secure HTTP local development).
+
+- **Production Mode (`APP_DEBUG=false`)**:
+  - Sleek, modern, responsive status cards for standard HTTP errors (`400`, `401`, `403`, `404`, `419`, `429`, `500`, `503`).
+  - Dark/light system theme support, clean typography, friendly messages, and return home/back navigation.
+
+- **Project-Level View Overrides (`application/views/error/{code}.phtml`)**:
+  - Customize any error page project-wise simply by creating the corresponding `.phtml` file:
+    1. `application/views/error/{code}.phtml`
+    2. `application/views/scripts/error/{code}.phtml`
+  - Customize the master wrapper layout for all error pages at `application/views/error/layout.phtml`.
+  - If a project view does not exist, the framework seamlessly falls back to its built-in default stubs.
+
+- **Publishing Error Views**:
+  - Publish default error templates into your project views directory for immediate customization:
+    ```bash
+    # Publish all error views and layout stub:
+    php zf error:publish
+
+    # Or publish only a specific status code (e.g., 404 or 500):
+    php zf error:publish --code=404
+
+    # Publish to a custom directory:
+    php zf error:publish --path=application/views/scripts/error
+
+    # Force overwrite existing files:
+    php zf error:publish --force
+    ```
+
+- **Laravel-Style `abort()`, `abort_if()`, and `abort_unless()` Helpers**:
+  Easily interrupt execution and trigger standard HTTP error handling from anywhere (controllers, models, services):
+  ```php
+  // Immediate abort with status code and optional custom message/headers:
+  abort(404);
+  abort(403, 'You do not have permission to access this area.');
+  abort(429, 'Rate limit exceeded. Please wait.', ['Retry-After' => '60']);
+
+  // Conditional aborts (accepts booleans or Closures):
+  abort_if(! $user, 404);
+  abort_if($user->is_banned, 403, 'Account is suspended.');
+  abort_if(fn() => $this->isRateLimited(), 429);
+
+  abort_unless($user, 404, 'User not found.');
+  abort_unless($user->can('manage-orders'), 403, 'Access denied.');
+  ```
+
+- **In `ErrorController`**:
+  ```php
+  use ZF1\Foundation\Controller;
+
+  final class ErrorController extends Controller
+  {
+      public function errorAction(): void
+      {
+          // Automatically handles 404, 500, or HTTP exceptions,
+          // respects APP_DEBUG, and serves project or default views:
+          $this->renderError();
+      }
+  }
+  ```
+  *(You can also scaffold a modern `ErrorController.php` anytime with `php zf foundation --errors`.)*
+
+- **Missing `ErrorController` Graceful Fallback**:
+  - In modular applications or new projects where `ErrorController.php` is missing or not dispatchable, the framework's `Zend_Controller_Plugin_ErrorHandler` intercepts the error and directly renders via `ErrorRenderer`, completely preventing legacy `Invalid controller specified (error)` loop exceptions and exposing the real underlying error immediately.
+
+- **Unified Web Exception & Fatal Shutdown Handling**:
+  - `UnifiedErrorHandler` intercepts uncaught exceptions and fatal shutdown errors, automatically rendering the rich debug inspector (in debug mode) or modern 500 error page (in production) instead of a blank white screen.
+
+- **JSON / AJAX API Responses**:
+  - Requests expecting JSON (`Accept: application/json`, `X-Requested-With: XMLHttpRequest`, or `request_wants_json()`) automatically receive properly structured JSON error envelopes with sanitized messages in production and stack traces in debug mode:
+    ```json
+    {
+      "message": "Invalid database table specified",
+      "code": 500,
+      "exception": "Zend_Db_Statement_Exception",
+      "file": "/Users/work/Developer/app/application/modules/purchase/controllers/ServiceorderController.php",
+      "line": 50,
+      "trace": [
+        "#0 /Users/work/Developer/app/application/modules/purchase/controllers/ServiceorderController.php(50): Application_Model_Album->fetchData(...)",
+        "#1 /Users/work/Developer/app/application/models/Album.php(39): Zend_Db_Adapter_Abstract->fetchAll(...)",
+        "... [+6 vendor/framework frames hidden]"
+      ]
+    }
+    ```
+
+- **Theme, Layout & Sensitive Keys Configuration**:
+  Customize themes (`'dark'`, `'light'`, or `'auto'`), custom master layout templates, and register sensitive keys to mask on error screens by overriding `configureErrorRenderer()` or properties in `App\Kernel` (or anywhere in `Bootstrap`):
+  ```php
+  namespace App;
+
+  use ZF1\Foundation\Kernel as BaseKernel;
+  use ZF1\View\ErrorRenderer;
+
+  final class Kernel extends BaseKernel
+  {
+      // Option A: Via static properties:
+      protected static string $errorTheme = 'dark'; // 'dark', 'light', or 'auto'
+      protected static ?string $errorLayout = 'views/error/layout.phtml';
+      protected static array $sensitiveKeys = ['stripe_key', 'pin', 'custom_token', 'private_key'];
+
+      // Option B: Via fluent configure hook:
+      protected static function configureErrorRenderer(): void
+      {
+          ErrorRenderer::theme('dark')
+            ->layout('views/error/layout.phtml')
+            ->addSensitiveKeys(['stripe_secret', 'pin', 'ssn']);
+      }
+  }
+  ```
+  Or programmatically in `application/Bootstrap.php`:
+  ```php
+  \ZF1\View\ErrorRenderer::theme('dark')
+      ->layout('views/error/layout.phtml')
+      ->addSensitiveKeys(['api_token', 'card_number']);
+  ```
+
+- **Clean Exception Messages & Isolated Traces**:
+  - Automatically isolates error messages from appended file and stack trace strings (e.g., legacy Zend broker trace concatenations or PHP file traces), ensuring error titles, descriptions, and Discord alerts remain concise and clean.
+
+- **HTTP Exceptions & Abort Helpers (`abort`, `abort_if`, `abort_unless`)**:
+  - Laravel-style abort helpers are available globally and as methods on `ZF1\Foundation\Controller`:
+    ```php
+    // In any controller, model, or service:
+    abort(404, 'Post not found');
+    abort(403, 'Unauthorized access to this resource');
+    abort(429, 'Rate limit exceeded', ['Retry-After' => '60']);
+    abort(503, 'System undergoing scheduled database migration');
+
+    // Conditional aborts:
+    abort_if(! $user, 404);
+    abort_if($user->is_suspended, 403, 'Account suspended');
+    abort_unless($user->hasPermission('admin'), 403, 'Admin access required');
+
+    // Inside controllers ($this->abort, $this->abortIf, $this->abortUnless):
+    $this->abortIf(! $invoice, 404, 'Invoice not found');
+    $this->abortUnless($this->canAccess(), 403);
+    ```
+  - Standard HTTP exception classes (`ZF1\Exceptions\*`):
+    - `HttpException` (base exception with status code & custom headers)
+    - `BadRequestHttpException` (400)
+    - `UnauthorizedHttpException` (401)
+    - `AccessDeniedHttpException` (403)
+    - `NotFoundHttpException` (404)
+    - `MethodNotAllowedHttpException` (405)
+    - `TooManyRequestsHttpException` (429)
+    - `ServiceUnavailableHttpException` (503)
+
+- **Service Unavailable (503) & Maintenance Mode Integration**:
+  - When the application is put into maintenance mode via `php zf down`:
+    - `ServiceUnavailableHttpException` and `abort(503)` automatically pull the active maintenance message, secret bypass settings, and retry interval from `storage/down`.
+    - Automatically attaches the `Retry-After: <seconds>` HTTP header to responses.
+    - JSON API requests receive a standardized payload with `'maintenance' => true` and `'retry_after' => 60`.
+    - Custom templates published via `php zf error:publish --code=503` or `php zf down --publish` are automatically detected and rendered with live countdown timers and secure bypass key entry forms.
+    - Status badge renders as `SERVICE UNAVAILABLE` with an interactive "Refresh Now" button.
+
+- **Smart Error Logging & Ignored Exceptions (`$dontReport`)**:
+  - `storage/logs/zf1.log` (and Discord notifications) only records true, actionable server errors (HTTP 500+, unhandled exceptions, database crashes, fatal PHP errors).
+  - Client errors (HTTP 4xx: `404 Not Found`, `403 Forbidden`, `401 Unauthorized`, `422 Unprocessable Entity`, `429 Too Many Requests`) and `503 Service Unavailable` during maintenance mode are automatically excluded from `zf1.log` to prevent log pollution and alert spam.
+  - Minor PHP notices, warnings, and deprecations are suppressed from `zf1.log`.
+  - Developers can register additional custom exceptions to exclude from `zf1.log` in `application/Kernel.php`:
+    ```php
+    namespace App;
+
+    use ZF1\Foundation\Kernel as BaseKernel;
+
+    final class Kernel extends BaseKernel
+    {
+        protected static array $dontReport = [
+            CustomBusinessException::class,
+            PaymentDeclinedException::class,
+        ];
+    }
+    ```
+    Or programmatically:
+    ```php
+    \ZF1\Logging\UnifiedErrorHandler::dontReport(CustomBusinessException::class);
+    ```
 
 ## Requirements
 

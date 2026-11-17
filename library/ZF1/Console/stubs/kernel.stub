@@ -12,6 +12,24 @@ use ZF1\Foundation\Kernel as BaseKernel;
 final class Kernel extends BaseKernel
 {
     /**
+     * Keys to mask in error reports, stack traces, and debug views.
+     *
+     * @var array<string>
+     */
+    protected static array $sensitiveKeys = [
+        // 'credit_card', 'stripe_token',
+    ];
+
+    /**
+     * Exception classes that should not be reported to zf1.log.
+     *
+     * @var array<class-string<\Throwable>>
+     */
+    protected static array $dontReport = [
+        // CustomBusinessException::class,
+    ];
+
+    /**
      * Custom include paths defined by the application.
      *
      * @return array<string>

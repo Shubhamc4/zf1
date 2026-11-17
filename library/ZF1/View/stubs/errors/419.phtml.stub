@@ -1,0 +1,8 @@
+<?php
+
+$code = 419;
+$title = $title ?? 'Page Expired';
+$message = $message ?? 'Your session or CSRF security token has expired. Please refresh the page and try again.';
+
+$layoutFile = \ZF1\View\ErrorRenderer::resolveLayoutPath();
+require $layoutFile;

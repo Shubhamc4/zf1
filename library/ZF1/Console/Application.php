@@ -6,6 +6,7 @@ namespace ZF1\Console;
 
 use ReflectionClass;
 use Throwable;
+use Zend_Controller_Dispatcher_Exception;
 use Zend_Controller_Front;
 use Zend_Controller_Request_Http;
 use Zend_Controller_Response_Cli;
@@ -62,7 +63,6 @@ final class Application
 
         $commandName = $args[0];
 
-        // 1. Check if command matches a registered Command object
         if (isset(self::$commands[$commandName])) {
             $command = self::$commands[$commandName];
             $subArgs = array_slice($args, 1);
@@ -80,7 +80,10 @@ final class Application
             return $command->handle();
         }
 
-        // 2. Fallback to traditional Zend MVC Controller / Action dispatch
+        if (str_contains($commandName, ':')) {
+            return self::renderCommandNotFound($commandName);
+        }
+
         return self::handleMvcDispatch($args);
     }
 
@@ -93,13 +96,8 @@ final class Application
             return;
         }
 
-        // 1. Register Built-in Core Commands
         self::registerBuiltInCommands();
-
-        // 2. Discover Application Commands: application/Commands/
         self::discoverCommandsInDirectory(app_path('Commands'));
-
-        // 3. Discover Module Commands: application/modules/*/Commands/
         $modulesPath = app_path('modules');
         if (is_dir($modulesPath)) {
             foreach (glob($modulesPath.'/*/Commands', GLOB_ONLYDIR) as $moduleCommandDir) {
@@ -210,7 +208,6 @@ final class Application
             }
         }
 
-        // Subdirectories
         foreach (glob($directory.'/*', GLOB_ONLYDIR) as $subDir) {
             self::discoverCommandsInDirectory($subDir);
         }
@@ -227,7 +224,6 @@ final class Application
 
         $candidateClasses = array_diff($declaredAfter, $declaredBefore);
 
-        // Also extract class name directly from the file in case it was already loaded/autoloaded
         $fileClass = self::getClassFromFile($filePath);
         if ($fileClass !== null && ! in_array($fileClass, $candidateClasses, true)) {
             $candidateClasses[] = $fileClass;
@@ -257,18 +253,47 @@ final class Application
             return null;
         }
 
+        $tokens = @token_get_all($content);
         $namespace = '';
-        if (preg_match('/^\s*namespace\s+([^;]+);/m', $content, $m)) {
-            $namespace = trim($m[1]);
+        $class = '';
+        $count = count($tokens);
+
+        for ($i = 0; $i < $count; $i++) {
+            if ($tokens[$i][0] === T_NAMESPACE) {
+                $i += 2;
+                while ($i < $count && (
+                    $tokens[$i][0] === T_STRING
+                    || $tokens[$i][0] === T_NS_SEPARATOR
+                    || (defined('T_NAME_QUALIFIED') && $tokens[$i][0] === T_NAME_QUALIFIED)
+                )) {
+                    $namespace .= $tokens[$i][1];
+                    $i++;
+                }
+            } elseif ($tokens[$i][0] === T_CLASS) {
+                $prev = $i - 1;
+                while ($prev >= 0 && is_array($tokens[$prev]) && $tokens[$prev][0] === T_WHITESPACE) {
+                    $prev--;
+                }
+                if ($prev >= 0 && is_array($tokens[$prev]) && $tokens[$prev][0] === T_DOUBLE_COLON) {
+                    continue;
+                }
+
+                $next = $i + 1;
+                while ($next < $count && is_array($tokens[$next]) && $tokens[$next][0] === T_WHITESPACE) {
+                    $next++;
+                }
+                if ($next < $count && is_array($tokens[$next]) && $tokens[$next][0] === T_STRING) {
+                    $class = $tokens[$next][1];
+                    break;
+                }
+            }
         }
 
-        if (preg_match('/^\s*(?:final\s+|abstract\s+)?class\s+([a-zA-Z0-9_]+)/m', $content, $m)) {
-            $class = trim($m[1]);
-
-            return $namespace !== '' ? "{$namespace}\\{$class}" : $class;
+        if ($class === '') {
+            return null;
         }
 
-        return null;
+        return $namespace !== '' ? "{$namespace}\\{$class}" : $class;
     }
 
     /**
@@ -346,10 +371,66 @@ final class Application
 
             return 0;
         } catch (Throwable $e) {
-            fwrite(STDERR, 'Error: '.$e->getMessage().PHP_EOL);
+            if ($e instanceof Zend_Controller_Dispatcher_Exception) {
+                return self::renderCommandNotFound($controller);
+            }
+
+            echo "\033[31mError: ".$e->getMessage()."\033[0m".PHP_EOL;
 
             return 1;
         }
+    }
+
+    /**
+     * Render a standardized command not found error with suggestions.
+     */
+    public static function renderCommandNotFound(string $name): int
+    {
+        echo PHP_EOL."\033[31mCommand \"{$name}\" is not defined.\033[0m".PHP_EOL.PHP_EOL;
+
+        $alternatives = self::findAlternatives($name);
+        if (! empty($alternatives)) {
+            echo "\033[33mDid you mean one of these?\033[0m".PHP_EOL;
+            foreach ($alternatives as $alt) {
+                echo "  \033[32m{$alt}\033[0m".PHP_EOL;
+            }
+            echo PHP_EOL;
+        }
+
+        return 1;
+    }
+
+    /**
+     * Find registered commands similar to the given command name.
+     *
+     * @return array<string>
+     */
+    protected static function findAlternatives(string $name): array
+    {
+        $allNames = array_keys(self::$uniqueCommands);
+        $threshold = 4;
+        $alternatives = [];
+
+        foreach ($allNames as $candidate) {
+            $lev = levenshtein($name, $candidate);
+            if ($lev <= $threshold) {
+                $alternatives[$candidate] = $lev;
+            } elseif (str_contains($candidate, $name) || str_contains($name, $candidate)) {
+                $alternatives[$candidate] = 10;
+            } else {
+                $nameParts = explode(':', $name, 2);
+                $candParts = explode(':', $candidate, 2);
+                if (count($nameParts) === 2 && count($candParts) === 2) {
+                    if ($nameParts[0] === $candParts[0] || $nameParts[1] === $candParts[1]) {
+                        $alternatives[$candidate] = 15;
+                    }
+                }
+            }
+        }
+
+        asort($alternatives);
+
+        return array_slice(array_keys($alternatives), 0, 3);
     }
 
     /**
@@ -366,7 +447,6 @@ final class Application
 
         echo "\033[33mAvailable commands:\033[0m".PHP_EOL;
 
-        // Group commands by namespace (e.g. 'queue', 'schedule', 'db', or root)
         $groups = [];
         foreach (self::$uniqueCommands as $name => $cmd) {
             $parts = explode(':', $name, 2);
@@ -374,7 +454,6 @@ final class Application
             $groups[$group][$name] = $cmd;
         }
 
-        // Sort groups alphabetically with root/global commands first
         uksort($groups, static function ($a, $b) {
             if ($a === '') {
                 return -1;

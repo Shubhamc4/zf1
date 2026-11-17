@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="<?= htmlspecialchars($theme ?? 'auto', ENT_QUOTES, 'UTF-8') ?>">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title><?= htmlspecialchars($exceptionClass ?? 'Exception', ENT_QUOTES, 'UTF-8') ?>: <?= htmlspecialchars($exceptionMessage ?? 'Server Error', ENT_QUOTES, 'UTF-8') ?></title>
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root, [data-theme="dark"] {
+            --bg-body: #0b0f19;
+            --bg-card: #111827;
+            --bg-subtle: #1f2937;
+            --bg-active: #374151;
+            --border-color: #374151;
+            --text-heading: #f9fafb;
+            --text-body: #d1d5db;
+            --text-muted: #9ca3af;
+            --danger-bg: #450a0a;
+            --danger-border: #991b1b;
+            --danger-text: #fca5a5;
+            --danger-accent: #ef4444;
+            --brand-primary: #3b82f6;
+            --code-bg: #030712;
+            --code-text: #e5e7eb;
+            --line-highlight: #7f1d1d;
+            --line-num-color: #6b7280;
+            --origin-path-color: #93c5fd;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+            --hero-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+            --table-th-bg: rgba(255, 255, 255, 0.02);
+        }
+        [data-theme="light"] {
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-subtle: #f1f5f9;
+            --bg-active: #e2e8f0;
+            --border-color: #e2e8f0;
+            --text-heading: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --danger-bg: #fef2f2;
+            --danger-border: #fecaca;
+            --danger-text: #b91c1c;
+            --danger-accent: #ef4444;
+            --brand-primary: #2563eb;
+            --code-bg: #f8fafc;
+            --code-text: #1e293b;
+            --line-highlight: #fee2e2;
+            --line-num-color: #94a3b8;
+            --origin-path-color: #2563eb;
+            --card-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.07);
+            --hero-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --table-th-bg: rgba(0, 0, 0, 0.02);
+        }
+        @media (prefers-color-scheme: light) {
+            [data-theme="auto"] {
+                --bg-body: #f8fafc;
+                --bg-card: #ffffff;
+                --bg-subtle: #f1f5f9;
+                --bg-active: #e2e8f0;
+                --border-color: #e2e8f0;
+                --text-heading: #0f172a;
+                --text-body: #334155;
+                --text-muted: #64748b;
+                --danger-bg: #fef2f2;
+                --danger-border: #fecaca;
+                --danger-text: #b91c1c;
+                --danger-accent: #ef4444;
+                --brand-primary: #2563eb;
+                --code-bg: #f8fafc;
+                --code-text: #1e293b;
+                --line-highlight: #fee2e2;
+                --line-num-color: #94a3b8;
+                --origin-path-color: #2563eb;
+                --card-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.07);
+                --hero-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+                --table-th-bg: rgba(0, 0, 0, 0.02);
+            }
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            line-height: 1.5;
+            font-size: 0.9375rem;
+            -webkit-font-smoothing: antialiased;
+            padding-bottom: 4rem;
+        }
+        code, pre, .mono {
+            font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+        .header-bar {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.85rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            font-size: 1.05rem;
+        }
+        .header-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8125rem;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.2rem 0.65rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .badge-danger {
+            background-color: var(--danger-bg);
+            color: var(--danger-text);
+            border: 1px solid var(--danger-border);
+        }
+        .badge-info {
+            background-color: var(--bg-subtle);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        .hero {
+            background-color: var(--bg-card);
+            border: 1px solid var(--danger-border);
+            border-left: 6px solid var(--danger-accent);
+            border-radius: 12px;
+            padding: 1.75rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--hero-shadow);
+        }
+        .hero-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .exception-class {
+            color: var(--danger-accent);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .exception-message {
+            color: var(--text-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 1rem;
+            word-break: break-word;
+        }
+        .exception-origin {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background-color: var(--code-bg);
+            padding: 0.55rem 0.85rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+        .origin-path {
+            color: var(--origin-path-color);
+            font-weight: 500;
+        }
+        .btn-copy {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-family: inherit;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .btn-copy:hover {
+            background: var(--bg-subtle);
+            color: var(--text-heading);
+            border-color: var(--border-color);
+        }
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+        .card-header {
+            background-color: var(--bg-subtle);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.85rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+            color: var(--text-heading);
+        }
+        .code-snippet {
+            background-color: var(--code-bg);
+            padding: 0.75rem 0;
+            overflow-x: auto;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        .code-line {
+            display: flex;
+            align-items: stretch;
+            padding: 0 1rem;
+        }
+        .code-line.target {
+            background-color: var(--line-highlight);
+            border-left: 4px solid var(--danger-accent);
+        }
+        .code-line.target .line-code {
+            color: var(--danger-text);
+            font-weight: 600;
+        }
+        .line-num {
+            min-width: 3.5rem;
+            padding-right: 1.25rem;
+            text-align: right;
+            color: var(--line-num-color);
+            user-select: none;
+        }
+        .code-line.target .line-num {
+            color: var(--danger-text);
+            font-weight: 700;
+        }
+        .line-code {
+            flex: 1;
+            white-space: pre;
+            color: var(--code-text);
+        }
+        .trace-content {
+            background-color: var(--code-bg);
+            padding: 1.25rem;
+            font-size: 0.84rem;
+            line-height: 1.7;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            color: var(--code-text);
+        }
+        .tabs-nav {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-subtle);
+            overflow-x: auto;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.85rem 1.35rem;
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .tab-btn:hover {
+            color: var(--text-heading);
+        }
+        .tab-btn.active {
+            color: var(--brand-primary);
+            border-bottom-color: var(--brand-primary);
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+        .tab-pane {
+            display: none;
+            padding: 1.5rem;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+        .key-val-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        .key-val-table th, .key-val-table td {
+            padding: 0.65rem 0.85rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+        .key-val-table th {
+            color: var(--text-muted);
+            font-weight: 600;
+            width: 25%;
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+        .key-val-table td {
+            color: var(--text-body);
+            word-break: break-all;
+        }
+        .empty-state {
+            padding: 2.5rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        .toggle-trace-btn {
+            background: none;
+            border: none;
+            color: var(--brand-primary);
+            cursor: pointer;
+            font-size: 0.8125rem;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header class="header-bar">
+        <div class="header-brand">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--danger-accent);">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span><?= htmlspecialchars($appName ?? 'ZF1', ENT_QUOTES, 'UTF-8') ?></span>
+        </div>
+        <div class="header-meta">
+            <span class="badge badge-danger">HTTP <?= (int) ($code ?? 500) ?></span>
+            <span class="badge badge-info"><?= htmlspecialchars(strtoupper((string) env('APP_ENV', 'LOCAL')), ENT_QUOTES, 'UTF-8') ?></span>
+            <span class="badge badge-info">PHP <?= PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION ?></span>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="hero">
+            <div class="hero-top">
+                <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                    <span class="exception-class mono"><?= htmlspecialchars($exceptionClass ?? 'Exception', ENT_QUOTES, 'UTF-8') ?></span>
+                    <?php if (! empty($isProjectOrigin)) { ?>
+                        <span class="badge" style="background-color: #064e3b; color: #6ee7b7; border: 1px solid #059669;">App Code</span>
+                    <?php } ?>
+                    <?php if (! empty($wrappedExceptionClass) && $wrappedExceptionClass !== $exceptionClass) { ?>
+                        <span class="badge badge-info mono" style="font-size: 0.7rem; text-transform: none;">via <?= htmlspecialchars($wrappedExceptionClass, ENT_QUOTES, 'UTF-8') ?></span>
+                    <?php } ?>
+                </div>
+                <button type="button" class="btn-copy" onclick="copyText('<?= htmlspecialchars(addslashes($exceptionClass.': '.$exceptionMessage), ENT_QUOTES, 'UTF-8') ?>', this)">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Copy Error</span>
+                </button>
+            </div>
+
+            <h1 class="exception-message"><?= htmlspecialchars($exceptionMessage ?? 'An unexpected exception occurred.', ENT_QUOTES, 'UTF-8') ?></h1>
+
+            <?php if (! empty($origin['file'])) { ?>
+                <div class="exception-origin mono">
+                    <span>at</span>
+                    <span class="origin-path"><?= htmlspecialchars($origin['file'], ENT_QUOTES, 'UTF-8') ?></span>
+                    <span>:</span>
+                    <span style="color: var(--danger-text); font-weight: 700;"><?= (int) $origin['line'] ?></span>
+                    <button type="button" class="btn-copy" onclick="copyText('<?= htmlspecialchars(addslashes($origin['file'].':'.$origin['line']), ENT_QUOTES, 'UTF-8') ?>', this)">
+                        <span>Copy Location</span>
+                    </button>
+                    <?php if (! empty($origin['thrown_file']) && ($origin['thrown_file'] !== $origin['file'] || (int) ($origin['thrown_line'] ?? 0) !== (int) $origin['line'])) { ?>
+                        <span style="color: var(--text-muted); font-size: 0.8125rem;">(thrown in <span style="color: var(--text-heading); font-weight: 600;"><?= htmlspecialchars(basename((string) $origin['thrown_file']), ENT_QUOTES, 'UTF-8') ?>:<?= (int) $origin['thrown_line'] ?></span>)</span>
+                    <?php } ?>
+                </div>
+            <?php } ?>
+        </div>
+
+        <?php if (! empty($codeSnippet)) { ?>
+            <div class="card">
+                <div class="card-header">
+                    <span>Source Code Preview</span>
+                    <span class="mono" style="font-size: 0.8125rem; color: var(--text-muted);"><?= htmlspecialchars(basename($origin['file'] ?? ''), ENT_QUOTES, 'UTF-8') ?></span>
+                </div>
+                <div class="code-snippet mono">
+                    <?php foreach ($codeSnippet as $item) { ?>
+                        <div class="code-line <?= $item['is_target'] ? 'target' : '' ?>">
+                            <div class="line-num"><?= $item['line'] ?></div>
+                            <div class="line-code"><?= htmlspecialchars($item['code'], ENT_QUOTES, 'UTF-8') ?></div>
+                        </div>
+                    <?php } ?>
+                </div>
+            </div>
+        <?php } elseif (! empty($hintMessage)) { ?>
+            <div class="card" style="border-color: #3b82f6;">
+                <div class="card-header" style="background-color: rgba(59, 130, 246, 0.1); color: #93c5fd;">
+                    <span>Diagnostic Hint</span>
+                </div>
+                <div style="padding: 1.25rem; font-size: 0.9375rem; line-height: 1.6; color: var(--text-body);">
+                    <?= $hintMessage ?>
+                </div>
+            </div>
+        <?php } ?>
+
+        <div class="card">
+            <div class="card-header">
+                <span>Application Stack Trace</span>
+                <button type="button" class="btn-copy" onclick="copyText(document.getElementById('raw-trace-data').textContent, this)">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Copy Trace</span>
+                </button>
+            </div>
+            <div class="trace-content mono" id="clean-trace-box"><?= htmlspecialchars($cleanTrace, ENT_QUOTES, 'UTF-8') ?></div>
+            <div class="trace-content mono" id="raw-trace-box" style="display: none;"><?= htmlspecialchars($rawTrace, ENT_QUOTES, 'UTF-8') ?></div>
+            <div id="raw-trace-data" style="display: none;"><?= htmlspecialchars($rawTrace, ENT_QUOTES, 'UTF-8') ?></div>
+            <div style="padding: 0.75rem 1.25rem; background-color: var(--bg-subtle); border-top: 1px solid var(--border-color); font-size: 0.8125rem;">
+                <button type="button" class="toggle-trace-btn" id="btn-toggle-trace" onclick="toggleTraceView()">Show full vendor trace</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <nav class="tabs-nav">
+                <button type="button" class="tab-btn active" onclick="switchTab('tab-request', this)">Request</button>
+                <button type="button" class="tab-btn" onclick="switchTab('tab-params', this)">Parameters</button>
+                <button type="button" class="tab-btn" onclick="switchTab('tab-headers', this)">Headers</button>
+                <button type="button" class="tab-btn" onclick="switchTab('tab-session', this)">Session</button>
+                <button type="button" class="tab-btn" onclick="switchTab('tab-server', this)">Server / Env</button>
+            </nav>
+
+            <div id="tab-request" class="tab-pane active">
+                <table class="key-val-table mono">
+                    <tbody>
+                        <tr><th>Method</th><td><span class="badge badge-info"><?= htmlspecialchars($requestInfo['method'] ?? 'GET', ENT_QUOTES, 'UTF-8') ?></span></td></tr>
+                        <tr><th>URL</th><td><?= htmlspecialchars($requestInfo['url'] ?? '/', ENT_QUOTES, 'UTF-8') ?></td></tr>
+                        <tr><th>Path</th><td><?= htmlspecialchars($requestInfo['path'] ?? '/', ENT_QUOTES, 'UTF-8') ?></td></tr>
+                        <tr><th>Client IP</th><td><?= htmlspecialchars($requestInfo['ip'] ?? '127.0.0.1', ENT_QUOTES, 'UTF-8') ?></td></tr>
+                        <tr><th>User Agent</th><td><?= htmlspecialchars($requestInfo['userAgent'] ?? 'Unknown', ENT_QUOTES, 'UTF-8') ?></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="tab-params" class="tab-pane">
+                <h4 style="margin-bottom: 0.75rem; color: var(--text-heading);">Query Parameters ($_GET)</h4>
+                <?php if (! empty($queryParams)) { ?>
+                    <table class="key-val-table mono" style="margin-bottom: 1.5rem;">
+                        <?php foreach ($queryParams as $k => $v) { ?>
+                            <tr><th><?= htmlspecialchars((string) $k, ENT_QUOTES, 'UTF-8') ?></th><td><?= htmlspecialchars(is_scalar($v) ? (string) $v : json_encode($v), ENT_QUOTES, 'UTF-8') ?></td></tr>
+                        <?php } ?>
+                    </table>
+                <?php } else { ?>
+                    <div class="empty-state">No GET parameters sent.</div>
+                <?php } ?>
+
+                <h4 style="margin-bottom: 0.75rem; color: var(--text-heading);">Body Parameters ($_POST)</h4>
+                <?php if (! empty($postParams)) { ?>
+                    <table class="key-val-table mono">
+                        <?php foreach ($postParams as $k => $v) { ?>
+                            <tr><th><?= htmlspecialchars((string) $k, ENT_QUOTES, 'UTF-8') ?></th><td><?= htmlspecialchars(is_scalar($v) ? (string) $v : json_encode($v), ENT_QUOTES, 'UTF-8') ?></td></tr>
+                        <?php } ?>
+                    </table>
+                <?php } else { ?>
+                    <div class="empty-state">No POST parameters sent.</div>
+                <?php } ?>
+            </div>
+
+            <div id="tab-headers" class="tab-pane">
+                <?php if (! empty($headers)) { ?>
+                    <table class="key-val-table mono">
+                        <?php foreach ($headers as $k => $v) { ?>
+                            <tr><th><?= htmlspecialchars((string) $k, ENT_QUOTES, 'UTF-8') ?></th><td><?= htmlspecialchars(is_scalar($v) ? (string) $v : json_encode($v), ENT_QUOTES, 'UTF-8') ?></td></tr>
+                        <?php } ?>
+                    </table>
+                <?php } else { ?>
+                    <div class="empty-state">No request headers found.</div>
+                <?php } ?>
+            </div>
+
+            <div id="tab-session" class="tab-pane">
+                <?php if (! empty($session)) { ?>
+                    <table class="key-val-table mono">
+                        <?php foreach ($session as $k => $v) { ?>
+                            <tr><th><?= htmlspecialchars((string) $k, ENT_QUOTES, 'UTF-8') ?></th><td><?= htmlspecialchars(is_scalar($v) ? (string) $v : json_encode($v, JSON_PRETTY_PRINT), ENT_QUOTES, 'UTF-8') ?></td></tr>
+                        <?php } ?>
+                    </table>
+                <?php } else { ?>
+                    <div class="empty-state">Session is empty or inactive.</div>
+                <?php } ?>
+            </div>
+
+            <div id="tab-server" class="tab-pane">
+                <?php if (! empty($server)) { ?>
+                    <table class="key-val-table mono">
+                        <?php foreach ($server as $k => $v) { ?>
+                            <tr><th><?= htmlspecialchars((string) $k, ENT_QUOTES, 'UTF-8') ?></th><td><?= htmlspecialchars(is_scalar($v) ? (string) $v : json_encode($v), ENT_QUOTES, 'UTF-8') ?></td></tr>
+                        <?php } ?>
+                    </table>
+                <?php } else { ?>
+                    <div class="empty-state">No server parameters available.</div>
+                <?php } ?>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            const target = document.getElementById(tabId);
+            if (target) target.classList.add('active');
+            if (el) el.classList.add('active');
+        }
+
+        function copyText(str, btn) {
+            function showSuccess() {
+                const orig = btn.innerHTML;
+                btn.innerHTML = '<span>✔ Copied!</span>';
+                btn.style.borderColor = '#10b981';
+                btn.style.color = '#10b981';
+                setTimeout(() => {
+                    btn.innerHTML = orig;
+                    btn.style.borderColor = '';
+                    btn.style.color = '';
+                }, 1500);
+            }
+
+            function fallbackCopy(text) {
+                try {
+                    const ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.left = '-9999px';
+                    ta.style.top = '-9999px';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.focus();
+                    ta.select();
+                    const successful = document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    if (successful) {
+                        showSuccess();
+                    }
+                } catch (e) {
+                    // Fallback failed
+                }
+            }
+
+            if (navigator && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                navigator.clipboard.writeText(str).then(showSuccess).catch(() => fallbackCopy(str));
+            } else {
+                fallbackCopy(str);
+            }
+        }
+
+        let showingRawTrace = false;
+        function toggleTraceView() {
+            showingRawTrace = !showingRawTrace;
+            const cleanBox = document.getElementById('clean-trace-box');
+            const rawBox = document.getElementById('raw-trace-box');
+            const btn = document.getElementById('btn-toggle-trace');
+            if (showingRawTrace) {
+                cleanBox.style.display = 'none';
+                rawBox.style.display = 'block';
+                btn.textContent = 'Hide vendor frames (show clean trace)';
+            } else {
+                cleanBox.style.display = 'block';
+                rawBox.style.display = 'none';
+                btn.textContent = 'Show full vendor trace';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -15,7 +15,6 @@ final class DiscordLogWriter extends Zend_Log_Writer_Abstract
 
     public function __construct()
     {
-        // Only accept error-level events: EMERG (0), ALERT (1), CRIT (2), ERR (3)
         $this->addFilter(Zend_Log::ERR);
     }
 
@@ -43,7 +42,6 @@ final class DiscordLogWriter extends Zend_Log_Writer_Abstract
                 $title = sprintf('🚨 Application Error: %s', $priorityName);
                 $message = (string) $data['Message'];
 
-                // Resolve real application origin, skipping vendor files
                 $origin = resolveAppOrigin($data);
 
                 $rawFile = (string) $origin['file'];

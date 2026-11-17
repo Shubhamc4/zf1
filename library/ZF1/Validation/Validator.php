@@ -286,7 +286,7 @@ final class Validator
                 if (! $this->validateRule($attribute, $ruleName, $value, $parameters)) {
                     $hasError = true;
                     $this->addRuleError($attribute, $ruleName, $parameters);
-                    break; // Stop after first failing rule for attribute
+                    break;
                 }
             }
 
@@ -578,7 +578,7 @@ final class Validator
 
             return $count === 0;
         } catch (Throwable) {
-            return true; // Gracefully pass if database is unreachable or offline
+            return true;
         }
     }
 

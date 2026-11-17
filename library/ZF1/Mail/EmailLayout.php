@@ -14,9 +14,7 @@ use ZF1\Console\Command;
  * Email Layout Renderer & Publisher for ZF1.
  *
  * Renders HTML emails inside a responsive card layout with header and footer.
- * Supports published project-specific layouts, default framework fallback,
- * logo fallback hierarchy (logo.png -> logo-dark.png -> logo-light.png -> APP_NAME),
- * and secure template variable interpolation ({name}, {{email}}, {app_name}, {year}, etc.).
+ * Supports published project-specific layouts, default framework fallback, secure template variable interpolation ({name}, {{email}}, {app_name}, {year}, etc.).
  */
 final class EmailLayout
 {
@@ -447,7 +445,6 @@ final class EmailLayout
     {
         $interpolatedContent = (string) ($variables['content'] ?? '');
 
-        // Isolate user content with an unguessable single-use slot token to prevent nested template injection
         $contentSlot = '__ZF1_LAYOUT_SLOT_'.bin2hex(random_bytes(12)).'__';
 
         $layoutVars = array_merge($variables, ['content' => $contentSlot]);

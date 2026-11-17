@@ -33,7 +33,6 @@ final class DatabaseProfiler extends Zend_Db_Profiler
         $this->slowThreshold = $slowThreshold ?? (float) env('DB_SLOW_QUERY_THRESHOLD', 2.0);
         $this->logAll = (bool) env('DB_LOG_ALL', false);
 
-        // Filter fast queries inside Zend_Db_Profiler
         if (! $this->logAll) {
             $this->setFilterElapsedSecs((int) ceil($this->slowThreshold));
         }
@@ -78,12 +77,10 @@ final class DatabaseProfiler extends Zend_Db_Profiler
         $elapsed = (float) $profile->getElapsedSecs();
         $this->totalElapsedTime += $elapsed;
 
-        // Skip connection handshakes
         if ($profile->getQueryType() === Zend_Db_Profiler::CONNECT) {
             return $state;
         }
 
-        // Only log if query meets slow threshold or logAll is enabled
         if (! $this->logAll && $elapsed < $this->slowThreshold) {
             return $state;
         }
@@ -117,7 +114,6 @@ final class DatabaseProfiler extends Zend_Db_Profiler
      */
     protected function resolveOrigin(): array
     {
-        // Limit depth to 15 frames for speed (< 10 microseconds)
         $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 15);
         $basePath = base_path().DIRECTORY_SEPARATOR;
         $frames = [];
@@ -130,7 +126,6 @@ final class DatabaseProfiler extends Zend_Db_Profiler
             $file = (string) $frame['file'];
             $line = (int) $frame['line'];
 
-            // Skip Profiler, Zend Framework, and Vendor files
             if (
                 str_contains($file, 'DatabaseProfiler.php')
                 || str_contains($file, '/Zend/')

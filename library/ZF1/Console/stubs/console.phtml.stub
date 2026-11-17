@@ -199,12 +199,10 @@ $phpVer = PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;
                             <span class="status-dot"></span>
                             <span id="term-status-text">Ready</span>
                         </span>
-                        <?php if ($isDown) { ?>
-                            <span class="status-badge failed" title="Application is currently in maintenance mode (503)">
-                                <span class="status-dot"></span>
-                                <span>MAINTENANCE MODE</span>
-                            </span>
-                        <?php } ?>
+                        <span id="maintenance-badge" class="status-badge failed" title="Application is currently in maintenance mode (503)" style="<?= $isDown ? '' : 'display:none;' ?>">
+                            <span class="status-dot pulse"></span>
+                            <span>MAINTENANCE MODE</span>
+                        </span>
                     </div>
                 </div>
 
@@ -298,6 +296,7 @@ $phpVer = PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;
         const filterInput = document.getElementById('cmd-filter');
         const statusBadge = document.getElementById('term-status');
         const statusText = document.getElementById('term-status-text');
+        const maintenanceBadge = document.getElementById('maintenance-badge');
         const copyButtonText = document.getElementById('btn-copy-text');
         const copyButtonIcon = document.getElementById('btn-copy-svg');
         const commandContainer = document.getElementById('cmd-container');
@@ -387,6 +386,12 @@ $phpVer = PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;
         }
 
         /* Status Management */
+        function updateMaintenanceStatus(isDown) {
+            if (maintenanceBadge) {
+                maintenanceBadge.style.display = isDown ? '' : 'none';
+            }
+        }
+
         function setTerminalStatus(state, text) {
             if (!statusBadge || !statusText) return;
             const dot = statusBadge.querySelector('.status-dot');
@@ -524,7 +529,7 @@ $phpVer = PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;
                     let errMsg = `HTTP Error ${response.status}`;
                     try {
                         const errData = await response.json();
-                        if (errData && errData.error) errMsg = errData.error;
+                        if (errData && (errData.message || errData.error)) errMsg = errData.message || errData.error;
                     } catch (_) {}
                     throw new Error(errMsg);
                 }
@@ -536,6 +541,9 @@ $phpVer = PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;
                         appendTerminalHTML(`<span class="term-error">✖ Error: ${escapeHtml(data.error || 'Execution failed')}</span>\n`, true);
                         finalStatus = 'Failed';
                     } else {
+                        if (typeof data.is_down === 'boolean') {
+                            updateMaintenanceStatus(data.is_down);
+                        }
                         appendTerminalHTML(data.html_output || '<span>(No output)</span>\n');
                         const ok = Number(data.exit_code) === 0;
                         const tagClass = ok ? 'meta-success' : 'meta-fail';
@@ -567,6 +575,9 @@ $phpVer = PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;
                         appendTerminalHTML(data.html);
                     } else if (data.type === 'end') {
                         receivedEnd = true;
+                        if (typeof data.is_down === 'boolean') {
+                            updateMaintenanceStatus(data.is_down);
+                        }
                         const ok = Number(data.exit_code) === 0;
                         const tagClass = ok ? 'meta-success' : 'meta-fail';
                         const icon = ok ? '✔' : '✖';

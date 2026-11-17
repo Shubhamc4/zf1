@@ -12,7 +12,11 @@ define('ZF1_START', microtime(true));
 // 1. Register Composer Autoloader
 $autoloader = __DIR__.'/vendor/autoload.php';
 if (! file_exists($autoloader)) {
-    fwrite(STDERR, "Unable to find Composer autoload.php. Please run 'composer install'.\n");
+    if (defined('STDERR')) {
+        fwrite(STDERR, "Unable to find Composer autoload.php. Please run 'composer install'.\n");
+    } else {
+        echo "Unable to find Composer autoload.php. Please run 'composer install'.\n";
+    }
     exit(1);
 }
 require_once $autoloader;
@@ -32,7 +36,7 @@ try {
         \ZF1\Foundation\Kernel::boot();
     }
 } catch (Throwable) {
-    // Silently continue so built-in commands (like make:foundation) can run before app is configured
+    // Silently continue so built-in commands (like foundation:install) can run before app is configured
 }
 
 // 4. Run Console Application

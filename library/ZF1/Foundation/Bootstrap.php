@@ -9,17 +9,21 @@ use Zend_Application_Bootstrap_Bootstrap;
 use Zend_Application_Module_Autoloader;
 use Zend_Cache;
 use Zend_Cache_Manager;
+use Zend_Controller_Action_HelperBroker;
 use Zend_Controller_Front;
 use Zend_Controller_Request_Http;
+use Zend_Db;
 use Zend_Db_Adapter_Abstract;
 use Zend_Db_Exception;
 use Zend_Db_Profiler;
 use Zend_Db_Table_Abstract;
+use Zend_Layout;
 use Zend_Loader_Autoloader_Resource;
 use Zend_Log;
 use Zend_Log_Writer_Stream;
 use Zend_Registry;
 use Zend_Session;
+use Zend_View;
 use ZF1\Console\WebConsole;
 use ZF1\Console\WebConsolePlugin;
 use ZF1\Logging\DiscordLogWriter;
@@ -47,6 +51,9 @@ abstract class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             'moduleautoloader',
             'zendsession',
             'cache',
+            'frontcontroller',
+            'view',
+            'layout',
             'dbadapter',
             'helpers',
             'logger',
@@ -110,7 +117,89 @@ abstract class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     }
 
     /**
-     * Register Application View Helper paths.
+     * Initialize Front Controller with convention defaults.
+     */
+    public function _initFrontController(): Zend_Controller_Front
+    {
+        $front = Zend_Controller_Front::getInstance();
+
+        if ($this->hasPluginResource('frontcontroller')) {
+            $res = $this->getPluginResource('frontcontroller')->init();
+            if ($res instanceof Zend_Controller_Front) {
+                $front = $res;
+            }
+        }
+
+        if (! $front->getControllerDirectory('default') && is_dir(app_path('controllers'))) {
+            $front->addControllerDirectory(app_path('controllers'), 'default');
+        }
+
+        if (is_dir(app_path('modules'))) {
+            $front->addModuleDirectory(app_path('modules'));
+        }
+
+        $front->setParam('displayExceptions', (bool) env('APP_DEBUG', false));
+
+        return $front;
+    }
+
+    /**
+     * Initialize Layout with auto-detection for layouts/scripts and layouts/.
+     */
+    public function _initLayout(): ?Zend_Layout
+    {
+        if ($this->hasPluginResource('layout')) {
+            $res = $this->getPluginResource('layout')->init();
+
+            return $res instanceof Zend_Layout ? $res : null;
+        }
+
+        $layoutPath = null;
+        if (is_dir(app_path('layouts/scripts'))) {
+            $layoutPath = app_path('layouts/scripts');
+        } elseif (is_dir(app_path('layouts'))) {
+            $layoutPath = app_path('layouts');
+        }
+
+        if ($layoutPath !== null) {
+            $this->bootstrap('frontcontroller');
+
+            return Zend_Layout::startMvc([
+                'layoutPath' => $layoutPath,
+            ]);
+        }
+
+        return null;
+    }
+
+    /**
+     * Initialize View and attach to ViewRenderer helper.
+     */
+    public function _initView(): Zend_View
+    {
+        if ($this->hasPluginResource('view')) {
+            $res = $this->getPluginResource('view')->init();
+            if ($res instanceof Zend_View) {
+                return $res;
+            }
+        }
+
+        $options = $this->getOptions();
+        $viewOptions = $options['resources']['view'] ?? [];
+
+        $view = new Zend_View($viewOptions);
+        $view->setEncoding($viewOptions['encoding'] ?? 'UTF-8');
+
+        $viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('viewRenderer');
+        $viewRenderer->setView($view);
+
+        Zend_Registry::set('view', $view);
+
+        return $view;
+    }
+
+    /**
+     * Register Application View Helper paths by convention.
      */
     public function _initHelpers(): mixed
     {
@@ -123,8 +212,17 @@ abstract class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                 $view->addHelperPath($coreHelpersDir, 'ZF1_View_Helper');
             }
 
-            if (is_dir(app_path('helpers'))) {
-                $view->addHelperPath(app_path('helpers'), 'Helper');
+            $helperPaths = [
+                app_path('View/Helper') => 'Application_View_Helper',
+                app_path('views/helpers') => 'Application_View_Helper',
+                app_path('views/scripts/helpers') => 'Application_View_Helper',
+                app_path('helpers') => 'Helper',
+            ];
+
+            foreach ($helperPaths as $path => $prefix) {
+                if (is_dir($path)) {
+                    $view->addHelperPath($path, $prefix);
+                }
             }
         }
 
@@ -132,11 +230,10 @@ abstract class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     }
 
     /**
-     * Initialize Database Adapter, metadata cache, and SQL modes.
+     * Initialize Database Adapter, metadata cache, and SQL modes with convention defaults.
      */
-    protected function _initDbAdapter(): void
+    protected function _initDbAdapter(): ?Zend_Db_Adapter_Abstract
     {
-        $this->bootstrap('db');
         $this->bootstrap('cache');
 
         if (Zend_Registry::isRegistered('cacheManager')) {
@@ -146,11 +243,51 @@ abstract class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             }
         }
 
-        $db = $this->getResource('db');
         $options = $this->getOptions();
+        $dbConfig = $options['resources']['db'] ?? [];
+        $adapter = $dbConfig['adapter'] ?? (string) env('DB_CONNECTION', 'Pdo_Mysql');
+        $params = $dbConfig['params'] ?? [];
 
-        if ($db && isset($options['resources']['db']['params']['sql_mode_override'])) {
-            $sqlMode = $options['resources']['db']['params']['sql_mode_override'];
+        $params['host'] = $params['host'] ?? (string) env('DB_HOST', '127.0.0.1');
+        $params['charset'] = $params['charset'] ?? (string) env('DB_CHARSET', 'utf8mb4');
+        $params['username'] = $params['username'] ?? (string) env('DB_USERNAME', '');
+        $params['password'] = $params['password'] ?? (string) env('DB_PASSWORD', '');
+        $params['dbname'] = $params['dbname'] ?? (string) env('DB_DATABASE', '');
+
+        if (! empty(env('DB_PORT'))) {
+            $params['port'] = (int) env('DB_PORT');
+        }
+
+        $db = null;
+
+        if (! empty($params['dbname']) || ! empty($params['username'])) {
+            try {
+                $db = Zend_Db::factory($adapter, $params);
+                if ($db instanceof Zend_Db_Adapter_Abstract) {
+                    Zend_Db_Table_Abstract::setDefaultAdapter($db);
+                    Zend_Registry::set('db', $db);
+                    $this->getContainer()->db = $db;
+                }
+            } catch (Throwable $e) {
+                error_log('Database initialization failed: '.$e->getMessage());
+            }
+        } elseif ($this->hasPluginResource('db')) {
+            try {
+                $res = $this->getPluginResource('db')->init();
+                if ($res instanceof Zend_Db_Adapter_Abstract) {
+                    $db = $res;
+                    Zend_Registry::set('db', $db);
+                    $this->getContainer()->db = $db;
+                }
+            } catch (Throwable $e) {
+                error_log('Plugin db initialization failed: '.$e->getMessage());
+            }
+        }
+
+        $defaultSqlMode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+        $sqlMode = $params['sql_mode_override'] ?? $defaultSqlMode;
+
+        if ($db instanceof Zend_Db_Adapter_Abstract && $sqlMode) {
             try {
                 $db->query("SET SESSION sql_mode = '{$sqlMode}'");
             } catch (Zend_Db_Exception $e) {
@@ -158,12 +295,13 @@ abstract class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             }
         }
 
-        // Attach Database Profiler / Slow Query Logger if configured or enabled
         if ($db instanceof Zend_Db_Adapter_Abstract) {
             if ($profiler = $this->createDatabaseProfiler()) {
                 $db->setProfiler($profiler);
             }
         }
+
+        return $db;
     }
 
     /**
@@ -222,24 +360,43 @@ abstract class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     protected function _initTimeZone(): void
     {
-        $timezone = defined('TIMEZONE') ? TIMEZONE : (string) env('TIMEZONE', 'Africa/Lusaka');
+        $timezone = defined('APP_TIMEZONE')
+            ? APP_TIMEZONE
+            : (string) env('APP_TIMEZONE', env('TIMEZONE', 'Africa/Lusaka'));
+
+        defined('APP_TIMEZONE') || define('APP_TIMEZONE', $timezone);
         defined('TIMEZONE') || define('TIMEZONE', $timezone);
         date_default_timezone_set($timezone);
     }
 
     /**
-     * Initialize Logger with Discord Log Writer.
+     * Initialize Logger with Stream Writer and Discord Log Writer.
      */
-    public function _initLogger(): void
+    public function _initLogger(): ?Zend_Log
     {
-        $this->bootstrap('log');
-        $logger = $this->getResource('log');
+        $logger = null;
 
-        if ($logger instanceof Zend_Log) {
-            $logger->addWriter(new DiscordLogWriter);
+        if ($this->hasPluginResource('log')) {
+            try {
+                $res = $this->getPluginResource('log')->init();
+                if ($res instanceof Zend_Log) {
+                    $logger = $res;
+                }
+            } catch (Throwable) {
+                // Ignore plugin initialization error
+            }
         }
 
+        if ($logger === null) {
+            $logFile = ensure_directory_exists(self::getDefaultLogFile());
+            $logger = new Zend_Log;
+            $logger->addWriter(new Zend_Log_Writer_Stream($logFile, 'a'));
+        }
+
+        $logger->addWriter(new DiscordLogWriter);
         Zend_Registry::set('logger', $logger);
+
+        return $logger;
     }
 
     /**
@@ -247,6 +404,9 @@ abstract class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
      */
     public function _initErrorHandling(): void
     {
+        ini_set('display_startup_errors', '0');
+        ini_set('display_errors', '0');
+
         UnifiedErrorHandler::register();
     }
 
@@ -347,6 +507,14 @@ abstract class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     }
 
     /**
+     * Get the default log file path.
+     */
+    public static function getDefaultLogFile(): string
+    {
+        return storage_path('logs/zf1.log');
+    }
+
+    /**
      * Log message into main log (and Discord).
      */
     public static function log(string|array $message, int $type): void
@@ -356,12 +524,15 @@ abstract class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
 
         if (Zend_Registry::isRegistered('logger')) {
-            Zend_Registry::get('logger')->log($message, $type);
+            $logger = Zend_Registry::get('logger');
+            if ($logger instanceof Zend_Log) {
+                $logger->log($message, $type);
 
-            return;
+                return;
+            }
         }
 
-        $logFile = ensure_directory_exists(storage_path('logs/info.log'));
+        $logFile = ensure_directory_exists(self::getDefaultLogFile());
 
         try {
             $logger = new Zend_Log;
@@ -396,10 +567,15 @@ abstract class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     }
 
     /**
-     * Log message into queue worker file.
+     * Log message into queue worker file (disabled by default).
+     * Enable via QUEUE_LOG_TO_FILE=true in .env.
      */
     public static function queueLog(string|array $message, int $type = Zend_Log::INFO): void
     {
+        if (! (bool) env('QUEUE_LOG_TO_FILE', false) && ! (bool) env('QUEUE_FILE_LOG', false)) {
+            return;
+        }
+
         try {
             $logFile = ensure_directory_exists(storage_path('logs/queue.log'));
 

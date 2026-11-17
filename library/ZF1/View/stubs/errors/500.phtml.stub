@@ -1,0 +1,8 @@
+<?php
+
+$code = 500;
+$title = $title ?? 'Internal Server Error';
+$message = $message ?? 'An unexpected error occurred on our server. Our technical team has been notified.';
+
+$layoutFile = \ZF1\View\ErrorRenderer::resolveLayoutPath();
+require $layoutFile;

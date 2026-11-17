@@ -1,0 +1,8 @@
+<?php
+
+$code = 400;
+$title = $title ?? 'Bad Request';
+$message = $message ?? 'The request could not be understood by the server due to malformed syntax.';
+
+$layoutFile = \ZF1\View\ErrorRenderer::resolveLayoutPath();
+require $layoutFile;

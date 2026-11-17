@@ -108,7 +108,6 @@ final class Storage
      */
     private static function getDiskConfig(string $name): array
     {
-        // 1. Check application/configs/filesystems.php if present
         $configPath = config_path('filesystems.php');
         if (file_exists($configPath)) {
             $userConfig = require $configPath;
@@ -117,7 +116,6 @@ final class Storage
             }
         }
 
-        // 2. Built-in disk definitions
         return match ($name) {
             'public' => [
                 'driver' => 'local',

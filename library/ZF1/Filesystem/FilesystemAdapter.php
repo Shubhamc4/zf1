@@ -43,7 +43,6 @@ final class FilesystemAdapter implements FilesystemInterface
     {
         $clean = ltrim(str_replace('\\', '/', $path), '/');
 
-        // Prevent directory traversal
         if (str_contains($clean, '..')) {
             throw new InvalidArgumentException("Directory traversal detected in path: [{$path}]");
         }

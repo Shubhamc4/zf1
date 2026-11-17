@@ -104,7 +104,7 @@ final class WebConsole
     /**
      * Default color theme ('dark', 'light', or 'auto').
      */
-    protected static string $theme = 'dark';
+    protected static string $theme = 'auto';
 
     /**
      * Additional CSS to inject into the web console page.
@@ -177,7 +177,6 @@ final class WebConsole
             return filter_var($envVal, FILTER_VALIDATE_BOOLEAN);
         }
 
-        // By default, if application is in maintenance mode and allowed during maintenance, enable console
         if (self::isAllowedDuringMaintenance()
             && class_exists(\ZF1\System\MaintenanceMode::class)
             && \ZF1\System\MaintenanceMode::isDown()
@@ -185,7 +184,6 @@ final class WebConsole
             return true;
         }
 
-        // By default, enabled in non-production environments
         if (function_exists('is_production')) {
             return ! is_production();
         }
@@ -258,7 +256,6 @@ final class WebConsole
                 return true;
             }
 
-            // Wildcard matching (e.g. 192.168.1.*)
             if (str_contains($pattern, '*')) {
                 $regex = '#^'.str_replace('\*', '.*', preg_quote($pattern, '#')).'$#';
                 if (preg_match($regex, $ip)) {
@@ -266,7 +263,6 @@ final class WebConsole
                 }
             }
 
-            // CIDR matching (e.g. 10.0.0.0/8)
             if (str_contains($pattern, '/') && self::ipInCidr($ip, $pattern)) {
                 return true;
             }
@@ -421,9 +417,10 @@ final class WebConsole
     }
 
     /**
-     * Resolve target redirect URL when access is denied to show project setup views and error management.
+     * Resolve target redirect URL when access is denied, if explicitly configured.
+     * Returns null if no custom redirect is configured, allowing the caller to abort(403).
      */
-    public static function resolveForbiddenRedirect(): string
+    public static function resolveForbiddenRedirect(): ?string
     {
         if (self::$redirectOnForbidden !== null && self::$redirectOnForbidden !== '') {
             return self::$redirectOnForbidden;
@@ -434,20 +431,7 @@ final class WebConsole
             return $envRedirect;
         }
 
-        if (class_exists('ErrorController', false) || (function_exists('app_path') && file_exists(app_path('controllers/ErrorController.php')))) {
-            if (class_exists('ErrorController') || (function_exists('app_path') && @include_once app_path('controllers/ErrorController.php'))) {
-                if (method_exists('ErrorController', 'unauthorizedAction')) {
-                    return '/error/unauthorized';
-                }
-                if (method_exists('ErrorController', 'forbiddenAction')) {
-                    return '/error/forbidden';
-                }
-            }
-
-            return '/error';
-        }
-
-        return '/error';
+        return null;
     }
 
     /**
@@ -546,7 +530,6 @@ final class WebConsole
      */
     public static function handle(Zend_Controller_Request_Http $request, Zend_Controller_Response_Http $response): void
     {
-        // Disable Zend Layout so the standalone console view renders cleanly
         if (class_exists('Zend_Layout', false)) {
             $layout = Zend_Layout::getMvcInstance();
             if ($layout instanceof Zend_Layout) {
@@ -584,7 +567,6 @@ final class WebConsole
             return;
         }
 
-        // Strip prefix: ./zf, php zf, zf
         $clean = (string) preg_replace('/^(?:\.\/zf|php\s+zf|zf)\s+/i', '', $commandStr);
         $clean = trim($clean);
 
@@ -603,7 +585,6 @@ final class WebConsole
 
         $commandName = $args[0];
 
-        // Guard against restricted commands
         if (in_array($commandName, self::$hiddenCommands, true)) {
             self::sendJsonResponse(['success' => false, 'error' => "Command [{$commandName}] is restricted from web execution."], 403);
 
@@ -629,7 +610,6 @@ final class WebConsole
      */
     protected static function streamCommandExecution(array $args, string $cleanCommand, float $startTime): void
     {
-        // Close active session lock so concurrent HTTP requests aren't held up
         if (session_status() === PHP_SESSION_ACTIVE) {
             session_write_close();
         }
@@ -679,11 +659,13 @@ final class WebConsole
         @ob_end_flush();
 
         $executionTime = round((microtime(true) - $startTime) * 1000, 2);
+        $isDown = class_exists(\ZF1\System\MaintenanceMode::class) && \ZF1\System\MaintenanceMode::isDown();
 
         echo 'data: '.json_encode([
             'type' => 'end',
             'exit_code' => $exitCode,
             'execution_time_ms' => $executionTime,
+            'is_down' => $isDown,
         ], JSON_UNESCAPED_SLASHES)."\n\n";
 
         @flush();
@@ -708,6 +690,7 @@ final class WebConsole
         $rawOutput = (string) ob_get_clean();
 
         $executionTime = round((microtime(true) - $startTime) * 1000, 2);
+        $isDown = class_exists(\ZF1\System\MaintenanceMode::class) && \ZF1\System\MaintenanceMode::isDown();
 
         self::sendJsonResponse([
             'success' => true,
@@ -717,6 +700,7 @@ final class WebConsole
             'raw_output' => $rawOutput,
             'html_output' => self::ansiToHtml($rawOutput),
             'execution_time_ms' => $executionTime,
+            'is_down' => $isDown,
         ]);
     }
 

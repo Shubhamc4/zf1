@@ -30,7 +30,6 @@ final class MaintenanceMode
     {
         $filePath = self::getFilePath();
 
-        // If system is live (not down), ensure any old bypass cookie is purged
         if (! file_exists($filePath)) {
             if (isset($_COOKIE[self::getCookieName()])) {
                 self::clearBypassCookie();
@@ -39,7 +38,6 @@ final class MaintenanceMode
             return;
         }
 
-        // Allow Web Console requests to proceed even during maintenance mode
         if (class_exists(\ZF1\Console\WebConsole::class)
             && \ZF1\Console\WebConsole::isAllowedDuringMaintenance()
         ) {
@@ -109,7 +107,6 @@ final class MaintenanceMode
         header("Retry-After: {$retryAfter}");
         header('Cache-Control: no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 
-        // Handle JSON / AJAX requests
         $isJson = (isset($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'application/json'))
             || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
             || (isset($_SERVER['REQUEST_URI']) && str_starts_with($_SERVER['REQUEST_URI'], '/api/'));
@@ -126,15 +123,18 @@ final class MaintenanceMode
             exit(0);
         }
 
-        // Check if custom 503 / maintenance page exists
         $template = ! empty($data['template']) ? (string) $data['template'] : null;
         $customView = self::resolveCustomView($template);
 
         if ($customView !== null) {
             header('Content-Type: text/html; charset=utf-8');
             $hasSecret = $secret !== null;
-            // Variables exposed to custom template:
-            // $message, $retryAfter, $secret, $hasSecret, $appName, $errorMessage, $data
+            $code = 503;
+            $title = 'Maintenance in Progress';
+            $appName = self::getAppName();
+            $homeUrl = function_exists('app_url') ? app_url('/') : '/';
+            $theme = class_exists(\ZF1\View\ErrorRenderer::class) ? \ZF1\View\ErrorRenderer::theme() : 'auto';
+            $currentUri = htmlspecialchars($_SERVER['REQUEST_URI'] ?? '/', ENT_QUOTES, 'UTF-8');
             require $customView;
             exit(0);
         }
@@ -235,7 +235,7 @@ final class MaintenanceMode
             || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower((string) $_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https');
 
         setcookie(self::getCookieName(), $token, [
-            'expires' => 0, // Session cookie (persists only for current session)
+            'expires' => 0,
             'path' => '/',
             'domain' => '',
             'secure' => $isHttps,
@@ -274,13 +274,11 @@ final class MaintenanceMode
     {
         if (! empty($target)) {
             $parsed = parse_url($target);
-            // Relative URL (e.g. /sales/index/pos)
             if (isset($parsed['path']) && ! isset($parsed['host'])) {
                 $query = isset($parsed['query']) ? '?'.$parsed['query'] : '';
 
                 return $parsed['path'].$query;
             }
-            // Same host absolute URL
             if (isset($parsed['host']) && isset($_SERVER['HTTP_HOST']) && strtolower($parsed['host']) === strtolower($_SERVER['HTTP_HOST'])) {
                 $path = $parsed['path'] ?? '/';
                 $query = isset($parsed['query']) ? '?'.$parsed['query'] : '';
@@ -289,7 +287,6 @@ final class MaintenanceMode
             }
         }
 
-        // Default to base path / or current script dir
         return '/';
     }
 
@@ -318,7 +315,7 @@ final class MaintenanceMode
     }
 
     /**
-     * Resolve a custom maintenance view template path if available.
+     * Resolve a custom 503 error / maintenance view template path if available.
      */
     public static function resolveCustomView(?string $template = null): ?string
     {
@@ -328,17 +325,17 @@ final class MaintenanceMode
             $candidates[] = $template;
             $candidates[] = base_path($template);
             $candidates[] = app_path($template);
+            $candidates[] = app_path('views/error/'.$template);
+            $candidates[] = app_path('views/error/'.$template.'.phtml');
             $candidates[] = app_path('views/scripts/'.$template);
             $candidates[] = app_path('views/scripts/'.$template.'.phtml');
         }
 
-        $candidates[] = app_path('views/scripts/maintenance.phtml');
+        $candidates[] = app_path('views/error/503.phtml');
         $candidates[] = app_path('views/scripts/error/503.phtml');
         $candidates[] = app_path('views/scripts/errors/503.phtml');
-        $candidates[] = app_path('views/maintenance.phtml');
         $candidates[] = app_path('views/503.phtml');
         $candidates[] = base_path('public/503.html');
-        $candidates[] = base_path('public/maintenance.html');
 
         foreach ($candidates as $candidate) {
             if (is_file($candidate) && is_readable($candidate)) {
@@ -350,50 +347,85 @@ final class MaintenanceMode
     }
 
     /**
-     * Publish a customizable maintenance view template to the application views directory.
+     * Publish customizable 503 error view template to application/views/error/503.phtml.
      *
      * @param  string|null  $targetPath  Optional explicit destination path
+     * @param  bool  $force  Overwrite existing view file
      * @return string Path of the published template
      */
-    public static function publishView(?string $targetPath = null): string
+    public static function publishView(?string $targetPath = null, bool $force = false): string
     {
-        $target = $targetPath ?: app_path('views/scripts/maintenance.phtml');
+        if ($targetPath !== null) {
+            $target = $targetPath;
+            $dir = dirname($target);
+            if (! is_dir($dir)) {
+                @mkdir($dir, 0775, true);
+            }
+            file_put_contents($target, self::resolveTemplateStub());
+
+            return $target;
+        }
+
+        if (class_exists(\ZF1\View\ErrorRenderer::class)) {
+            $published = \ZF1\View\ErrorRenderer::publishViews(code: 503, force: $force);
+            if (! empty($published)) {
+                foreach ($published as $file) {
+                    if (str_ends_with($file, '503.phtml')) {
+                        return $file;
+                    }
+                }
+
+                return $published[0];
+            }
+        }
+
+        $target = function_exists('app_path') ? app_path('views/error/503.phtml') : dirname(__DIR__, 2).'/application/views/error/503.phtml';
         $dir = dirname($target);
         if (! is_dir($dir)) {
             @mkdir($dir, 0775, true);
         }
-
         file_put_contents($target, self::resolveTemplateStub());
 
         return $target;
     }
 
     /**
-     * Resolve the maintenance HTML stub template.
+     * Resolve the 503 HTML stub template.
      */
-    private static function resolveTemplateStub(): string
+    public static function resolveTemplateStub(): string
     {
-        if (class_exists(\ZF1\Console\Command::class)) {
-            return \ZF1\Console\Command::resolveStub('maintenance.phtml.stub');
-        }
-
-        $fallback = dirname(__DIR__).'/Console/stubs/maintenance.phtml.stub';
-        if (file_exists($fallback)) {
-            return (string) file_get_contents($fallback);
+        $stubFile = dirname(__DIR__).'/View/stubs/errors/503.phtml.stub';
+        if (file_exists($stubFile)) {
+            return (string) file_get_contents($stubFile);
         }
 
         return '';
     }
 
     /**
-     * Render the built-in maintenance page.
+     * Render the built-in 503 maintenance page.
      */
     private static function renderDefaultHtml(string $message, int $retryAfter, bool $hasSecret = false, ?string $errorMessage = null): void
     {
+        if (class_exists(\ZF1\View\ErrorRenderer::class)) {
+            \ZF1\View\ErrorRenderer::renderHtml(503, null, [
+                'message' => $message,
+                'retryAfter' => $retryAfter,
+                'hasSecret' => $hasSecret,
+                'errorMessage' => $errorMessage,
+            ]);
+
+            return;
+        }
+
         header('Content-Type: text/html; charset=utf-8');
 
+        $code = 503;
+        $title = 'Maintenance in Progress';
         $appName = self::getAppName();
+        $homeUrl = function_exists('app_url') ? app_url('/') : '/';
         $currentUri = htmlspecialchars($_SERVER['REQUEST_URI'] ?? '/', ENT_QUOTES, 'UTF-8');
+        $theme = 'auto';
 
         $stub = self::resolveTemplateStub();
         if ($stub !== '') {
@@ -402,6 +434,6 @@ final class MaintenanceMode
             return;
         }
 
-        echo "<h1>{$appName} - Maintenance</h1><p>{$message}</p>";
+        echo "<!DOCTYPE html><html><head><title>{$appName} - Maintenance</title></head><body><h1>{$appName} - Maintenance</h1><p>{$message}</p></body></html>";
     }
 }

@@ -71,7 +71,6 @@ final class Worker
                 break;
             }
 
-            // Check memory limit
             $memoryUsedMb = memory_get_usage(true) / 1024 / 1024;
             if ($memoryUsedMb >= $memoryLimitMb) {
                 self::log(sprintf(
@@ -110,7 +109,6 @@ final class Worker
                 $jobIdentifier = $data['job'];
                 $payload = $data['payload'] ?? [];
 
-                // Resolve job class and clean short name
                 $jobClass = Queue::resolveJobClass($jobIdentifier) ?? $jobIdentifier;
                 $shortClass = Queue::getJobShortName($jobClass);
 
@@ -138,7 +136,6 @@ final class Worker
 
                 $attempts = (int) $job['attempts'];
 
-                // 1. Log when the job started
                 self::log(sprintf(
                     '[Job #%d] Processing: %s (attempt #%d/%d)',
                     $jobId, $shortClass, $attempts, $maxTries
@@ -303,7 +300,6 @@ final class Worker
         try {
             \ZF1\Foundation\Bootstrap::queueLog($message, $isError ? Zend_Log::ERR : Zend_Log::INFO);
         } catch (Throwable $e) {
-            // Never allow log file permission issues to crash the queue worker process
             if (defined('STDERR')) {
                 fwrite(STDERR, sprintf("[%s] [WARNING] Could not write to queue.log: %s\n", $timestamp, $e->getMessage()));
             }
@@ -312,6 +308,9 @@ final class Worker
 
     /**
      * Determine whether direct file logging should be skipped.
+     *
+     * By default, file logging is disabled so Supervisor can manage output without log duplication.
+     * To explicitly enable direct file logging, set QUEUE_LOG_TO_FILE=true in .env.
      */
     public static function shouldSkipFileLog(): bool
     {
@@ -319,20 +318,11 @@ final class Worker
             return self::$skipFileLog;
         }
 
-        if (env('QUEUE_LOG_STDOUT_ONLY', false) || env('QUEUE_WORKER_NO_FILE_LOG', false)) {
-            return true;
+        if ((bool) env('QUEUE_LOG_TO_FILE', false) || (bool) env('QUEUE_FILE_LOG', false)) {
+            return false;
         }
 
-        if (
-            getenv('SUPERVISOR_PROCESS_NAME') !== false
-            || isset($_SERVER['SUPERVISOR_PROCESS_NAME'])
-            || isset($_ENV['SUPERVISOR_PROCESS_NAME'])
-            || getenv('SUPERVISOR_SERVER_URL') !== false
-        ) {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     /**

@@ -1,0 +1,8 @@
+<?php
+
+$code = 401;
+$title = $title ?? 'Unauthorized';
+$message = $message ?? 'Authentication is required to access this resource. Please sign in and try again.';
+
+$layoutFile = \ZF1\View\ErrorRenderer::resolveLayoutPath();
+require $layoutFile;

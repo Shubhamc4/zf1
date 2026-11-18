@@ -1,0 +1,39 @@
+<?php if ($paginator->hasPages()): ?>
+    <nav aria-label="Pagination Navigation">
+        <ul class="pagination mb-0">
+            <?php /* Previous Page Link */ ?>
+            <?php if ($paginator->onFirstPage()): ?>
+                <li class="page-item disabled" aria-disabled="true" aria-label="&laquo; Previous">
+                    <span class="page-link" aria-hidden="true">&lsaquo;</span>
+                </li>
+            <?php else: ?>
+                <li class="page-item">
+                    <a class="page-link" href="<?= $paginator->previousPageUrl() ?>" rel="prev" aria-label="&laquo; Previous">&lsaquo;</a>
+                </li>
+            <?php endif; ?>
+
+            <?php /* Pagination Elements */ ?>
+            <?php foreach ($elements as $page => $url): ?>
+                <?php /* "Three Dots" Separator */ ?>
+                <?php if ($url === null): ?>
+                    <li class="page-item disabled" aria-disabled="true"><span class="page-link">...</span></li>
+                <?php elseif ($page === $currentPage): ?>
+                    <li class="page-item active" aria-current="page"><span class="page-link"><?= $page ?></span></li>
+                <?php else: ?>
+                    <li class="page-item"><a class="page-link" href="<?= $url ?>"><?= $page ?></a></li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+
+            <?php /* Next Page Link */ ?>
+            <?php if ($paginator->hasMorePages()): ?>
+                <li class="page-item">
+                    <a class="page-link" href="<?= $paginator->nextPageUrl() ?>" rel="next" aria-label="Next &raquo;">&rsaquo;</a>
+                </li>
+            <?php else: ?>
+                <li class="page-item disabled" aria-disabled="true" aria-label="Next &raquo;">
+                    <span class="page-link" aria-hidden="true">&rsaquo;</span>
+                </li>
+            <?php endif; ?>
+        </ul>
+    </nav>
+<?php endif; ?>

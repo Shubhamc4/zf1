@@ -140,7 +140,7 @@ final class UnifiedErrorHandler
 
             $data = [
                 'Time' => \ZF1\Foundation\Bootstrap::now(),
-                'User ID' => self::resolveUserId(),
+                'User ID' => currentUserId('Guest'),
                 'IP' => function_exists('get_client_ip') ? get_client_ip() : ($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'),
                 'Device' => $_SERVER['HTTP_USER_AGENT'] ?? 'CLI',
                 'Code' => $errno,
@@ -192,7 +192,7 @@ final class UnifiedErrorHandler
 
                 $data = [
                     'Time' => \ZF1\Foundation\Bootstrap::now(),
-                    'User ID' => self::resolveUserId(),
+                    'User ID' => currentUserId('Guest'),
                     'IP' => function_exists('get_client_ip') ? get_client_ip() : ($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'),
                     'Device' => $_SERVER['HTTP_USER_AGENT'] ?? 'CLI',
                     'Code' => $error['type'],
@@ -213,23 +213,6 @@ final class UnifiedErrorHandler
                 }
             }
         });
-    }
-
-    /**
-     * Resolve current user ID safely without risking undeclared property errors.
-     */
-    public static function resolveUserId(): string
-    {
-        foreach (['\App\Bootstrap', '\Bootstrap', 'Bootstrap'] as $class) {
-            if (class_exists($class, false) && property_exists($class, 'loginSession')) {
-                $session = $class::$loginSession;
-                if ($session && isset($session->id)) {
-                    return (string) $session->id;
-                }
-            }
-        }
-
-        return 'Guest';
     }
 
     /**
@@ -283,7 +266,7 @@ final class UnifiedErrorHandler
 
         $data = [
             'Time' => \ZF1\Foundation\Bootstrap::now(),
-            'User ID' => self::resolveUserId(),
+            'User ID' => currentUserId('Guest'),
             'IP' => function_exists('get_client_ip') ? get_client_ip() : ($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'),
             'Device' => $_SERVER['HTTP_USER_AGENT'] ?? 'CLI',
             'Code' => $statusCode,

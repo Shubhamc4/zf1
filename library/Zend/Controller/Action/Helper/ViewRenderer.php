@@ -908,12 +908,75 @@ class Zend_Controller_Action_Helper_ViewRenderer extends Zend_Controller_Action_
             $name = $this->getResponseSegment();
         }
 
+        $targetScript = $script;
+        if (null !== $this->view && method_exists($this->view, 'getScriptPath') && ! $this->view->getScriptPath($script)) {
+            $altScript = $this->_findAlternativeScript($script);
+            if ($altScript !== null) {
+                $targetScript = $altScript;
+            }
+        }
+
         $this->getResponse()->appendBody(
-            $this->view->render($script),
+            $this->view->render($targetScript),
             $name
         );
 
         $this->setNoRender();
+    }
+
+    /**
+     * Find an alternative view script path if the default one is missing.
+     * E.g. some-random.phtml <=> somerandom.phtml <=> someRandom.phtml
+     *
+     * @param  string  $script
+     * @return string|null
+     */
+    protected function _findAlternativeScript($script)
+    {
+        if (null === $this->view || !method_exists($this->view, 'getScriptPath')) {
+            return null;
+        }
+
+        $info = pathinfo($script);
+        $dir = !empty($info['dirname']) && $info['dirname'] !== '.' ? $info['dirname'] . '/' : '';
+        $filename = isset($info['filename']) ? $info['filename'] : '';
+        $ext = isset($info['extension']) ? '.' . $info['extension'] : '';
+
+        $candidates = array();
+
+        // 1. If has dashes, try without dashes: some-random -> somerandom
+        if (strpos($filename, '-') !== false) {
+            $candidates[] = str_replace('-', '', $filename);
+        }
+
+        // 2. Convert camelCase to dashed: someRandom -> some-random
+        $camelToDash = strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', $filename));
+        if ($camelToDash !== $filename) {
+            $candidates[] = $camelToDash;
+        }
+
+        // 3. Check active controller action methods for camelCase equivalents
+        if (null !== $this->_actionController) {
+            $methods = get_class_methods($this->_actionController);
+            $targetMethod = strtolower(str_replace('-', '', $filename)) . 'action';
+            foreach ($methods as $m) {
+                if (strtolower($m) === $targetMethod && strlen($m) > 6) {
+                    $baseMethod = substr($m, 0, -6);
+                    $candidates[] = $baseMethod;
+                    $candidates[] = strtolower(preg_replace('/(?<!^)[A-Z]/', '-$0', $baseMethod));
+                    break;
+                }
+            }
+        }
+
+        foreach (array_unique($candidates) as $candidate) {
+            $altPath = $dir . $candidate . $ext;
+            if ($altPath !== $script && $this->view->getScriptPath($altPath)) {
+                return $altPath;
+            }
+        }
+
+        return null;
     }
 
     /**

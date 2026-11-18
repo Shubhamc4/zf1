@@ -20,7 +20,6 @@ final class ZF1_View_Helper_Error extends Zend_View_Helper_Abstract
     public function error(string $key, ?string $format = null): ?string
     {
         $raw = Session::get('errors');
-
         $bag = $raw instanceof MessageBag ? $raw : new MessageBag(is_array($raw) ? $raw : []);
 
         return $bag->first($key, $format);

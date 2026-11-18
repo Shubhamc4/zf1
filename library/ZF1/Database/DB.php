@@ -171,6 +171,45 @@ final class DB
     }
 
     /**
+     * Paginate records directly from a table.
+     *
+     * @param  array<string>|string  $columns
+     * @param  string|array<string, mixed>|null  $where
+     */
+    public static function paginate(
+        string $table,
+        int $perPage = 15,
+        array|string $columns = '*',
+        string|array|null $where = null,
+        ?string $order = null,
+        string $pageName = 'page',
+        ?int $page = null,
+        ?string $connection = null
+    ): Paginator {
+        $select = self::table($table, $connection);
+
+        if ($where !== null) {
+            if (is_array($where)) {
+                foreach ($where as $cond => $val) {
+                    if (is_int($cond)) {
+                        $select->where($val);
+                    } else {
+                        $select->where($cond, $val);
+                    }
+                }
+            } else {
+                $select->where($where);
+            }
+        }
+
+        if ($order !== null) {
+            $select->order($order);
+        }
+
+        return $select->paginate($perPage, $columns, $pageName, $page);
+    }
+
+    /**
      * Insert a row into a table and return the last inserted ID.
      *
      * @param  array<string, mixed>  $data
@@ -256,6 +295,101 @@ final class DB
     public static function raw(string $value): Zend_Db_Expr
     {
         return new Zend_Db_Expr($value);
+    }
+
+    /**
+     * Get the raw SQL string with all bindings and parameters interpolated.
+     *
+     * @param  array<int|string, mixed>  $bind
+     */
+    public static function toRawSql(Zend_Db_Select|string $query, array $bind = [], ?string $connection = null): string
+    {
+        $sql = '';
+        $adapter = null;
+
+        try {
+            $adapter = @self::connection($connection);
+        } catch (Throwable) {
+            // No active connection found, fallback to basic quoting
+        }
+
+        if ($query instanceof Zend_Db_Select) {
+            $sql = (string) $query->assemble();
+            if (empty($bind)) {
+                $bind = $query->getBind();
+            }
+            if ($adapter === null) {
+                $adapter = $query->getAdapter();
+            }
+        } elseif (is_string($query)) {
+            $sql = $query;
+        } elseif (is_object($query) && method_exists($query, '__toString')) {
+            $sql = (string) $query;
+        }
+
+        if (empty($bind)) {
+            return $sql;
+        }
+
+        $quoteValue = function (mixed $value) use ($adapter): string {
+            if ($value === null) {
+                return 'NULL';
+            }
+
+            if (is_bool($value)) {
+                return $value ? '1' : '0';
+            }
+
+            if (is_int($value) || is_float($value)) {
+                return (string) $value;
+            }
+
+            if ($value instanceof Zend_Db_Expr) {
+                return (string) $value;
+            }
+
+            if (is_array($value)) {
+                $parts = [];
+                foreach ($value as $v) {
+                    if ($v === null) {
+                        $parts[] = 'NULL';
+                    } elseif (is_int($v) || is_float($v)) {
+                        $parts[] = (string) $v;
+                    } elseif ($adapter !== null) {
+                        $parts[] = $adapter->quote($v);
+                    } else {
+                        $parts[] = "'".addslashes((string) $v)."'";
+                    }
+                }
+
+                return implode(', ', $parts);
+            }
+
+            if ($adapter !== null) {
+                return $adapter->quote($value);
+            }
+
+            return "'".addslashes((string) $value)."'";
+        };
+
+        $isAssoc = array_keys($bind) !== range(0, count($bind) - 1);
+
+        if ($isAssoc) {
+            uksort($bind, fn ($a, $b) => strlen((string) $b) <=> strlen((string) $a));
+
+            foreach ($bind as $key => $val) {
+                $quoted = $quoteValue($val);
+                $keyName = ltrim((string) $key, ':');
+                $sql = preg_replace('/:'.preg_quote($keyName, '/').'\b/', $quoted, $sql);
+            }
+        } else {
+            foreach ($bind as $val) {
+                $quoted = $quoteValue($val);
+                $sql = preg_replace('/\?/', $quoted, $sql, 1);
+            }
+        }
+
+        return $sql;
     }
 
     /**

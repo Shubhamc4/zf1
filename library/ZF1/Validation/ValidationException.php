@@ -47,6 +47,30 @@ final class ValidationException extends RuntimeException
     }
 
     /**
+     * Get a MessageBag instance of the errors.
+     */
+    public function errorsBag(): MessageBag
+    {
+        return new MessageBag($this->errors);
+    }
+
+    /**
+     * Get the single first error message for a key, or first overall error.
+     */
+    public function error(?string $key = null, ?string $format = null): ?string
+    {
+        return $this->errorsBag()->first($key, $format);
+    }
+
+    /**
+     * Get the first error message for a key, or first overall error (alias for error()).
+     */
+    public function first(?string $key = null, ?string $format = null): ?string
+    {
+        return $this->error($key, $format);
+    }
+
+    /**
      * Get the validator instance.
      */
     public function validator(): ?Validator

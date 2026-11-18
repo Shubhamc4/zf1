@@ -426,6 +426,49 @@ final class Session
     }
 
     /**
+     * Extend the session cookie lifetime to make the session persistent.
+     */
+    public static function rememberMe(int $seconds = 2592000): void
+    {
+        self::updateSessionCookie($seconds > 0 ? time() + $seconds : 0);
+    }
+
+    /**
+     * Revert the session cookie to a non-persistent session-only cookie.
+     */
+    public static function forgetMe(): void
+    {
+        self::updateSessionCookie(0);
+    }
+
+    /**
+     * Update the active session cookie expiration timestamp.
+     */
+    private static function updateSessionCookie(int $expire = 0): void
+    {
+        self::start();
+
+        if (! headers_sent()) {
+            $id = self::id();
+            if ($id !== '') {
+                $params = session_get_cookie_params();
+                @setcookie(
+                    self::getName(),
+                    $id,
+                    [
+                        'expires' => $expire,
+                        'path' => $params['path'] ?? '/',
+                        'domain' => $params['domain'] ?? '',
+                        'secure' => (bool) ($params['secure'] ?? false),
+                        'httponly' => (bool) ($params['httponly'] ?? true),
+                        'samesite' => $params['samesite'] ?? 'Lax',
+                    ]
+                );
+            }
+        }
+    }
+
+    /**
      * Clear all session data, destroy the session, and regenerate session ID.
      */
     public static function invalidate(): bool

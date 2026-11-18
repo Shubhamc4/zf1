@@ -6,6 +6,12 @@ declare(strict_types=1);
  * ZF1 Universal Framework Helpers
  * Available across all ZF1 projects.
  */
+
+// Ensure framework library directory is in PHP include path for legacy Zend require_once statements
+$zf1LibDir = dirname(__DIR__, 2);
+if ($zf1LibDir !== '' && ! str_contains(get_include_path(), $zf1LibDir)) {
+    set_include_path(get_include_path().PATH_SEPARATOR.$zf1LibDir);
+}
 if (! function_exists('env')) {
     /**
      * Get an environment variable value with optional default fallback.
@@ -386,6 +392,26 @@ if (! function_exists('session')) {
     }
 }
 
+if (! function_exists('auth')) {
+    /**
+     * Get the available auth instance or authenticated user.
+     */
+    function auth(): ZF1\Auth\Auth
+    {
+        return ZF1\Auth\Auth::getInstance();
+    }
+}
+
+if (! function_exists('currentUserId')) {
+    /**
+     * Get the current authenticated user ID or fallback default.
+     */
+    function currentUserId(string|int|null $default = null): int|string|null
+    {
+        return auth()->id() ?? $default;
+    }
+}
+
 if (! function_exists('redirect')) {
     /**
      * Create a new RedirectResponse instance.
@@ -469,6 +495,42 @@ if (! function_exists('validator')) {
         array $customAttributes = []
     ): ZF1\Validation\Validator {
         return ZF1\Validation\Validator::make($data, $rules, $messages, $customAttributes);
+    }
+}
+
+if (! function_exists('errors')) {
+    /**
+     * Get the validation MessageBag from session or messages for a specific field.
+     */
+    function errors(?string $key = null, ?string $format = null): mixed
+    {
+        $raw = ZF1\Session\Session::get('errors');
+
+        $bag = $raw instanceof ZF1\Validation\MessageBag
+            ? $raw
+            : new ZF1\Validation\MessageBag(is_array($raw) ? $raw : []);
+
+        if ($key === null) {
+            return $bag;
+        }
+
+        return $format !== null ? $bag->first($key, $format) : $bag->get($key);
+    }
+}
+
+if (! function_exists('error')) {
+    /**
+     * Retrieve the first validation error message for a given field from session.
+     */
+    function error(string $key, ?string $format = null): ?string
+    {
+        $raw = ZF1\Session\Session::get('errors');
+
+        $bag = $raw instanceof ZF1\Validation\MessageBag
+            ? $raw
+            : new ZF1\Validation\MessageBag(is_array($raw) ? $raw : []);
+
+        return $bag->first($key, $format);
     }
 }
 
@@ -1419,8 +1481,14 @@ if (! function_exists('data_get')) {
                 } else {
                     return $default instanceof Closure ? $default() : $default;
                 }
+            } elseif ($target instanceof ArrayAccess) {
+                if ($target->offsetExists($segment)) {
+                    $target = $target[$segment];
+                } else {
+                    return $default instanceof Closure ? $default() : $default;
+                }
             } elseif (is_object($target)) {
-                if (isset($target->{$segment})) {
+                if (isset($target->{$segment}) || property_exists($target, $segment)) {
                     $target = $target->{$segment};
                 } elseif (method_exists($target, $segment)) {
                     $target = $target->{$segment}();
@@ -2202,5 +2270,100 @@ if (! function_exists('rescue')) {
 
             return is_callable($rescue) ? $rescue($e) : $rescue;
         }
+    }
+}
+
+if (! function_exists('dump')) {
+    /**
+     * Dump the given variables and continue script execution.
+     */
+    function dump(mixed ...$vars): mixed
+    {
+        return ZF1\Support\Dumper::dump(...$vars);
+    }
+}
+
+if (! function_exists('dd')) {
+    /**
+     * Dump the given variables and terminate execution ("dump and die").
+     */
+    function dd(mixed ...$vars): never
+    {
+        ZF1\Support\Dumper::dd(...$vars);
+    }
+}
+
+if (! function_exists('dump_if')) {
+    /**
+     * Dump the given variables only if the given condition is truthy.
+     */
+    function dump_if(mixed $condition, mixed ...$vars): mixed
+    {
+        return ZF1\Support\Dumper::dumpIf($condition, ...$vars);
+    }
+}
+
+if (! function_exists('dd_if')) {
+    /**
+     * Dump the given variables and terminate execution only if the condition is truthy.
+     */
+    function dd_if(mixed $condition, mixed ...$vars): void
+    {
+        ZF1\Support\Dumper::ddIf($condition, ...$vars);
+    }
+}
+
+if (! function_exists('dlog')) {
+    /**
+     * Log the dumped representation of variables to the application log without displaying.
+     */
+    function dlog(mixed ...$vars): void
+    {
+        ZF1\Support\Dumper::log(...$vars);
+    }
+}
+
+if (! function_exists('dtrace')) {
+    /**
+     * Print or dump a clean stack trace.
+     */
+    function dtrace(?Throwable $e = null, bool $exit = false): string
+    {
+        return ZF1\Support\Dumper::trace($e, $exit);
+    }
+}
+
+if (! function_exists('benchmark')) {
+    /**
+     * Measure the execution time and memory consumption of a callback.
+     *
+     * @template T
+     *
+     * @param  callable(): T  $callback
+     * @return T
+     */
+    function benchmark(callable $callback, int $iterations = 1, ?string $label = null): mixed
+    {
+        return ZF1\Support\Dumper::benchmark($callback, $iterations, $label);
+    }
+}
+
+if (! function_exists('dump_sql')) {
+    /**
+     * Dump an SQL query or Zend_Db_Select with interpolated parameters.
+     */
+    function dump_sql(mixed $query, array $bind = []): string
+    {
+        return ZF1\Support\Dumper::dumpSql($query, $bind);
+    }
+}
+
+if (! function_exists('dd_sql')) {
+    /**
+     * Dump an SQL query or Zend_Db_Select with interpolated parameters and terminate execution.
+     */
+    function dd_sql(mixed $query, array $bind = []): never
+    {
+        ZF1\Support\Dumper::ddSql($query, $bind);
     }
 }

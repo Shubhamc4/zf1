@@ -1,0 +1,177 @@
+<?php if ($includeStyles): ?>
+<style>
+  <?php if ($isTerminating): ?>
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 100vh !important;
+    background-color: #0b0f19 !important;
+    color: #e6edf3 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+  }
+  <?php endif; ?>
+  .zf1-dump-card * {
+    box-sizing: border-box;
+  }
+</style>
+<script>
+  if (!window.zf1CopyDump) {
+    window.zf1CopyDump = function(btn, targetId) {
+      var el = document.getElementById(targetId);
+      if (!el) return;
+      var text = el.value;
+      var label = btn.querySelector('span') || btn;
+      var original = label.innerText;
+
+      var onCopied = function() {
+        label.innerText = 'Copied!';
+        btn.style.borderColor = '#238636';
+        btn.style.color = '#3fb950';
+        setTimeout(function() {
+          label.innerText = original;
+          btn.style.borderColor = '#30363d';
+          btn.style.color = '#c9d1d9';
+        }, 1500);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(onCopied);
+      } else {
+        el.style.display = 'block';
+        el.select();
+        document.execCommand('copy');
+        el.style.display = 'none';
+        onCopied();
+      }
+    };
+  }
+
+  if (!window.zf1SwitchView) {
+    window.zf1SwitchView = function(containerId, view, btn, copyId) {
+      var jsonView = document.getElementById(containerId + '_view_json');
+      var rawView = document.getElementById(containerId + '_view_raw');
+      var copyEl = document.getElementById(copyId);
+      var copyText = document.getElementById(containerId + '_copy_text');
+      var tabJson = document.getElementById(containerId + '_tab_json');
+      var tabRaw = document.getElementById(containerId + '_tab_raw');
+
+      if (view === 'json') {
+        if (jsonView) jsonView.style.display = 'block';
+        if (rawView) rawView.style.display = 'none';
+        if (tabJson) { tabJson.style.background = '#21262d'; tabJson.style.color = '#58a6ff'; }
+        if (tabRaw) { tabRaw.style.background = 'transparent'; tabRaw.style.color = '#8b949e'; }
+        if (copyEl && copyEl.dataset.json) copyEl.value = copyEl.dataset.json;
+        if (copyText) copyText.innerText = 'Copy JSON';
+      } else {
+        if (jsonView) jsonView.style.display = 'none';
+        if (rawView) rawView.style.display = 'block';
+        if (tabRaw) { tabRaw.style.background = '#21262d'; tabRaw.style.color = '#58a6ff'; }
+        if (tabJson) { tabJson.style.background = 'transparent'; tabJson.style.color = '#8b949e'; }
+        if (copyEl && copyEl.dataset.raw) copyEl.value = copyEl.dataset.raw;
+        if (copyText) copyText.innerText = 'Copy PHP';
+      }
+    };
+  }
+
+  if (!window.zf1DismissDump) {
+    window.zf1DismissDump = function(cardId) {
+      var card = document.getElementById(cardId);
+      if (card) {
+        var overlay = card.parentElement;
+        card.remove();
+        if (overlay && overlay.id === 'zf1-dump-overlay' && overlay.children.length === 0) {
+          overlay.remove();
+        }
+      }
+    };
+  }
+
+  if (!window.zf1AttachDump) {
+    window.zf1AttachDump = function(cardId) {
+      var overlay = document.getElementById('zf1-dump-overlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'zf1-dump-overlay';
+        overlay.style.cssText = 'position:fixed;top:16px;left:0;right:0;z-index:99999999;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:12px;max-height:calc(100vh - 32px);overflow-y:auto;padding:0 16px;box-sizing:border-box;';
+        (document.body || document.documentElement).appendChild(overlay);
+      }
+      var card = document.getElementById(cardId);
+      if (card && card.parentElement !== overlay) {
+        card.style.position = 'relative';
+        card.style.top = 'auto';
+        card.style.left = 'auto';
+        card.style.transform = 'none';
+        card.style.width = '100%';
+        card.style.maxWidth = '1200px';
+        card.style.pointerEvents = 'auto';
+        overlay.appendChild(card);
+      }
+    };
+  }
+</script>
+<?php endif; ?>
+
+<?php
+$containerStyle = $isTerminating
+    ? 'max-width: 1200px; margin: 32px auto; padding: 0 16px; box-sizing: border-box;'
+    : 'position: fixed; top: 16px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 1200px; z-index: 99999999; box-sizing: border-box; filter: drop-shadow(0 15px 35px rgba(0,0,0,0.6));';
+?>
+
+<div id="<?= htmlspecialchars($containerId, ENT_QUOTES, 'UTF-8') ?>" class="zf1-dump-card" style="<?= $containerStyle ?>">
+  <div style="background-color: #161b22; border: 1px solid #30363d; border-radius: 10px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.2); overflow: hidden;">
+    <div style="background-color: #1c2128; border-bottom: 1px solid #30363d; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; gap: 12px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="background: <?= htmlspecialchars($badgeColor, ENT_QUOTES, 'UTF-8') ?>; color: #ffffff; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase;">
+          <?= htmlspecialchars($appName, ENT_QUOTES, 'UTF-8') ?>
+        </span>
+        <span style="background: #21262d; color: #8b949e; border: 1px solid #30363d; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 500;">
+          <?= htmlspecialchars($typeLabel, ENT_QUOTES, 'UTF-8') ?>
+        </span>
+        <?php if (!empty($hasJson)): ?>
+        <div style="display: inline-flex; align-items: center; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 2px; gap: 2px; margin-left: 4px;">
+          <button type="button" onclick="zf1SwitchView('<?= htmlspecialchars($containerId, ENT_QUOTES, 'UTF-8') ?>', 'json', this, '<?= htmlspecialchars($copyId, ENT_QUOTES, 'UTF-8') ?>')" id="<?= htmlspecialchars($containerId, ENT_QUOTES, 'UTF-8') ?>_tab_json" style="background: #21262d; color: #58a6ff; border: none; border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s ease;">JSON</button>
+          <button type="button" onclick="zf1SwitchView('<?= htmlspecialchars($containerId, ENT_QUOTES, 'UTF-8') ?>', 'raw', this, '<?= htmlspecialchars($copyId, ENT_QUOTES, 'UTF-8') ?>')" id="<?= htmlspecialchars($containerId, ENT_QUOTES, 'UTF-8') ?>_tab_raw" style="background: transparent; color: #8b949e; border: none; border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.15s ease;">PHP</button>
+        </div>
+        <?php endif; ?>
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="color: #8b949e; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px;">
+          <?= htmlspecialchars($callerDisplay, ENT_QUOTES, 'UTF-8') ?>
+        </span>
+        <button type="button" onclick="zf1CopyDump(this, '<?= htmlspecialchars($copyId, ENT_QUOTES, 'UTF-8') ?>')" style="background: #21262d; color: #c9d1d9; border: 1px solid #30363d; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s ease;">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"></path>
+            <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"></path>
+          </svg>
+          <span id="<?= htmlspecialchars($containerId, ENT_QUOTES, 'UTF-8') ?>_copy_text"><?= htmlspecialchars($copyLabel, ENT_QUOTES, 'UTF-8') ?></span>
+        </button>
+        <?php if (! $isTerminating): ?>
+        <button type="button" onclick="zf1DismissDump('<?= htmlspecialchars($containerId, ENT_QUOTES, 'UTF-8') ?>')" title="Dismiss dump" style="background: transparent; color: #8b949e; border: 1px solid #30363d; border-radius: 6px; padding: 4px 8px; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; line-height: 1;">
+          ✕
+        </button>
+        <?php endif; ?>
+      </div>
+    </div>
+    <div style="padding: 16px 20px; overflow-x: auto; background-color: #0d1117;">
+      <?php if (!empty($hasJson)): ?>
+        <div id="<?= htmlspecialchars($containerId, ENT_QUOTES, 'UTF-8') ?>_view_json" style="display: block;">
+          <pre style="margin: 0; padding: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.6; color: #e6edf3; white-space: pre-wrap; word-break: break-word;"><?= $displayJson ?></pre>
+        </div>
+        <div id="<?= htmlspecialchars($containerId, ENT_QUOTES, 'UTF-8') ?>_view_raw" style="display: none;">
+          <pre style="margin: 0; padding: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.6; color: #e6edf3; white-space: pre-wrap; word-break: break-word;"><?= $displayRaw ?></pre>
+        </div>
+      <?php else: ?>
+        <pre style="margin: 0; padding: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 13px; line-height: 1.6; color: #e6edf3; white-space: pre-wrap; word-break: break-word;"><?= $displayContent ?></pre>
+      <?php endif; ?>
+    </div>
+  </div>
+</div>
+<textarea id="<?= htmlspecialchars($copyId, ENT_QUOTES, 'UTF-8') ?>" data-json="<?= htmlspecialchars($copyPayload, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>" data-raw="<?= htmlspecialchars($rawCopyPayload ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>" style="display: none; position: absolute; left: -9999px;"><?= htmlspecialchars($copyPayload, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></textarea>
+<?php if (! $isTerminating): ?>
+<script>
+  if (typeof zf1AttachDump === 'function') {
+    zf1AttachDump('<?= htmlspecialchars($containerId, ENT_QUOTES, 'UTF-8') ?>');
+  }
+</script>
+<?php endif; ?>

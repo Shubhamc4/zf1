@@ -16,20 +16,22 @@ use ZF1\Validation\MessageBag;
 final class ZF1_View_Helper_Errors extends Zend_View_Helper_Abstract
 {
     /**
-     * Retrieve the validation MessageBag from session.
+     * Retrieve the validation MessageBag from session, or the first error for a field.
+     *
+     * @param  string|null  $key  Optional field name (e.g. 'email')
+     * @param  string|null  $format  Optional format string (e.g. '<span class="error">%s</span>')
+     * @return MessageBag|string|null
      */
-    public function errors(): MessageBag
+    public function errors(?string $key = null, ?string $format = null): mixed
     {
         $raw = Session::get('errors');
 
-        if ($raw instanceof MessageBag) {
-            return $raw;
+        $bag = $raw instanceof MessageBag ? $raw : new MessageBag(is_array($raw) ? $raw : []);
+
+        if ($key === null) {
+            return $bag;
         }
 
-        if (is_array($raw)) {
-            return new MessageBag($raw);
-        }
-
-        return new MessageBag;
+        return $bag->first($key, $format);
     }
 }

@@ -710,7 +710,7 @@ final class Mailer
 
             Bootstrap::debug([
                 'Time' => Bootstrap::now(),
-                'User ID' => self::resolveUserId(),
+                'User ID' => currentUserId('Guest'),
                 'IP' => php_sapi_name() === 'cli' ? '127.0.0.1' : (function_exists('get_client_ip') ? get_client_ip() : '127.0.0.1'),
                 'Device' => $_SERVER['HTTP_USER_AGENT'] ?? 'CLI',
                 'Code' => $th->getCode(),
@@ -721,22 +721,5 @@ final class Mailer
 
             return false;
         }
-    }
-
-    /**
-     * Resolve current user ID safely.
-     */
-    private static function resolveUserId(): ?string
-    {
-        foreach (['\App\Bootstrap', '\Bootstrap', 'Bootstrap'] as $class) {
-            if (class_exists($class, false) && property_exists($class, 'loginSession')) {
-                $session = $class::$loginSession;
-                if ($session && isset($session->id) && $session->id) {
-                    return (string) $session->id;
-                }
-            }
-        }
-
-        return null;
     }
 }

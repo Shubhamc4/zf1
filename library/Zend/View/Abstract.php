@@ -35,6 +35,26 @@ require_once 'Zend/View/Interface.php';
  * @package    Zend_View
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ *
+ * @method \ZF1\Auth\Auth auth()
+ * @method \ZF1\Validation\MessageBag|string|null errors(?string $key = null, ?string $format = null)
+ * @method string|null error(string $key, ?string $format = null)
+ * @method \ZF1\Session\Session|mixed session(?string $key = null, mixed $default = null)
+ * @method string csrf()
+ * @method string csrf_field()
+ * @method mixed old(string $key, mixed $default = null)
+ * @method string flash(?string $key = null, mixed $default = null)
+ * @method string asset(string $path, ?string $version = null)
+ * @method \ZF1\Support\Optional optional(mixed $value = null, ?callable $callback = null)
+ * @method string url(array $urlOptions = array(), $name = null, $reset = false, $encode = true)
+ * @method Zend_View_Helper_HeadTitle headTitle($title = null, $setType = null)
+ * @method Zend_View_Helper_HeadScript headScript($mode = Zend_View_Helper_HeadScript::FILE, $spec = null, $placement = 'APPEND', array $attrs = array(), $type = 'text/javascript')
+ * @method Zend_View_Helper_HeadLink headLink(array $attributes = null, $placement = Zend_View_Helper_Placeholder_Container_Abstract::APPEND)
+ * @method Zend_View_Helper_HeadMeta headMeta($content = null, $keyValue = null, $keyType = 'name', $modifiers = array(), $placement = Zend_View_Helper_Placeholder_Container_Abstract::APPEND)
+ * @method Zend_View_Helper_Layout layout()
+ * @method string partial($name = null, $module = null, $model = null)
+ * @method string partialLoop($name = null, $module = null, $model = null)
+ * @method string paginationControl(Zend_Paginator $paginator = null, $scrollingStyle = null, $partial = null, $params = null)
  */
 #[AllowDynamicProperties]
 abstract class Zend_View_Abstract implements Zend_View_Interface

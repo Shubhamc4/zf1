@@ -510,11 +510,25 @@ abstract class Zend_Controller_Action implements Zend_Controller_Action_Interfac
             // @see ZF-7496
             if (!($this->getResponse()->isRedirect())) {
                 // preDispatch() didn't change the action, so we can continue
+                // Check for exact method match first, then fallback to case-insensitive match (e.g. someRandomAction)
+                $targetAction = null;
                 if ($this->getInvokeArg('useCaseSensitiveActions') || in_array($action, $this->_classMethods)) {
                     if ($this->getInvokeArg('useCaseSensitiveActions')) {
                         trigger_error('Using case sensitive actions without word separators is deprecated; please do not rely on this "feature"');
                     }
-                    $this->$action();
+                    $targetAction = $action;
+                } else {
+                    $lowerAction = strtolower($action);
+                    foreach ($this->_classMethods as $method) {
+                        if (strtolower($method) === $lowerAction) {
+                            $targetAction = $method;
+                            break;
+                        }
+                    }
+                }
+
+                if ($targetAction !== null) {
+                    $this->$targetAction();
                 } else {
                     $this->__call($action, array());
                 }

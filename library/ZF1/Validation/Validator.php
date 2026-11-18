@@ -204,6 +204,68 @@ final class Validator
     }
 
     /**
+     * Get the first error message from the bag for a key, or first overall.
+     */
+    public function error(?string $key = null, ?string $format = null): ?string
+    {
+        return $this->errors()->first($key, $format);
+    }
+
+    /**
+     * Alias for error().
+     */
+    public function first(?string $key = null, ?string $format = null): ?string
+    {
+        return $this->errors()->first($key, $format);
+    }
+
+    /**
+     * Determine if a given attribute has validation errors.
+     */
+    public function hasError(string $key): bool
+    {
+        return $this->errors()->has($key);
+    }
+
+    /**
+     * Get a subset of the validated data.
+     *
+     * @param  array<string>|string  ...$keys
+     * @return array<string, mixed>
+     */
+    public function only(array|string ...$keys): array
+    {
+        $keys = is_array($keys[0] ?? null) ? $keys[0] : $keys;
+
+        return array_only($this->validated(), $keys);
+    }
+
+    /**
+     * Get all validated data except the specified keys.
+     *
+     * @param  array<string>|string  ...$keys
+     * @return array<string, mixed>
+     */
+    public function except(array|string ...$keys): array
+    {
+        $keys = is_array($keys[0] ?? null) ? $keys[0] : $keys;
+
+        return array_except($this->validated(), $keys);
+    }
+
+    /**
+     * Get a ValidatedInput wrapper around the validated data for safe extraction.
+     *
+     * @param  array<string>|null  $keys
+     */
+    public function safe(?array $keys = null): ValidatedInput|array
+    {
+        $safe = new ValidatedInput($this->validated());
+
+        return $keys !== null ? $safe->only($keys) : $safe;
+    }
+
+    /**
      * Run the validator and return the validated data, or throw ValidationException on failure.
      *
      * @return array<string, mixed>

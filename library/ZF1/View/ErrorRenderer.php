@@ -321,7 +321,7 @@ final class ErrorRenderer
 
                 $data = [
                     'Time' => \ZF1\Foundation\Bootstrap::now(),
-                    'User ID' => \ZF1\Logging\UnifiedErrorHandler::resolveUserId(),
+                    'User ID' => currentUserId('Guest'),
                     'IP' => function_exists('get_client_ip') ? get_client_ip() : ($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'),
                     'Device' => $_SERVER['HTTP_USER_AGENT'] ?? 'CLI',
                     'Code' => $code,

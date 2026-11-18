@@ -58,6 +58,30 @@ final class MessageBag implements ArrayAccess, Countable, IteratorAggregate, Jso
     }
 
     /**
+     * Determine if messages are missing for a given key.
+     */
+    public function missing(string $key): bool
+    {
+        return ! $this->has($key);
+    }
+
+    /**
+     * Determine if any messages exist in the bag, or for a given key.
+     */
+    public function any(?string $key = null): bool
+    {
+        return $key !== null ? $this->has($key) : $this->isNotEmpty();
+    }
+
+    /**
+     * Conditionally return a CSS class if an error exists for a field.
+     */
+    public function class(string $key, string $class = 'is-invalid', string $fallback = ''): string
+    {
+        return $this->has($key) ? $class : $fallback;
+    }
+
+    /**
      * Get the first message for a given key, or the first message in the bag.
      */
     public function first(?string $key = null, ?string $format = null): ?string
@@ -78,6 +102,68 @@ final class MessageBag implements ArrayAccess, Countable, IteratorAggregate, Jso
         }
 
         return $format !== null ? sprintf($format, $messages[0]) : $messages[0];
+    }
+
+    /**
+     * Get all message keys present in the bag.
+     *
+     * @return array<string>
+     */
+    public function keys(): array
+    {
+        return array_keys($this->messages);
+    }
+
+    /**
+     * Return a new MessageBag containing messages only for the specified keys.
+     *
+     * @param  array<string>|string  ...$keys
+     */
+    public function only(array|string ...$keys): static
+    {
+        $keys = is_array($keys[0] ?? null) ? $keys[0] : $keys;
+
+        $filtered = [];
+        foreach ($keys as $key) {
+            if (isset($this->messages[$key])) {
+                $filtered[$key] = $this->messages[$key];
+            }
+        }
+
+        return new self($filtered);
+    }
+
+    /**
+     * Return a new MessageBag excluding messages for the specified keys.
+     *
+     * @param  array<string>|string  ...$keys
+     */
+    public function except(array|string ...$keys): static
+    {
+        $keys = is_array($keys[0] ?? null) ? $keys[0] : $keys;
+
+        $filtered = $this->messages;
+        foreach ($keys as $key) {
+            unset($filtered[$key]);
+        }
+
+        return new self($filtered);
+    }
+
+    /**
+     * Get a list of unique error messages across all fields.
+     *
+     * @return array<string>
+     */
+    public function unique(?string $format = null): array
+    {
+        $messages = array_values(array_unique($this->all()));
+
+        if ($format !== null) {
+            return array_map(fn (string $m) => sprintf($format, $m), $messages);
+        }
+
+        return $messages;
     }
 
     /**

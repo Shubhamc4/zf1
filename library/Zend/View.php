@@ -82,6 +82,16 @@ require_once 'Zend/View/Abstract.php';
  * @method string translate($messageid = null)
  * @method string url(array $urlOptions = array(), $name = null, $reset = false, $encode = true)
  * @method Zend_Http_UserAgent userAgent(Zend_Http_UserAgent $userAgent = null)
+ * @method \ZF1\Auth\Auth auth()
+ * @method \ZF1\Validation\MessageBag|string|null errors(?string $key = null, ?string $format = null)
+ * @method string|null error(string $key, ?string $format = null)
+ * @method \ZF1\Session\Session|mixed session(?string $key = null, mixed $default = null)
+ * @method string csrf()
+ * @method string csrf_field()
+ * @method mixed old(string $key, mixed $default = null)
+ * @method string flash(?string $key = null, mixed $default = null)
+ * @method string asset(string $path, ?string $version = null)
+ * @method \ZF1\Support\Optional optional(mixed $value = null, ?callable $callback = null)
  */
 class Zend_View extends Zend_View_Abstract
 {

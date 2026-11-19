@@ -16,6 +16,11 @@ use ZF1\Session\Session;
 final class RedirectResponse implements Stringable
 {
     /**
+     * Session key used to remember the intended URL.
+     */
+    public const INTENDED_URL_KEY = 'url.intended';
+
+    /**
      * The target redirect URL.
      */
     protected ?string $url = null;
@@ -72,6 +77,134 @@ final class RedirectResponse implements Stringable
         $target = ($referer !== null && trim($referer) !== '') ? $referer : ($fallback ?? '/');
 
         return $this->to($target, $status);
+    }
+
+    /**
+     * Redirect to the URL the user intended to access before authentication, or a fallback.
+     */
+    public function intended(?string $default = '/', int $status = 302): static
+    {
+        $path = Session::pull(self::INTENDED_URL_KEY, $default);
+        $target = (string) ($path ?: $default ?: '/');
+
+        if ($this->isExternalUrl($target)) {
+            $target = (string) ($default ?: '/');
+        }
+
+        return $this->to($target, $status);
+    }
+
+    /**
+     * Determine if a given URL points to an external or untrusted destination.
+     */
+    public function isExternalUrl(string $url): bool
+    {
+        $trimmed = trim($url);
+
+        if (preg_match('/^(?:javascript|data):/i', $trimmed) === 1) {
+            return true;
+        }
+
+        if (str_starts_with($trimmed, '/') && ! str_starts_with($trimmed, '//')) {
+            return false;
+        }
+
+        if (str_starts_with($trimmed, '?') || str_starts_with($trimmed, '#')) {
+            return false;
+        }
+
+        $host = parse_url($trimmed, PHP_URL_HOST);
+        if ($host === null || $host === false || $host === '') {
+            return false;
+        }
+
+        $currentHost = $_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? '';
+        $currentHost = explode(':', (string) $currentHost)[0];
+        $host = explode(':', (string) $host)[0];
+
+        return strtolower($host) !== strtolower($currentHost);
+    }
+
+    /**
+     * Remember the current URL in session and redirect to the given guest location.
+     */
+    public function guest(string $location, int $status = 302): static
+    {
+        $method = strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
+
+        if (in_array($method, ['GET', 'HEAD'], true)) {
+            $this->setIntendedUrl($this->getCurrentUrl());
+        }
+
+        return $this->to($location, $status);
+    }
+
+    /**
+     * Determine if an intended URL is saved in session.
+     */
+    public static function hasIntendedUrl(): bool
+    {
+        $url = Session::get(self::INTENDED_URL_KEY);
+
+        return $url !== null && trim((string) $url) !== '';
+    }
+
+    /**
+     * Set the intended URL in session.
+     */
+    public function setIntendedUrl(string $url): static
+    {
+        Session::put(self::INTENDED_URL_KEY, $url);
+
+        return $this;
+    }
+
+    /**
+     * Get the intended URL from session without clearing it.
+     */
+    public static function getIntendedUrl(?string $default = null): ?string
+    {
+        return Session::get(self::INTENDED_URL_KEY, $default);
+    }
+
+    /**
+     * Clear the intended URL from the session.
+     */
+    public static function forgetIntendedUrl(): void
+    {
+        Session::forget(self::INTENDED_URL_KEY);
+    }
+
+    /**
+     * Clear the intended URL from the session on this redirect instance.
+     */
+    public function clearIntendedUrl(): static
+    {
+        self::forgetIntendedUrl();
+
+        return $this;
+    }
+
+    /**
+     * Get the current request URI.
+     */
+    protected function getCurrentUrl(): string
+    {
+        if ($this->controller !== null) {
+            $req = $this->controller->getRequest();
+            if ($req && method_exists($req, 'getRequestUri')) {
+                return $req->getRequestUri();
+            }
+        }
+
+        if (class_exists('Zend_Controller_Front', false)) {
+            $frontReq = Zend_Controller_Front::getInstance()->getRequest();
+            if ($frontReq && method_exists($frontReq, 'getRequestUri')) {
+                return $frontReq->getRequestUri();
+            }
+        }
+
+        return $_SERVER['REQUEST_URI'] ?? '/';
     }
 
     /**

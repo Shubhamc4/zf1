@@ -360,6 +360,40 @@ class Controller extends Zend_Controller_Action
     }
 
     /**
+     * Redirect to the intended URL or a given fallback.
+     */
+    public function intended(?string $default = '/', int $status = 302): RedirectResponse
+    {
+        return (new RedirectResponse(null, $status, $this))->intended($default, $status);
+    }
+
+    /**
+     * Determine if an intended URL is saved in the session.
+     */
+    public function hasIntendedUrl(): bool
+    {
+        return RedirectResponse::hasIntendedUrl();
+    }
+
+    /**
+     * Get the intended URL from the session without clearing it.
+     */
+    public function getIntendedUrl(?string $default = null): ?string
+    {
+        return RedirectResponse::getIntendedUrl($default);
+    }
+
+    /**
+     * Clear the intended URL from the session.
+     */
+    public function forgetIntendedUrl(): static
+    {
+        RedirectResponse::forgetIntendedUrl();
+
+        return $this;
+    }
+
+    /**
      * Flash a key / value notification message to the session for the next request.
      */
     public function withFlash(string $key, mixed $value = true): static

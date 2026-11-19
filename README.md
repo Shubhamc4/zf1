@@ -335,6 +335,17 @@ final class ApiController extends Controller
             ->withErrors(['email' => 'Invalid email address'])
             ->withInput();
 
+        // Redirect to intended URL with Open-Redirect attack protection:
+        $this->intended('/dashboard'); // Or: redirect()->intended('/dashboard')
+
+        // Guard guests with intended URL tracking:
+        $this->redirect()->guest('/login');
+
+        // Check if an intended URL is saved:
+        if ($this->hasIntendedUrl()) {
+            return $this->intended();
+        }
+
         // Redirect to named route or action:
         $this->redirect()->route('user_profile', ['id' => 42]);
         $this->redirect()->action('index', 'users');
@@ -921,7 +932,7 @@ use ZF1\Auth\Auth;
 $remember = (bool) $request->getParam('remember_me', false);
 
 if (Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
-    return redirect('/dashboard');
+    return redirect()->intended('/dashboard');
 }
 
 // Or manually log in any array or object:
@@ -934,7 +945,7 @@ if (Auth::check()) {
 }
 
 if (auth()->guest()) {
-    return redirect('/login');
+    return redirect()->guest('/login');
 }
 
 // 3. Global auth() helper (controllers, models, and views)
@@ -1035,6 +1046,45 @@ if (Auth::isImpersonating()) {
 
 // Revert back to the original admin:
 Auth::stopImpersonating();
+```
+
+#### Remember Me & Password Confirmation:
+
+Detect if the user logged in via a persistent "Remember Me" session and prompt for password confirmation before sensitive operations:
+
+```php
+// Check if user session was restored via "Remember Me":
+if (Auth::viaRemember() || ! Auth::hasConfirmedPassword()) {
+    return redirect()->guest('/confirm-password');
+}
+
+// In password confirmation action:
+if (Auth::user()?->verifyPassword($password)) {
+    Auth::passwordConfirmed(); // Confirms password and resets 3-hour timer
+    return redirect()->intended('/account/billing');
+}
+```
+
+#### Route Protection Middleware (`Authenticate` Plugin):
+
+Automatically protect routes and redirect guests to login with intended URL tracking:
+
+```php
+// In application/Bootstrap.php:
+protected function _initAuth(): void
+{
+    $front = Zend_Controller_Front::getInstance();
+
+    // Guard all routes except public ones:
+    $front->registerPlugin(new \ZF1\Auth\Plugins\Authenticate(
+        loginUrl: '/login',
+        except: ['login', 'login/*', 'auth/*', 'register', 'forgot-password']
+    ));
+
+    // Or guard only specific modules/controllers:
+    // $front->registerPlugin((new \ZF1\Auth\Plugins\Authenticate('/admin/login'))
+    //     ->only(['admin/*', 'dashboard/*']));
+}
 ```
 
 #### Directly in `.phtml` Views:

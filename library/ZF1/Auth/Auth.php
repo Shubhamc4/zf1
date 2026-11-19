@@ -13,6 +13,11 @@ use ZF1\Session\Session;
 /**
  * Modern Authentication Manager and Static Facade for Zend Framework 1.
  * Uses Zend_Auth and its session storage as the single source of truth.
+ *
+ * @property-read AuthUser|null $user The currently authenticated user instance.
+ * @property-read int|string|null $id The primary key ID of the authenticated user.
+ *
+ * @mixin AuthUser
  */
 final class Auth
 {
@@ -20,6 +25,16 @@ final class Auth
      * Session key for storing the original user ID during impersonation.
      */
     public const IMPERSONATION_KEY = 'zf1_impersonated_by';
+
+    /**
+     * Session key indicating the user was authenticated via "remember me".
+     */
+    public const VIA_REMEMBER_KEY = 'zf1_auth_via_remember';
+
+    /**
+     * Session key storing the timestamp of when the user last entered their password.
+     */
+    public const PASSWORD_CONFIRMED_KEY = 'zf1_auth_password_confirmed_at';
 
     /**
      * The User class representing authenticated users (must extend AuthUser).
@@ -71,6 +86,10 @@ final class Auth
     public static function createUserInstance(array|object $attributes = []): AuthUser
     {
         $class = self::$userClass;
+
+        if ($attributes instanceof AuthUser) {
+            $attributes = $attributes->toArray();
+        }
 
         return new $class($attributes);
     }
@@ -184,6 +203,9 @@ final class Auth
             Session::rememberMe(self::$rememberDuration);
         }
 
+        Session::put(self::VIA_REMEMBER_KEY, false);
+        Session::put(self::PASSWORD_CONFIRMED_KEY, time());
+
         self::$resolvedUser = $authUser;
 
         return $authUser;
@@ -229,8 +251,55 @@ final class Auth
         self::$resolvedUser = null;
 
         Session::forget(self::IMPERSONATION_KEY);
+        Session::forget(self::VIA_REMEMBER_KEY);
+        Session::forget(self::PASSWORD_CONFIRMED_KEY);
         Session::forgetMe();
         Session::regenerate();
+    }
+
+    /**
+     * Determine if current user was authenticated via "remember me" persistence.
+     */
+    public static function viaRemember(): bool
+    {
+        if (self::guest()) {
+            return false;
+        }
+
+        return (bool) Session::get(self::VIA_REMEMBER_KEY, false);
+    }
+
+    /**
+     * Set the via-remember status.
+     */
+    public static function setViaRemember(bool $viaRemember = true): void
+    {
+        Session::put(self::VIA_REMEMBER_KEY, $viaRemember);
+    }
+
+    /**
+     * Determine if the user has recently confirmed their password within the timeout window.
+     *
+     * @param  int  $timeout  Timeout in seconds (default 10800 = 3 hours).
+     */
+    public static function hasConfirmedPassword(int $timeout = 10800): bool
+    {
+        if (self::guest() || self::viaRemember()) {
+            return false;
+        }
+
+        $confirmedAt = Session::get(self::PASSWORD_CONFIRMED_KEY);
+
+        return $confirmedAt !== null && (time() - (int) $confirmedAt) < $timeout;
+    }
+
+    /**
+     * Record that the user has entered/confirmed their password for the current session.
+     */
+    public static function passwordConfirmed(): void
+    {
+        Session::put(self::PASSWORD_CONFIRMED_KEY, time());
+        Session::put(self::VIA_REMEMBER_KEY, false);
     }
 
     /**

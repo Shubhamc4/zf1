@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ZF1\Auth;
 
 use ArrayAccess;
+use BadMethodCallException;
 use JsonSerializable;
 use Throwable;
 
@@ -56,7 +57,9 @@ class AuthUser implements ArrayAccess, JsonSerializable
      */
     public function __construct(array|object $attributes = [])
     {
-        if (is_object($attributes)) {
+        if ($attributes instanceof self) {
+            $attributes = $attributes->toArray();
+        } elseif (is_object($attributes)) {
             $attributes = get_object_vars($attributes);
         }
 
@@ -364,5 +367,61 @@ class AuthUser implements ArrayAccess, JsonSerializable
     public function jsonSerialize(): array
     {
         return $this->toArray();
+    }
+
+    /**
+     * Dynamically handle calls to custom, magic, or accessor methods.
+     *
+     * @param  array<mixed>  $arguments
+     */
+    public function __call(string $method, array $arguments): mixed
+    {
+        if (str_starts_with($method, 'is') && strlen($method) > 2) {
+            $suffix = substr($method, 2);
+            $snake = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $suffix));
+
+            $accessor = 'get'.$method.'Attribute';
+            if (method_exists($this, $accessor)) {
+                return (bool) $this->{$accessor}();
+            }
+
+            $key = $this->aliases[$snake] ?? $snake;
+            if (isset($this->attributes[$key])) {
+                return (bool) $this->attributes[$key];
+            }
+
+            $isKey = $this->aliases['is_'.$snake] ?? ('is_'.$snake);
+            if (isset($this->attributes[$isKey])) {
+                return (bool) $this->attributes[$isKey];
+            }
+
+            $roleKey = $this->aliases['role'] ?? 'role';
+            if (isset($this->attributes[$roleKey]) && strtolower((string) $this->attributes[$roleKey]) === $snake) {
+                return true;
+            }
+
+            return false;
+        }
+
+        if (str_starts_with($method, 'get') && strlen($method) > 3) {
+            $prop = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', substr($method, 3)));
+
+            return $this->__get($prop);
+        }
+
+        $snake = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $method));
+        if ($this->has($snake)) {
+            return $this->get($snake);
+        }
+
+        if ($this->has($method)) {
+            return $this->get($method);
+        }
+
+        throw new BadMethodCallException(sprintf(
+            'Call to undefined method %s::%s()',
+            static::class,
+            $method
+        ));
     }
 }
